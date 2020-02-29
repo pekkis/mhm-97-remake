@@ -1,7 +1,7 @@
 {
-  "name": "@dr-kobros/hardcore-react-training",
-  "version": "4.0.0",
-  "description": "A training / starter project utilizing Broilerplate & React",
+  "name": "mhm-97-remake",
+  "version": "2.0.0",
+  "description": "A remake of MHM 97",
   "main": "src",
   "scripts": {
     "build:client": "cross-env NODE_ENV=production webpack --progress --display-optimization-bailout",
@@ -16,15 +16,11 @@
     "url": "https://github.com/pekkis/react-training-broilerplate"
   },
   "keywords": [
-    "React",
-    "example",
-    "starter",
-    "boilerplate",
-    "broilerplate",
-    "training"
+    "MHM 97",
+    "remake"
   ],
   "author": "Pekkis",
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "jest": {
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
