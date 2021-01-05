@@ -38,7 +38,7 @@
     "@redux-saga/delay-p": "^1.0.0-rc.0",
     "@sentry/browser": "^5.10.2",
     "@types/react-redux": "^7.1.5",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "classnames": "^2.2.6",
     "formik": "^2.0.8",
     "graphql": "^14.0.2",
