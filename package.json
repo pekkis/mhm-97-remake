@@ -44,7 +44,7 @@
     "graphql": "^14.0.2",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.11",
-    "luxon": "^1.8.2",
+    "luxon": "^1.28.1",
     "polished": "^3.4.2",
     "prop-types": "^15.6.2",
     "ramda": "^0.26.1",
