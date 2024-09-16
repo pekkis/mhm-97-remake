@@ -7,7 +7,8 @@ import {
   Middleware,
   StoreEnhancer
 } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
+
+import { composeWithDevTools } from "@redux-devtools/extension";
 
 export function createStore(
   reducers: { [key: string]: Reducer },
