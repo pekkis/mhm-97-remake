@@ -4,7 +4,7 @@ import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./containers/ManagerInfoContainer";
 import styled from "styled-components";
 import Toggle from "react-toggle";
-import Markdown from "react-markdown";
+import Markdown from "./Markdown";
 import Box from "./styled-system/Box";
 
 import services from "../data/services";

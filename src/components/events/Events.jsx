@@ -1,5 +1,5 @@
 import React from "react";
-import Markdown from "react-markdown";
+import Markdown from "../Markdown";
 import eventList from "../../data/events";
 
 const Events = props => {

@@ -1,5 +1,5 @@
 import React from "react";
-import Markdown from "react-markdown";
+import Markdown from "../Markdown";
 
 const Events = props => {
   const { announcements } = props;

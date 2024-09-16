@@ -4,7 +4,7 @@ import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./containers/ManagerInfoContainer";
 import Box from "./styled-system/Box";
 import tournamentList from "../data/tournaments";
-import Markdown from "react-markdown";
+import Markdown from "./Markdown";
 import Button from "./form/Button";
 
 const Invitations = props => {
