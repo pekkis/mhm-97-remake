@@ -13,7 +13,7 @@ import {
   faExclamationCircle
 } from "@fortawesome/free-solid-svg-icons";
 
-import runtime from "@dr-kobros/serviceworker-webpack-plugin/lib/runtime";
+// import runtime from "@dr-kobros/serviceworker-webpack-plugin/lib/runtime";
 
 import "./style.pcss";
 
@@ -43,15 +43,19 @@ if (!rootElement) {
 
 render(Root, rootElement);
 
+/*
 runtime.register().then((sw: ServiceWorker) => {
   console.log(sw, "serviis wörker");
 });
+*/
 
 // Webpack's hot reloading magic happens here.
 
+/*
 if (module.hot) {
   module.hot.accept("./Root", () => {
     const HotReloadedRoot = require("./Root").default;
     render(HotReloadedRoot, rootElement);
   });
 }
+  */

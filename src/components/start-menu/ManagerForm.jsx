@@ -7,7 +7,6 @@ import Label from "../form/Label";
 import LabelDiv from "../form/LabelDiv";
 import Field from "../form/Field";
 import difficultyLevels from "../../data/difficulty-levels";
-import { tag } from "postcss-selector-parser";
 
 const ManagerForm = props => {
   const { manager, advance, competitions, teams } = props;

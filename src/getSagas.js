@@ -1,6 +1,6 @@
-import gameSagas from "./sagas/game";
-import eventSagas from "./sagas/event";
-import managerSagas from "./sagas/manager";
+// import gameSagas from "./sagas/game";
+// import eventSagas from "./sagas/event";
+// import managerSagas from "./sagas/manager";
 import metaSagas from "./sagas/meta";
 
 // import { dataMonitor } from "./sagas/data";

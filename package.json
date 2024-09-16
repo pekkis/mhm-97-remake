@@ -4,8 +4,9 @@
   "description": "A remake of MHM 97",
   "main": "src",
   "scripts": {
+    "dev": "vite",
     "build:client": "cross-env NODE_ENV=production webpack --progress --display-optimization-bailout",
-    "build": "yarn run build:client",
+    "build": "pnpm run build:client",
     "lint": "eslint src",
     "babel-node": "babel-node",
     "start": "cross-env NODE_ENV=development REACT_APP_SW_DISABLE=1 webpack-dev-server --config webpack.config.js --port 11000 --history-api-fallback --hot",
@@ -128,8 +129,10 @@
     "postcss-nesting": "^7.0.0",
     "prettier": "^1.15.3",
     "typescript": "^3.7.3",
+    "vite": "^5.4.5",
     "webpack": "^4.27.1",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
-  }
+  },
+  "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c"
 }
