@@ -1,5 +1,3 @@
-import React from "react";
-
 import News from "./news/News";
 import Header from "./containers/HeaderContainer";
 import HeaderedPage from "./ui/HeaderedPage";
@@ -9,7 +7,7 @@ import { List } from "immutable";
 
 import Box from "./styled-system/Box";
 
-const EndOfSeason = props => {
+const EndOfSeason = (props) => {
   const { manager, news, turn, announcements } = props;
 
   return (

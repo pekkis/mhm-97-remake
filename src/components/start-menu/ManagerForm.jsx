@@ -1,4 +1,3 @@
-import React from "react";
 import { Formik } from "formik";
 import Button from "../form/Button";
 import Input from "../form/Input";
@@ -8,14 +7,14 @@ import LabelDiv from "../form/LabelDiv";
 import Field from "../form/Field";
 import difficultyLevels from "../../data/difficulty-levels";
 
-const ManagerForm = props => {
+const ManagerForm = (props) => {
   const { manager, advance, competitions, teams } = props;
 
   return (
     <div>
       <Formik
         initialValues={manager.toJS()}
-        onSubmit={values => {
+        onSubmit={(values) => {
           advance(values);
         }}
       >
@@ -45,7 +44,7 @@ const ManagerForm = props => {
               <Field>
                 <LabelDiv>Vaikeustaso</LabelDiv>
                 {difficultyLevels
-                  .map(dl => {
+                  .map((dl) => {
                     return (
                       <div key={dl.get("value")}>
                         <label>
@@ -69,14 +68,14 @@ const ManagerForm = props => {
 
                 <Select name="team" value={values.team} onChange={handleChange}>
                   {competitions
-                    .map(c => {
+                    .map((c) => {
                       return (
                         <optgroup key={c.get("id")} label={c.get("name")}>
                           {c
                             .get("teams")
-                            .map(t => teams.get(t))
-                            .sortBy(t => t.get("name"))
-                            .map(t => {
+                            .map((t) => teams.get(t))
+                            .sortBy((t) => t.get("name"))
+                            .map((t) => {
                               return (
                                 <option key={t.get("id")} value={t.get("id")}>
                                   {t.get("name")}

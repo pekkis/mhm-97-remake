@@ -1,4 +1,3 @@
-import React from "react";
 import ManagerInfo from "./containers/ManagerInfoContainer";
 import Header from "./containers/HeaderContainer";
 import HeaderedPage from "./ui/HeaderedPage";
@@ -11,7 +10,7 @@ import Calendar from "./ui/containers/CalendarContainer";
 
 import difficultyLevels from "../data/difficulty-levels";
 
-const Pranks = props => {
+const Pranks = (props) => {
   const {
     competitions,
     manager,
@@ -43,7 +42,7 @@ const Pranks = props => {
 
       <Box p={1}>
         <Calendar
-          when={c => c.get("pranks")}
+          when={(c) => c.get("pranks")}
           fallback={<p>Jäynät on tältä kaudelta jäynäytetty.</p>}
         >
           <h2>Jäynät</h2>

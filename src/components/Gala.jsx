@@ -1,5 +1,3 @@
-import React from "react";
-
 import Events from "./events/Events";
 import News from "./news/News";
 import Situation from "./context-sensitive/Situation";
@@ -12,7 +10,7 @@ import BettingForm from "./championship-betting/BettingForm";
 
 import Box from "./styled-system/Box";
 
-const Gala = props => {
+const Gala = (props) => {
   const { teams, competitions, advance, betChampion, manager, news } = props;
 
   return (

@@ -1,11 +1,10 @@
-import React from "react";
 import { Formik } from "formik";
 import Slider from "rc-slider";
 import { amount as a } from "../../services/format";
 import odds from "../../data/championship-betting";
 import Button from "../form/Button";
 
-const BettingForm = props => {
+const BettingForm = (props) => {
   const { manager, competition, teams, betChampion } = props;
 
   const teamsAndOdds = odds(competition, teams);
@@ -16,7 +15,7 @@ const BettingForm = props => {
         team: "",
         amount: 10000
       }}
-      onSubmit={values => {
+      onSubmit={(values) => {
         betChampion(
           manager.get("id"),
           parseInt(values.team, 10),
@@ -31,7 +30,7 @@ const BettingForm = props => {
             <h3>Valitse ehdokkaasi</h3>
 
             {teamsAndOdds
-              .map(team => {
+              .map((team) => {
                 return (
                   <div key={team.get("id")}>
                     <label>
@@ -57,7 +56,7 @@ const BettingForm = props => {
                 max={1000000}
                 step={10000}
                 value={values.amount}
-                onChange={value => {
+                onChange={(value) => {
                   setFieldValue("amount", value);
                 }}
               />

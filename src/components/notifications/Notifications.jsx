@@ -1,14 +1,13 @@
-import React from "react";
 import styled from "styled-components";
 import Notification from "./Notification";
 
-const Notifications = props => {
+const Notifications = (props) => {
   const { className, notifications, dismissNotification } = props;
 
   return (
     <div className={className}>
       {notifications
-        .map(n => (
+        .map((n) => (
           <Notification
             key={n.id}
             dismiss={dismissNotification}

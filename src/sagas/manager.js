@@ -24,7 +24,7 @@ import crisis from "../data/crisis";
 import difficultyLevels from "../data/difficulty-levels";
 import arenas from "../data/arenas";
 import { incrementStrength, decrementStrength } from "./team";
-import uuid from "uuid";
+import { v4 as uuid } from "uuid";
 import { Map } from "immutable";
 import r from "../services/random";
 import { addAnnouncement } from "./news";
@@ -73,7 +73,7 @@ export function* setActiveManager(managerId) {
 }
 
 export function* hireManager(managerId, teamId) {
-  const managersCurrentTeam = yield select(state =>
+  const managersCurrentTeam = yield select((state) =>
     state.manager.getIn(["managers", managerId, "team"])
   );
 
@@ -117,7 +117,7 @@ export function* renameArena(managerId, name) {
 }
 
 export function* incrementBalance(managerId, amount) {
-  const manager = yield select(state =>
+  const manager = yield select((state) =>
     state.manager.getIn(["managers", managerId])
   );
   if (!manager) {
@@ -163,7 +163,7 @@ export function* crisisMeeting(action) {
 
   const difficulty = yield select(managersDifficulty(payload.manager));
   const team = yield select(managersTeam(payload.manager));
-  const competitions = yield select(state => state.game.get("competitions"));
+  const competitions = yield select((state) => state.game.get("competitions"));
 
   const moraleBoost = difficultyLevels.getIn([difficulty, "moraleBoost"]);
 
@@ -185,7 +185,7 @@ export function* buyPlayer(action) {
 
   const { payload } = action;
 
-  const manager = yield select(state =>
+  const manager = yield select((state) =>
     state.manager.getIn(["managers", payload.manager])
   );
 
@@ -309,9 +309,9 @@ export function* toggleService(action) {
 }
 
 export function* afterGameday(competition, phase, groupId, round) {
-  const managers = yield select(state => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.get("managers"));
 
-  const group = yield select(state =>
+  const group = yield select((state) =>
     state.game.getIn([
       "competitions",
       competition,
@@ -325,13 +325,13 @@ export function* afterGameday(competition, phase, groupId, round) {
   for (const [managerId, manager] of managers) {
     const managersIndex = group
       .get("teams")
-      .findIndex(t => t === manager.get("team"));
+      .findIndex((t) => t === manager.get("team"));
 
     if (managersIndex === -1) {
       continue;
     }
 
-    const game = group.getIn(["schedule", round]).find(pairing => {
+    const game = group.getIn(["schedule", round]).find((pairing) => {
       return pairing.includes(managersIndex);
     });
 

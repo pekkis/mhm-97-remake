@@ -1,8 +1,7 @@
-import React from "react";
 import calendar from "../../data/calendar";
 import { List } from "immutable";
 
-const Forward = props => {
+const Forward = (props) => {
   const { turn, competitions } = props;
 
   const calendarEntry = calendar.get(turn.get("round"));
@@ -14,8 +13,8 @@ const Forward = props => {
       <div>
         Pelipäivä (
         {gamedays
-          .map(gd => competitions.get(gd))
-          .map(c => c.get("abbr"))
+          .map((gd) => competitions.get(gd))
+          .map((c) => c.get("abbr"))
           .join(", ")}
         )
       </div>

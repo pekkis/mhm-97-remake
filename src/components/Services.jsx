@@ -1,4 +1,3 @@
-import React from "react";
 import Header from "./containers/HeaderContainer";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./containers/ManagerInfoContainer";
@@ -13,7 +12,7 @@ const ServicesList = styled.div`
   margin: 1em 0;
 `;
 
-const Services = props => {
+const Services = (props) => {
   const { manager, toggleService, basePrices } = props;
 
   return (

@@ -1,10 +1,10 @@
-import React from "react";
 import ButtonRow from "./form/ButtonRow";
 import Button from "./form/Button";
 import Box from "./styled-system/Box";
 import ManagerForm from "./start-menu/ManagerForm";
 import styled from "styled-components";
 import title from "../assets/title.png";
+import Stylexer from "./test/Stylexer";
 
 const Menu = styled.div``;
 
@@ -28,7 +28,7 @@ const Centerer = styled.div`
   text-align: center;
 `;
 
-const StartMenu = props => {
+const StartMenu = (props) => {
   const {
     teams,
     competitions,
@@ -42,6 +42,20 @@ const StartMenu = props => {
 
   return (
     <div className={className}>
+      <Stylexer />
+
+      <Button
+        onClick={() => {
+          const mode =
+            localStorage.getItem("theme") === "dark" ? "light" : "dark";
+
+          localStorage.setItem("theme", mode);
+          document.documentElement.dataset.theme = mode;
+        }}
+      >
+        Mode
+      </Button>
+
       <Menu>
         <Contents>
           <Centerer>

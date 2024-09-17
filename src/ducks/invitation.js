@@ -1,5 +1,5 @@
 import { Map, List } from "immutable";
-import uuid from "uuid";
+import { v4 as uuid } from "uuid";
 
 import {
   SEASON_START,
@@ -37,25 +37,25 @@ export default function invitationReducer(state = defaultState, action) {
       return payload.invitation;
 
     case INVITATION_ADD:
-      return state.update("invitations", invitations =>
+      return state.update("invitations", (invitations) =>
         invitations.push(Map(payload).set("id", uuid()))
       );
 
     case INVITATION_ACCEPT:
       console.log(action, "HAERIEWWFE");
-      return state.update("invitations", invitations => {
+      return state.update("invitations", (invitations) => {
         return invitations
           .update(
             invitations.findIndex(
-              i =>
+              (i) =>
                 i.get("manager") === payload.manager &&
                 i.get("id") === payload.id
             ),
-            invitation => {
+            (invitation) => {
               return invitation.set("participate", true);
             }
           )
-          .filter(i => {
+          .filter((i) => {
             return i.get("manager") !== payload.manager || i.get("participate");
           });
       });
@@ -63,19 +63,19 @@ export default function invitationReducer(state = defaultState, action) {
       return state.set("invitations", List());
 
     case GAME_DECREMENT_DURATIONS:
-      return state.update("invitations", invitations => {
-        return invitations.map(i => {
+      return state.update("invitations", (invitations) => {
+        return invitations.map((i) => {
           if (i.get("participate")) {
             return i;
           }
-          return i.update("duration", d => d - 1);
+          return i.update("duration", (d) => d - 1);
         });
       });
 
     case GAME_CLEAR_EXPIRED:
-      return state.update("invitations", invitations => {
+      return state.update("invitations", (invitations) => {
         return invitations.filter(
-          i => i.get("participate") || i.get("duration") > 0
+          (i) => i.get("participate") || i.get("duration") > 0
         );
       });
 

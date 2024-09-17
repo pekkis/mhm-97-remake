@@ -1,9 +1,8 @@
-import React from "react";
 import strategies from "../data/strategies";
 import Button from "./form/Button";
 import Box from "./styled-system/Box";
 
-const SelectStrategy = props => {
+const SelectStrategy = (props) => {
   const { manager, selectStrategy } = props;
 
   return (
@@ -15,7 +14,7 @@ const SelectStrategy = props => {
         on kolme vaihtoehtoa:
       </p>
 
-      {strategies.map(strategy => {
+      {strategies.map((strategy) => {
         return (
           <div key={strategy.get("id")}>
             <h3>{strategy.get("name")}</h3>

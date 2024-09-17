@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import Button from "./form/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,16 +28,9 @@ const Container = styled.header`
   }
 `;
 
-const Header = props => {
-  const {
-    back,
-    menu,
-    history,
-    advanceEnabled,
-    advance,
-    toggleMenu,
-    forward
-  } = props;
+const Header = (props) => {
+  const { back, menu, history, advanceEnabled, advance, toggleMenu, forward } =
+    props;
 
   return (
     <Container>

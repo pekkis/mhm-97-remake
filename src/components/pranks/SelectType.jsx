@@ -1,10 +1,9 @@
-import React from "react";
 import Button from "../form/Button";
 import ButtonContainer from "../ui/ButtonContainer";
 import pranks from "../../data/pranks";
 import { currency as c } from "../../services/format";
 
-const SelectType = props => {
+const SelectType = (props) => {
   const { manager, selectType, competition, enabled } = props;
   return (
     <div>

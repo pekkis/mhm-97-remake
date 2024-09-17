@@ -1,10 +1,9 @@
-import React from "react";
 import Header from "./containers/HeaderContainer";
 import HeaderedPage from "./ui/HeaderedPage";
 import { getEffective } from "../services/effects";
 import Box from "./styled-system/Box";
 
-const DeveloperMenu = props => {
+const DeveloperMenu = (props) => {
   const { teams, competitions } = props;
 
   return (
@@ -15,7 +14,7 @@ const DeveloperMenu = props => {
         <h2>Devausinfo</h2>
 
         {competitions
-          .map(c => {
+          .map((c) => {
             return (
               <div key={c.get("id")}>
                 <h2>{c.get("name")}</h2>
@@ -33,8 +32,8 @@ const DeveloperMenu = props => {
                   <tbody>
                     {c
                       .get("teams")
-                      .sortBy(t => -teams.get(t).get("strength"))
-                      .map(t => {
+                      .sortBy((t) => -teams.get(t).get("strength"))
+                      .map((t) => {
                         const team = teams.get(t);
                         const e = getEffective(team);
 

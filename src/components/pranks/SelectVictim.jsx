@@ -1,8 +1,7 @@
-import React from "react";
 import Button from "../form/Button";
 import ButtonContainer from "../ui/ButtonContainer";
 
-const SelectVictim = props => {
+const SelectVictim = (props) => {
   const { competition, manager, selectVictim, teams, cancel } = props;
 
   return (
@@ -15,8 +14,8 @@ const SelectVictim = props => {
 
         {competition
           .get("teams")
-          .filter(teamId => teamId !== manager.get("team"))
-          .map(teamId => {
+          .filter((teamId) => teamId !== manager.get("team"))
+          .map((teamId) => {
             return (
               <Button key={teamId} block onClick={() => selectVictim(teamId)}>
                 {teams.get(teamId).get("name")}

@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import TeamName from "../team/Name";
 
@@ -24,7 +23,7 @@ const Result = styled.div`
 
 const Score = styled.div``;
 
-const Game = props => {
+const Game = (props) => {
   const { context, pairing, teams, managers } = props;
   return (
     <Row>

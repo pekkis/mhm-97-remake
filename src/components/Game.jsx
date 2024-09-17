@@ -1,4 +1,3 @@
-import React from "react";
 import { Switch, Route } from "react-router";
 import styled from "styled-components";
 
@@ -27,7 +26,7 @@ import Gala from "./containers/GalaContainer";
 
 import calendar from "../data/calendar";
 
-const Phase = props => {
+const Phase = (props) => {
   const { turn } = props;
 
   const calendarEntry = calendar.get(turn.get("round"));
@@ -83,7 +82,7 @@ const Phase = props => {
   }
 };
 
-const Game = props => {
+const Game = (props) => {
   const { className, menu } = props;
   return (
     <div className={className}>

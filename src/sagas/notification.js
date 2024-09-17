@@ -1,6 +1,6 @@
 import { put, call, spawn } from "redux-saga/effects";
 import delay from "@redux-saga/delay-p";
-import uuid from "uuid";
+import { v4 as uuid } from "uuid";
 
 export function* autoDismissal(id) {
   yield delay(7000);

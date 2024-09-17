@@ -1,9 +1,9 @@
-import React from "react";
 import StartMenu from "./containers/StartMenuContainer";
 import Game from "./containers/GameContainer";
 import * as Sentry from "@sentry/browser";
+import { Component } from "react";
 
-class App extends React.Component {
+class App extends Component {
   state = {
     hasError: false
   };
@@ -14,8 +14,8 @@ class App extends React.Component {
 
   componentDidCatch(error, info) {
     return;
-    Sentry.withScope(scope => {
-      Object.keys(info).forEach(key => {
+    Sentry.withScope((scope) => {
+      Object.keys(info).forEach((key) => {
         scope.setExtra(key, info[key]);
       });
       Sentry.captureException(error);

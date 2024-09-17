@@ -1,4 +1,3 @@
-import React from "react";
 import Table from "../league-table/Table";
 import ResponsiveTable from "../responsive-table/ResponsiveTable";
 import Matchups from "../playoffs/Matchups";
@@ -6,13 +5,13 @@ import { List } from "immutable";
 import Games from "../gameday/Games";
 import Streaks from "../containers/StreaksContainer";
 
-const Situation = props => {
+const Situation = (props) => {
   const { competitions, interesting, teams, manager } = props;
 
   return (
     <div>
       {interesting
-        .map(i => competitions.get(i))
+        .map((i) => competitions.get(i))
         .map((competition, key) => {
           const phaseNo = competition.get("phase");
           const phase = competition.getIn(["phases", phaseNo]);
@@ -26,7 +25,7 @@ const Situation = props => {
               {phase
                 .get("groups")
                 .filter(
-                  group =>
+                  (group) =>
                     phase.get("groups").count() === 1 ||
                     group.get("teams").includes(manager.get("team"))
                 )

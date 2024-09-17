@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import ActionMenu from "./containers/ActionMenuContainer";
 import { closeMenu } from "../ducks/ui";
@@ -45,7 +44,7 @@ const MenuContents = styled.div`
   }
 `;
 
-const ModalMenu = props => {
+const ModalMenu = (props) => {
   const { closeMenu } = props;
   return (
     <MenuContainer
@@ -54,7 +53,7 @@ const ModalMenu = props => {
       }}
     >
       <MenuContents
-        onClick={e => {
+        onClick={(e) => {
           e.stopPropagation();
         }}
       >

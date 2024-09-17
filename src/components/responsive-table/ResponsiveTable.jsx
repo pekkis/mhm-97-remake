@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 const TableScroller = styled.div`
@@ -63,7 +62,7 @@ const TableWrapper = styled.div`
   overflow: auto;
 `;
 
-const ResponsiveTable = props => {
+const ResponsiveTable = (props) => {
   const { children } = props;
 
   const clone = React.cloneElement(children, { isClone: true });

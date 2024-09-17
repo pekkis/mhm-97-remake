@@ -1,8 +1,7 @@
-import React from "react";
 import Markdown from "../Markdown";
 import eventList from "../../data/events";
 
-const News = props => {
+const News = (props) => {
   const { news } = props;
 
   return (

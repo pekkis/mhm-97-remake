@@ -1,0 +1,15 @@
+:root {
+  color-scheme: light dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: only light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: only dark;
+}
+
+body {
+  background-color: light-dark(white, black);
+}

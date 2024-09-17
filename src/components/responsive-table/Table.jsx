@@ -1,6 +1,4 @@
-import React from "react";
-
-const Table = props => {
+const Table = (props) => {
   const { isClone, children, ...rest } = props;
   return (
     <table {...rest} className={isClone ? "clone" : undefined}>

@@ -1,11 +1,10 @@
-import React from "react";
 import styled from "styled-components";
 import TeamName from "../team/Name";
 import { List } from "immutable";
 import Game from "./Game";
 import Box from "../styled-system/Box";
 
-const Results = props => {
+const Results = (props) => {
   const { className, teams, context, round, managers } = props;
 
   const pairings = context.getIn(["schedule", round], List()).filter((p, i) => {

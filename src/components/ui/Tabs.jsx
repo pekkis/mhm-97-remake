@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import Tab from "./Tab";
 
@@ -24,7 +23,7 @@ const TabContent = styled.div`
   padding: 0;
 `;
 
-const Tabs = props => {
+const Tabs = (props) => {
   const { className, children, selected, onSelect } = props;
 
   const childrenArray = React.Children.toArray(children);

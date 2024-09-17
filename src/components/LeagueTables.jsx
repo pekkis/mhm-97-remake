@@ -1,10 +1,9 @@
-import React from "react";
 import Table from "./league-table/Table";
 import Header from "./containers/HeaderContainer";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./styled-system/Box";
 
-const LeagueTables = props => {
+const LeagueTables = (props) => {
   const { managers, teams, competitions } = props;
 
   return (
@@ -14,8 +13,8 @@ const LeagueTables = props => {
         <h2>Sarjataulukot</h2>
 
         {competitions
-          .filter(c => c.get("phase") >= 0)
-          .map(c => {
+          .filter((c) => c.get("phase") >= 0)
+          .map((c) => {
             const phase = c.getIn(["phases", 0]);
             const groups = phase.get("groups");
 

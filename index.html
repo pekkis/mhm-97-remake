@@ -1,6 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
+    <script>
+      try {
+        const theme = localStorage.getItem("theme");
+
+        console.log("THEME", theme);
+
+        document.documentElement.dataset.theme = theme || "light";
+      } catch (e) {}
+    </script>
+
     <meta charset="utf-8" />
     <title>MHM 97</title>
     <meta

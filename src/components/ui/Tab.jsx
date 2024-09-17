@@ -1,7 +1,6 @@
-import React from "react";
 import styled, { css } from "styled-components";
 
-const Tab = props => {
+const Tab = (props) => {
   const { title, className, onSelect } = props;
   return (
     <li
@@ -24,7 +23,7 @@ export default styled(Tab)`
   margin: 0 0;
   padding: 0.5em 1em;
 
-  ${props =>
+  ${(props) =>
     props.isSelected &&
     css`
       font-weight: bold;

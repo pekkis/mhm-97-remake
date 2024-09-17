@@ -1,24 +1,23 @@
-import React from "react";
 import styled from "styled-components";
 import RTable from "../responsive-table/Table";
 import Td from "../responsive-table/Td";
 
 const TableRow = styled.tr`
   background-color: rgb(255, 255, 255);
-  ${props =>
+  ${(props) =>
     props.dark &&
     `
     background-color: rgb(238, 238, 238)
   `}
 `;
 
-const Table = props => {
+const Table = (props) => {
   const { managers, teams, division, isClone } = props;
   const colors = division.get("colors");
-  const tbl = division.get("stats").map(entry => {
+  const tbl = division.get("stats").map((entry) => {
     return entry.set(
       "managerControlled",
-      managers.map(p => p.get("team")).includes(entry.get("id"))
+      managers.map((p) => p.get("team")).includes(entry.get("id"))
     );
   });
 

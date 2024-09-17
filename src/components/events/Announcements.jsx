@@ -1,7 +1,6 @@
-import React from "react";
 import Markdown from "../Markdown";
 
-const Events = props => {
+const Events = (props) => {
   const { announcements } = props;
 
   return (

@@ -1,4 +1,3 @@
-import React from "react";
 import App from "./components/containers/AppContainer";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
@@ -12,8 +11,8 @@ import theme from "./themes/white";
 const GlobalStyle = createGlobalStyle`
 
   html {
-    background-color: ${props => props.theme.colors.white};
-    color: ${props => props.theme.colors.black}
+    background-color: ${(props) => props.theme.colors.white};
+    color: ${(props) => props.theme.colors.black}
   }
 
   body {
@@ -31,7 +30,7 @@ const GlobalStyle = createGlobalStyle`
 
 `;
 
-const Root = props => {
+const Root = (props) => {
   const { store } = props;
   return (
     <>

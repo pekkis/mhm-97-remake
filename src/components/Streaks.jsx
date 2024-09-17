@@ -1,4 +1,3 @@
-import React from "react";
 import { Map } from "immutable";
 import Box from "./styled-system/Box";
 
@@ -9,12 +8,12 @@ const humanReadables = Map([
   ["win", "voittoa"]
 ]);
 
-const Streaks = props => {
+const Streaks = (props) => {
   const { competition, team, streaks } = props;
 
   const teamStreaks = streaks
     .getIn([team.toString(), competition], Map())
-    .filter(s => s > 1);
+    .filter((s) => s > 1);
 
   if (teamStreaks.count() === 0) {
     return null;
@@ -24,7 +23,7 @@ const Streaks = props => {
     <Box my={1}>
       <h4>Putket</h4>
       {teamStreaks
-        .filter(s => s > 1)
+        .filter((s) => s > 1)
         .map((s, index) => {
           return (
             <div key={index}>
