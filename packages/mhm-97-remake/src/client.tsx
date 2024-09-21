@@ -15,8 +15,8 @@ import {
 // import runtime from "@dr-kobros/serviceworker-webpack-plugin/lib/runtime";
 
 import "./globals.css";
-import "./style.css";
 import "rc-slider/assets/index.css";
+import "react-toggle/style.css";
 
 import * as Sentry from "@sentry/browser";
 
