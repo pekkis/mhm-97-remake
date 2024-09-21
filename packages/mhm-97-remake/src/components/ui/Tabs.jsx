@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Tab from "./Tab";
+import { cloneElement, Children } from "react";
 
 const TabsList = styled.ul`
   background-color: rgba(33, 33, 33, 0.3);
@@ -26,13 +27,13 @@ const TabContent = styled.div`
 const Tabs = (props) => {
   const { className, children, selected, onSelect } = props;
 
-  const childrenArray = React.Children.toArray(children);
+  const childrenArray = Children.toArray(children);
 
   return (
     <div className={className}>
       <TabsList>
         {childrenArray.map((child, key) =>
-          React.cloneElement(child, {
+          cloneElement(child, {
             isSelected: key === selected,
             onSelect: () => onSelect(key)
           })

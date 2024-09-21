@@ -6,6 +6,8 @@ import styled from "styled-components";
 import title from "../assets/title.png";
 import Stylexer from "./test/Stylexer";
 
+import { Button as IDSButton } from "ids";
+
 const Menu = styled.div``;
 
 const Contents = styled.div`
@@ -42,8 +44,13 @@ const StartMenu = (props) => {
 
   return (
     <div className={className}>
-      <Stylexer />
-
+      <Stylexer>
+        <IDSButton>IDS Button</IDSButton>
+      </Stylexer>
+      Hihuli hei!
+      <p>
+        <IDSButton>IDS Button automatic</IDSButton>
+      </p>
       <Button
         onClick={() => {
           const mode =
@@ -55,7 +62,6 @@ const StartMenu = (props) => {
       >
         Mode
       </Button>
-
       <Menu>
         <Contents>
           <Centerer>

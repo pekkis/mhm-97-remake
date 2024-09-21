@@ -1,0 +1,7 @@
+{
+  "cssvar.files": ["packages/ids/node_modules/open-props/open-props.min.css"],
+
+  "cssvar.ignore": [],
+
+  "cssvar.extensions": ["css", "postcss", "jsx", "tsx"]
+}

@@ -15,8 +15,7 @@ import {
 // import runtime from "@dr-kobros/serviceworker-webpack-plugin/lib/runtime";
 
 import "./globals.css";
-import "./stylex.css";
-import "./style.pcss";
+import "./style.css";
 
 import * as Sentry from "@sentry/browser";
 

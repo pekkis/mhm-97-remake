@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import * as stylex from "@stylexjs/stylex";
 import { tokens } from "../../stylex/tokens.stylex";
 
@@ -14,10 +14,17 @@ const styles = stylex.create({
   }
 });
 
-const Stylexer: FC = () => {
+type Props = {
+  children?: ReactNode;
+};
+
+const Stylexer: FC<Props> = ({ children }) => {
   return (
     <div {...stylex.props(styles.rubals)}>
-      <div {...stylex.props(styles.container)}>stylexer!</div>
+      <div {...stylex.props(styles.container)}>
+        stylexer!
+        {children}
+      </div>
     </div>
   );
 };

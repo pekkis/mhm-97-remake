@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { cloneElement } from "react";
 
 const TableScroller = styled.div`
   position: relative;
@@ -65,7 +66,7 @@ const TableWrapper = styled.div`
 const ResponsiveTable = (props) => {
   const { children } = props;
 
-  const clone = React.cloneElement(children, { isClone: true });
+  const clone = cloneElement(children, { isClone: true });
 
   // console.log("clone", clone);
   // const cteams = competition.get("teams").map(tid => teams.get(tid));
