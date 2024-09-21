@@ -16,6 +16,7 @@ import {
 
 import "./globals.css";
 import "./style.css";
+import "rc-slider/assets/index.css";
 
 import * as Sentry from "@sentry/browser";
 
