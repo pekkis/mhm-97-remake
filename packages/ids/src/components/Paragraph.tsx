@@ -7,11 +7,7 @@ type Props = {
 import * as stylex from "@stylexjs/stylex";
 
 const styles = stylex.create({
-  p: {
-    colorScheme: "inherit",
-    // color: `light-dark(var(--gray-12), var(--gray-3))`,
-    // backgroundColor: "transparent",
-  },
+  p: {},
 });
 
 export const Paragraph: FC<Props> = ({ children }) => {

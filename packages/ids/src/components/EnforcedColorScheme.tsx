@@ -3,10 +3,12 @@ import * as stylex from "@stylexjs/stylex";
 
 const styles = stylex.create({
   light: {
-    colorScheme: "only light",
+    colorScheme: "light",
+    color: `light-dark(var(--gray-12), var(--gray-0))`,
   },
   dark: {
-    colorScheme: "only dark",
+    colorScheme: "dark",
+    color: `light-dark(var(--gray-12), var(--gray-0))`,
   },
 });
 
