@@ -8,7 +8,14 @@ import react from "@vitejs/plugin-react";
 import stylex from "vite-plugin-stylex";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => {
+export default defineConfig(({ command, mode, isPreview, isSsrBuild }) => {
+  console.log({
+    command,
+    mode,
+    isPreview,
+    isSsrBuild,
+  });
+
   return {
     build: {
       lib: {

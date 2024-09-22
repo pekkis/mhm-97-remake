@@ -6,17 +6,13 @@ const Span = styled.span`
 `;
 
 const Name = (props) => {
-  const { team, managers } = props;
+  const { team, managers = List() } = props;
 
   const humanControlled = managers
     .map((p) => p.get("team"))
     .includes(team.get("id"));
 
   return <Span humanControlled={humanControlled}>{team.get("name")}</Span>;
-};
-
-Name.defaultProps = {
-  managers: List()
 };
 
 export default Name;

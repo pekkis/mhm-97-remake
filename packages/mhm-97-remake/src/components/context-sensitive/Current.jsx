@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import Calendar from "../ui/containers/CalendarContainer";
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { FaExclamationCircle } from "react-icons/fa";
 
 const CurrentEntry = styled.div`
   padding: 0.5em;
@@ -17,7 +18,7 @@ const Current = (props) => {
     <div className={className}>
       {invitations.filter((i) => !i.get("participate")).count() > 0 && (
         <CurrentEntry>
-          <FontAwesomeIcon icon={["fas", "exclamation-circle"]} />
+          <FaExclamationCircle />
           Pöydälläsi odottaa{" "}
           <Link to="/kutsut">avaamattomia kutsuja joulutauon turnauksiin.</Link>
         </CurrentEntry>
@@ -30,7 +31,7 @@ const Current = (props) => {
         }}
       >
         <CurrentEntry>
-          <FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Nyt on
+          <FaExclamationCircle />
           viimeinen tilaisuutemme{" "}
           <Link to="/pelaajamarkkinat">ostaa pelaajia</Link>, sillä siirtoaika
           umpeutuu seuraavan ottelun jälkeen.
@@ -41,8 +42,10 @@ const Current = (props) => {
         when={(e) => e.get("crisisMeeting") && team.get("morale") <= -3}
       >
         <CurrentEntry>
-          <FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Joukkueen
-          moraali on huono. <Link to="/kriisipalaveri">Kriisipalaveri</Link>{" "}
+          <FaExclamationCircle />
+          moraali on huono. <Link to="/kriisipalaveri">
+            Kriisipalaveri
+          </Link>{" "}
           auttaisi.
         </CurrentEntry>
       </Calendar>
