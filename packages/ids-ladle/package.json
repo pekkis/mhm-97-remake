@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "ladle dev",
-    "build": "pnpm recursive run build && ladle build",
+    "build": "pnpm recursive --filter=ids run build && ladle build",
     "lint": "eslint .",
     "preview": "ladle preview"
   },

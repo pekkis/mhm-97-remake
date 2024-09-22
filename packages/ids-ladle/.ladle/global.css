@@ -21,5 +21,5 @@ html[data-theme="dark"] {
 
 body {
   background-color: light-dark(var(--gray-0), var(--gray-9));
-  color: black;
+  color: light-dark(var(--gray-12), var(--gray-0));
 }

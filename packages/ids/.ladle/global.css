@@ -19,7 +19,9 @@ html[data-theme="dark"] {
   color-scheme: only dark;
 }
 
-body {
-  background-color: light-dark(var(--gray-0), var(--gray-9));
-  color: black;
+@layer reset {
+  body {
+    background-color: light-dark(var(--gray-0), var(--gray-9));
+    color: black;
+  }
 }
