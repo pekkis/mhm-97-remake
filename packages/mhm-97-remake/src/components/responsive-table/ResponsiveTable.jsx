@@ -66,16 +66,11 @@ const TableWrapper = styled.div`
 const ResponsiveTable = (props) => {
   const { children } = props;
 
-  const clone = cloneElement(children, { isClone: true });
+  // const clone = cloneElement(children, { isClone: true });
 
   // console.log("clone", clone);
   // const cteams = competition.get("teams").map(tid => teams.get(tid));
-  return (
-    <TableScroller>
-      <TableWrapper>{children}</TableWrapper>
-      {clone}
-    </TableScroller>
-  );
+  return <div>{children}</div>;
 };
 
 export default ResponsiveTable;
