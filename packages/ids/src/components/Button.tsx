@@ -10,13 +10,31 @@ const styles = stylex.create({
     borderRadius: `var(--radius-2)`,
     borderWidth: `var(--border-size-1)`,
     borderStyle: "solid",
-    borderColor: `light-dark(${colors.gray9}, ${colors.gray8})`,
-    backgroundColor: `light-dark(${colors.gray5}, ${colors.gray7})`,
+    borderColor: `light-dark(${colors.blue6}, ${colors.gray8})`,
+    backgroundColor: `light-dark(${colors.blue4}, ${colors.gray7})`,
     paddingBlock: sizes.spacing2,
     paddingInline: sizes.spacing3,
     cursor: "pointer",
     color: `light-dark(${colors.gray12}, ${colors.gray3})`,
+
+    ":not(:disabled):hover": {
+      backgroundColor: `light-dark(${colors.blue5}, ${colors.gray6})`,
+    },
+
+    ":disabled": {
+      cursor: "not-allowed",
+      opacity: 0.5,
+    },
   },
+
+  secondary: {
+    borderColor: `light-dark(${colors.gray6}, ${colors.gray8})`,
+    backgroundColor: `light-dark(${colors.gray4}, ${colors.gray7})`,
+    ":not(:disabled):hover": {
+      backgroundColor: `light-dark(${colors.gray5}, ${colors.gray6})`,
+    },
+  },
+
   block: {
     display: "block",
     width: "100%",
@@ -37,7 +55,14 @@ export const Button: FC<Props> = ({
   ...rest
 }) => {
   return (
-    <button {...rest} {...stylex.props(styles.button, block && styles.block)}>
+    <button
+      {...rest}
+      {...stylex.props(
+        styles.button,
+        block && styles.block,
+        secondary && styles.secondary
+      )}
+    >
       {children}
     </button>
   );
