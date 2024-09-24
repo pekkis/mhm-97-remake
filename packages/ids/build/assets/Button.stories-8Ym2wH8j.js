@@ -1,0 +1,1 @@
+import{j as t}from"./index-CBeTvj5O.js";import{$ as e}from"./ids-CH_5ocQt.js";const d={title:"Button"},i=()=>t.jsx(e,{children:"Hip hurraa sanoi peksu"});typeof window<"u"&&window.document&&window.document.createElement&&document.documentElement.setAttribute("data-storyloaded","");export{i as Default,d as default};

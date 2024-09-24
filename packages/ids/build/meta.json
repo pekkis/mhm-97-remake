@@ -15,6 +15,17 @@
       "filePath": "src/components/Button.stories.tsx",
       "namedExport": "Default",
       "meta": {}
+    },
+    "enforced-color-scheme--default": {
+      "name": "Default",
+      "levels": [
+        "Enforced color scheme"
+      ],
+      "locStart": 9,
+      "locEnd": 28,
+      "filePath": "src/components/EnforcedColorScheme.stories.tsx",
+      "namedExport": "Default",
+      "meta": {}
     }
   }
 }
