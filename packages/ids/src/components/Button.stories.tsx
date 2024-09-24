@@ -1,5 +1,5 @@
 import type { StoryDefault, Story } from "@ladle/react";
-import { Button } from "ids";
+import { Button } from "./Button";
 
 export default {
   title: "Button",

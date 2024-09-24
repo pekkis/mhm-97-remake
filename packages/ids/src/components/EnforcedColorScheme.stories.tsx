@@ -1,6 +1,7 @@
 import type { StoryDefault, Story } from "@ladle/react";
-import { Button, Paragraph } from "ids";
-import { EnforcedColorScheme } from "ids";
+import { Button } from "./Button";
+import { Paragraph } from "./Paragraph";
+import { EnforcedColorScheme } from "./EnforcedColorScheme";
 
 export default {
   title: "Enforced Color Scheme",
