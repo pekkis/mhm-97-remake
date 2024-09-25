@@ -6,9 +6,7 @@ type Props = {
 };
 
 const styles = stylex.create({
-  main: {
-    containerType: "inline-size"
-  }
+  main: {}
 });
 
 export const Main: FC<Props> = ({ children }) => {

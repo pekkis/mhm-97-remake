@@ -14,6 +14,7 @@ const styles = stylex.create({
     paddingLeft: "0",
     paddingRight: "0",
     color: "rgb(255, 255, 255)",
+
     position: "fixed",
     bottom: 0,
     right: 0,
