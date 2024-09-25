@@ -1,11 +1,15 @@
+@import "normalize.css";
 @import "open-props/style";
-@import "open-props/normalize" layer(reset);
 @import "open-props/media";
 
 @stylex stylesheet;
 
 :root {
   color-scheme: light dark;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html[data-theme="light"] {

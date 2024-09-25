@@ -8,6 +8,18 @@ import Current from "./context-sensitive/containers/CurrentContainer";
 
 import Box from "./styled-system/Box";
 
+import * as stylex from "@stylexjs/stylex";
+import { sizes } from "@stylexjs/open-props/lib/sizes.stylex";
+
+const styles = stylex.create({
+  box: {
+    paddingInline: {
+      default: sizes.spacing3
+    },
+    containerType: "inline-size"
+  }
+});
+
 const MainMenu = (props) => {
   const {
     manager,
@@ -24,7 +36,7 @@ const MainMenu = (props) => {
 
       <ManagerInfo details />
 
-      <Box p={1}>
+      <Box style={styles.box}>
         <Current />
 
         <Situation

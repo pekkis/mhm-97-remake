@@ -148,11 +148,4 @@ const StartMenu = (props) => {
   );
 };
 
-export default styled(StartMenu)`
-  margin: 0 auto;
-  max-width: 600px;
-
-  p {
-    margin: 1em 0;
-  }
-`;
+export default StartMenu;

@@ -2,46 +2,41 @@ import React, { useState } from "react";
 import Tabs from "../ui/Tabs";
 import Tab from "../ui/Tab";
 import Season from "../data/Season";
-import ResponsiveTable from "../responsive-table/ResponsiveTable";
-import Table from "../responsive-table/Table";
-import Td from "../responsive-table/Td";
 
-const TeamStats = props => {
+const TeamStats = (props) => {
   const { stats, teams, countries } = props;
   const [tab, setTab] = useState(0);
 
   return (
     <Tabs selected={tab} onSelect={setTab}>
       <Tab title="Mitalistit">
-        <ResponsiveTable>
-          <Table>
-            <thead>
-              <tr>
-                <th className="fixed">Vuosi</th>
-                <th>Kultaa</th>
-                <th>Hopeaa</th>
-                <th>Pronssia</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats
-                .get("seasons")
-                .map((season, seasonIndex) => {
-                  return (
-                    <tr key={season}>
-                      <Td className="fixed">
-                        <Season index={seasonIndex} />
-                      </Td>
-                      {season.get("medalists").map((m, k) => (
-                        <td key={k}>{teams.getIn([m, "name"])}</td>
-                      ))}
-                    </tr>
-                  );
-                })
-                .reverse()}
-            </tbody>
-          </Table>
-        </ResponsiveTable>
+        <table>
+          <thead>
+            <tr>
+              <th className="fixed">Vuosi</th>
+              <th>Kultaa</th>
+              <th>Hopeaa</th>
+              <th>Pronssia</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stats
+              .get("seasons")
+              .map((season, seasonIndex) => {
+                return (
+                  <tr key={season}>
+                    <Td className="fixed">
+                      <Season index={seasonIndex} />
+                    </Td>
+                    {season.get("medalists").map((m, k) => (
+                      <td key={k}>{teams.getIn([m, "name"])}</td>
+                    ))}
+                  </tr>
+                );
+              })
+              .reverse()}
+          </tbody>
+        </table>
       </Tab>
       <Tab title="Runkosarjan voittaja">
         <table>
@@ -127,38 +122,36 @@ const TeamStats = props => {
         </table>
       </Tab>
       <Tab title="MM-kisat">
-        <ResponsiveTable>
-          <Table>
-            <thead>
-              <tr>
-                <th className="fixed">Vuosi</th>
-                <th>Kultaa</th>
-                <th>Hopeaa</th>
-                <th>Pronssia</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats
-                .get("seasons")
-                .map((season, seasonIndex) => {
-                  return (
-                    <tr key={season}>
-                      <Td className="fixed">
-                        <Season index={seasonIndex} />
-                      </Td>
-                      {season
-                        .get("worldChampionships")
-                        .take(3)
-                        .map((m, k) => (
-                          <td key={k}>{countries.getIn([m, "name"])}</td>
-                        ))}
-                    </tr>
-                  );
-                })
-                .reverse()}
-            </tbody>
-          </Table>
-        </ResponsiveTable>
+        <table>
+          <thead>
+            <tr>
+              <th className="fixed">Vuosi</th>
+              <th>Kultaa</th>
+              <th>Hopeaa</th>
+              <th>Pronssia</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stats
+              .get("seasons")
+              .map((season, seasonIndex) => {
+                return (
+                  <tr key={season}>
+                    <td className="fixed">
+                      <Season index={seasonIndex} />
+                    </td>
+                    {season
+                      .get("worldChampionships")
+                      .take(3)
+                      .map((m, k) => (
+                        <td key={k}>{countries.getIn([m, "name"])}</td>
+                      ))}
+                  </tr>
+                );
+              })
+              .reverse()}
+          </tbody>
+        </table>
       </Tab>
     </Tabs>
   );

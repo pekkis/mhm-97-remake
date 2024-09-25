@@ -2,6 +2,7 @@ import StartMenu from "./containers/StartMenuContainer";
 import Game from "./containers/GameContainer";
 import * as Sentry from "@sentry/browser";
 import { Component } from "react";
+import { Main } from "./Main";
 
 class App extends Component {
   state = {
@@ -43,10 +44,18 @@ class App extends Component {
 
     switch (true) {
       case !started:
-        return <StartMenu />;
+        return (
+          <Main>
+            <StartMenu />
+          </Main>
+        );
 
       default:
-        return <Game />;
+        return (
+          <Main>
+            <Game />
+          </Main>
+        );
     }
   }
 }

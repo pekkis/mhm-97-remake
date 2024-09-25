@@ -4,7 +4,8 @@ import * as stylex from "@stylexjs/stylex";
 
 type Props = {
   children: ReactNode;
-  style?: StyleXStyles<{ color?: string; backgroundColor?: string }>;
+  p: 0 | 1 | 2 | 3 | 4;
+  style?: StyleXStyles;
 };
 
 export const Box: FC<Props> = ({ children, style, ...rest }) => {

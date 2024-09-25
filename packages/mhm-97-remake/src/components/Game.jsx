@@ -83,9 +83,9 @@ const Phase = (props) => {
 };
 
 const Game = (props) => {
-  const { className, menu } = props;
+  const { menu } = props;
   return (
-    <div className={className}>
+    <div>
       {menu && <ModalMenu />}
       <Phase {...props} />
       <Notifications />
@@ -93,4 +93,4 @@ const Game = (props) => {
   );
 };
 
-export default styled(Game)``;
+export default Game;
