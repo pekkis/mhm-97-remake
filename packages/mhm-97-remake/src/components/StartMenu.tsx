@@ -3,7 +3,7 @@ import Button from "./form/Button";
 import Box from "./styled-system/Box";
 import ManagerForm from "./start-menu/ManagerForm";
 import styled from "styled-components";
-import title from "../assets/title.png";
+import title from "./title.png";
 import Stylexer from "./test/Stylexer";
 
 import { Button as IDSButton } from "ids";
