@@ -5,6 +5,7 @@ import { FaHamburger, FaBars } from "react-icons/fa";
 
 import * as stylex from "@stylexjs/stylex";
 import { FC } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const styles = stylex.create({
   container: {
@@ -48,10 +49,11 @@ type Props = {
 };
 
 const Header: FC<Props> = (props) => {
+  const navigate = useNavigate();
+
   const {
     back = false,
     menu = false,
-    history,
     advanceEnabled,
     advance,
     toggleMenu,
@@ -62,7 +64,7 @@ const Header: FC<Props> = (props) => {
     <header {...stylex.props(styles.container)}>
       {back && (
         <div className="advance">
-          <Button block onClick={() => history.push("/")}>
+          <Button block onClick={() => navigate("/")}>
             Päävalikkoon
           </Button>
         </div>

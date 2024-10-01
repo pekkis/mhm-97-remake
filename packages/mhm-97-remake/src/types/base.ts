@@ -11,3 +11,23 @@ export interface MHMEvent {
   render: (data: any) => List<string>;
   process: (data: any) => MHMEventGenerator;
 }
+
+export type CountryCodes =
+  | "FI"
+  | "CA"
+  | "US"
+  | "SE"
+  | "FR"
+  | "CZ"
+  | "SK"
+  | "RU"
+  | "DE"
+  | "LV"
+  | "IT"
+  | "CH";
+
+export type Country = {
+  iso: CountryCodes;
+  name: string;
+  strength: number;
+};

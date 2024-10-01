@@ -16,5 +16,5 @@ type Props = {
 };
 
 export const TableContainer: FC<Props> = ({ children }) => {
-  return <td {...stylex.props(styles.container)}>{children}</td>;
+  return <div {...stylex.props(styles.container)}>{children}</div>;
 };

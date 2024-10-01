@@ -13,8 +13,9 @@ import {
   fork,
   cancel
 } from "redux-saga/effects";
+import { loadGameState, quitToMainMenu } from "../ducks/meta";
 
-const save = state => {
+const save = (state) => {
   const json = transit.toJSON(state);
   window.localStorage.setItem("mhm97", json);
 };
@@ -50,26 +51,23 @@ function* mainMenu() {
 
     const task = yield fork(gameLoop);
 
-    yield take("META_QUIT_TO_MAIN_MENU");
+    yield take(quitToMainMenu);
     yield cancel(task);
   } while (true);
 }
 
 export function* gameSave(action) {
-  const manager = yield select(state =>
+  const manager = yield select((state) =>
     state.manager.getIn(["managers", state.manager.get("active")])
   );
-  const state = yield select(state => state);
+  const state = yield select((state) => state);
   yield call(save, state);
   yield call(addNotification, manager.get("id"), "Peli tallennettiin.");
 }
 
 function* gameLoad(action) {
   const state = yield call(load);
-  yield putResolve({
-    type: "META_GAME_LOAD_STATE",
-    payload: state
-  });
+  yield putResolve(loadGameState(state));
 
   yield putResolve({
     type: "META_GAME_LOADED"

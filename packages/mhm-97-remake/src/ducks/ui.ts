@@ -1,4 +1,5 @@
 import { Map } from "immutable";
+import { quitToMainMenu } from "./meta";
 
 const defaultState = Map({
   menu: false,
@@ -41,7 +42,7 @@ export default function uiReducer(state = defaultState, action) {
   const { type, payload } = action;
 
   switch (type) {
-    case "META_QUIT_TO_MAIN_MENU":
+    case quitToMainMenu.type:
       return defaultState;
 
     case "UI_DISABLE_ADVANCE":
@@ -51,7 +52,7 @@ export default function uiReducer(state = defaultState, action) {
       return state.set("advanceEnabled", true);
 
     case "UI_MENU_TOGGLE":
-      return state.update("menu", menu => !menu);
+      return state.update("menu", (menu) => !menu);
 
     case "UI_MENU_CLOSE":
       return state.set("menu", false);

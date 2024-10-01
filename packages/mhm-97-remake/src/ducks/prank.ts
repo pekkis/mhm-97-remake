@@ -1,24 +1,25 @@
 import { Map, List } from "immutable";
+import { loadGameState, quitToMainMenu } from "./meta";
 
 const defaultState = Map({
   pranks: List()
 });
 
-export const cancelPrank = id => {
+export const cancelPrank = (id) => {
   return {
     type: "PRANK_CANCEL",
     payload: id
   };
 };
 
-export const selectPrankType = id => {
+export const selectPrankType = (id) => {
   return {
     type: "PRANK_SELECT_TYPE",
     payload: id
   };
 };
 
-export const selectPrankVictim = id => {
+export const selectPrankVictim = (id) => {
   return {
     type: "PRANK_SELECT_VICTIM",
     payload: id
@@ -40,14 +41,14 @@ export default function prankReducer(state = defaultState, action) {
   const { type, payload } = action;
 
   switch (type) {
-    case "META_QUIT_TO_MAIN_MENU":
+    case quitToMainMenu.type:
       return defaultState;
 
-    case "META_GAME_LOAD_STATE":
+    case loadGameState.type:
       return payload.prank;
 
     case "PRANK_ADD":
-      return state.update("pranks", pranks => pranks.push(payload));
+      return state.update("pranks", (pranks) => pranks.push(payload));
 
     case "PRANK_DISMISS":
       return state.deleteIn(["pranks", payload]);

@@ -31,7 +31,7 @@ function* definePekkalandiaStrength() {
 
   const avg = phl
     .get("teams")
-    .map(t => teams.getIn([t, "strength"]))
+    .map((t) => teams.getIn([t, "strength"]))
     .reduce((r, s) => r + s, 0);
 
   const strength = Math.round(avg / phl.get("teams").count());
@@ -45,23 +45,21 @@ function* worldChampionships() {
   yield call(setPhase, "world-championships");
   yield call(definePekkalandiaStrength);
 
-  const countries = yield select(state => state.country.get("countries"));
+  const countries = yield select((state) => state.country.countries);
 
   const entries = countries
-    .map(c => {
+    .map((c) => {
       return Map({
-        id: c.get("iso"),
-        name: c.get("name"),
-        strength: c.get("strength"),
+        id: c.iso,
+        name: c.name,
+        strength: c.strength,
         luck: getLuck(),
         random: cinteger(0, 20) - cinteger(0, 10)
       });
     })
-    .sortBy(e => e.get("strength") + e.get("luck") + e.get("random"))
+    .sortBy((e) => e.get("strength") + e.get("luck") + e.get("random"))
     .toList()
     .reverse();
-
-  console.log(entries.toJS(), "entries");
 
   yield put({
     type: "GAME_WORLD_CHAMPIONSHIP_RESULTS",
@@ -71,7 +69,7 @@ function* worldChampionships() {
   yield call(
     setSeasonStat,
     ["worldChampionships"],
-    entries.map(e => e.get("id"))
+    entries.map((e) => e.get("id"))
   );
 
   yield take("GAME_ADVANCE_REQUEST");
@@ -86,11 +84,13 @@ export default function* endOfSeasonPhase() {
 
   yield call(setPhase, "end-of-season");
 
-  const division = yield select(state =>
+  const division = yield select((state) =>
     state.game.getIn(["competitions", "division"])
   );
 
-  const phl = yield select(state => state.game.getIn(["competitions", "phl"]));
+  const phl = yield select((state) =>
+    state.game.getIn(["competitions", "phl"])
+  );
 
   const divisionVictor = victors(division.getIn(["phases", 3, "groups", 0]))
     .first()
@@ -115,7 +115,7 @@ export default function* endOfSeasonPhase() {
     phlVictors.first(),
     phlLosers.first(),
     phlVictors.last()
-  ).map(e => e.get("id"));
+  ).map((e) => e.get("id"));
 
   yield call(setSeasonStat, ["medalists"], medalists);
 

@@ -1,5 +1,6 @@
 import { Map } from "immutable";
 import { SEASON_START } from "./game";
+import { loadGameState, quitToMainMenu } from "./meta";
 
 export const MANAGER_NEXT = "MANAGER_NEXT";
 
@@ -38,7 +39,7 @@ export const selectStrategy = (manager, strategy) => {
   };
 };
 
-export const improveArena = manager => {
+export const improveArena = (manager) => {
   return {
     type: "MANAGER_IMPROVE_ARENA",
     payload: {
@@ -57,7 +58,7 @@ export const sellPlayer = (manager, playerType) => {
   };
 };
 
-export const crisisMeeting = manager => {
+export const crisisMeeting = (manager) => {
   return {
     type: "MANAGER_CRISIS_MEETING",
     payload: {
@@ -70,15 +71,15 @@ export default function managerReducer(state = defaultState, action) {
   const { type, payload } = action;
 
   switch (type) {
-    case "META_QUIT_TO_MAIN_MENU":
+    case quitToMainMenu.type:
       return defaultState;
 
-    case "META_GAME_LOAD_STATE":
+    case loadGameState.type:
       return payload.manager;
 
     case SEASON_START:
-      return state.update("managers", managers => {
-        return managers.map(manager => {
+      return state.update("managers", (managers) => {
+        return managers.map((manager) => {
           return manager
             .set("pranksExecuted", 0)
             .setIn(["flags", "rally"], false);
@@ -100,7 +101,7 @@ export default function managerReducer(state = defaultState, action) {
     case "MANAGER_INCREMENT_BALANCE":
       return state.updateIn(
         ["managers", payload.manager, "balance"],
-        b => b + payload.amount
+        (b) => b + payload.amount
       );
 
     case "MANAGER_SET_BALANCE":
@@ -112,13 +113,13 @@ export default function managerReducer(state = defaultState, action) {
     case "MANAGER_DECREMENT_BALANCE":
       return state.updateIn(
         ["managers", payload.manager, "balance"],
-        b => b - payload.amount
+        (b) => b - payload.amount
       );
 
     case "TEAM_REMOVE_MANAGER":
       return state.removeIn([
         "managers",
-        state.get("managers").findKey(m => m.get("team") === payload.team),
+        state.get("managers").findKey((m) => m.get("team") === payload.team),
         "team"
       ]);
 
@@ -128,7 +129,7 @@ export default function managerReducer(state = defaultState, action) {
     case "MANAGER_INCREMENT_INSURANCE_EXTRA":
       return state.updateIn(
         ["managers", payload.manager, "insuranceExtra"],
-        ie => ie + payload.amount
+        (ie) => ie + payload.amount
       );
 
     case "MANAGER_SET_EXTRA":
@@ -164,7 +165,7 @@ export default function managerReducer(state = defaultState, action) {
     case "PRANK_ORDER":
       return state.updateIn(
         ["managers", payload.manager, "pranksExecuted"],
-        p => p + 1
+        (p) => p + 1
       );
 
     default:

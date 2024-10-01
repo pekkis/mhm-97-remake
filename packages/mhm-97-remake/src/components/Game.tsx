@@ -1,5 +1,4 @@
-import { Switch, Route } from "react-router";
-import styled from "styled-components";
+import { Route, Routes } from "react-router";
 
 import MainMenu from "./containers/MainMenuContainer";
 import TransferMarket from "./containers/TransferMarketContainer";
@@ -61,19 +60,19 @@ const Phase = (props) => {
 
     case turn.get("phase") === "action":
       return (
-        <Switch>
-          <Route exact path="/" component={MainMenu} />
-          <Route exact path="/sarjataulukot" component={LeagueTables} />
-          <Route exact path="/pelaajamarkkinat" component={TransferMarket} />
-          <Route exact path="/kriisipalaveri" component={CrisisActions} />
-          <Route exact path="/erikoistoimenpiteet" component={Services} />
-          <Route exact path="/areena" component={Arena} />
-          <Route exact path="/jaynat" component={Pranks} />
-          <Route exact path="/tilastot" component={Stats} />
-          <Route exact path="/kutsut" component={Invitations} />
-          <Route exact path="/veikkaus" component={Betting} />
-          <Route exact path="/debug" component={DeveloperMenu} />
-        </Switch>
+        <Routes>
+          <Route path="/" Component={MainMenu} />
+          <Route path="/sarjataulukot" Component={LeagueTables} />
+          <Route path="/pelaajamarkkinat" Component={TransferMarket} />
+          <Route path="/kriisipalaveri" Component={CrisisActions} />
+          <Route path="/erikoistoimenpiteet" Component={Services} />
+          <Route path="/areena" Component={Arena} />
+          <Route path="/jaynat" Component={Pranks} />
+          <Route path="/tilastot" Component={Stats} />
+          <Route path="/kutsut" Component={Invitations} />
+          <Route path="/veikkaus" Component={Betting} />
+          <Route path="/debug" Component={DeveloperMenu} />
+        </Routes>
       );
 
     default:

@@ -7,12 +7,16 @@ import * as stylex from "@stylexjs/stylex";
 import { colors } from "@stylexjs/open-props/lib/colors.stylex";
 import { sizes } from "@stylexjs/open-props/lib/sizes.stylex";
 import { fonts } from "@stylexjs/open-props/lib/fonts.stylex";
+import { zIndex } from "@stylexjs/open-props/lib/zIndex.stylex";
 
 const styles = stylex.create({
   box: {
     padding: sizes.spacing3,
-    backgroundColor: `light-dark(${colors.gray3}, ${colors.gray12})`
+    backgroundColor: `light-dark(${colors.gray3}, ${colors.gray12})`,
     // color: `light-dark(${colors.gray5}, ${colors.gray12})`
+    position: "sticky",
+    top: 0,
+    zIndex: zIndex.layer5
   },
   header: {
     margin: 0

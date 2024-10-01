@@ -1,10 +1,11 @@
 import { OrderedMap, Map } from "immutable";
+import { quitToMainMenu } from "./meta";
 
 const defaultState = Map({
   notifications: OrderedMap()
 });
 
-export const dismissNotification = id => {
+export const dismissNotification = (id) => {
   return {
     type: "NOTIFICATION_DISMISS",
     payload: id
@@ -15,11 +16,11 @@ export default function notificationReducer(state = defaultState, action) {
   const { type, payload } = action;
 
   switch (type) {
-    case "META_QUIT_TO_MAIN_MENU":
+    case quitToMainMenu.type:
       return defaultState;
 
     case "NOTIFICATION_ADD":
-      return state.update("notifications", notifications =>
+      return state.update("notifications", (notifications) =>
         notifications.set(payload.id, payload).takeLast(3)
       );
 

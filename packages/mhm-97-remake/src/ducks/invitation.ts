@@ -6,6 +6,7 @@ import {
   GAME_DECREMENT_DURATIONS,
   GAME_CLEAR_EXPIRED
 } from "./game";
+import { loadGameState, quitToMainMenu } from "./meta";
 
 const defaultState = Map({
   invitations: List()
@@ -30,10 +31,10 @@ export default function invitationReducer(state = defaultState, action) {
   const { type, payload } = action;
 
   switch (type) {
-    case "META_QUIT_TO_MAIN_MENU":
+    case quitToMainMenu.type:
       return defaultState;
 
-    case "META_GAME_LOAD_STATE":
+    case loadGameState.type:
       return payload.invitation;
 
     case INVITATION_ADD:

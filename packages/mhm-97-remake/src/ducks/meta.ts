@@ -1,9 +1,7 @@
 import { Map } from "immutable";
 
-import { SEASON_START } from "./game";
-
-export const META_QUIT_TO_MAIN_MENU = "META_QUIT_TO_MAIN_MENU";
-export const META_GAME_LOAD_STATE = "META_GAME_LOAD_STATE";
+// import { SEASON_START } from "./game";
+import { createAction, createReducer } from "@reduxjs/toolkit";
 
 const defaultState = Map({
   started: false,
@@ -18,50 +16,40 @@ const defaultState = Map({
   })
 });
 
-export interface MetaQuitToMainMenuAction {
-  type: typeof META_QUIT_TO_MAIN_MENU;
-}
+export const loadGameState = createAction("META_GAME_LOAD_STATE");
 
-export const quitToMainMenu = (): MetaQuitToMainMenuAction => ({
-  type: META_QUIT_TO_MAIN_MENU
+export const quitToMainMenu = createAction("META_QUIT_TO_MAIN_MENU");
+
+export const startGame = createAction("META_GAME_START_REQUEST");
+
+export const saveGame = createAction("META_GAME_SAVE_REQUEST");
+
+export const loadGame = createAction("META_GAME_LOAD_REQUEST");
+
+export const gameLoaded = createAction("META_GAME_LOADED");
+
+export default createReducer(defaultState, (builder) => {
+  builder.addCase(quitToMainMenu, (state, action) => {
+    return defaultState;
+  });
+
+  builder.addCase(startGame, (state, action) => {
+    return state.set("starting", true);
+  });
+
+  builder.addCase(saveGame, (state, action) => {
+    return state.set("saving", true);
+  });
+
+  builder.addCase(loadGame, (state, action) => {
+    return state.set("loading", true);
+  });
+
+  builder.addCase("SEASON_START", (state, action) => {
+    return state.set("started", true).set("loading", false);
+  });
+
+  builder.addCase(gameLoaded, (state, action) => {
+    return state.set("started", true).set("loading", false);
+  });
 });
-
-export const startGame = () => {
-  return {
-    type: "META_GAME_START_REQUEST"
-  };
-};
-
-export const saveGame = () => {
-  return {
-    type: "META_GAME_SAVE_REQUEST"
-  };
-};
-
-export const loadGame = () => {
-  return {
-    type: "META_GAME_LOAD_REQUEST"
-  };
-};
-
-export default function metaReducer(state = defaultState, action) {
-  const { type, payload } = action;
-
-  switch (type) {
-    case META_QUIT_TO_MAIN_MENU:
-      return defaultState;
-
-    case "SEASON_START_REQUEST":
-      return state.set("loading", true);
-
-    case SEASON_START:
-    case "META_GAME_LOADED":
-      return state.set("started", true).set("loading", false);
-
-    case "META_GAME_START_REQUEST":
-      return state.set("starting", true);
-
-    default:
-      return state;
-  }
-}

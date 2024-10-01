@@ -1,5 +1,6 @@
 import { Map } from "immutable";
 import { v4 as uuid } from "uuid";
+import { loadGameState, quitToMainMenu } from "./meta";
 
 const defaultState = Map({
   events: Map()
@@ -19,10 +20,10 @@ export default function eventReducer(state = defaultState, action) {
   const { type, payload } = action;
 
   switch (type) {
-    case "META_QUIT_TO_MAIN_MENU":
+    case quitToMainMenu.type:
       return defaultState;
 
-    case "META_GAME_LOAD_STATE":
+    case loadGameState.type:
       return payload.event;
 
     case "EVENT_ADD":

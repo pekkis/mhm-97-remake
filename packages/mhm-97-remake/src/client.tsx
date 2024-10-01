@@ -22,7 +22,7 @@ const initialState = getInitialState();
 
 const store = createStore(initialState);
 
-const rootElement = document.body;
+const rootElement = document.getElementById("app");
 if (!rootElement) {
   throw new Error("Oh noes, no root element be found!");
 }
