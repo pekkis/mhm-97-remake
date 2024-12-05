@@ -48,16 +48,11 @@ const countryReducer = createReducer(defaultState, (builder) => {
   });
 
   builder.addCase(setStrength, (state, action) => {
-    return produce(state, (draft) => {
-      draft.countries[action.payload.country].strength =
-        action.payload.strength;
-    });
+    state.countries[action.payload.country].strength = action.payload.strength;
   });
 
   builder.addCase(alterStrength, (state, action) => {
-    return produce(state, (draft) => {
-      draft.countries[action.payload.country].strength += action.payload.amount;
-    });
+    state.countries[action.payload.country].strength += action.payload.amount;
   });
 });
 

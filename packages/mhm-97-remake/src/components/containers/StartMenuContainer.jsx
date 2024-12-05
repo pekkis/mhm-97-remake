@@ -5,9 +5,9 @@ import { advance } from "../../ducks/game";
 
 export default connect(
   (state) => ({
-    started: state.meta.get("started"),
-    starting: state.meta.get("starting"),
-    manager: state.meta.get("manager"),
+    started: state.meta.started,
+    starting: state.meta.starting,
+    manager: state.meta.manager,
     teams: state.game.get("teams"),
     competitions: state.game
       .get("competitions")
