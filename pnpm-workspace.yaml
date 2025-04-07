@@ -1,4 +1,5 @@
+injectWorkspacePackages: true
 packages:
-  - 'packages/*'
-  - 'components/**'
-  - '!**/test/**'
+  - "packages/*"
+  - "components/**"
+  - "!**/test/**"

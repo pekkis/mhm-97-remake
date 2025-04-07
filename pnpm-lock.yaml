@@ -3,10 +3,11 @@ lockfileVersion: '9.0'
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
+  injectWorkspacePackages: true
 
 patchedDependencies:
   '@stylexjs/open-props':
-    hash: ex6bvjtbwlvzigp3ey5bacffmu
+    hash: f55840994f9a23628be1534c464dd495ef2b6d3df6141ca7a3dcf8d71a2cbcf2
     path: patches/@stylexjs__open-props.patch
 
 importers:
@@ -17,7 +18,7 @@ importers:
     dependencies:
       '@stylexjs/open-props':
         specifier: ^0.9.3
-        version: 0.9.3(patch_hash=ex6bvjtbwlvzigp3ey5bacffmu)
+        version: 0.9.3(patch_hash=f55840994f9a23628be1534c464dd495ef2b6d3df6141ca7a3dcf8d71a2cbcf2)
       '@stylexjs/stylex':
         specifier: ^0.9.3
         version: 0.9.3
@@ -102,7 +103,7 @@ importers:
         version: 8.42.0
       '@stylexjs/open-props':
         specifier: ^0.9.3
-        version: 0.9.3(patch_hash=ex6bvjtbwlvzigp3ey5bacffmu)
+        version: 0.9.3(patch_hash=f55840994f9a23628be1534c464dd495ef2b6d3df6141ca7a3dcf8d71a2cbcf2)
       '@stylexjs/stylex':
         specifier: ^0.9.3
         version: 0.9.3
@@ -4666,7 +4667,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@stylexjs/open-props@0.9.3(patch_hash=ex6bvjtbwlvzigp3ey5bacffmu)':
+  '@stylexjs/open-props@0.9.3(patch_hash=f55840994f9a23628be1534c464dd495ef2b6d3df6141ca7a3dcf8d71a2cbcf2)':
     dependencies:
       '@stylexjs/stylex': 0.9.3
 

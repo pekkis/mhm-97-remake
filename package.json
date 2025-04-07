@@ -1,10 +1,15 @@
 {
   "name": "mhm-workspace",
   "type": "module",
-  "packageManager": "pnpm@9.14.4+sha512.c8180b3fbe4e4bca02c94234717896b5529740a6cbadf19fa78254270403ea2f27d4e1d46a08a0f56c89b63dc8ebfd3ee53326da720273794e6200fcf0d184ab",
+  "packageManager": "pnpm@10.8.0+sha512.0e82714d1b5b43c74610193cb20734897c1d00de89d0e18420aebc5977fa13d780a9cb05734624e81ebd81cc876cd464794850641c48b9544326b5622ca29971",
   "pnpm": {
     "patchedDependencies": {
       "@stylexjs/open-props": "patches/@stylexjs__open-props.patch"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "esbuild",
+      "msw"
+    ]
   }
 }
