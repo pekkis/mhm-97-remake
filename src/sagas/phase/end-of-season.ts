@@ -4,8 +4,6 @@ import { victors, eliminated } from "../../services/playoffs";
 import awards from "../../data/awards";
 import { List, Map } from "immutable";
 import { cinteger } from "../../services/random";
-
-import countries from "../../data/countries";
 import { setSeasonStat, createSeasonStories } from "../stats";
 import { processChampionBets } from "../betting";
 import { competition, allTeams } from "../../data/selectors";
