@@ -25,7 +25,7 @@ const Invitations = props => {
             <div key={index}>
               <h3>{t.get("name")}</h3>
 
-              <Markdown source={t.get("description")(t.get("award"))} />
+              <Markdown>{t.get("description")(t.get("award"))}</Markdown>
 
               <Button
                 block

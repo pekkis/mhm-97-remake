@@ -19,12 +19,12 @@ const Events = props => {
 
           return (
             <div key={e.get("id")}>
-              <Markdown
-                source={event
+              <Markdown>
+                {event
                   .render(e)
                   .filter(t => t)
                   .join("\n\n")}
-              />
+              </Markdown>
               {!e.get("resolved") && (
                 <ul>
                   {event

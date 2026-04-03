@@ -12,7 +12,7 @@ const Events = props => {
         .map((a, i) => {
           return (
             <div key={i}>
-              <Markdown source={a} />
+              <Markdown>{a}</Markdown>
             </div>
           );
         })

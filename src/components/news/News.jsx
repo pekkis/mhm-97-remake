@@ -10,7 +10,7 @@ const News = props => {
       {news.map((n, i) => {
         return (
           <div key={i}>
-            <Markdown source={n} />
+            <Markdown>{n}</Markdown>
           </div>
         );
       })}

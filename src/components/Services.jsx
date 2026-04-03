@@ -43,11 +43,11 @@ const Services = props => {
                     </label>
                   </div>
 
-                  <Markdown
-                    source={service.get("description")(
+                  <Markdown>
+                    {service.get("description")(
                       service.get("price")(basePrice, manager)
                     )}
-                  />
+                  </Markdown>
                 </div>
               );
             })
