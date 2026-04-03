@@ -2,9 +2,8 @@ import { connect } from "react-redux";
 import StartMenu from "../StartMenu";
 import { startGame, loadGame } from "../../ducks/meta";
 import { advance } from "../../ducks/game";
-import { withRouter } from "react-router";
 
-export default withRouter(
+export default
   connect(
     state => ({
       started: state.meta.get("started"),
@@ -17,4 +16,4 @@ export default withRouter(
     }),
     { startGame, loadGame, advance }
   )(StartMenu)
-);
+

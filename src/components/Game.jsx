@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from "react-router";
+import { Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 
 import MainMenu from "./containers/MainMenuContainer";
@@ -25,12 +25,8 @@ import Stats from "./containers/StatsContainer";
 import Invitations from "./containers/InvitationsContainer";
 import Gala from "./containers/GalaContainer";
 
-import calendar from "../data/calendar";
-
 const Phase = props => {
   const { turn } = props;
-
-  const calendarEntry = calendar.get(turn.get("round"));
 
   switch (true) {
     case turn.get("phase") === "select-strategy":
@@ -62,19 +58,19 @@ const Phase = props => {
 
     case turn.get("phase") === "action":
       return (
-        <Switch>
-          <Route exact path="/" component={MainMenu} />
-          <Route exact path="/sarjataulukot" component={LeagueTables} />
-          <Route exact path="/pelaajamarkkinat" component={TransferMarket} />
-          <Route exact path="/kriisipalaveri" component={CrisisActions} />
-          <Route exact path="/erikoistoimenpiteet" component={Services} />
-          <Route exact path="/areena" component={Arena} />
-          <Route exact path="/jaynat" component={Pranks} />
-          <Route exact path="/tilastot" component={Stats} />
-          <Route exact path="/kutsut" component={Invitations} />
-          <Route exact path="/veikkaus" component={Betting} />
-          <Route exact path="/debug" component={DeveloperMenu} />
-        </Switch>
+        <Routes>
+          <Route path="/" element={<MainMenu />} />
+          <Route path="/sarjataulukot" element={<LeagueTables />} />
+          <Route path="/pelaajamarkkinat" element={<TransferMarket />} />
+          <Route path="/kriisipalaveri" element={<CrisisActions />} />
+          <Route path="/erikoistoimenpiteet" element={<Services />} />
+          <Route path="/areena" element={<Arena />} />
+          <Route path="/jaynat" element={<Pranks />} />
+          <Route path="/tilastot" element={<Stats />} />
+          <Route path="/kutsut" element={<Invitations />} />
+          <Route path="/veikkaus" element={<Betting />} />
+          <Route path="/debug" element={<DeveloperMenu />} />
+        </Routes>
       );
 
     default:

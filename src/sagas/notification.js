@@ -1,6 +1,5 @@
 import { put, call, spawn } from "redux-saga/effects";
 import delay from "@redux-saga/delay-p";
-import uuid from "uuid";
 
 export function* autoDismissal(id) {
   yield delay(7000);
@@ -8,7 +7,7 @@ export function* autoDismissal(id) {
 }
 
 export function* addNotification(manager, message, type = "info") {
-  const id = uuid();
+  const id = crypto.randomUUID();
 
   yield put({
     type: "NOTIFICATION_ADD",

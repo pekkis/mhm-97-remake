@@ -1,5 +1,4 @@
 import { Map } from "immutable";
-import uuid from "uuid";
 
 const defaultState = Map({
   events: Map()
@@ -26,7 +25,7 @@ export default function eventReducer(state = defaultState, action) {
       return payload.event;
 
     case "EVENT_ADD":
-      const id = uuid();
+      const id = crypto.randomUUID();
       return state.setIn(["events", id], payload.event.set("id", id));
 
     case "EVENT_RESOLVE":

@@ -24,7 +24,6 @@ import crisis from "../data/crisis";
 import difficultyLevels from "../data/difficulty-levels";
 import arenas from "../data/arenas";
 import { incrementStrength, decrementStrength } from "./team";
-import uuid from "uuid";
 import { Map } from "immutable";
 import r from "../services/random";
 import { addAnnouncement } from "./news";
@@ -35,7 +34,7 @@ export function* addManager(details) {
   const mainCompetition = yield select(teamsMainCompetition(teamId));
 
   const manager = Map({
-    id: uuid(),
+    id: crypto.randomUUID(),
     name: details.name,
     difficulty: parseInt(details.difficulty, 10),
     pranksExecuted: 0,

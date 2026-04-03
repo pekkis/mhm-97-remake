@@ -1,5 +1,5 @@
 import { Map, List } from "immutable";
-import uuid from "uuid";
+
 
 import {
   SEASON_START,
@@ -38,7 +38,7 @@ export default function invitationReducer(state = defaultState, action) {
 
     case INVITATION_ADD:
       return state.update("invitations", invitations =>
-        invitations.push(Map(payload).set("id", uuid()))
+        invitations.push(Map(payload).set("id", crypto.randomUUID()))
       );
 
     case INVITATION_ACCEPT:

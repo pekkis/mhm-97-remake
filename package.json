@@ -67,8 +67,7 @@
     "styled-system": "^5.1.5",
     "transit-immutable-js": "github:pekkis/transit-immutable-js",
     "transit-js": "^0.8.874",
-    "typography": "^0.16.24",
-    "uuid": "^13.0.0"
+    "typography": "^0.16.24"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.6",
@@ -116,6 +115,7 @@
     "postcss-modules": "^6.0.1",
     "postcss-nested": "^7.0.2",
     "postcss-nesting": "^14.0.0",
+    "postcss-preset-env": "^11.2.0",
     "prettier": "^3.8.1",
     "typescript": "^6.0.2",
     "vite": "^8.0.3",
