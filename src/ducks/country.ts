@@ -1,19 +1,27 @@
 import { countries as countryList } from "../data/countries";
-import { Map } from "immutable";
+import { produce } from "immer";
 import { MetaQuitToMainMenuAction, META_QUIT_TO_MAIN_MENU } from "./meta";
 import { Reducer } from "redux";
 
-const defaultState = Map({
-  countries: Map(
-    Object.values(countryList).map(country => [
-      country.iso,
-      Map({
-        ...country,
-        strength: country.strength()
-      })
-    ])
-  )
-});
+type Country = {
+  iso: string;
+  name: string;
+  strength: number | undefined;
+};
+
+type CountryState = {
+  countries: Record<string, Country>;
+};
+
+const defaultState: CountryState = {
+  countries: Object.values(countryList).reduce((acc, country) => {
+    acc[country.iso] = {
+      ...country,
+      strength: country.strength()
+    };
+    return acc;
+  }, {} as Record<string, Country>)
+};
 
 const COUNTRY_ALTER_STRENGTH = "COUNTRY_ALTER_STRENGTH";
 const COUNTRY_SET_STRENGTH = "COUNTRY_SET_STRENGTH";
@@ -61,7 +69,7 @@ type CountryActions =
   | MetaQuitToMainMenuAction
   | CountrySetStrengthAction;
 
-const countryReducer: Reducer<typeof defaultState, CountryActions> = (
+const countryReducer: Reducer<CountryState, CountryActions> = (
   state = defaultState,
   action
 ) => {
@@ -70,16 +78,20 @@ const countryReducer: Reducer<typeof defaultState, CountryActions> = (
       return defaultState;
 
     case COUNTRY_SET_STRENGTH:
-      return state.setIn(
-        ["countries", action.payload.country, "strength"],
-        action.payload.strength
-      );
+      return produce(state, draft => {
+        if (draft.countries[action.payload.country]) {
+          draft.countries[action.payload.country].strength =
+            action.payload.strength;
+        }
+      });
 
     case COUNTRY_ALTER_STRENGTH:
-      return state.updateIn(
-        ["countries", action.payload.country, "strength"],
-        s => ((s as number | undefined) ?? 0) + action.payload.amount
-      );
+      return produce(state, draft => {
+        const target = draft.countries[action.payload.country];
+        if (target) {
+          target.strength = (target.strength ?? 0) + action.payload.amount;
+        }
+      });
 
     default:
       return defaultState;

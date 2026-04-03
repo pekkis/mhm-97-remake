@@ -43,21 +43,28 @@ function* worldChampionships() {
   yield call(setPhase, "world-championships");
   yield call(definePekkalandiaStrength);
 
-  const countries = yield select(state => state.country.get("countries"));
+  const countries = yield select(state => state.country.countries);
 
-  const entries = countries
-    .map(c => {
-      return Map({
-        id: c.get("iso"),
-        name: c.get("name"),
-        strength: c.get("strength"),
-        luck: getLuck(),
-        random: cinteger(0, 20) - cinteger(0, 10)
-      });
-    })
-    .sortBy(e => e.get("strength") + e.get("luck") + e.get("random"))
-    .toList()
-    .reverse();
+  const entries = List(
+    Object.values(countries)
+      .map(c => {
+        return Map({
+          id: c.iso,
+          name: c.name,
+          strength: c.strength,
+          luck: getLuck(),
+          random: cinteger(0, 20) - cinteger(0, 10)
+        });
+      })
+      .sort(
+        (a, b) =>
+          a.get("strength") +
+          a.get("luck") +
+          a.get("random") -
+          (b.get("strength") + b.get("luck") + b.get("random"))
+      )
+      .reverse()
+  );
 
   console.log(entries.toJS(), "entries");
 

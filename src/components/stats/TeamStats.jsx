@@ -150,7 +150,7 @@ const TeamStats = props => {
                         .get("worldChampionships")
                         .take(3)
                         .map((m, k) => (
-                          <td key={k}>{countries.getIn([m, "name"])}</td>
+                          <td key={k}>{countries?.[m]?.name}</td>
                         ))}
                     </tr>
                   );
