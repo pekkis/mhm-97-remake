@@ -51,7 +51,7 @@ export default function uiReducer(state = defaultState, action) {
       return state.set("advanceEnabled", true);
 
     case "UI_MENU_TOGGLE":
-      return state.update("menu", menu => !menu);
+      return state.update("menu", (menu) => !menu);
 
     case "UI_MENU_CLOSE":
       return state.set("menu", false);

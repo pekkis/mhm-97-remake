@@ -22,7 +22,7 @@ const eventId = "pekkiini";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficulty = yield select(managersDifficulty(manager));
@@ -42,7 +42,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `On löytynyt uusi piriste, __pekkiini__, jota ei ole vielä ehditty kieltämään. Laki aineen kiellosta astuu valitettavasti voimaan jo _${data.get(
         "duration"
@@ -52,7 +52,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const amount = data.get("amount");
     const duration = data.get("duration");

@@ -11,7 +11,7 @@ import Box from "./styled-system/Box";
 import Tabs from "./ui/Tabs";
 import Tab from "./ui/Tab";
 
-const TransferMarket = props => {
+const TransferMarket = (props) => {
   const { manager, buyPlayer, sellPlayer } = props;
 
   const balance = manager.get("balance");
@@ -27,7 +27,7 @@ const TransferMarket = props => {
         <h2>Pelaajamarkkinat</h2>
 
         <Calendar
-          when={c => c.get("transferMarket")}
+          when={(c) => c.get("transferMarket")}
           fallback={
             <p>
               Valitettavasti siirtoaika on umpeutunut. Tervetuloa takaisin ensi

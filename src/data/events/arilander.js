@@ -9,7 +9,7 @@ const eventId = "arilander";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficulty = yield select(managersDifficulty(manager));
@@ -34,7 +34,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `__Sulo Arilander__ ${data.get(
         "randomTeam"
@@ -46,7 +46,7 @@ Saat kuitenkin pitää paikkasi, koska todisteita ei ole.`
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const moraleLoss = data.get("moraleLoss");
 

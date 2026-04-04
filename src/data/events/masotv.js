@@ -16,7 +16,7 @@ const eventId = "masotv";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -31,7 +31,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     return List.of(
       `__Maso TV__ ostaa seuraavan ottelunne televisiointioikeudet. He maksavat joukkueelle ${a(
         data.get("amount")
@@ -39,7 +39,7 @@ const event = {
     );
   },
 
-  process: function*(data) {
+  process: function* (data) {
     yield call(incrementBalance, data.get("manager"), data.get("amount"));
   }
 };

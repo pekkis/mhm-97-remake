@@ -30,7 +30,7 @@ RETURN
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const oldManager = yield select(randomManager());
@@ -53,7 +53,7 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     let text = List.of(
       `${data.get(
         "teamName"
@@ -66,7 +66,7 @@ Palkanmaksu viivästyy, ja muutama joukkueen pelaaja siirtyy ulkomaille.`
     return text;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     const strengthLoss = data.get("strengthLoss");
     yield call(decrementStrength, team, strengthLoss);

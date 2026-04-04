@@ -18,7 +18,7 @@ const eventId = "etelalaDescends";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const amount = -(cinteger(0, 100) + 50);
@@ -38,7 +38,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(`Etelälä laskee vakuutuksensa lähtöhintoja!`);
 
     if (data.get("hasInsurance")) {
@@ -48,7 +48,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const amount = data.get("amount");
     yield call(incrementServiceBasePrice, "insurance", amount);
   }

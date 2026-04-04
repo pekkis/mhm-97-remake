@@ -3,10 +3,17 @@ import r from "../services/random";
 import { victors } from "../services/playoffs";
 import { List } from "immutable";
 
-export const foreignTeams = (state) => state.game.get("teams").filter((t) => !t.get("domestic"));
+export const foreignTeams = (state) =>
+  state.game.get("teams").filter((t) => !t.get("domestic"));
 
 export const totalGamesPlayed = (manager, competition, phase) => (state) => {
-  const stats = state.stats.getIn(["managers", manager, "games", competition, phase]);
+  const stats = state.stats.getIn([
+    "managers",
+    manager,
+    "games",
+    competition,
+    phase
+  ]);
 
   if (!stats) {
     return 0;
@@ -15,12 +22,17 @@ export const totalGamesPlayed = (manager, competition, phase) => (state) => {
   // const phlGamesPlayed = stats.reduce((r, s) => r + s, 0);
 };
 
-export const teamsManagerId = (team) => (state) => state.game.getIn(["teams", team, "manager"]);
+export const teamsManagerId = (team) => (state) =>
+  state.game.getIn(["teams", team, "manager"]);
 
 export const teamsManager = (team) => (state) =>
-  state.manager.getIn(["managers", state.game.getIn(["teams", team, "manager"])]);
+  state.manager.getIn([
+    "managers",
+    state.game.getIn(["teams", team, "manager"])
+  ]);
 
-export const managerObject = (manager) => (state) => state.manager.getIn(["managers", manager]);
+export const managerObject = (manager) => (state) =>
+  state.manager.getIn(["managers", manager]);
 
 export const managersMainCompetition = (manager) => (state) => {
   const competesInPHL = managerCompetesIn(manager, "phl")(state);
@@ -34,15 +46,19 @@ export const teamsMainCompetition = (team) => (state) => {
   return competesInPHL ? "phl" : "division";
 };
 
-export const managerById = (manager) => (state) => state.manager.getIn(["managers", manager]);
+export const managerById = (manager) => (state) =>
+  state.manager.getIn(["managers", manager]);
 
 export const managersCompetitions = (manager) => (state) => {
   return state.game.get("competitions").filter((c) => {
-    return c.get("teams").includes(state.manager.getIn(["managers", manager, "team"]));
+    return c
+      .get("teams")
+      .includes(state.manager.getIn(["managers", manager, "team"]));
   });
 };
 
-export const teamsStrength = (team) => (state) => state.game.getIn(["teams", team, "strength"]);
+export const teamsStrength = (team) => (state) =>
+  state.game.getIn(["teams", team, "strength"]);
 
 export const teamWasRelegated = (team) => (state) => {
   const phlLoser = state.game
@@ -55,7 +71,7 @@ export const teamWasRelegated = (team) => (state) => {
   }
 
   const divisionVictor = victors(
-    state.game.getIn(["competitions", "division", "phases", 3, "groups", 0]),
+    state.game.getIn(["competitions", "division", "phases", 3, "groups", 0])
   )
     .first()
     .get("id");
@@ -74,7 +90,7 @@ export const teamWasPromoted = (team) => (state) => {
   }
 
   const divisionVictor = victors(
-    state.game.getIn(["competitions", "division", "phases", 3, "groups", 0]),
+    state.game.getIn(["competitions", "division", "phases", 3, "groups", 0])
   )
     .first()
     .get("id");
@@ -86,27 +102,35 @@ export const teamWasPromoted = (team) => (state) => {
   return false;
 };
 
-export const teamsPositionInRoundRobin = (team, competition, phase) => (state) => {
-  const thePhase = state.game.getIn(["competitions", competition, "phases", phase]);
+export const teamsPositionInRoundRobin =
+  (team, competition, phase) => (state) => {
+    const thePhase = state.game.getIn([
+      "competitions",
+      competition,
+      "phases",
+      phase
+    ]);
 
-  const group = thePhase.get("groups").find((group) => group.get("teams").includes(team));
+    const group = thePhase
+      .get("groups")
+      .find((group) => group.get("teams").includes(team));
 
-  if (!group) {
-    return false;
-  }
+    if (!group) {
+      return false;
+    }
 
-  const index = group.get("stats").findIndex((e) => e.get("id") === team);
+    const index = group.get("stats").findIndex((e) => e.get("id") === team);
 
-  if (index === -1) {
-    return false;
-  }
+    if (index === -1) {
+      return false;
+    }
 
-  return index + 1;
-};
+    return index + 1;
+  };
 
 export const teamCompetesIn = (team, competition) => (state) => {
   return pipe(teamsCompetitions(team), (competitions) =>
-    competitions.map((c) => c.get("id")).includes(competition),
+    competitions.map((c) => c.get("id")).includes(competition)
   )(state);
 };
 
@@ -133,7 +157,8 @@ export const managerWhoControlsTeam = (id) => (state) => {
   return state.manager.get("managers").find((p) => p.get("team") === id);
 };
 
-export const competition = (id) => (state) => state.game.getIn(["competitions", id]);
+export const competition = (id) => (state) =>
+  state.game.getIn(["competitions", id]);
 
 export const managerCompetesIn = (manager, competition) => (state) => {
   const competitions = managersCompetitions(manager)(state);
@@ -148,7 +173,10 @@ export const managerFlag = (manager, flag) => (state) =>
   state.manager.getIn(["managers", manager, "flags", flag]);
 
 export const managersTeam = (manager) => (state) =>
-  state.game.getIn(["teams", state.manager.getIn(["managers", manager, "team"])]);
+  state.game.getIn([
+    "teams",
+    state.manager.getIn(["managers", manager, "team"])
+  ]);
 
 export const managersBalance = (manager) => (state) =>
   state.manager.getIn(["managers", manager, "balance"]);
@@ -194,7 +222,9 @@ export const randomTeamFrom =
   (state) => {
     console.log(excluded, "excommunicado");
 
-    const managersTeams = state.manager.get("managers").map((p) => p.get("team"));
+    const managersTeams = state.manager
+      .get("managers")
+      .map((p) => p.get("team"));
 
     const teams = state.game
       .get("competitions")
@@ -225,7 +255,9 @@ export const interestingCompetitions = (manager) => (state) => {
     .get("competitions")
     .filter((competition) => {
       return competition.get("phases").some((phase) => {
-        return phase.get("groups").some((group) => group.get("teams").includes(team.get("id")));
+        return phase
+          .get("groups")
+          .some((group) => group.get("teams").includes(team.get("id")));
       });
 
       // return competition.get("teams").includes(team.get("id"));
@@ -256,4 +288,5 @@ export const managerHasEnoughMoney = (manager, neededAmount) => (state) => {
   return neededAmount <= amount;
 };
 
-export const managerWithId = (id) => (state) => state.manager.getIn(["managers", id]);
+export const managerWithId = (id) => (state) =>
+  state.manager.getIn(["managers", id]);

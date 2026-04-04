@@ -27,7 +27,7 @@ const eventId = "psychoRelease";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const psycho = yield select(flag("psycho"));
@@ -35,7 +35,7 @@ const event = {
       return;
     }
 
-    const psychoManager = yield select(state =>
+    const psychoManager = yield select((state) =>
       state.game.getIn(["managers", psycho])
     );
 
@@ -55,7 +55,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Eräänä iltana ovikello soi. Avaat oven, ja sen takana seisoo psykopaattimanageri __${data.get(
         "otherManager"
@@ -71,7 +71,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     yield call(setFlag, "psycho", undefined);
   }
 };

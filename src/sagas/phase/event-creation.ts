@@ -146,7 +146,7 @@ const eventsMap = OrderedMap<number, string>(
 
 const getEventId = (predefined?: string): string | undefined => {
   const eventNumber = predefined
-    ? eventsMap.findKey(v => v === predefined)
+    ? eventsMap.findKey((v) => v === predefined)
     : cinteger(1, 335);
 
   if (!eventNumber) {
@@ -160,8 +160,8 @@ const getEventId = (predefined?: string): string | undefined => {
 export default function* eventCreationPhase() {
   yield call(setPhase, "event-creation");
 
-  const managers = yield select(state => state.manager.get("managers"));
-  const round = yield select(state => state.game.getIn(["turn", "round"]));
+  const managers = yield select((state) => state.manager.get("managers"));
+  const round = yield select((state) => state.game.getIn(["turn", "round"]));
 
   const calendarEntry = calendar.get(round);
 

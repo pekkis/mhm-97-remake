@@ -7,14 +7,14 @@ import HeaderedPage from "./ui/HeaderedPage";
 import Games from "./gameday/Games";
 import Box from "./styled-system/Box";
 
-const Gameday = props => {
+const Gameday = (props) => {
   const { turn, managers, teams, competitions } = props;
 
   const calendarEntry = calendar.get(turn.get("round"));
 
   const currentCompetitions = calendarEntry
     .get("gamedays", List())
-    .map(c => competitions.get(c));
+    .map((c) => competitions.get(c));
 
   return (
     <HeaderedPage>
@@ -23,7 +23,7 @@ const Gameday = props => {
       <Box p={1}>
         <h2>Pelipäivä</h2>
 
-        {currentCompetitions.map(competition => {
+        {currentCompetitions.map((competition) => {
           const currentPhase = competition.getIn([
             "phases",
             competition.get("phase")

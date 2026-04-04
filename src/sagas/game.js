@@ -50,7 +50,7 @@ export function* beforeGame(action) {
   } = action;
 
   if (competition === "phl" && phase === 0 && group === 0 && round >= 5) {
-    const g = yield select(state =>
+    const g = yield select((state) =>
       state.game.getIn([
         "competitions",
         competition,
@@ -61,15 +61,15 @@ export function* beforeGame(action) {
       ])
     );
 
-    const teams = yield select(state => state.game.get("teams"));
+    const teams = yield select((state) => state.game.get("teams"));
 
     const p = g.getIn(["schedule", round, pairing]);
 
-    const t = p.map(p => g.getIn(["teams", p])).map(tid => teams.get(tid));
+    const t = p.map((p) => g.getIn(["teams", p])).map((tid) => teams.get(tid));
 
     const humansInGame = t
-      .filter(t => t.get("manager") !== undefined)
-      .map(t => t.get("manager"))
+      .filter((t) => t.get("manager") !== undefined)
+      .map((t) => t.get("manager"))
       .toList();
 
     if (humansInGame.count() === 0) {
@@ -79,9 +79,9 @@ export function* beforeGame(action) {
     const interestingTeams = g
       .get("stats")
       .take(5)
-      .map(s => s.get("id"));
+      .map((s) => s.get("id"));
 
-    const gameIsInteresting = t.every(t =>
+    const gameIsInteresting = t.every((t) =>
       interestingTeams.includes(t.get("id"))
     );
     if (!gameIsInteresting) {
@@ -105,7 +105,7 @@ export function* gameLoop() {
   yield fork(stats);
 
   do {
-    const turn = yield select(state => state.game.get("turn"));
+    const turn = yield select((state) => state.game.get("turn"));
 
     const roundData = calendar.get(turn.get("round"));
 
@@ -205,13 +205,13 @@ export function* groupEnd(competition, phase, group) {
 }
 
 export function* seasonStart() {
-  const turn = yield select(state => state.game.get("turn"));
+  const turn = yield select((state) => state.game.get("turn"));
   const season = turn.get("season");
 
   const teams = yield select(allTeams);
 
   // Re-strength European teams.
-  const reStrengths = teams.slice(24).map(t => {
+  const reStrengths = teams.slice(24).map((t) => {
     return {
       id: t.get("id"),
       strength: teamData.get(t.get("id")).get("strength")()
@@ -240,7 +240,7 @@ export function* seasonStart() {
     */
   }
 
-  const managers = yield select(state => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.get("managers"));
   for (const [, manager] of managers) {
     console.log("MANAGER", manager);
 
@@ -310,7 +310,7 @@ export function* setFlag(flag, value) {
 }
 
 export function* incrementServiceBasePrice(service, amount) {
-  const currentAmount = yield select(state =>
+  const currentAmount = yield select((state) =>
     state.game.getIn(["serviceBasePrices", service])
   );
 
@@ -337,7 +337,7 @@ export function* setPhase(phase) {
 }
 
 export function* seedCompetition(competitionId, phase) {
-  const competitions = yield select(state => state.game.get("competitions"));
+  const competitions = yield select((state) => state.game.get("competitions"));
   const competitionObj = competitionData.getIn([competitionId]);
 
   const seeder = competitionObj.getIn(["seed", phase]);

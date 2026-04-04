@@ -29,7 +29,7 @@ const eventId = "habadobo";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(randomTeamFrom(["phl"], false, []));
@@ -53,7 +53,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Liigasta:
 
@@ -71,7 +71,7 @@ ${data.get("managerName")} saa potkut. Tilalle tulee ${data.get(
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     const duration = data.get("duration");
     yield call(addEffect, team, ["strength"], -40, duration);

@@ -4,11 +4,11 @@ import { amount as a } from "../services/format";
 const services = OrderedMap({
   cheer: Map({
     name: "Kannustusryhmä",
-    description: price =>
+    description: (price) =>
       `Palkatut kannattajat kohottavat taistelutahtoa. Ryhmä matkustaa myös vierasotteluihin, ja kustantaa __${a(
         price
       )}__ pekkaa / ottelu.`,
-    price: basePrice => basePrice,
+    price: (basePrice) => basePrice,
     effect: (competition, phase) => {
       if (phase > 0) {
         return 0;
@@ -21,11 +21,11 @@ const services = OrderedMap({
   }),
   microphone: Map({
     name: "Mikrofoni vastustajan vaihtoaitiossa",
-    description: price =>
+    description: (price) =>
       `Salainen mikrofoni vastustajan aitiossa, suoraan valmentajan edessä, antaa yllättävän edun! Vakoilujärjestelmän ylläpito maksaa __${a(
         price
       )}__ pekkaa / ottelu, ja on tietenkin olemassa kiinnijäämisen riski. Silloin tuloksena on sakko ja 4 pisteen rangaistus!`,
-    price: basePrice => basePrice,
+    price: (basePrice) => basePrice,
     effect: (competition, phase) => {
       if (!["phl", "division"].includes(competition)) {
         return 0;
@@ -44,11 +44,11 @@ const services = OrderedMap({
 
   coach: Map({
     name: "Maalivahtivalmentaja",
-    description: price =>
+    description: (price) =>
       `Entinen huippuveskari, Hari "Hilppa" Jalme, on ryhtynyt valmentajaksi! Hän piiskaa maalivahtinne huippukuntoon ainoastaan __${a(
         price
       )}__ pekalla / ottelu.`,
-    price: basePrice => basePrice,
+    price: (basePrice) => basePrice,
     effect: (competition, phase) => {
       if (phase > 0) {
         return 0;
@@ -59,7 +59,7 @@ const services = OrderedMap({
 
   insurance: Map({
     name: "Vakuutus",
-    description: price =>
+    description: (price) =>
       `Vakuutusyhtiö Etelälän kokonaisvaltainen vakuutuspaketti maksaa __${a(
         price
       )}__ pekkaa / vuoro, ja antaa suojan vahinkotapauksien varalta. Paitsi silloin kun ketkut vakuutustarkastaja havaitsevat _vilppiä_!`,

@@ -17,7 +17,7 @@ const eventId = "etelalaGlitch";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -31,7 +31,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `__Etelälän__ tietokoneeseen on iskenyt _virus_! Kaikki vakuutustiedot ovat kadonneet, ja siten bonukset nollautuvat!`
     );
@@ -39,10 +39,10 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
 
-    const current = yield select(state =>
+    const current = yield select((state) =>
       state.manager.getIn(["managers", manager, "insuranceExtra"])
     );
 

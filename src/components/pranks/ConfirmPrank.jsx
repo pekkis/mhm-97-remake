@@ -3,7 +3,7 @@ import ButtonContainer from "../ui/ButtonContainer";
 import Button from "../form/Button";
 import pranks from "../../data/pranks";
 
-const ConfirmPrank = props => {
+const ConfirmPrank = (props) => {
   const { cancel, manager, teams, prank, execute } = props;
 
   const prankInfo = pranks.get(prank.get("type"));

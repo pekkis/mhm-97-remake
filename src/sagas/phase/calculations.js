@@ -5,11 +5,11 @@ import services from "../../data/services";
 import { decrementBalance } from "../manager";
 
 export default function* calculationsPhase() {
-  const turn = yield select(state => state.game.get("turn"));
+  const turn = yield select((state) => state.game.get("turn"));
 
   console.log("CALCULATIONS PHASE FOR TURN #", turn.get("round"));
 
-  const teams = yield select(state => state.game.get("teams"));
+  const teams = yield select((state) => state.game.get("teams"));
 
   for (const team of teams) {
     const readinessIncrementer = strategies.getIn([
@@ -30,14 +30,16 @@ export default function* calculationsPhase() {
     }
   }
 
-  const managers = yield select(state => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.get("managers"));
 
-  const basePrices = yield select(state => state.game.get("serviceBasePrices"));
+  const basePrices = yield select((state) =>
+    state.game.get("serviceBasePrices")
+  );
 
   for (const [managerId, manager] of managers.entries()) {
     const managersServices = manager
       .get("services")
-      .filter(s => s)
+      .filter((s) => s)
       .map((s, k) => services.get(k));
 
     const serviceCosts = managersServices.reduce((r, service, serviceId) => {

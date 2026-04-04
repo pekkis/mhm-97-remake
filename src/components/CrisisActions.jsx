@@ -11,7 +11,7 @@ import crisis from "../data/crisis";
 import { currency as c } from "../services/format";
 import { getEffective } from "../services/effects";
 
-const TransferMarket = props => {
+const TransferMarket = (props) => {
   const { manager, teams, competitions, crisisMeeting } = props;
 
   const balance = manager.get("balance");
@@ -29,7 +29,7 @@ const TransferMarket = props => {
         <h2>Kriisipalaveri</h2>
 
         <Calendar
-          when={c => c.get("crisisMeeting")}
+          when={(c) => c.get("crisisMeeting")}
           fallback={
             <p>
               Tässä vaiheessa kautta on auttamatta liian myöhäistä

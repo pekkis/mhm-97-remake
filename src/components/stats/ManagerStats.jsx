@@ -5,7 +5,7 @@ import Tabs from "../ui/Tabs";
 import Tab from "../ui/Tab";
 import Story from "./Story";
 
-const TeamStats = props => {
+const TeamStats = (props) => {
   const { competitions, manager, stats, teams } = props;
 
   console.log("stats", stats.toJS());
@@ -14,7 +14,7 @@ const TeamStats = props => {
 
   const managersStories = stats
     .getIn(["seasons"])
-    .map(season => season.getIn(["stories", manager.get("id")]));
+    .map((season) => season.getIn(["stories", manager.get("id")]));
 
   return (
     <div>
@@ -37,8 +37,8 @@ const TeamStats = props => {
         <Tab title="Ura numeroina">
           <div>
             {List.of("phl", "division", "ehl")
-              .map(c => competitions.get(c))
-              .map(c => {
+              .map((c) => competitions.get(c))
+              .map((c) => {
                 const stat = stats.getIn(
                   ["managers", manager.get("id"), "games", c.get("id"), "0"],
                   Map({

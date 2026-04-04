@@ -19,7 +19,7 @@ const eventId = "haanperaDivorce";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const isMarried = yield select(flag("haanperaMarried"));
     if (!isMarried) {
       return;
@@ -38,7 +38,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Pelaaja Aki Haanperän avioliitto päättyy eroon! Mies on onnellinen kun pääsee eroon nalkuttavasta vaimosta ja parantaa otteitaan!`
     );
@@ -46,7 +46,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeam(manager));
 

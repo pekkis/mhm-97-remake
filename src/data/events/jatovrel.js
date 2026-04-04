@@ -26,7 +26,7 @@ const eventId = "jatovrel";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(randomTeamFrom(["phl"], false, []));
@@ -46,7 +46,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Liigasta:
 
@@ -60,7 +60,7 @@ Kaikki toivovat tiukennusta sääntöihin, ja liigan johto myös lupaa niitä. _
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     const duration = data.get("duration");
     const strength = yield select(teamsStrength(team));

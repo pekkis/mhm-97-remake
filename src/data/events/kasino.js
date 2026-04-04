@@ -6,7 +6,7 @@ import { incrementBalance } from "../../sagas/manager";
 
 const eventId = "kasino";
 
-const texts = data => {
+const texts = (data) => {
   let t = List.of(
     `Olet eräänä iltana kasinolla.
 
@@ -35,7 +35,7 @@ const texts = data => {
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -57,7 +57,7 @@ const event = {
     });
   },
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     if (value === "e") {
       data = data.set("resolved", true).set("participate", false);
     }
@@ -76,11 +76,11 @@ const event = {
     });
   },
 
-  render: data => {
+  render: (data) => {
     return texts(data);
   },
 
-  process: function*(data) {
+  process: function* (data) {
     if (!data.get("participate")) {
       return;
     }

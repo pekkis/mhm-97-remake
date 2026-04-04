@@ -19,7 +19,7 @@ const eventId = "topGame";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -34,7 +34,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `__Maso TV:llä__ on sopimus liigan kanssa otteluiden näyttämisestä. Luonnollisesti huippuottelut kiinnostavat, ja joukkueesi äskeinen ottelu näkyikin valtakunnanverkossa. Liiga maksaa teille ${data.get(
         "amount"
@@ -44,7 +44,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const amount = data.get("amount");
     yield call(incrementBalance, manager, amount);

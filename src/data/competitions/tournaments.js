@@ -25,12 +25,12 @@ export default Map({
   relegateTo: false,
   promoteTo: false,
 
-  start: function*() {
+  start: function* () {
     yield call(setCompetitionTeams, "tournaments", List());
   },
 
-  groupEnd: function*(phase, group) {
-    const tournament = yield select(state =>
+  groupEnd: function* (phase, group) {
+    const tournament = yield select((state) =>
       state.game.getIn([
         "competitions",
         "tournaments",
@@ -41,8 +41,8 @@ export default Map({
       ])
     );
 
-    const managers = yield select(state => state.manager.get("managers"));
-    const teams = yield select(state => state.game.get("teams"));
+    const managers = yield select((state) => state.manager.get("managers"));
+    const teams = yield select((state) => state.game.get("teams"));
 
     for (const [, stat] of tournament.get("stats").entries()) {
       const team = teams.get(stat.get("id"));
@@ -87,30 +87,30 @@ export default Map({
   parameters: Map({
     gameday: (phase, group) => ({
       advantage: Map({
-        home: team => 0,
-        away: team => 0
+        home: (team) => 0,
+        away: (team) => 0
       }),
       base: () => 20,
-      moraleEffect: team => {
+      moraleEffect: (team) => {
         return team.get("morale") * 2;
       }
     })
   }),
 
-  seed: List.of(function*(competitions) {
+  seed: List.of(function* (competitions) {
     const teams = yield select(foreignTeams);
 
-    const managers = yield select(state => state.manager.get("managers"));
+    const managers = yield select((state) => state.manager.get("managers"));
 
-    const invitations = yield select(state =>
-      state.invitation.get("invitations").filter(i => i.get("participate"))
+    const invitations = yield select((state) =>
+      state.invitation.get("invitations").filter((i) => i.get("participate"))
     );
 
     const invited = invitations
-      .map(i => {
+      .map((i) => {
         return i.set("team", managers.getIn([i.get("manager"), "team"]));
       })
-      .groupBy(i => i.get("tournament"));
+      .groupBy((i) => i.get("tournament"));
 
     console.log("INVITED", invited.toJS());
 
@@ -126,7 +126,7 @@ export default Map({
       const invitedTeams = re
         .get("invited")
         .get(tournamentIndex, List())
-        .map(i => i.get("team"));
+        .map((i) => i.get("team"));
 
       const participants = invitedTeams.concat(
         re
@@ -134,11 +134,11 @@ export default Map({
           .filter(tournament.get("filter"))
           .sortBy(() => r.real(1, 1000))
           .take(6 - invitedTeams.count())
-          .map(t => t.get("id"))
+          .map((t) => t.get("id"))
       );
 
       return re
-        .update("groups", groups =>
+        .update("groups", (groups) =>
           groups.push(
             Map({
               type: "tournament",
@@ -151,8 +151,8 @@ export default Map({
             })
           )
         )
-        .update("teams", teams =>
-          teams.filterNot(t => participants.contains(t.get("id")))
+        .update("teams", (teams) =>
+          teams.filterNot((t) => participants.contains(t.get("id")))
         );
     }, reducer);
 

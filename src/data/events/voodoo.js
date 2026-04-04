@@ -20,7 +20,7 @@ GOTO sat16
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -34,14 +34,14 @@ const event = {
     );
   },
 
-  options: data => {
+  options: (data) => {
     return Map({
       agree: `Totta kai. Tervetuloa harjoituksiimme, hyvä herra, tässä rahat!`,
       disagree: "En maksa. Kiitos tarjouksesta, ehkä joku toinen kerta!"
     });
   },
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.merge({
       resolved: true,
       agree: value === "agree"
@@ -50,7 +50,7 @@ const event = {
     yield call(resolvedEvent, data);
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Haitilta saapunut tumma mies lupaa tuplata joukkueesi voiman ${a(
         data.get("amount")
@@ -70,7 +70,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
 

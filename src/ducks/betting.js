@@ -49,10 +49,12 @@ export default function bettingReducer(state = defaultState, action) {
       return state.set("championshipBets", List());
 
     case BETTING_BET_CHAMPION:
-      return state.update("championshipBets", bets => bets.push(Map(payload)));
+      return state.update("championshipBets", (bets) =>
+        bets.push(Map(payload))
+      );
 
     case BETTING_BET:
-      return state.update("bets", bets => bets.push(Map(payload)));
+      return state.update("bets", (bets) => bets.push(Map(payload)));
 
     case GAME_NEXT_TURN:
       return state.set("bets", List());

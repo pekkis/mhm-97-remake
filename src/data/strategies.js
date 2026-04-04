@@ -12,7 +12,7 @@ const strategies = List.of(
     name: "Juri Simonov",
     description: `Joukkueen huippukunto ajoittuu play-offeihin. Koko kesä treenataan täysillä, ja sarjan alkuvaihessa "pojat" tuppaavat olemaan hiukan väsyneitä. Loppua kohden tahti kuitenkin paranee, ja play-offeissa tahti on hirmuinen!`,
     initialReadiness: () => -22,
-    incrementReadiness: turn => {
+    incrementReadiness: (turn) => {
       if (turn.get("round") >= 54) {
         return 0;
       }
@@ -24,7 +24,7 @@ const strategies = List.of(
     name: "Kaikki peliin!",
     description: `Kaikki pistetään peliin heti sarjan alusta alkaen! Tahti on kova, mutta "pojat" hiipuvat kevättä kohden melkoisesti...`,
     initialReadiness: () => 24,
-    incrementReadiness: turn => {
+    incrementReadiness: (turn) => {
       if (turn.get("round") >= 54) {
         return 0;
       }

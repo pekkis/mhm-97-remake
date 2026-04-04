@@ -38,11 +38,11 @@ const changedStats = (stats, game, team) => {
   });
 };
 
-export const groupStats = group => {
+export const groupStats = (group) => {
   const stats = group.get("teams").map((id, index) => {
     const stats = group
       .get("schedule")
-      .map(round => round.filter(p => p.includes(index)))
+      .map((round) => round.filter((p) => p.includes(index)))
       .flatten(true)
       .reduce(
         (stats, game) => {
@@ -68,9 +68,9 @@ export const groupStats = group => {
 
     const afterPenalties = group
       .get("penalties", List())
-      .filter(p => p.get("team") === id)
+      .filter((p) => p.get("team") === id)
       .reduce((s, p) => {
-        return s.update("points", points => points + p.get("penalty"));
+        return s.update("points", (points) => points + p.get("penalty"));
       }, stats);
 
     return afterPenalties;
@@ -79,16 +79,16 @@ export const groupStats = group => {
   return stats;
 };
 
-export const sortStats = stats => {
+export const sortStats = (stats) => {
   return stats
-    .sortBy(t => t.get("id"))
-    .sortBy(t => -t.get("wins"))
-    .sortBy(t => -t.get("goalsFor"))
-    .sortBy(t => -(t.get("goalsFor") - t.get("goalsAgainst")))
-    .sortBy(t => -t.get("points"));
+    .sortBy((t) => t.get("id"))
+    .sortBy((t) => -t.get("wins"))
+    .sortBy((t) => -t.get("goalsFor"))
+    .sortBy((t) => -(t.get("goalsFor") - t.get("goalsAgainst")))
+    .sortBy((t) => -t.get("points"));
 };
 
-const table = group => {
+const table = (group) => {
   // console.log("CALCULATING TABLE FOR", group.toJS());
   const unsorted = groupStats(group);
   return sortStats(unsorted);

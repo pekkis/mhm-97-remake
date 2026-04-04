@@ -17,7 +17,7 @@ const eventId = "pempers";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -33,7 +33,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     return List.of(
       `Mainostoimisto maksaa ${a(
         data.get("amount")
@@ -41,7 +41,7 @@ const event = {
     );
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
 

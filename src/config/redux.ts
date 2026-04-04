@@ -4,7 +4,7 @@ import type { SagaMiddleware } from "redux-saga";
 import type { Middleware, Reducer, StoreEnhancer } from "redux";
 
 export type RootState = {
-  [K in keyof typeof reducers]: ReturnType<typeof reducers[K]>;
+  [K in keyof typeof reducers]: ReturnType<(typeof reducers)[K]>;
 };
 
 const sagaMiddleware = createSagaMiddleware();

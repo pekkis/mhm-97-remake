@@ -18,7 +18,7 @@ const eventId = "bankMistake";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficulty = yield select(managersDifficulty(manager));
@@ -36,7 +36,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Pankkinne on tehnyt virheen. Tilillänne on __${a(
         data.get("amount")
@@ -54,7 +54,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const amount = data.get("amount");
     const bribe = data.get("bribe");

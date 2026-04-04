@@ -24,7 +24,7 @@ const eventId = "pauligkahvi";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const competesInPHL = yield select(managerCompetesIn(manager, "phl"));
@@ -51,7 +51,7 @@ const event = {
       disagree: "En suostu."
     }),
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.merge({
       resolved: true,
       agree: value === "agree"
@@ -60,7 +60,7 @@ const event = {
     yield call(resolvedEvent, data);
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Superpakillesi, Pauli G. Kahville, ei pikkuraha enää riitä. Mies vaatii ${data.get(
         "amount"
@@ -80,7 +80,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
     const strength = 50;

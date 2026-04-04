@@ -5,7 +5,7 @@ import Header from "./containers/HeaderContainer";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./styled-system/Box";
 
-const Events = props => {
+const Events = (props) => {
   const { manager, resolveEvent, events } = props;
 
   return (

@@ -27,7 +27,7 @@ yk = c
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
     const team = yield select(managersTeamId(manager));
     const hasEffects = yield select(teamHasActiveEffects(team));
@@ -50,7 +50,7 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Lähetät raikulihyökkääjä __Jallu Kuralahden__ huumevieroitukseen ${data.get(
         "duration"
@@ -64,7 +64,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
     const multiplier = yield select(teamCompetesIn(team, "phl")) ? 2 : 1;

@@ -10,7 +10,7 @@ import Current from "./context-sensitive/containers/CurrentContainer";
 
 import Box from "./styled-system/Box";
 
-const MainMenu = props => {
+const MainMenu = (props) => {
   const {
     manager,
     teams,

@@ -2,11 +2,11 @@ import React from "react";
 import Markdown from "react-markdown";
 import eventList from "../../data/events";
 
-const Events = props => {
+const Events = (props) => {
   const { events, manager, resolveEvent } = props;
 
   const managersEvents = events.filter(
-    e => e.get("manager") === manager.get("id")
+    (e) => e.get("manager") === manager.get("id")
   );
 
   return (
@@ -14,7 +14,7 @@ const Events = props => {
       <p>{managersEvents.count()} tapahtumaa...</p>
 
       {managersEvents
-        .map(e => {
+        .map((e) => {
           const event = eventList.get(e.get("eventId"));
 
           return (
@@ -22,7 +22,7 @@ const Events = props => {
               <Markdown>
                 {event
                   .render(e)
-                  .filter(t => t)
+                  .filter((t) => t)
                   .join("\n\n")}
               </Markdown>
               {!e.get("resolved") && (
@@ -34,7 +34,7 @@ const Events = props => {
                         <li key={key}>
                           <a
                             href="#"
-                            onClick={evt => {
+                            onClick={(evt) => {
                               evt.preventDefault();
                               resolveEvent(e, key);
                             }}

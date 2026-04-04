@@ -24,7 +24,7 @@ const eventId = "pakibetteri";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const competesInPHL = yield select(managerCompetesIn(manager, "phl"));
@@ -51,7 +51,7 @@ const event = {
       disagree: "En suostu."
     }),
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.merge({
       resolved: true,
       agree: value === "agree"
@@ -60,7 +60,7 @@ const event = {
     yield call(resolvedEvent, data);
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `NHL-seura Florida Panthersin kykyjenetsijä ehdottaa: eestiläinen pakki Paki-Betteri Erg kiinnostaa heitä, mutta he haluavat ensin nähdä hänen taitonsa. Suostutko ottamaan Ergin joukkueeseen, kun Panthers maksaisi joukkueellenne ${data.get(
         "duration"
@@ -83,7 +83,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
     const strength = -25;

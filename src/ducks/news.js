@@ -25,14 +25,14 @@ export default function newsReducer(state = defaultState, action) {
       return state.updateIn(
         ["announcements", payload.manager],
         List(),
-        announcements => announcements.push(payload.announcement)
+        (announcements) => announcements.push(payload.announcement)
       );
 
     case NEWS_ANNOUNCEMENTS_CLEAR:
       return state.set("announcements", Map());
 
     case NEWS_ADD:
-      return state.update("news", news => news.push(payload));
+      return state.update("news", (news) => news.push(payload));
 
     case GAME_NEXT_TURN:
       return state.set("news", List());

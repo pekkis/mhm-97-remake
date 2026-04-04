@@ -24,7 +24,7 @@ import { BETTING_BET_REQUEST } from "../../ducks/betting";
 import { bet } from "../betting";
 
 export default function* actionPhase() {
-  const managers = yield select(state => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.get("managers"));
 
   // console.log("HELLUREI?", managers.toJS());
 
@@ -42,10 +42,10 @@ export default function* actionPhase() {
     takeEvery("META_GAME_SAVE_REQUEST", gameSave),
     takeEvery("MANAGER_TOGGLE_SERVICE", toggleService),
     takeEvery("PRANK_ORDER", orderPrank),
-    takeEvery(INVITATION_ACCEPT_REQUEST, function*(action) {
+    takeEvery(INVITATION_ACCEPT_REQUEST, function* (action) {
       yield call(acceptInvitation, action.payload.manager, action.payload.id);
     }),
-    takeEvery(BETTING_BET_REQUEST, function*(action) {
+    takeEvery(BETTING_BET_REQUEST, function* (action) {
       const {
         payload: { manager, coupon, amount }
       } = action;

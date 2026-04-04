@@ -10,12 +10,12 @@ const eventId = "moneyTroubles";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const phlTeam = yield select(randomRankedTeam("phl", 0, Range(9, 12)));
     const divTeam = yield select(
-      randomTeamFrom("division", false, [], t => t.get("strength") > 95)
+      randomTeamFrom("division", false, [], (t) => t.get("strength") > 95)
     );
 
     if (!phlTeam || !divTeam) {
@@ -41,7 +41,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Divisioonasta:
 
@@ -55,7 +55,7 @@ Manageri ${data.get("otherManager")} ja joukkueensa __${data.get(
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const phlTeam = data.get("phlTeam");
     const divTeam = data.get("divTeam");
     const strengthTransfer = data.get("strengthTransfer");

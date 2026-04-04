@@ -19,7 +19,7 @@ mo = mo - 40
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const competesInPHL = yield select(managerCompetesIn(manager, "phl"));
@@ -40,7 +40,7 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Manageri __${data.get(
         "stalker"
@@ -50,7 +50,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
 

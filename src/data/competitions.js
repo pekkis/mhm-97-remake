@@ -11,6 +11,6 @@ const competitions = Map({
   division,
   ehl,
   tournaments
-}).sortBy(c => c.get("weight"));
+}).sortBy((c) => c.get("weight"));
 
 export default competitions;

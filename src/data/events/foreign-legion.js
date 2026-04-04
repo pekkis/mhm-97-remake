@@ -31,11 +31,11 @@ const eventId = "foreignLegion";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(
-      randomTeamFrom(["phl"], false, [], t => t.get("strength") >= 270)
+      randomTeamFrom(["phl"], false, [], (t) => t.get("strength") >= 270)
     );
     if (!team) {
       return;
@@ -61,7 +61,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Liigan huippujoukkue __${data.get(
         "teamName"
@@ -77,7 +77,7 @@ Manageri __${data.get(
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     const duration = data.get("duration");
     yield call(addEffect, team, ["strength"], -60, duration);

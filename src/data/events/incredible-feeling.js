@@ -25,11 +25,11 @@ const eventId = "incredibleFeeling";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(
-      randomTeamFrom(["phl"], false, [], t => t.get("strength") < 200)
+      randomTeamFrom(["phl"], false, [], (t) => t.get("strength") < 200)
     );
     if (!team) {
       return;
@@ -53,7 +53,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Kovin nimetön __${data.get(
         "teamName"
@@ -65,7 +65,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     const duration = data.get("duration");
     yield call(addEffect, team, ["strength"], 50, duration);

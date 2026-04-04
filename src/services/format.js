@@ -8,10 +8,10 @@ const currencyFormatter = new Intl.NumberFormat("fi-FI", {
   currency: "EUR"
 });
 
-export const amount = amount => {
+export const amount = (amount) => {
   return `${decimalFormatter.format(amount)}`;
 };
 
-export const currency = amount => {
+export const currency = (amount) => {
   return `${decimalFormatter.format(amount)} pekkaa`;
 };

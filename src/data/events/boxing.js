@@ -30,23 +30,23 @@ IF box = 1 THEN PRINT "Ottelu p„„ttyy, kun "; lm(yyy); " tyrm„„ sinut!":
 
 const results = List.of(
   Map({
-    text: data => `Ottelu päättyy hienosti: tyrmäät vastustajasi!`,
+    text: (data) => `Ottelu päättyy hienosti: tyrmäät vastustajasi!`,
     moraleGain: 10
   }),
   Map({
-    text: data => `Ottelu päättyy hyväksesi tuomariäänin!`,
+    text: (data) => `Ottelu päättyy hyväksesi tuomariäänin!`,
     moraleGain: 6
   }),
   Map({
-    text: data => `Ottelu päättyy tasapeliin!`,
+    text: (data) => `Ottelu päättyy tasapeliin!`,
     moraleGain: 4
   }),
   Map({
-    text: data => `Ottelu päättyy tappioosi tuomariäänillä!`,
+    text: (data) => `Ottelu päättyy tappioosi tuomariäänillä!`,
     moraleGain: 3
   }),
   Map({
-    text: data =>
+    text: (data) =>
       `Ottelu päättyy, kun vastustajasi tyrmää sinut! Lääkärilasku kohoaa ${a(
         data.get("amount")
       )} pekkaan.`,
@@ -57,7 +57,7 @@ const results = List.of(
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const random = yield select(randomManager());
@@ -73,14 +73,14 @@ const event = {
     );
   },
 
-  options: data => {
+  options: (data) => {
     return Map({
       agree: `Otan haasteen vastaan. Nyrkkini on kova ja voittoni varma!`,
       disagree: `En ota haastetta vastaan. Aivoni ovat kovat, nyrkkini pehmeät.`
     });
   },
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.merge({
       resolved: true,
       amount: 10000,
@@ -91,7 +91,7 @@ const event = {
     yield call(resolvedEvent, data);
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Manageri __${data.get(
         "otherManager"
@@ -116,7 +116,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
 

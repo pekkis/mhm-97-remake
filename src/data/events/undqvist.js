@@ -15,7 +15,7 @@ const eventId = "undqvist";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficulty = yield select(managersDifficulty(manager));
@@ -42,7 +42,7 @@ Pankinjohtaja Sulf Undqvist valittelee tapahtunutta ja matkustaa toipumaan Gayma
     );
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     yield call(setBalance, manager, 0);
   }

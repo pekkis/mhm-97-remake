@@ -19,7 +19,7 @@ GOTO satt86
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -32,14 +32,14 @@ const event = {
     );
   },
 
-  options: data => {
+  options: (data) => {
     return Map({
       agree: `Ei, kiitos!`,
       disagree: `Kiitos, ei!`
     });
   },
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.merge({
       resolved: true
     });
@@ -47,7 +47,7 @@ const event = {
     yield call(resolvedEvent, data);
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Urheilun tappaja, pienten seurojen kirous, kuuluisan Grossman-päätöksen aikaansaaja, __Marc Grossman__, haluaisi pelata joukkueessasi. Otatko kaikkialla vihatun Grossmanin joukkueeseesi?`
     );
@@ -63,7 +63,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {}
+  process: function* (data) {}
 };
 
 export default event;

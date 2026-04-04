@@ -9,7 +9,7 @@ const eventId = "karijurri";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -25,7 +25,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `NHL on lakossa ${data.get(
         "duration"
@@ -35,7 +35,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const strength = data.get("strength");
     const duration = data.get("duration");

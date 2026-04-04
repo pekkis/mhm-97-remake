@@ -6,7 +6,7 @@ import Table from "../responsive-table/Table";
 import Td from "../responsive-table/Td";
 import Box from "../styled-system/Box";
 
-const Story = props => {
+const Story = (props) => {
   const { season, story, teams, competitions } = props;
 
   const t = story.get("mainCompetitionStat");

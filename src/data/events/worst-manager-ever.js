@@ -17,7 +17,7 @@ const eventId = "worstManagerEver";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const random = yield select(randomManager());
@@ -34,7 +34,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `__Ilta-Pekkis__ rankkaa sinut _kaikkien aikojen huonoimmaksi_ manageriksi! Listan kärjestä löytyy ${data.get(
         "otherManager"
@@ -44,7 +44,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
     yield call(decrementMorale, team, 1);

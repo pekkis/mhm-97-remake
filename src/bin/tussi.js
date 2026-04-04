@@ -12,10 +12,10 @@ console.log(r.toJS());
 
 const lussi = Range(1, x + 1)
   .toList()
-  .map(i => {
+  .map((i) => {
     return r.reduce(
       (counts, round) => {
-        const pairing = round.find(pairing => pairing.includes(i));
+        const pairing = round.find((pairing) => pairing.includes(i));
         if (!pairing) {
           return counts;
         }
@@ -38,8 +38,8 @@ const lussi = Range(1, x + 1)
 
 console.log(lussi.toJS());
 
-const poop = r.map(r => {
-  return r.filter(x => x.includes(n));
+const poop = r.map((r) => {
+  return r.filter((x) => x.includes(n));
 });
 
 // console.log("schedule length", schedule.count());

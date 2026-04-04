@@ -30,7 +30,7 @@ const embezzledAmount = (balance, difficulty) => {
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const managerObj = yield select(managerObject(manager));
@@ -63,7 +63,7 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Yksi johtokunnan jäsen katoaa, vieden mukanaan aimo siivun joukkueen kassasta. Tililtänne uupuu yhteensä __${a(
         data.get("amountEmbezzled")
@@ -79,7 +79,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
 
     yield call(decrementBalance, manager, data.get("amountEmbezzled"));

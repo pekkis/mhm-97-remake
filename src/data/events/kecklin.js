@@ -22,7 +22,7 @@ const eventId = "kecklin";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -44,7 +44,7 @@ const event = {
       disagree: "Ei tule kuulonkaan."
     }),
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.merge({
       resolved: true,
       agree: value === "agree"
@@ -53,7 +53,7 @@ const event = {
     yield call(resolvedEvent, data);
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Ykkösmaalivahtinne Limmo Kecklin haluaa ${a(
         data.get("amount")
@@ -75,7 +75,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
     const strength = data.get("agree") ? -65 : 65;

@@ -13,7 +13,7 @@ const ServicesList = styled.div`
   margin: 1em 0;
 `;
 
-const Services = props => {
+const Services = (props) => {
   const { manager, toggleService, basePrices } = props;
 
   return (

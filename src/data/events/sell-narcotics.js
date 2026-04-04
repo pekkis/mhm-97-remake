@@ -12,7 +12,7 @@ const eventId = "sellNarcotics";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager, victim } = data;
 
     yield call(
@@ -40,8 +40,8 @@ const event = {
   proz = proz + 1
   */
 
-  resolve: function*(data) {
-    const victimTeam = yield select(state =>
+  resolve: function* (data) {
+    const victimTeam = yield select((state) =>
       state.game.getIn(["teams", data.get("victim")])
     );
 
@@ -69,7 +69,7 @@ const event = {
     });
   },
 
-  render: data => {
+  render: (data) => {
     let text = List.of(
       `Voi ei! __${data.get(
         "victimTeamName"
@@ -87,7 +87,7 @@ const event = {
     return text;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     yield call(decrementStrength, data.get("victim"), data.get("skillLost"));
 
     if (data.get("caught")) {

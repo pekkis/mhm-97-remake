@@ -25,7 +25,7 @@ const eventId = "ekkanen";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficulty = yield select(managersDifficulty(manager));
@@ -55,7 +55,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Tisa Ekkanen, loistava NHL-pelaaja, palaa kotimaahan monien vuosien jälkeen. Hän liittyy joukkueeseen ilmaiseksi!`
     );
@@ -78,7 +78,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
     const strength = data.get("strength");

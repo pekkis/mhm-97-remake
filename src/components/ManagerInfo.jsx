@@ -31,7 +31,7 @@ const Title = styled.div`
 
 const Value = styled.div``;
 
-const ManagerInfo = props => {
+const ManagerInfo = (props) => {
   const { manager, teams, turn, details } = props;
 
   const team = getEffective(teams.get(manager.get("team")));

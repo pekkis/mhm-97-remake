@@ -14,7 +14,7 @@ export default function* prankPhase() {
     yield call(prankExecutor, prank);
     yield put({
       type: "PRANK_DISMISS",
-      payload: prankId,
+      payload: prankId
     });
   }
 }

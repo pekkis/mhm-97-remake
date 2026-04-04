@@ -10,11 +10,11 @@ const eventId = "yhteispeli";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(
-      randomTeamFrom(["division"], false, [], t => t.get("strength") > 120)
+      randomTeamFrom(["division"], false, [], (t) => t.get("strength") > 120)
     );
     if (!team) {
       return;
@@ -38,7 +38,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Divisioonasta:
 
@@ -50,7 +50,7 @@ Manageri ${data.get("managerName")}:lla on käsissään huippujoukkue __${data.g
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     const duration = data.get("duration");
     yield call(addEffect, team, ["strength"], -30, duration);

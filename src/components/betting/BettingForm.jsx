@@ -6,7 +6,7 @@ import Button from "../form/Button";
 import TeamName from "../team/Name";
 import { Seq, List } from "immutable";
 
-const BettingForm = props => {
+const BettingForm = (props) => {
   const { manager, competition, teams, bet } = props;
 
   const group = competition.getIn(["phases", 0, "groups", 0]);
@@ -17,15 +17,15 @@ const BettingForm = props => {
   return (
     <Formik
       initialValues={{
-        "0": "",
-        "1": "",
-        "2": "",
-        "3": "",
-        "4": "",
-        "5": "",
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
         amount: 10000
       }}
-      onSubmit={values => {
+      onSubmit={(values) => {
         console.log(values);
 
         const coupon = List.of(
@@ -100,7 +100,7 @@ const BettingForm = props => {
                 max={1000000}
                 step={10000}
                 value={values.amount}
-                onChange={value => {
+                onChange={(value) => {
                   setFieldValue("amount", value);
                 }}
               />
@@ -108,7 +108,7 @@ const BettingForm = props => {
             </div>
 
             <Button
-              disabled={Seq(values).some(value => value === "")}
+              disabled={Seq(values).some((value) => value === "")}
               block
               type="submit"
             >

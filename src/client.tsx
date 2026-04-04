@@ -1,4 +1,4 @@
-import {createRoot} from "react-dom/client"
+import { createRoot } from "react-dom/client";
 import Root from "./Root";
 
 import { getInitialState } from "./config/state";
@@ -31,8 +31,7 @@ const store = createStore(initialState);
 
 // Just a small DRY abstraction here.
 function render(Component: typeof Root, rootElement: HTMLElement) {
-
-  const root = createRoot(rootElement)
+  const root = createRoot(rootElement);
 
   root.render(<Component store={store} />);
 }
@@ -44,4 +43,3 @@ if (!rootElement) {
 }
 
 render(Root, rootElement);
-

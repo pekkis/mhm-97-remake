@@ -22,7 +22,7 @@ const eventId = "juznetsov";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const hasInsurance = yield select(managerHasService(manager, "insurance"));
@@ -43,7 +43,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Auts! Venäläispakki Kuri Juznetsov törmää harjoituksissa pää edellä laitaan ja on seuraavat ${data.get(
         "duration"
@@ -57,7 +57,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const hasInsurance = data.get("hasInsurance");
     const effect = data.get("effect");

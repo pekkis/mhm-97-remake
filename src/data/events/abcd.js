@@ -10,7 +10,7 @@ const eventId = "abcd";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(randomTeamFrom(["phl"]));
@@ -32,7 +32,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Liigasta:
 
@@ -44,7 +44,7 @@ Managerivelho ${data.get("managerName")} on saanut psyykattua ${data.get(
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     const duration = data.get("duration");
 

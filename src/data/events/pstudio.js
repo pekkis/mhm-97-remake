@@ -17,7 +17,7 @@ const eventId = "pstudio";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficulty = yield select(managersDifficulty(manager));
@@ -35,7 +35,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `__P-Studio__ tekee reportaasin joukkueenne verorästien takia. Juttu on valetta, mutta se laskee moraalia kun pelaajat pelkäävät palkanmaksun viivästymistä.`
     );
@@ -43,7 +43,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const moraleLoss = data.get("moraleLoss");
     const team = yield select(managersTeamId(manager));

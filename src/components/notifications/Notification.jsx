@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const Notification = props => {
+const Notification = (props) => {
   const { className, notification, dismiss } = props;
 
   return (

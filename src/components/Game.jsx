@@ -25,7 +25,7 @@ import Stats from "./containers/StatsContainer";
 import Invitations from "./containers/InvitationsContainer";
 import Gala from "./containers/GalaContainer";
 
-const Phase = props => {
+const Phase = (props) => {
   const { turn } = props;
 
   switch (true) {
@@ -79,7 +79,7 @@ const Phase = props => {
   }
 };
 
-const Game = props => {
+const Game = (props) => {
   const { className, menu } = props;
   return (
     <div className={className}>

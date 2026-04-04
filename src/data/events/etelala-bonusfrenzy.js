@@ -17,7 +17,7 @@ const eventId = "etelalaBonusFrenzy";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const arena = yield select(managersArena(manager));
@@ -39,7 +39,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Etelälä julkistaa suuren kansainvälisen __bonustempauksen__!`
     );
@@ -55,7 +55,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const amount = data.get("amount");
     yield call(incrementInsuranceExtra, manager, amount);

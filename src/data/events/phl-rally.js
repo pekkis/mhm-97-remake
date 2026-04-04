@@ -23,7 +23,7 @@ const eventId = "phlRally";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const competesInPHL = yield select(managerCompetesIn(manager, "phl"));
@@ -47,7 +47,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Uusi ohjelmanjulistuksesi "KULTA ON VÄRIMME" saa aikaan todellisen jääkiekkobuumin! Kansa ryntää hallille ja taistelu mestaruudesta on todella alkanut`
     );
@@ -55,7 +55,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
 
     const team = yield select(managersTeamId(manager));

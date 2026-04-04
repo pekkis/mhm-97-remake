@@ -30,7 +30,7 @@ const eventId = "divisionRally";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const competesInDivision = yield select(
@@ -57,7 +57,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Olet onnistunut luomaan käsittämättömän yhteishengen, ja joukkue on valmis taistelemaan tiensä liigaan!!!`
     );
@@ -65,7 +65,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
 
     const team = yield select(managersTeamId(manager));

@@ -63,7 +63,7 @@ const TableWrapper = styled.div`
   overflow: auto;
 `;
 
-const ResponsiveTable = props => {
+const ResponsiveTable = (props) => {
   const { children } = props;
 
   const clone = React.cloneElement(children, { isClone: true });

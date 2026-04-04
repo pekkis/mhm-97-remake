@@ -16,7 +16,7 @@ import { setFlag } from "../../sagas/game";
 
 const eventId = "mauto";
 
-const texts = data => {
+const texts = (data) => {
   let t = List.of(
     `Monikansallinen autotehdas __Mautomobiles__ haluaa sponsoroida joukkuettasi!
     Jos joukkueen nimeksi vaihdetaan _${data.get(
@@ -50,7 +50,7 @@ const texts = data => {
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const competesInPHL = yield select(managerCompetesIn(manager, "phl"));
@@ -76,14 +76,14 @@ const event = {
     return;
   },
 
-  options: data => {
+  options: (data) => {
     return Map({
       y: `Suostun. Kauan eläköön ${data.get("newName")} `,
       n: "En suostu. Pitäköön mautonsa!"
     });
   },
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     const manager = data.get("manager");
     const difficulty = yield select(managersDifficulty(manager));
 
@@ -113,11 +113,11 @@ const event = {
     });
   },
 
-  render: data => {
+  render: (data) => {
     return texts(data);
   },
 
-  process: function*(data) {
+  process: function* (data) {
     yield call(setFlag, "mauto", true);
 
     yield put({

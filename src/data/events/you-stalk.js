@@ -23,7 +23,7 @@ const eventId = "youStalk";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(randomTeamFrom(["phl"], false, []));
@@ -45,7 +45,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Liigasta:
 
@@ -57,7 +57,7 @@ __${data.get("managerName")}__ valmentaa joukkuetta __${data.get(
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     const duration = data.get("duration");
     yield call(addEffect, team, ["strength"], -15, duration);

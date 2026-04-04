@@ -21,7 +21,7 @@ const eventId = "haanperaMarries";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const isMarried = yield select(flag("haanperaMarried"));
     if (isMarried) {
       return;
@@ -40,7 +40,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Pelaaja Aki Haanperän polttarit ovat seuraavana iltana. Koko joukkue on mukana ja kankkunen vaivaa seuraavan ottelun ajan!`
     );
@@ -48,7 +48,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeam(manager));
 

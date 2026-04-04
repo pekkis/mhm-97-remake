@@ -31,7 +31,7 @@ const pselit = Map({
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficulty = yield select(managersDifficulty(manager));
@@ -49,7 +49,7 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(`__Pertin Pselit__ kutsuu sinut pselailemaan!`);
 
     const pseliText = pselit.getIn([data.get("pseli"), "text"]);
@@ -57,7 +57,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = yield select(managersTeamId(data.get("manager")));
 
     yield call(

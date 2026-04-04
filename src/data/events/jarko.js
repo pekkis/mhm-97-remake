@@ -35,7 +35,7 @@ RETURN
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
     const jarkoFlag = yield select(flag("jarko"));
     if (jarkoFlag) {
@@ -69,13 +69,13 @@ const event = {
     );
   },
 
-  options: data =>
+  options: (data) =>
     Map({
       agree: "Ostan Mantusen joukkueeseeni",
       disagree: "En osta Mantusta joukkueeseeni"
     }),
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.set("agree", value === "agree");
 
     yield put({
@@ -87,11 +87,11 @@ const event = {
     });
   },
 
-  render: data => {
+  render: (data) => {
     return texts(data);
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = data.get("team");
     const otherTeam = data.get("team");
@@ -128,7 +128,7 @@ IF s$ = "e" THEN PRINT "Mantunen siirtyy "; l(x); ":n.": v(x) = v(x) + 15
 RETURN
 */
 
-const texts = data => {
+const texts = (data) => {
   let t = List.of(
     `NHL on ollut liian kova pala Jarko Mantuselle. Hän haluaisi palata kotimaahan, ja sinun joukkueeseesi. Myös __${data.get(
       "otherTeamName"

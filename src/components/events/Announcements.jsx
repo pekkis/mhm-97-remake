@@ -1,7 +1,7 @@
 import React from "react";
 import Markdown from "react-markdown";
 
-const Events = props => {
+const Events = (props) => {
   const { announcements } = props;
 
   return (

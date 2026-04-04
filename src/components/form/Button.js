@@ -14,7 +14,7 @@ const Button = styled.button`
     cursor: pointer;
   }
 
-  ${props =>
+  ${(props) =>
     props.secondary &&
     css`
       background-color: rgb(255, 255, 255);
@@ -38,13 +38,13 @@ const Button = styled.button`
     }
   }
 
-  ${props =>
+  ${(props) =>
     props.terse &&
     css`
       padding: 1em;
     `}
 
-  ${props =>
+  ${(props) =>
     props.block &&
     css`
       width: 100%;

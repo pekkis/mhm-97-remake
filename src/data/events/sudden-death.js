@@ -5,7 +5,7 @@ import { addEvent } from "../../sagas/event";
 
 const eventId = "suddenDeath";
 
-const texts = data => {
+const texts = (data) => {
   let t = List.of(
     `Kaikki pelaajasi ovat saaneet surmansa lento-onnettomuudessa! Johtokunta kehottaa sinua etsimään uusia kiekkoilijoita`
   );
@@ -26,7 +26,7 @@ const texts = data => {
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -41,14 +41,14 @@ const event = {
     return;
   },
 
-  options: data => {
+  options: (data) => {
     return Map({
       ok: `Aaaaasia selvä. `,
       wtf: `Hiiiieno homma. Kiitos infosta.`
     });
   },
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     yield put({
       type: "EVENT_RESOLVE",
       payload: {
@@ -58,11 +58,11 @@ const event = {
     });
   },
 
-  render: data => {
+  render: (data) => {
     return texts(data);
   },
 
-  process: function*(data) {}
+  process: function* (data) {}
 };
 
 export default event;

@@ -28,7 +28,7 @@ const Centerer = styled.div`
   text-align: center;
 `;
 
-const StartMenu = props => {
+const StartMenu = (props) => {
   const {
     teams,
     competitions,

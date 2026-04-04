@@ -25,7 +25,7 @@ const eventId = "paajanen";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const duration = cinteger(0, 3) + 2;
@@ -42,7 +42,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Ottelun tuomari __Hekka Paajanen__ oli todella surkea. Kolmannessa erässä, saatuanne jäähyn syyttä, kohotat syyttävän keskisormesi miestä kohti ja lausut pari valittua sanaa hänen taidoistaan!
 
@@ -54,7 +54,7 @@ Kurinpitovaliokunta lätkäisee sinulle ${data.get(
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeam(manager));
 

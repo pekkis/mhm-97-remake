@@ -40,20 +40,20 @@ export default Map({
   promoteTo: false,
 
   parameters: Map({
-    gameday: phase => ({
+    gameday: (phase) => ({
       advantage: Map({
-        home: team => 10,
-        away: team => -10
+        home: (team) => 10,
+        away: (team) => -10
       }),
       base: () => 20,
-      moraleEffect: team => {
+      moraleEffect: (team) => {
         return team.get("morale") * 2;
       }
     })
   }),
 
   seed: List.of(
-    competitions => {
+    (competitions) => {
       const competition = competitions.get("phl");
       const teams = competition.get("teams").sortBy(() => r.real(1, 1000));
       const times = 2;
@@ -88,11 +88,11 @@ export default Map({
         )
       });
     },
-    competitions => {
+    (competitions) => {
       const teams = competitions
         .getIn(["phl", "phases", 0, "groups", 0, "stats"])
         .take(8)
-        .map(e => e.get("id"));
+        .map((e) => e.get("id"));
 
       const winsToAdvance = 3;
       const matchups = List.of(
@@ -118,10 +118,10 @@ export default Map({
         )
       });
     },
-    competitions => {
+    (competitions) => {
       const teams = victors(
         competitions.getIn(["phl", "phases", 1, "groups", 0])
-      ).map(t => t.get("id"));
+      ).map((t) => t.get("id"));
 
       const matchups = List.of(List.of(0, 3), List.of(1, 2));
 
@@ -143,14 +143,14 @@ export default Map({
         )
       });
     },
-    competitions => {
+    (competitions) => {
       const teams = victors(
         competitions.getIn(["phl", "phases", 2, "groups", 0])
       )
-        .map(t => t.get("id"))
+        .map((t) => t.get("id"))
         .concat(
           eliminated(competitions.getIn(["phl", "phases", 2, "groups", 0])).map(
-            t => t.get("id")
+            (t) => t.get("id")
           )
         );
 

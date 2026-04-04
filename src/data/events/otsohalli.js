@@ -22,7 +22,7 @@ const eventId = "otsohalli";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const arena = yield select(managersArena(manager));
@@ -49,7 +49,7 @@ const event = {
       disagree: "Ei. Onpa kerrassaan moraaliton ehdotus!"
     }),
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.merge({
       resolved: true,
       agree: value === "agree"
@@ -58,7 +58,7 @@ const event = {
     yield call(resolvedEvent, data);
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Suuri olutpanimo on halukas sponsoroimaan joukkuettasi! Se maksaa ${a(
         data.get("amount")
@@ -80,7 +80,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     if (data.get("agree")) {
       const amount = data.get("amount");

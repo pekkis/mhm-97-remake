@@ -30,7 +30,7 @@ const eventId = "bloodbath";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const random = yield select(randomManager());
@@ -58,7 +58,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `__${data.get("teamName")}__:n ja __${data.get(
         "teamName2"
@@ -72,7 +72,7 @@ Muita asianomaisia ei koskaan saada kiinni. Kaikki kiistävät osallisuutensa, m
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     const team2 = data.get("team2");
 

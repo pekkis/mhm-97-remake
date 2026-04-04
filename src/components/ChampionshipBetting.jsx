@@ -12,7 +12,7 @@ import BettingForm from "./championship-betting/BettingForm";
 
 import Box from "./styled-system/Box";
 
-const ChampionshipBetting = props => {
+const ChampionshipBetting = (props) => {
   const { teams, competitions, advance, betChampion, manager } = props;
 
   return (

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import News from "../News";
-export default connect(state => ({
+export default connect((state) => ({
   turn: state.game.get("turn"),
   manager: state.manager.getIn(["managers", state.manager.get("active")]),
   managers: state.manager.get("managers"),

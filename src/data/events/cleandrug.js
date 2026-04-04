@@ -7,7 +7,7 @@ const eventId = "cleandrug";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -20,11 +20,11 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     return List.of(`Kaikki pelaajasi olivat puhtaita huumausainetesteissä.`);
   },
 
-  process: function*(data) {}
+  process: function* (data) {}
 };
 
 export default event;

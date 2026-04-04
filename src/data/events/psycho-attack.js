@@ -25,7 +25,7 @@ const eventId = "psychoAttack";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const phlGamesPlayed = yield select(totalGamesPlayed(manager, "phl", 0));
@@ -53,7 +53,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Yht'äkkiä, kävellessäsi kadulla, kommandopipoinen heppu hyppää eteesi pistooli kourassaan! Nauraen hän riisuu valepukunsa, ja sen alta paljastuu manageri __${data.get(
         "otherManager"
@@ -67,7 +67,7 @@ Juuri, kun hän tähtää kohti päätäsi, kaahaa paikalle miliisi, ja seonnut 
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const otherManagerId = data.get("otherManagerId");
     yield call(setFlag, "psycho", otherManagerId);
   }

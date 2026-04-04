@@ -7,7 +7,7 @@ import tournamentList from "../data/tournaments";
 import Markdown from "react-markdown";
 import Button from "./form/Button";
 
-const Invitations = props => {
+const Invitations = (props) => {
   const { manager, invitations, acceptInvitation } = props;
 
   return (

@@ -17,7 +17,7 @@ const eventId = "strategyFailure";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -31,7 +31,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Pelaajasi väsyvät kovaa vauhtia! Heidän kuntopohjansa ei yksinkertaisesti ole kestänyt kiivasta ottelurytmiä.`
     );
@@ -39,7 +39,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
     yield call(incrementReadiness, team, -3);

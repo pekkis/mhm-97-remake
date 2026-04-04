@@ -11,7 +11,7 @@ import Tab from "./ui/Tab";
 import ManagerStats from "./stats/ManagerStats";
 import TeamStats from "./stats/TeamStats";
 
-const Stats = props => {
+const Stats = (props) => {
   const { manager, stats, teams, competitions, countries } = props;
 
   const [tab, setTab] = useState(0);

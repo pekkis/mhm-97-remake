@@ -30,7 +30,7 @@ const eventId = "arenaBurns";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficulty = yield select(managersDifficulty(manager));
@@ -64,7 +64,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Hallissa riehunut tulipalo huonontaa sen ominaisuuksia. ÖRR!`
     );
@@ -78,7 +78,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const hasInsurance = data.get("hasInsurance");
     const amount = data.get("amount");

@@ -6,7 +6,7 @@ import { CRISIS_MORALE_MAX } from "../data/constants";
 import Button from "./form/Button";
 import { List } from "immutable";
 
-const ActionMenu = props => {
+const ActionMenu = (props) => {
   const { manager, teams, closeMenu, saveGame, quitToMainMenu, turn } = props;
   const team = getEffective(teams.get(manager.get("team")));
 
@@ -21,7 +21,7 @@ const ActionMenu = props => {
           </li>
 
           {team.get("morale") <= CRISIS_MORALE_MAX && (
-            <Calendar when={c => c.get("crisisMeeting")}>
+            <Calendar when={(c) => c.get("crisisMeeting")}>
               <li>
                 <Link onClick={() => closeMenu()} to="/kriisipalaveri">
                   Kriisipalaveri
@@ -29,7 +29,7 @@ const ActionMenu = props => {
               </li>
             </Calendar>
           )}
-          <Calendar when={c => c.get("transferMarket")}>
+          <Calendar when={(c) => c.get("transferMarket")}>
             <li>
               <Link onClick={() => closeMenu()} to="/pelaajamarkkinat">
                 Pelaajamarkkinat
@@ -54,7 +54,7 @@ const ActionMenu = props => {
             </Link>
           </li>
 
-          <Calendar when={c => c.get("pranks")}>
+          <Calendar when={(c) => c.get("pranks")}>
             <li>
               <Link onClick={() => closeMenu()} to="/jaynat">
                 Jäynät

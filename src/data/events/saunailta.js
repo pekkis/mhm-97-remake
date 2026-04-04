@@ -23,7 +23,7 @@ const eventId = "saunailta";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const duration = cinteger(0, 2) + 2;
@@ -44,7 +44,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Rento saunailta muuttuu katastrofiksi, kun ajaudutte joukkueenjohtajan kanssa käsirysyyn pelillisten erimielisyyksien vuoksi.
 
@@ -54,7 +54,7 @@ Mies saa luonnollisesti potkut, ja uutta joukkueenohtajaa etsitään. Moraali la
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeam(manager));
     const duration = data.get("duration");

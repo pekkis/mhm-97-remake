@@ -15,7 +15,7 @@ const eventId = "enemyProtest";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficultyLevel = yield select(managersDifficulty(manager));
@@ -47,7 +47,7 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     let text = List.of(
       `Manageri __${data.get("otherManagerName")}__ ja joukkueensa __${data.get(
         "otherTeamName"
@@ -62,21 +62,23 @@ Protesti menee läpi, ja teiltä vähennetään ${Math.abs(
     return text;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const otherTeam = data.get("otherTeam");
     const penalty = data.get("penalty");
     const reward = data.get("reward");
     const team = data.get("team");
 
-    const competitions = yield select(state => state.game.get("competitions"));
+    const competitions = yield select((state) =>
+      state.game.get("competitions")
+    );
 
     const competition = competitions
-      .filterNot(c => c.get("id") === "ehl")
-      .find(c => c.get("teams").includes(team));
+      .filterNot((c) => c.get("id") === "ehl")
+      .find((c) => c.get("teams").includes(team));
 
     const groupId = competition
       .getIn(["phases", 0, "groups"])
-      .findIndex(g => g.get("teams").includes(team));
+      .findIndex((g) => g.get("teams").includes(team));
 
     yield all([
       call(incurPenalty, competition.get("id"), 0, groupId, team, penalty),

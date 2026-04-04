@@ -12,11 +12,11 @@ export default function* eventPhase() {
     type: "UI_DISABLE_ADVANCE"
   });
 
-  const autoresolveEvents = yield select(state =>
+  const autoresolveEvents = yield select((state) =>
     state.event
       .get("events")
-      .filterNot(e => e.get("resolved"))
-      .filter(e => e.get("autoResolve"))
+      .filterNot((e) => e.get("resolved"))
+      .filter((e) => e.get("autoResolve"))
   );
 
   for (const [, event] of autoresolveEvents) {
@@ -28,10 +28,10 @@ export default function* eventPhase() {
 
   let unresolved;
   do {
-    unresolved = yield select(state =>
+    unresolved = yield select((state) =>
       state.event
         .get("events")
-        .filterNot(e => e.get("resolved"))
+        .filterNot((e) => e.get("resolved"))
         .count()
     );
 

@@ -29,16 +29,9 @@ const Container = styled.header`
   }
 `;
 
-const Header = props => {
-  const {
-    back,
-    menu,
-    history,
-    advanceEnabled,
-    advance,
-    toggleMenu,
-    forward
-  } = props;
+const Header = (props) => {
+  const { back, menu, history, advanceEnabled, advance, toggleMenu, forward } =
+    props;
 
   return (
     <Container>

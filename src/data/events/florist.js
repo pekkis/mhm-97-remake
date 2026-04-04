@@ -20,7 +20,7 @@ const eventId = "florist";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(randomTeamFrom(["phl"], false, []));
@@ -38,7 +38,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Liigasta:
 
@@ -50,7 +50,7 @@ __${data.get(
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     yield call(decrementStrength, team, 13);
   }

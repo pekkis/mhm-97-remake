@@ -3,7 +3,7 @@ import Events from "../Events";
 import { advance } from "../../ducks/game";
 import { resolveEvent } from "../../ducks/event";
 export default connect(
-  state => ({
+  (state) => ({
     turn: state.game.get("turn"),
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
     managers: state.manager.get("managers"),

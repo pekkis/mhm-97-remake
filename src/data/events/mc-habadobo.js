@@ -35,7 +35,7 @@ const eventId = "mcHabadobo";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficulty = yield select(managersDifficulty(manager));
@@ -73,7 +73,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Joukkueen fanikaupan vieressä sijaitsevaan moottoripyöräkerho __MC Habadobon__ isännöimään kapakkaan suunnattu leikkimielinen sinkoisku osuu harhaan!
 
@@ -91,7 +91,7 @@ Lukematon määrä fanituotteita ja muuta krääsää tuhoutuu. Lasku kohoaa ${a
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const amount = data.get("amount");
     const hasInsurance = data.get("hasInsurance");

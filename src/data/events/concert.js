@@ -10,7 +10,7 @@ const eventId = "concert";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const arena = yield select(managersArena(manager));
@@ -27,7 +27,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     return List.of(
       `Joukkueesi areenalla pidetään suuri rock-konsertti. Tuotto: ${a(
         data.get("amount")
@@ -35,7 +35,7 @@ const event = {
     );
   },
 
-  process: function*(data) {
+  process: function* (data) {
     yield call(incrementBalance, data.get("manager"), data.get("amount"));
   }
 };

@@ -40,12 +40,12 @@ const playOvertime = (strengths, result) => {
 export const simulate = (game) => {
   const raw = Map({
     home: game.get("home"),
-    away: game.get("away"),
+    away: game.get("away")
   });
 
   const managers = Map({
     home: game.get("homeManager"),
-    away: game.get("awayManager"),
+    away: game.get("awayManager")
   });
 
   const teams = raw.map((obj, key, context) => {
@@ -63,7 +63,7 @@ export const simulate = (game) => {
     (team, i) => team.get("strength"),
     (team, i) => game.get("moraleEffect")(team),
     (team, i) => game.getIn(["advantage", i])(team),
-    (team, i) => team.get("readiness"),
+    (team, i) => team.get("readiness")
   );
 
   const managerEffects = managers.map((manager) => {
@@ -99,7 +99,7 @@ export const simulate = (game) => {
         (strength) => r.integer(0, strength),
         (val) => val / base(),
         (val) => (val < 0 ? 0 : val),
-        (number) => parseInt(number.toFixed(0), 10),
+        (number) => parseInt(number.toFixed(0), 10)
       )(strength);
     })
     .set("overtime", false);
@@ -110,7 +110,7 @@ export const simulate = (game) => {
       oStrength: raw.getIn([i, "strength"]),
       eStrength: teams.getIn([i, "strength"]),
       cStrength: strengths.get(i),
-      goals: result.get(i),
+      goals: result.get(i)
     });
   });
 
@@ -130,7 +130,7 @@ export const simulate = (game) => {
 };
 
 export default {
-  simulate,
+  simulate
 };
 
 export const resultFacts = (result, key) => {
@@ -145,7 +145,7 @@ export const resultFacts = (result, key) => {
   return {
     isWin,
     isDraw,
-    isLoss,
+    isLoss
   };
 };
 

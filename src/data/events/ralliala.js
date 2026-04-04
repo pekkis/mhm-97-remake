@@ -10,7 +10,7 @@ const eventId = "cleandrug";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(managersTeam(manager));
@@ -28,7 +28,7 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     return List.of(
       `Lavakoomikko __Aape Ralliala__ julistaa kääntyneensä ${data.get(
         "teamName"
@@ -38,7 +38,7 @@ const event = {
     );
   },
 
-  process: function*(data) {
+  process: function* (data) {
     yield call(incrementBalance, data.get("manager"), data.get("amount"));
   }
 };

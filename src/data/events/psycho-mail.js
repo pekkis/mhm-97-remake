@@ -20,23 +20,23 @@ RETURN
 */
 
 const letters = List.of(
-  data =>
+  (data) =>
     `__${data.get(
       "otherManager"
     )}__ lähettää sinulle Tiukukoskelta kirjeen, jossa vannoo kostoa!`,
-  data =>
+  (data) =>
     `__${data.get(
       "otherManager"
     )}__ lähettää sinulle Tiukukoskelta kirjeen, jossa hän varoittaa sinua avaruusolentojen hyökkäyksestä.`,
-  data =>
+  (data) =>
     `__${data.get(
       "otherManager"
     )}__ lähettää sinulle Tiukukoskelta kirjeen, jossa hän kertoo olevansa koko sairaalan paras jääkiekkomanageri.`,
-  data =>
+  (data) =>
     `__${data.get(
       "otherManager"
     )}__ lähettää sinulle Tiukukoskelta kirjeen, josta et ota mitään tolkkua.`,
-  data =>
+  (data) =>
     `__${data.get(
       "otherManager"
     )}__ lähettää sinulle Tiukukoskelta kirjeen, jonka hänelle "ovat sanelleet Sami Sammakko, Toni Tiikeri ja Ossi Olifantti".`
@@ -47,7 +47,7 @@ const eventId = "psychoMail";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const psycho = yield select(flag("psycho"));
@@ -55,7 +55,7 @@ const event = {
       return;
     }
 
-    const psychoManager = yield select(state =>
+    const psychoManager = yield select((state) =>
       state.game.getIn(["managers", psycho])
     );
 
@@ -72,13 +72,13 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(letters.get(data.get("letter"))(data));
 
     return t;
   },
 
-  process: function*(data) {}
+  process: function* (data) {}
 };
 
 export default event;

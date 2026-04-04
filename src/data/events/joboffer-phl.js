@@ -34,22 +34,22 @@ const eventId = "jobofferPHL";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const oldTeam = yield select(managersTeamId(manager));
 
-    const ehlTeams = yield select(state =>
+    const ehlTeams = yield select((state) =>
       state.game.getIn(["competitions", "ehl", "teams"])
     );
     const offerer = yield select(randomTeamFrom(["phl"], false, ehlTeams));
 
-    const group = yield select(state =>
+    const group = yield select((state) =>
       state.game.getIn(["competitions", "phl", "phases", 0, "groups", 0])
     );
 
     const ranking =
-      table(group).findIndex(t => t.get("id") === offerer.get("id")) + 1;
+      table(group).findIndex((t) => t.get("id") === offerer.get("id")) + 1;
 
     yield call(
       addEvent,
@@ -64,14 +64,14 @@ const event = {
     );
   },
 
-  options: data => {
+  options: (data) => {
     return Map({
       agree: `Kyllä, ilman muuta!`,
       disagree: "Ei, kiitos."
     });
   },
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.merge({
       resolved: true,
       agree: value === "agree"
@@ -88,7 +88,7 @@ const event = {
     yield call(resolvedEvent, data);
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `__${data.get(
         "offererName"
@@ -114,7 +114,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const offerer = data.get("offerer");
     const oldTeam = data.get("oldTeam");
@@ -123,7 +123,7 @@ const event = {
       yield all([
         call(hireManager, manager, offerer),
         call(setBalance, manager, 700000),
-        ...["coach", "cheer", "insurance", "microphone"].map(s =>
+        ...["coach", "cheer", "insurance", "microphone"].map((s) =>
           call(setService, manager, s, false)
         ),
         call(setArenaLevel, manager, 3 + cinteger(0, 3)),

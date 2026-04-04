@@ -2,7 +2,7 @@ import { Map, List, Range, Repeat } from "immutable";
 
 const DUMMY = -1;
 
-const getRange = n => {
+const getRange = (n) => {
   const range = Range(0, n).toList();
 
   if (n % 2 === 0) {
@@ -12,8 +12,8 @@ const getRange = n => {
   return range.push(DUMMY).toList();
 };
 
-const reverser = roundRobin => {
-  return roundRobin.map(round => round.map(pairing => pairing.reverse()));
+const reverser = (roundRobin) => {
+  return roundRobin.map((round) => round.map((pairing) => pairing.reverse()));
 };
 
 const scheduler = (numberOfTeams, times) => {
@@ -22,8 +22,8 @@ const scheduler = (numberOfTeams, times) => {
 
   return Repeat(schedule, times)
     .flatten(true)
-    .map(round => {
-      return round.map(pairing => {
+    .map((round) => {
+      return round.map((pairing) => {
         return Map({
           home: pairing.get(0),
           away: pairing.get(1)
@@ -33,7 +33,7 @@ const scheduler = (numberOfTeams, times) => {
     .toList();
 };
 
-export const roundRobin = numberOfTeams => {
+export const roundRobin = (numberOfTeams) => {
   const px = getRange(numberOfTeams);
   const n = px.count();
 
@@ -45,11 +45,11 @@ export const roundRobin = numberOfTeams => {
       .toArray();
 
     const r = Range(0, n / 2)
-      .map(i => List.of(ps[i], ps[n - 1 - i]))
-      .filterNot(pair => pair.includes(DUMMY))
+      .map((i) => List.of(ps[i], ps[n - 1 - i]))
+      .filterNot((pair) => pair.includes(DUMMY))
       .toList();
 
-    return j % 2 ? r : r.map(pair => pair.reverse());
+    return j % 2 ? r : r.map((pair) => pair.reverse());
   });
 
   return rs.toList();

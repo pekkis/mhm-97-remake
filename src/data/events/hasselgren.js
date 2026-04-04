@@ -12,7 +12,7 @@ const eventId = "hasselgren";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const hasInsurance = yield select(managerHasService(manager, "insurance"));
@@ -30,7 +30,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Pelaaja __Thomas Hasselgren__ hakkasi edellisessä ottelussa erään pelaajan henkihieveriin! Hän saa 5 ottelun pelikiellon, ja muiden pelaajien moraali laskee! Lisäksi joukkueesi tuomitaan ${a(
         data.get("amount")
@@ -44,7 +44,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const hasInsurance = data.get("hasInsurance");
     const team = yield select(managersTeam(manager));

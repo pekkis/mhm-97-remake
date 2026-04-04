@@ -12,14 +12,14 @@ import Box from "./styled-system/Box";
 const ArenaHierarchy = styled.div``;
 
 const Arena = styled.div`
-  ${props =>
+  ${(props) =>
     props.current &&
     css`
       font-weight: bold;
     `}
 `;
 
-const Arenas = props => {
+const Arenas = (props) => {
   const { manager, teams, improveArena } = props;
 
   const currentLevel = manager.getIn(["arena", "level"]);

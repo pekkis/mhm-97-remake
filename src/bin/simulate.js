@@ -18,8 +18,8 @@ const game = Map({
   home,
   away,
   advantage: Map({
-    home: strength => strength + 10,
-    away: strength => strength - 10
+    home: (strength) => strength + 10,
+    away: (strength) => strength - 10
   }),
   base: () => 20
 });

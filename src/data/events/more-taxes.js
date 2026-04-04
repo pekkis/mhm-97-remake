@@ -31,7 +31,7 @@ const getAmount = (competesInPHL, difficulty) => {
   return amount - 20000;
 };
 
-const texts = data => {
+const texts = (data) => {
   return List.of(
     `Aaaaargh! Verokarhu päättää mätkäistä ${a(
       data.get("amount")
@@ -44,7 +44,7 @@ const eventId = "moreTaxes";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const competesInPHL = yield select(managerCompetesIn(manager, "phl"));
@@ -65,7 +65,7 @@ const event = {
 
   render: texts,
 
-  process: function*(data) {
+  process: function* (data) {
     yield call(decrementBalance, data.get("manager"), data.get("amount"));
   }
 };

@@ -19,10 +19,10 @@ RETURN
 */
 
 const bookNames = List.of(
-  data => `${data.get("managerName")}: legenda jo eläessään`,
-  data => `Mestarimanagerin tarina`,
-  data => `Managerikukkulan kuningas`,
-  data => `Kapina hallilla`
+  (data) => `${data.get("managerName")}: legenda jo eläessään`,
+  (data) => `Mestarimanagerin tarina`,
+  (data) => `Managerikukkulan kuningas`,
+  (data) => `Kapina hallilla`
 );
 
 const eventId = "book";
@@ -30,7 +30,7 @@ const eventId = "book";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const phlGamesPlayed = yield select(totalGamesPlayed(manager, "phl", 0));
@@ -56,7 +56,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Kuuluisa kirjailija __Seppo Kuningas__ hahmottelee uutta teosta. "${bookNames.get(
         data.get("book")
@@ -66,7 +66,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
     yield call(incrementMorale, team, 2);

@@ -3,7 +3,7 @@ import Services from "../Services";
 import { toggleService } from "../../ducks/manager";
 
 export default connect(
-  state => ({
+  (state) => ({
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
     teams: state.game.get("teams"),
     basePrices: state.game.get("serviceBasePrices")

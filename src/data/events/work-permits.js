@@ -10,7 +10,7 @@ const eventId = "workPermits";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(randomTeamFrom(["phl"]));
@@ -30,13 +30,13 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Liigasta:
 
 ${data.get(
-        "teamName"
-      )}:lla on ongelmia ulkolaisvahvistustensa, Haso Otchakin sekä Malex Atsijevskin, työlupien kanssa. Joukkue heikentyy merkittävästi ${data.get(
+  "teamName"
+)}:lla on ongelmia ulkolaisvahvistustensa, Haso Otchakin sekä Malex Atsijevskin, työlupien kanssa. Joukkue heikentyy merkittävästi ${data.get(
         "duration"
       )} ottelun ajaksi kun kyseiset herrat eivät pelaa.`
     );
@@ -44,7 +44,7 @@ ${data.get(
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     const duration = data.get("duration");
 

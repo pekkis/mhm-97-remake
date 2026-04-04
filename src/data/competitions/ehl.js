@@ -18,49 +18,49 @@ const awards = List.of(
     strength: 30,
     text: (amount) =>
       `Voitimme jääkiekon euroopan mestaruuden. Johtokunta onnittelee menestyksekästä joukkuetta ja sen manageria yksissä tuumin. Sielua lämmittävän kiittelyn ohella joukkueen tilille napsahtaa aimo summa pätäkkää, kaiken kaikkiaan __${a(
-        amount,
-      )}__ pekkaa. `,
+        amount
+      )}__ pekkaa. `
   }),
   Map({
     amount: 1600000,
     strength: 28,
     text: (amount) =>
       `Sijoituimme toiseksi EHL:n lopputurnauksessa. Hopea ei ole häpeä, ja johtokunta on samaan aikaan onnellinen saavutuksesta mutta haikea saavuttamattomasta. Onneksi palkkiosumma, __${a(
-        amount,
-      )}__ pekkaa, lohduttaa tasaisesti kaikkia asianosaisia.`,
+        amount
+      )}__ pekkaa, lohduttaa tasaisesti kaikkia asianosaisia.`
   }),
   Map({
     amount: 1400000,
     strength: 26,
     text: (amount) =>
       `Sijoituimme kolmanneksi EHL:n lopputurnauksessa. Himmeinkin mitali kelpaa, ja johtokunta on miedosti onnellinen saavutuksestanne. Kättelyt ovat ainakin kädenlämpöisiä, ja rahapalkkio, __${a(
-        amount,
-      )}__ pekkaa, kyllä kelpaa aivan jokaiselle.`,
+        amount
+      )}__ pekkaa, kyllä kelpaa aivan jokaiselle.`
   }),
   Map({
     amount: 1200000,
     strength: 24,
     text: (amount) =>
       `Sijoituimme neljänneksi EHL:n lopputurnauksessa. Johtokunta tunnustaa haaveilleensa paremmasta, mutta ottaa silti ilolla vastaan rahapalkkion, __${a(
-        amount,
-      )}__ pekkaa.`,
+        amount
+      )}__ pekkaa.`
   }),
   Map({
     amount: 1000000,
     strength: 22,
     text: (amount) =>
       `Sijoituimme viidenneksi EHL:n lopputurnauksessa. Johtokunta nyreilee ja kyräilee, he odottivat joukkueelta selvästi enemmän. Rahapalkkio, __${a(
-        amount,
-      )}__ pekkaa, kelpaa heille kyllä, mutta se ei kuulemma "lohduta heitä pimeinä talvi-iltoina".`,
+        amount
+      )}__ pekkaa, kelpaa heille kyllä, mutta se ei kuulemma "lohduta heitä pimeinä talvi-iltoina".`
   }),
   Map({
     amount: 800000,
     strength: 20,
     text: (amount) =>
       `Sijoituimme viimeiseksi EHL:n lopputurnauksessa. No, ainakin kohtuullinen rahapalkkio, __${a(
-        amount,
-      )}__ pekkaa, napsahtaa tilillenne.`,
-  }),
+        amount
+      )}__ pekkaa, napsahtaa tilillenne.`
+  })
 );
 
 /*
@@ -75,7 +75,7 @@ IF elt(y) = eds3 AND edus3 <> u AND seh(elt(y)) = yy THEN v(edus3) = v(edus3) + 
 
 function* ehlAwards() {
   const finalTournament = yield select((state) =>
-    state.game.getIn(["competitions", "ehl", "phases", 1, "groups", 0]),
+    state.game.getIn(["competitions", "ehl", "phases", 1, "groups", 0])
   );
 
   const managers = yield select((state) => state.manager.get("managers"));
@@ -100,12 +100,20 @@ function* ehlAwards() {
         console.log("manager", manager.toJS());
 
         yield all([
-          call(addAnnouncement, manager.get("id"), awards.getIn([ranking, "text"])(amount)),
-          call(incrementBalance, manager.get("id"), amount),
+          call(
+            addAnnouncement,
+            manager.get("id"),
+            awards.getIn([ranking, "text"])(amount)
+          ),
+          call(incrementBalance, manager.get("id"), amount)
         ]);
       } else {
         // Give strength to domestic computer teams
-        yield call(incrementStrength, team.get("id"), awards.getIn([ranking, "strength"]));
+        yield call(
+          incrementStrength,
+          team.get("id"),
+          awards.getIn([ranking, "strength"])
+        );
       }
     }
 
@@ -126,7 +134,7 @@ export default Map({
     phase: -1,
     name: "EHL",
     abbr: "ehl",
-    phases: List(),
+    phases: List()
   }),
 
   relegateTo: false,
@@ -139,7 +147,7 @@ export default Map({
     const season = turn.get("season");
 
     const ehlTeams = yield select((state) =>
-      state.stats.getIn(["seasons", season - 1, "medalists"], List.of(2, 3, 5)),
+      state.stats.getIn(["seasons", season - 1, "medalists"], List.of(2, 3, 5))
     );
 
     console.log(ehlTeams, "lussi?");
@@ -149,7 +157,7 @@ export default Map({
         .get("teams")
         .slice(24)
         .take(17)
-        .map((t) => t.get("id")),
+        .map((t) => t.get("id"))
     );
 
     const teams = ehlTeams.concat(foreignTeams).sortBy(() => r.real(1, 10000));
@@ -191,13 +199,13 @@ export default Map({
     gameday: (phase) => ({
       advantage: Map({
         home: (team) => (phase === 0 ? 10 : 0),
-        away: (team) => (phase === 0 ? -10 : 0),
+        away: (team) => (phase === 0 ? -10 : 0)
       }),
       base: () => 20,
       moraleEffect: (team) => {
         return team.get("morale") * 2;
-      },
-    }),
+      }
+    })
   }),
 
   seed: List.of(
@@ -217,7 +225,7 @@ export default Map({
             teams: teamSlice,
             schedule: rr(teamSlice.count(), times),
             colors: List.of("d", "l", "l", "l"),
-            penalties: List(),
+            penalties: List()
           });
         })
         .toList();
@@ -226,7 +234,7 @@ export default Map({
         teams,
         name: "runkosarja",
         type: "round-robin",
-        groups,
+        groups
       });
     },
     (competitions) => {
@@ -235,11 +243,15 @@ export default Map({
 
       const qualifiedVictors = ehlTables.map((table) => table.first());
 
-      const sortedSeconds = sortStats(ehlTables.flatMap((table) => table.rest()));
+      const sortedSeconds = sortStats(
+        ehlTables.flatMap((table) => table.rest())
+      );
 
       const qualifiedSecond = sortedSeconds.first();
 
-      const teams = qualifiedVictors.push(qualifiedSecond).map((e) => e.get("id"));
+      const teams = qualifiedVictors
+        .push(qualifiedSecond)
+        .map((e) => e.get("id"));
 
       console.log("Qualified teams", teams);
 
@@ -255,10 +267,10 @@ export default Map({
             teams,
             round: 0,
             name: "lopputurnaus",
-            schedule: tournamentScheduler(teams.count()),
-          }),
-        ),
+            schedule: tournamentScheduler(teams.count())
+          })
+        )
       });
-    },
-  ),
+    }
+  )
 });

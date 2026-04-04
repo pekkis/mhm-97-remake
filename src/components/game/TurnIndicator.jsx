@@ -1,6 +1,6 @@
 import React from "react";
 
-const TurnIndicator = props => {
+const TurnIndicator = (props) => {
   const { turn } = props;
   return (
     <span>

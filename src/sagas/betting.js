@@ -10,8 +10,8 @@ import { List } from "immutable";
 const victories = List.of(false, false, false, 1, 2, 5, 10);
 
 export function* processChampionBets() {
-  const bets = yield select(state => state.betting.get("championshipBets"));
-  const stats = yield select(state => state.stats.get("currentSeason"));
+  const bets = yield select((state) => state.betting.get("championshipBets"));
+  const stats = yield select((state) => state.stats.get("currentSeason"));
 
   console.log("stats", stats.toJS());
 
@@ -31,7 +31,7 @@ export function* processChampionBets() {
 }
 
 export function* bettingResults(round) {
-  const pairings = yield select(state =>
+  const pairings = yield select((state) =>
     state.game.getIn([
       "competitions",
       "phl",
@@ -44,8 +44,8 @@ export function* bettingResults(round) {
     ])
   );
 
-  const facts = pairings.map(p => resultFacts(p.get("result"), "home"));
-  const correctCoupon = facts.map(f => {
+  const facts = pairings.map((p) => resultFacts(p.get("result"), "home"));
+  const correctCoupon = facts.map((f) => {
     if (f.isWin) {
       return "1";
     } else if (f.isDraw) {
@@ -56,7 +56,7 @@ export function* bettingResults(round) {
 
   console.log("CORRETTI", correctCoupon);
 
-  const bets = yield select(state => state.betting.get("bets"));
+  const bets = yield select((state) => state.betting.get("bets"));
 
   for (const bet of bets) {
     const correct = bet

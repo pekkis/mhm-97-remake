@@ -16,7 +16,7 @@ const eventId = "laskisalonen";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const competesInPHL = yield select(managerCompetesIn(manager, "phl"));
@@ -39,7 +39,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Molemmat maalivahtinne ovat loukkaantuneet! Ainoa halukas tuuraaja on 300-kiloinen __Läski-Salonen__, joka kaikeksi onneksi tukkii maalin _tosi tehokkaasti_, mutta valitettavasti vain ${data.get(
         "duration"
@@ -57,7 +57,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const strength = data.get("strength");
     const duration = data.get("duration");

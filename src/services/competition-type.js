@@ -6,19 +6,19 @@ const competitionTypes = Map({
   "round-robin": Map({
     playMatch: () => true,
     overtime: () => false,
-    stats: group => {
+    stats: (group) => {
       return table(group);
     }
   }),
   tournament: Map({
     playMatch: () => true,
     overtime: () => false,
-    stats: group => {
+    stats: (group) => {
       return table(group);
     }
   }),
   playoffs: Map({
-    stats: group => {
+    stats: (group) => {
       return matchups(group);
     },
     playMatch: (phase, round, matchup) => {
@@ -37,7 +37,7 @@ const competitionTypes = Map({
 
       return true;
     },
-    overtime: result => {
+    overtime: (result) => {
       return result.get("home") === result.get("away");
     }
   })

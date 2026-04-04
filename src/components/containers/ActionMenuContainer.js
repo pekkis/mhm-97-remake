@@ -5,7 +5,7 @@ import { resolveEvent } from "../../ducks/event";
 import { closeMenu } from "../../ducks/ui";
 import { saveGame, quitToMainMenu } from "../../ducks/meta";
 export default connect(
-  state => ({
+  (state) => ({
     turn: state.game.get("turn"),
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
     managers: state.manager.get("managers"),

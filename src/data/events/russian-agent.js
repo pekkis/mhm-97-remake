@@ -9,7 +9,7 @@ import { incrementStrength } from "../../sagas/team";
 
 const eventId = "russianAgent";
 
-const texts = data => {
+const texts = (data) => {
   let t = List.of(
     `Venäjän agenttisi soittaa ja tarjoaa "huippupelaajaa" __Moskovan ZSKA__:sta. Et tiedä mitään hänen tasostaan, mutta toisaalta hintakin on vain ${c(
       data.get("amount")
@@ -31,7 +31,7 @@ const texts = data => {
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(managersTeamId(manager));
@@ -51,14 +51,14 @@ const event = {
     );
   },
 
-  options: data => {
+  options: (data) => {
     return Map({
       agree: `Ostan mysteeripelaajan`,
       disagree: `En osta mysteeripelaajaa`
     });
   },
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.set("resolved", true).set("agree", value === "agree");
 
     yield put({
@@ -70,11 +70,11 @@ const event = {
     });
   },
 
-  render: data => {
+  render: (data) => {
     return texts(data);
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
 

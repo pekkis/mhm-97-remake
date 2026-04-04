@@ -22,7 +22,7 @@ const eventId = "limpenius";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -39,7 +39,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Ilta-Maso kirjoittaa häväistysjutun sinusta ja __Landa Limpeniuksesta__. Haastat Ilta-Mason oikeuteen!`
     );
@@ -60,7 +60,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const success = data.get("success");
     const amount = data.get("amount");

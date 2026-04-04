@@ -1,4 +1,4 @@
-export const defaultMoraleBoost = facts => {
+export const defaultMoraleBoost = (facts) => {
   console.log("USING DEFAULT MORALE BOOST");
 
   if (facts.isWin) {

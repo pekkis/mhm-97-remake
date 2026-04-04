@@ -42,7 +42,7 @@ RETURN;
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const competition = yield select(managersMainCompetition(manager));
@@ -60,14 +60,14 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     let text = List.of(
       prophecies.getIn([data.get("competition"), data.get("omen"), "prophecy"])
     );
     return text;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = yield select(managersTeamId(data.get("manager")));
 
     yield call(

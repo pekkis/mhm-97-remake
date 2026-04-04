@@ -5,7 +5,7 @@ import { resolveEvent } from "../../../ducks/event";
 import { closeMenu } from "../../../ducks/ui";
 import { saveGame, quitToMainMenu } from "../../../ducks/meta";
 export default connect(
-  state => ({
+  (state) => ({
     turn: state.game.get("turn"),
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
     managers: state.manager.get("managers"),
@@ -15,7 +15,7 @@ export default connect(
     news: state.news.get("news"),
     invitations: state.invitation
       .get("invitations")
-      .filter(i => i.get("manager") === state.manager.get("active"))
+      .filter((i) => i.get("manager") === state.manager.get("active"))
   }),
   { advance, resolveEvent, saveGame, quitToMainMenu, closeMenu }
 )(Current);

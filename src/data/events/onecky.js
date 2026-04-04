@@ -20,7 +20,7 @@ const eventId = "onecky";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(randomTeamFrom(["phl"]));
@@ -40,7 +40,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `__${data.get(
         "teamName"
@@ -54,7 +54,7 @@ Tuomari seisoo vieressä, mutta Oneckyn vaikutusvaltainen tukija, manageri ${dat
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const team = data.get("team");
     yield call(addEffect, team, ["morale"], -5, 3);
   }

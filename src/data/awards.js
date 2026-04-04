@@ -14,7 +14,7 @@ import { victors, eliminated } from "../services/playoffs";
 import { List, Map, Repeat } from "immutable";
 import r from "../services/random";
 
-const playsInPHLOrWasPromoted = function*(teamId) {
+const playsInPHLOrWasPromoted = function* (teamId) {
   const playsInPHL = yield select(teamCompetesIn(teamId, "phl"));
   if (!playsInPHL) {
     return yield select(teamWasPromoted(teamId));
@@ -24,7 +24,7 @@ const playsInPHLOrWasPromoted = function*(teamId) {
   return !wasRelegated;
 };
 
-const playsInDivisionOrWasRelegated = function*(teamId) {
+const playsInDivisionOrWasRelegated = function* (teamId) {
   const playsInDivision = yield select(teamCompetesIn(teamId, "division"));
   if (!playsInDivision) {
     return yield select(teamWasRelegated(teamId));
@@ -38,13 +38,13 @@ const createRandom = (
   dieSize,
   requiredThrow,
   amountOfStrengthIncremented,
-  isEligible = function*(teamId) {
+  isEligible = function* (teamId) {
     return true;
   },
   news
 ) => {
-  return function*(teamId) {
-    const team = yield select(state => state.game.getIn(["teams", teamId]));
+  return function* (teamId) {
+    const team = yield select((state) => state.game.getIn(["teams", teamId]));
 
     const canDo = yield call(isEligible, teamId);
 
@@ -77,7 +77,7 @@ const randomEvents = List.of(
     12,
     2,
     () => -199,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
@@ -86,7 +86,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength > 400;
     },
-    team => {
+    (team) => {
       return `__${team.get(
         "name"
       )}__ kaatuu sisäisiin riitoihin! Pelaajat kävelevät ulos!`;
@@ -96,7 +96,7 @@ const randomEvents = List.of(
     12,
     5,
     () => -70,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
@@ -105,7 +105,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength > 300;
     },
-    team => {
+    (team) => {
       return `__${team.get(
         "name"
       )}__ hajoaa totaalisesti ulkomaiden rahaseuroihin!`;
@@ -116,7 +116,7 @@ const randomEvents = List.of(
     12,
     6,
     () => -45,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
@@ -125,7 +125,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength > 250;
     },
-    team => {
+    (team) => {
       return `__${team.get("name")}__ menettää useita pelaajiaan ulkomaille.`;
     }
   ),
@@ -134,7 +134,7 @@ const randomEvents = List.of(
     12,
     8,
     () => -15,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
@@ -143,7 +143,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength > 210;
     },
-    team => {
+    (team) => {
       return `__${team.get("name")}__ menettää joitakin pelaajiaan ulkomaille.`;
     }
   ),
@@ -152,7 +152,7 @@ const randomEvents = List.of(
     1,
     1,
     () => -30,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
@@ -162,7 +162,7 @@ const randomEvents = List.of(
       const rank = yield select(teamsPositionInRoundRobin(teamId, "phl", 0));
       return strength > 200 && rank > 8;
     },
-    team => {
+    (team) => {
       return `__${team.get(
         "name"
       )}__ ei päässyt play-offeihin ja myy pelaajiaan konkurssin uhatessa!!`;
@@ -173,7 +173,7 @@ const randomEvents = List.of(
     1,
     1,
     () => 20,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
@@ -187,7 +187,7 @@ const randomEvents = List.of(
 
       return strength < 160 && rank <= 8;
     },
-    team => {
+    (team) => {
       return `__${team.get(
         "name"
       )}__:n  nuori joukkue saa rutkasti kokemusta play-offeista!`;
@@ -198,7 +198,7 @@ const randomEvents = List.of(
     12,
     5,
     () => 12,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
@@ -207,7 +207,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength < 150;
     },
-    team => {
+    (team) => {
       return `__${team.get(
         "name"
       )}__ saa uuden sponsorin joka ostaa joukkueelle uusia pelaajia!`;
@@ -218,7 +218,7 @@ const randomEvents = List.of(
     12,
     5,
     () => 23,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
@@ -227,7 +227,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength < 135;
     },
-    team => {
+    (team) => {
       return `__${team.get(
         "name"
       )}__ saa uuden, RIKKAAN sponsorin joka ostaa joukkueelle uusia pelaajia!`;
@@ -238,7 +238,7 @@ const randomEvents = List.of(
     22,
     16,
     () => 60,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
@@ -247,7 +247,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength < 140;
     },
-    team => {
+    (team) => {
       return `__${team.get(
         "name"
       )}__ lähtee tosissaan mukaan mestaruustaistoon rahan voimalla!`;
@@ -258,7 +258,7 @@ const randomEvents = List.of(
     12,
     7,
     () => -10,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
@@ -266,7 +266,7 @@ const randomEvents = List.of(
 
       return true;
     },
-    team => {
+    (team) => {
       return `__${team.get("name")}__:n veteraanipelaajia siirtyy eläkkeelle!`;
     }
   ),
@@ -274,14 +274,14 @@ const randomEvents = List.of(
     12,
     7,
     () => 7,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
       return true;
     },
-    team => {
+    (team) => {
       return `__${team.get(
         "name"
       )}__:n juniorityö tuottaa lupaavan nuoren tähden!`;
@@ -291,14 +291,14 @@ const randomEvents = List.of(
     12,
     8,
     () => -r.integer(5, 20),
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
       return true;
     },
-    team => {
+    (team) => {
       return `__${team.get(
         "name"
       )}__:n pelaajia siirtyy rahan perässä muualle!`;
@@ -308,14 +308,14 @@ const randomEvents = List.of(
     12,
     8,
     () => -r.integer(5, 20),
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
       return true;
     },
-    team => {
+    (team) => {
       return `__${team.get("name")}__ kokee menetyksen, pelaajia siirtyy pois!`;
     }
   ),
@@ -323,7 +323,7 @@ const randomEvents = List.of(
     32,
     27,
     () => 55,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
@@ -331,7 +331,7 @@ const randomEvents = List.of(
 
       return true;
     },
-    team => {
+    (team) => {
       return `__${team.get("name")}__ antaa rahan palaa kunnolla!`;
     }
   ),
@@ -340,7 +340,7 @@ const randomEvents = List.of(
     12,
     5,
     () => -40,
-    function*(teamId) {
+    function* (teamId) {
       const playsInPHL = yield select(teamCompetesIn(teamId, "phl"));
 
       if (!playsInPHL) {
@@ -355,7 +355,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength > 160;
     },
-    team => {
+    (team) => {
       return `Divisioonaan tippunut __${team.get(
         "name"
       )}__ menettää rutkasti pelaajiansa liigaan.`;
@@ -365,7 +365,7 @@ const randomEvents = List.of(
     12,
     7,
     () => -20,
-    function*(teamId) {
+    function* (teamId) {
       const playsInPHL = yield select(teamCompetesIn(teamId, "phl"));
 
       if (!playsInPHL) {
@@ -380,7 +380,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength > 130;
     },
-    team => {
+    (team) => {
       return `Divisioonaan tippunut __${team.get(
         "name"
       )}__ menettää pelaajiansa liigaan.`;
@@ -390,7 +390,7 @@ const randomEvents = List.of(
     1,
     1,
     () => -20,
-    function*(teamId) {
+    function* (teamId) {
       const playsInDivision = yield select(teamCompetesIn(teamId, "division"));
 
       if (!playsInDivision) {
@@ -405,7 +405,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength > 120;
     },
-    team => {
+    (team) => {
       return `Nousua tavoitellut __${team.get(
         "name"
       )}__ ei onnistunut - pelaajat lähtevät!.`;
@@ -415,7 +415,7 @@ const randomEvents = List.of(
     1,
     1,
     () => -40,
-    function*(teamId) {
+    function* (teamId) {
       const playsInDivision = yield select(teamCompetesIn(teamId, "division"));
 
       if (!playsInDivision) {
@@ -430,7 +430,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength > 140;
     },
-    team => {
+    (team) => {
       return `Nousua tavoitellut __${team.get(
         "name"
       )}__ ei onnistunut - pelaajat lähtevät joukoittain!.`;
@@ -440,7 +440,7 @@ const randomEvents = List.of(
     12,
     8,
     () => 8,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
@@ -449,7 +449,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength < 82;
     },
-    team => {
+    (team) => {
       return `__${team.get("name")}__ saa uuden sponsorin!.`;
     }
   ),
@@ -457,7 +457,7 @@ const randomEvents = List.of(
     12,
     7,
     () => 13,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
@@ -466,7 +466,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength < 72;
     },
-    team => {
+    (team) => {
       return `__${team.get("name")}__ saa uuden, hyvän sponsorin!.`;
     }
   ),
@@ -474,7 +474,7 @@ const randomEvents = List.of(
     12,
     7,
     () => 16,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
@@ -483,7 +483,7 @@ const randomEvents = List.of(
       const strength = yield select(teamsStrength(teamId));
       return strength < 62;
     },
-    team => {
+    (team) => {
       return `__${team.get("name")}__ saa uuden, loistavan sponsorin!.`;
     }
   ),
@@ -491,7 +491,7 @@ const randomEvents = List.of(
     12,
     7,
     () => -15,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
@@ -499,7 +499,7 @@ const randomEvents = List.of(
 
       return true;
     },
-    team => {
+    (team) => {
       return `Liigajoukkueet värväävät __${team.get("name")}__:n pelaajia!`;
     }
   ),
@@ -507,7 +507,7 @@ const randomEvents = List.of(
     22,
     20,
     () => 45,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
@@ -515,7 +515,7 @@ const randomEvents = List.of(
 
       return true;
     },
-    team => {
+    (team) => {
       return `__${team.get(
         "name"
       )}__ kuluttaa todella paljon rahaa! Uusia pelaajia ostetaan roimasti!`;
@@ -525,7 +525,7 @@ const randomEvents = List.of(
     12,
     7,
     () => -8,
-    function*(teamId) {
+    function* (teamId) {
       const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
@@ -533,21 +533,21 @@ const randomEvents = List.of(
 
       return true;
     },
-    team => {
+    (team) => {
       return `__${team.get("name")}__:n veteraanipelaajia lopettaa uransa.`;
     }
   ),
   createRandom(
     1,
     1,
-    team => {
+    (team) => {
       return 45 - team.get("strength");
     },
-    function*(teamId) {
+    function* (teamId) {
       const strength = yield select(teamsStrength(teamId));
       return strength < 35;
     },
-    team => {
+    (team) => {
       return `__${team.get(
         "name"
       )}__ on jo luopumassa sarjapaikastaan, mutta uusi omistaja pelastaa joukkueen viime hetkellä!`;
@@ -573,7 +573,7 @@ IF 10 * RND > 5 THEN vd(x) = vd(x) - 8: PRINT ld(x); ":n veteraanipelaajia lopet
 const createAward = (amount, strength, news) => {
   return {
     news,
-    data: team =>
+    data: (team) =>
       Map({
         id: team.get("id"),
         name: team.get("name"),
@@ -584,22 +584,22 @@ const createAward = (amount, strength, news) => {
 };
 
 const medalAwards = List.of(
-  createAward(1500000, 29, data => {
+  createAward(1500000, 29, (data) => {
     return `__${data.get("name")}__ nettoaa mestaruudestaan ${data.get(
       "amount"
     )} pekkaa!`;
   }),
-  createAward(1000000, 19, data => {
+  createAward(1000000, 19, (data) => {
     return `__${data.get("name")}__ nettoaa hopeastaan ${data.get(
       "amount"
     )} pekkaa!`;
   }),
-  createAward(700000, 12, data => {
+  createAward(700000, 12, (data) => {
     return `__${data.get("name")}__ nettoaa pronssistaan ${data.get(
       "amount"
     )} pekkaa!`;
   }),
-  createAward(500000, 10, data => {
+  createAward(500000, 10, (data) => {
     return `__${data.get("name")}__ nettoaa neljännestä sijastaan ${data.get(
       "amount"
     )} pekkaa!`;
@@ -607,29 +607,29 @@ const medalAwards = List.of(
 );
 
 const roundRobinAwards = List.of(
-  createAward(500000, 10, data => {
+  createAward(500000, 10, (data) => {
     return `__${data.get("name")}__ saa runkosarjan voitosta ${data.get(
       "amount"
     )} pekkaa!`;
   }),
-  createAward(400000, 7, data => {
+  createAward(400000, 7, (data) => {
     return `__${data.get("name")}__ saa runkosarjan toisesta sijasta ${data.get(
       "amount"
     )} pekkaa!`;
   }),
-  createAward(300000, 6, data => {
+  createAward(300000, 6, (data) => {
     return `__${data.get(
       "name"
     )}__ saa runkosarjan kolmannesta sijasta ${data.get("amount")} pekkaa!`;
   }),
-  createAward(200000, 4, data => {
+  createAward(200000, 4, (data) => {
     return `__${data.get(
       "name"
     )}__ saa runkosarjan neljännestä sijasta ${data.get("amount")} pekkaa!`;
   }),
 
   Repeat(
-    createAward(100000, 2, data => {
+    createAward(100000, 2, (data) => {
       return `__${data.get("name")}__ saa playoff-bonuksen, ${data.get(
         "amount"
       )} pekkaa!`;
@@ -638,8 +638,8 @@ const roundRobinAwards = List.of(
   ).toList()
 ).flatten(true);
 
-const yieldAwards = function*(awards, to) {
-  const teams = yield select(state => state.game.get("teams"));
+const yieldAwards = function* (awards, to) {
+  const teams = yield select((state) => state.game.get("teams"));
 
   for (const [i, teamId] of to.entries()) {
     const award = awards.get(i);
@@ -673,7 +673,7 @@ const yieldAwards = function*(awards, to) {
   }
 };
 
-const award = function*() {
+const award = function* () {
   const phl = yield select(competition("phl"));
 
   const finalPhase = phl.getIn(["phases", 3, "groups", 0]);
@@ -686,13 +686,13 @@ const award = function*() {
     losers.first(),
     winners.last(),
     losers.last()
-  ).map(r => r.get("id"));
+  ).map((r) => r.get("id"));
 
   yield call(yieldAwards, medalAwards, ranking);
 
   const tableEntries = phl
     .getIn(["phases", 0, "groups", 0, "stats"])
-    .map(t => t.get("id"))
+    .map((t) => t.get("id"))
     .take(8);
 
   yield call(yieldAwards, roundRobinAwards, tableEntries);

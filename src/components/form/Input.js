@@ -10,7 +10,7 @@ const Input = styled.input`
     opacity: 0.5;
   }
 
-  ${props =>
+  ${(props) =>
     props.block &&
     `width: 100%;
     display: block;

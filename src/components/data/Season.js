@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const Season = props => {
+const Season = (props) => {
   const { index, long } = props;
 
   if (!long) {

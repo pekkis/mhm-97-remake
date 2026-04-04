@@ -9,12 +9,12 @@ const eventId = "bazookaStrike";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager, victim } = data;
 
     const victimManager = yield select(randomManager());
 
-    const victimTeam = yield select(state =>
+    const victimTeam = yield select((state) =>
       state.game.getIn(["teams", victim])
     );
 
@@ -31,7 +31,7 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     let text = List.of(
       `Pum! Matkalla vieraspeliin __${data.get(
         "victimTeamName"
@@ -44,8 +44,8 @@ Iskun tekijäksi ilmoittautuu PVA. Miliisi ei kommentoi. Joukkue joutuu joka tap
     return text;
   },
 
-  process: function*(data) {
-    const team = yield select(state =>
+  process: function* (data) {
+    const team = yield select((state) =>
       state.game.getIn(["teams", data.get("victim")])
     );
 

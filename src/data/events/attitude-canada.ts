@@ -21,7 +21,7 @@ const difference = 30;
 const event: MHMEvent = {
   type: "manager",
 
-  create: function*(data: any) {
+  create: function* (data: any) {
     const { manager } = data;
 
     const attitude = yield select(flag("canada"));
@@ -37,7 +37,7 @@ const event: MHMEvent = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `__Kanadassa__ asenne MM-kisoja kohtaan on muuttunut radikaalisti.`
     );
@@ -51,7 +51,7 @@ const event: MHMEvent = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const attitude = data.get("attitude");
     const amount = attitude ? difference : -difference;
     yield all([

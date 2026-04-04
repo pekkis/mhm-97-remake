@@ -26,7 +26,7 @@ const eventId = "jobofferDivision";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const oldTeam = yield select(managersTeamId(manager));
@@ -44,14 +44,14 @@ const event = {
     );
   },
 
-  options: data => {
+  options: (data) => {
     return Map({
       agree: `Kyllä otan!`,
       disagree: "En ota. Minun on hyvä täällä."
     });
   },
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.merge({
       resolved: true,
       agree: value === "agree"
@@ -68,7 +68,7 @@ const event = {
     yield call(resolvedEvent, data);
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `__${data.get(
         "offererName"
@@ -92,7 +92,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const offerer = data.get("offerer");
     const oldTeam = data.get("oldTeam");
@@ -101,7 +101,7 @@ const event = {
       yield all([
         call(hireManager, manager, offerer),
         call(setBalance, manager, 2000000),
-        ...["coach", "cheer", "insurance", "microphone"].map(s =>
+        ...["coach", "cheer", "insurance", "microphone"].map((s) =>
           call(setService, manager, s, false)
         ),
         call(setArenaLevel, manager, 2 + cinteger(0, 2)),

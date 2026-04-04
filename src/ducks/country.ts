@@ -15,13 +15,16 @@ type CountryState = {
 };
 
 const defaultState: CountryState = {
-  countries: Object.values(countryList).reduce((acc, country) => {
-    acc[country.iso] = {
-      ...country,
-      strength: country.strength()
-    };
-    return acc;
-  }, {} as Record<string, Country>)
+  countries: Object.values(countryList).reduce(
+    (acc, country) => {
+      acc[country.iso] = {
+        ...country,
+        strength: country.strength()
+      };
+      return acc;
+    },
+    {} as Record<string, Country>
+  )
 };
 
 const COUNTRY_ALTER_STRENGTH = "COUNTRY_ALTER_STRENGTH";
@@ -79,7 +82,7 @@ const countryReducer: Reducer<CountryState, CountryActions> = (
       return defaultState;
 
     case COUNTRY_SET_STRENGTH:
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         if (draft.countries[action.payload.country]) {
           draft.countries[action.payload.country].strength =
             action.payload.strength;
@@ -87,7 +90,7 @@ const countryReducer: Reducer<CountryState, CountryActions> = (
       });
 
     case COUNTRY_ALTER_STRENGTH:
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         const target = draft.countries[action.payload.country];
         if (target) {
           target.strength = (target.strength ?? 0) + action.payload.amount;

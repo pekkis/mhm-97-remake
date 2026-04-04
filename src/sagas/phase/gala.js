@@ -7,44 +7,39 @@ import { randomManager } from "../../data/selectors";
 export default function* galaPhase() {
   yield call(setPhase, "gala");
 
-  const teams = yield select(state => state.game.get("teams"));
-  const managers = yield select(state => state.manager.get("managers"));
+  const teams = yield select((state) => state.game.get("teams"));
+  const managers = yield select((state) => state.manager.get("managers"));
 
-  const phlRegularSeason = yield select(state =>
+  const phlRegularSeason = yield select((state) =>
     state.game.getIn(["competitions", "phl", "phases", 0, "groups", 0])
   );
 
-  const phlFinals = yield select(state =>
+  const phlFinals = yield select((state) =>
     state.game.getIn(["competitions", "phl", "phases", 3, "groups", 0])
   );
 
-  const phlLast = teams.get(
-    phlRegularSeason
-      .get("stats")
-      .last()
-      .get("id")
-  );
+  const phlLast = teams.get(phlRegularSeason.get("stats").last().get("id"));
 
   const phlFinalists = phlFinals
     .get("teams")
     .take(2)
-    .map(t => teams.get(t));
+    .map((t) => teams.get(t));
 
   const phlBronzists = phlFinals
     .get("teams")
     .takeLast(2)
-    .map(t => teams.get(t));
+    .map((t) => teams.get(t));
 
-  const divFinals = yield select(state =>
+  const divFinals = yield select((state) =>
     state.game.getIn(["competitions", "division", "phases", 3, "groups", 0])
   );
 
   const divFinalists = divFinals
     .get("teams")
     .take(2)
-    .map(t => teams.get(t));
+    .map((t) => teams.get(t));
 
-  const divRegularSeason = yield select(state =>
+  const divRegularSeason = yield select((state) =>
     state.game.getIn(["competitions", "division", "phases", 0, "groups", 0])
   );
 
@@ -92,7 +87,7 @@ export default function* galaPhase() {
   if (
     phlRegularSeason
       .get("stats")
-      .findIndex(stat => stat.get("id") === phlBronzists.first()) === 0
+      .findIndex((stat) => stat.get("id") === phlBronzists.first()) === 0
   ) {
     yield call(
       addNews,
@@ -103,7 +98,8 @@ export default function* galaPhase() {
   if (
     phlRegularSeason
       .get("stats")
-      .findIndex(stat => stat.get("id") === phlBronzists.first().get("id")) >= 6
+      .findIndex((stat) => stat.get("id") === phlBronzists.first().get("id")) >=
+    6
   ) {
     yield call(
       addNews,
@@ -118,7 +114,8 @@ export default function* galaPhase() {
   if (
     phlRegularSeason
       .get("stats")
-      .findIndex(stat => stat.get("id") === phlBronzists.last().get("id")) >= 6
+      .findIndex((stat) => stat.get("id") === phlBronzists.last().get("id")) >=
+    6
   ) {
     yield call(
       addNews,
@@ -166,7 +163,7 @@ export default function* galaPhase() {
   for (const divFinalist of divFinalists) {
     const ranking = divRegularSeason
       .get("stats")
-      .findIndex(stat => stat.get("id") === divFinalist.get("id"));
+      .findIndex((stat) => stat.get("id") === divFinalist.get("id"));
 
     if (ranking === 0) {
       yield call(
@@ -181,7 +178,7 @@ export default function* galaPhase() {
   for (const divFinalist of divFinalists) {
     const ranking = divRegularSeason
       .get("stats")
-      .findIndex(stat => stat.get("id") === divFinalist.get("id"));
+      .findIndex((stat) => stat.get("id") === divFinalist.get("id"));
 
     if (ranking === 4) {
       yield call(

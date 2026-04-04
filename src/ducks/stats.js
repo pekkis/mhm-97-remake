@@ -48,7 +48,7 @@ export default function statsReducer(state = defaultState, action) {
       return state.set("currentSeason", emptySeasonStats);
 
     case SEASON_END:
-      return state.update("seasons", seasons =>
+      return state.update("seasons", (seasons) =>
         seasons.push(state.get("currentSeason"))
       );
 
@@ -60,7 +60,7 @@ export default function statsReducer(state = defaultState, action) {
         .updateIn(
           ["streaks", "team", payload.team, payload.competition],
           emptyStreak,
-          streak => {
+          (streak) => {
             return streak.merge({
               win: payload.facts.isWin ? streak.get("win") + 1 : 0,
               draw: payload.facts.isDraw ? streak.get("draw") + 1 : 0,
@@ -76,7 +76,7 @@ export default function statsReducer(state = defaultState, action) {
             });
           }
         )
-        .update("managers", managerStats => {
+        .update("managers", (managerStats) => {
           if (!payload.manager) {
             return managerStats;
           }
@@ -88,13 +88,13 @@ export default function statsReducer(state = defaultState, action) {
               draw: 0,
               loss: 0
             }),
-            stats => {
+            (stats) => {
               if (payload.facts.isWin) {
-                return stats.update("win", stat => stat + 1);
+                return stats.update("win", (stat) => stat + 1);
               } else if (payload.facts.isLoss) {
-                return stats.update("loss", stat => stat + 1);
+                return stats.update("loss", (stat) => stat + 1);
               } else {
-                return stats.update("draw", stat => stat + 1);
+                return stats.update("draw", (stat) => stat + 1);
               }
             }
           );

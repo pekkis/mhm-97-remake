@@ -14,7 +14,7 @@ import {
   cancel
 } from "redux-saga/effects";
 
-const save = state => {
+const save = (state) => {
   const json = transit.toJSON(state);
   window.localStorage.setItem("mhm97", json);
 };
@@ -56,10 +56,10 @@ function* mainMenu() {
 }
 
 export function* gameSave(action) {
-  const manager = yield select(state =>
+  const manager = yield select((state) =>
     state.manager.getIn(["managers", state.manager.get("active")])
   );
-  const state = yield select(state => state);
+  const state = yield select((state) => state);
   yield call(save, state);
   yield call(addNotification, manager.get("id"), "Peli tallennettiin.");
 }

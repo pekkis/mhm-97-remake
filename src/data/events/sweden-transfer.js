@@ -16,7 +16,7 @@ const eventId = "swedenTransfer";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
     const team = yield select(managersTeamId(manager));
 
@@ -41,11 +41,11 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     return texts(data);
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = data.get("team");
     const amount = data.get("amount");
@@ -73,7 +73,7 @@ IF sarja = 1 THEN raha = raha + 30000: v(u) = v(u) - 12: mo = mo - 2
 IF sarja = 2 THEN raha = raha + 30000: vd(u) = vd(u) - 7: mo = mo + 2
 */
 
-const texts = data => {
+const texts = (data) => {
   let t = List.of(
     `Joukkueen nuori, lupaava taituri siirtyy Ruotsiin kesken kauden. Nyyh! Ruotsalaiset korvaavat menetyksen ${a(
       data.get("amount")

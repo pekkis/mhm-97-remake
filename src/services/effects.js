@@ -15,18 +15,18 @@ const affect = (target, source, field) => {
       if (!namedEffect) {
         throw new Error(`Unknown named effect "${amount}"`);
       }
-      return obj.updateIn(parameter, p => {
+      return obj.updateIn(parameter, (p) => {
         return namedEffect(p, effect.get("extra"));
       });
     } else {
-      return obj.updateIn(parameter, p => {
+      return obj.updateIn(parameter, (p) => {
         return p + effect.get("amount");
       });
     }
   }, target);
 };
 
-export const getEffective = obj => {
+export const getEffective = (obj) => {
   return affect(obj, obj, "effects");
 };
 

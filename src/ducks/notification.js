@@ -4,7 +4,7 @@ const defaultState = Map({
   notifications: OrderedMap()
 });
 
-export const dismissNotification = id => {
+export const dismissNotification = (id) => {
   return {
     type: "NOTIFICATION_DISMISS",
     payload: id
@@ -19,7 +19,7 @@ export default function notificationReducer(state = defaultState, action) {
       return defaultState;
 
     case "NOTIFICATION_ADD":
-      return state.update("notifications", notifications =>
+      return state.update("notifications", (notifications) =>
         notifications.set(payload.id, payload).takeLast(3)
       );
 

@@ -3,7 +3,7 @@ import TransferMarket from "../TransferMarket";
 import { buyPlayer, sellPlayer } from "../../ducks/manager";
 
 export default connect(
-  state => ({
+  (state) => ({
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
     teams: state.game.get("teams")
   }),

@@ -23,7 +23,7 @@ export function* stats() {
 
 export function* calculatePhaseStats(action) {
   const { payload } = action;
-  const phase = yield select(state =>
+  const phase = yield select((state) =>
     state.game.getIn([
       "competitions",
       payload.competition,
@@ -43,7 +43,7 @@ export function* calculatePhaseStats(action) {
 }
 
 function* groupStats(competitionId, phaseId, groupId) {
-  const group = yield select(state =>
+  const group = yield select((state) =>
     state.game.getIn([
       "competitions",
       competitionId,
@@ -80,7 +80,7 @@ function* gameResult(action) {
   } = action;
 
   const streaksToUpdate = List.of("home", "away")
-    .map(which => {
+    .map((which) => {
       const team = meta.getIn([which, "team"]);
       const manager = meta.getIn([which, "manager"]);
       const facts = resultFacts(result, which);
@@ -93,7 +93,7 @@ function* gameResult(action) {
         facts
       };
     })
-    .map(payload =>
+    .map((payload) =>
       put({
         type: STATS_UPDATE_FROM_FACTS,
         payload
@@ -114,22 +114,22 @@ export function* setSeasonStat(path, value) {
 }
 
 export function* createSeasonStories() {
-  const managers = yield select(state => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.get("managers"));
 
-  const stats = yield select(state => state.stats.get("currentSeason"));
+  const stats = yield select((state) => state.stats.get("currentSeason"));
 
   for (const [managerId, manager] of managers) {
     const teamId = manager.get("team");
 
     const mainCompetition = yield select(managersMainCompetition(managerId));
 
-    const competition = yield select(state =>
+    const competition = yield select((state) =>
       state.game.getIn(["competitions", mainCompetition])
     );
 
     console.log(competition.toJS(), "competitiore");
 
-    const group = yield select(state =>
+    const group = yield select((state) =>
       state.game.getIn([
         "competitions",
         mainCompetition,
@@ -142,7 +142,7 @@ export function* createSeasonStories() {
 
     const [ranking, stat] = group
       .get("stats")
-      .findEntry(s => s.get("id") === teamId);
+      .findEntry((s) => s.get("id") === teamId);
 
     const story = Map({
       mainCompetition,
@@ -150,11 +150,11 @@ export function* createSeasonStories() {
       ranking,
       promoted: teamId === stats.get("promoted"),
       relegated: teamId === stats.get("relegated"),
-      medal: stats.get("medalists").findIndex(m => m === teamId),
+      medal: stats.get("medalists").findIndex((m) => m === teamId),
       ehlChampion: stats.get("ehlChampionship") === teamId,
       lastPhase: competition
         .get("phases")
-        .findLastKey(phase => phase.get("teams").includes(teamId))
+        .findLastKey((phase) => phase.get("teams").includes(teamId))
     });
 
     console.log("story", story.toJS());

@@ -27,11 +27,11 @@ const difficultyLevels = List.of(
     startBalance: 1000000,
     pranksPerSeason: 5,
     extra: 3000,
-    salary: competition => {
+    salary: (competition) => {
       return competition === "phl" ? 2600 : 2000;
     },
     rallyMorale: 33,
-    rallyExtra: competition => {
+    rallyExtra: (competition) => {
       return competition === "phl" ? 40000 : 10000;
     }
   }),
@@ -45,11 +45,11 @@ const difficultyLevels = List.of(
     startBalance: 500000,
     pranksPerSeason: 4,
     extra: 0,
-    salary: competition => {
+    salary: (competition) => {
       return competition === "phl" ? 3000 : 2350;
     },
     rallyMorale: 33,
-    rallyExtra: competition => {
+    rallyExtra: (competition) => {
       return competition === "phl" ? 35000 : 10000;
     }
   }),
@@ -65,11 +65,11 @@ const difficultyLevels = List.of(
     startBalance: 0,
     pranksPerSeason: 3,
     extra: 0,
-    salary: competition => {
+    salary: (competition) => {
       return competition === "phl" ? 3200 : 2700;
     },
     rallyMorale: 33,
-    rallyExtra: competition => {
+    rallyExtra: (competition) => {
       return competition === "phl" ? 30000 : 10000;
     }
   }),
@@ -84,11 +84,11 @@ const difficultyLevels = List.of(
     startBalance: -250000,
     pranksPerSeason: 2,
     extra: -3000,
-    salary: competition => {
+    salary: (competition) => {
       return competition === "phl" ? 3500 : 2900;
     },
     rallyMorale: 33,
-    rallyExtra: competition => {
+    rallyExtra: (competition) => {
       return competition === "phl" ? 25000 : 10000;
     }
   }),
@@ -102,11 +102,11 @@ const difficultyLevels = List.of(
     startBalance: -600000,
     pranksPerSeason: 1,
     extra: -3000,
-    salary: competition => {
+    salary: (competition) => {
       return competition === "phl" ? 4000 : 3200;
     },
     rallyMorale: 15,
-    rallyExtra: competition => {
+    rallyExtra: (competition) => {
       return competition === "phl" ? 20000 : 10000;
     }
   })

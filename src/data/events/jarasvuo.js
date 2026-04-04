@@ -30,7 +30,7 @@ const eventId = "jarasvuo";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
     const competesInPHL = yield select(managerCompetesIn(manager, "phl"));
     if (!competesInPHL) {
@@ -56,7 +56,7 @@ const event = {
       nothing: "En tee mitään. Pojat ovat poikia!"
     }),
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     data = data.merge({
       resolved: true,
       solution: value
@@ -65,7 +65,7 @@ const event = {
     yield call(resolvedEvent, data);
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Huippupelaajanne on Sari Jarasvuon ohjelmassa haastattelussa. Hän ryöpyttää jostain syystä useita kanssapelaajiaan, valmentajaa ja koko organisaatiota. Kaikki saavat osansa.
 
@@ -93,7 +93,7 @@ Miten rankaiset pelaajaa?`
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const solution = data.get("solution");
     const team = yield select(managersTeamId(manager));

@@ -18,7 +18,7 @@ const eventId = "allgoSuccess";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const team = yield select(managersTeam(manager));
@@ -37,7 +37,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Pelaajiesi kunto on osoittautunut odotettuakin paremmaksi! Kuluttavasta "kaikki peliin"-strategiastanne huolimatta "pojat" jaksavat yhä treenata entistäkin kovemmin, ja tämä näkyy toivottavasti peliesityksissä pitkälle kevääseen!`
     );
@@ -45,7 +45,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
     yield call(incrementReadiness, team, 6);

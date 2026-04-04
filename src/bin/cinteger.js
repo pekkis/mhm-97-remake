@@ -9,12 +9,12 @@ let clist = Repeat(0, max + 1).toList();
 
 Range(0, range)
   .toList()
-  .forEach(rng => {
+  .forEach((rng) => {
     const integer = r.integer(0, max);
-    list = list.update(integer, l => l + 1);
+    list = list.update(integer, (l) => l + 1);
 
     const cint = cinteger(0, max);
-    clist = clist.update(cint, l => l + 1);
+    clist = clist.update(cint, (l) => l + 1);
   });
 
 console.log(list.toJS());

@@ -1,6 +1,6 @@
 import { List, Map } from "immutable";
 
-const price = level => 100000 + 200000 * level;
+const price = (level) => 100000 + 200000 * level;
 
 const arenas = List.of(
   Map({

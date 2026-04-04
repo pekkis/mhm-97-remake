@@ -17,16 +17,16 @@ function* playGame(
   competitionId,
   phaseId
 ) {
-  const teams = yield select(state => state.game.get("teams"));
+  const teams = yield select((state) => state.game.get("teams"));
 
   const home = teams.get(group.getIn(["teams", pairing.get("home")]));
   const away = teams.get(group.getIn(["teams", pairing.get("away")]));
 
-  const homeManager = yield select(state =>
+  const homeManager = yield select((state) =>
     state.manager.getIn(["managers", home.get("manager")])
   );
 
-  const awayManager = yield select(state =>
+  const awayManager = yield select((state) =>
     state.manager.getIn(["managers", away.get("manager")])
   );
 
@@ -78,7 +78,7 @@ function* completeGameday(competition, phase, group, round) {
 }
 
 export function* gameday(payload) {
-  const competition = yield select(state =>
+  const competition = yield select((state) =>
     state.game.getIn(["competitions", payload])
   );
 
@@ -91,10 +91,7 @@ export function* gameday(payload) {
   // TODO: Will not work for multiple sizes of tournaments (groups) as this.
   const rounds =
     phase.get("type") === "tournament"
-      ? phase
-          .getIn(["groups", 0])
-          .get("schedule")
-          .count()
+      ? phase.getIn(["groups", 0]).get("schedule").count()
       : 1;
 
   for (
@@ -113,7 +110,7 @@ export function* gameday(payload) {
 
       console.log(gameParams, "gameParams");
 
-      const round = yield select(state =>
+      const round = yield select((state) =>
         state.game.getIn([
           "competitions",
           payload,
@@ -199,7 +196,7 @@ export function* gameday(payload) {
       phase: competition.get("phase")
     });
 
-    const theGroup = yield select(state =>
+    const theGroup = yield select((state) =>
       state.game.getIn([
         "competitions",
         payload,

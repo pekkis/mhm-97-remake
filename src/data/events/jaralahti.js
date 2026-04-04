@@ -12,7 +12,7 @@ import { decrementStrength, incrementStrength } from "../../sagas/team";
 
 const eventId = "jaralahti";
 
-const texts = data => {
+const texts = (data) => {
   let t = List.of(
     `Miliisi soittaa kotiisi yöllä. Tähtipuolustajasi __Kale Jaralahti__ on juuri narahtanut kaupungin keskustassa auton ratista huumepöllyssä.`
   );
@@ -37,7 +37,7 @@ const texts = data => {
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     yield call(
@@ -51,7 +51,7 @@ const event = {
     );
   },
 
-  options: data => {
+  options: (data) => {
     return Map({
       support: `Lahjoitan miliisien virkistysrahastoon ${a(
         data.get("amount")
@@ -60,7 +60,7 @@ const event = {
     });
   },
 
-  resolve: function*(data, value) {
+  resolve: function* (data, value) {
     const hasInsurance = yield select(
       managerHasService(data.get("manager"), "insurance")
     );
@@ -79,11 +79,11 @@ const event = {
     });
   },
 
-  render: data => {
+  render: (data) => {
     return texts(data);
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const team = yield select(managersTeamId(manager));
 

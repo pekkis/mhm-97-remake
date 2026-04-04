@@ -5,12 +5,12 @@ const { assets } = global.serviceWorkerOption;
 
 const CACHE_NAME = new Date().toISOString();
 
-const assetsToCache = [...assets, "./"].map(path => {
+const assetsToCache = [...assets, "./"].map((path) => {
   return new URL(path, global.location).toString();
 });
 
 // When the service worker is first added to a computer.
-self.addEventListener("install", e => {
+self.addEventListener("install", (e) => {
   self.skipWaiting();
 
   if (process.env.REACT_APP_SW_DISABLE) {
@@ -21,25 +21,25 @@ self.addEventListener("install", e => {
   e.waitUntil(
     global.caches
       .open(CACHE_NAME)
-      .then(cache => {
+      .then((cache) => {
         return cache.addAll(assetsToCache);
       })
       .then(() => {
         console.log("Cached assets: main", assetsToCache);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error doing the cache", error);
         throw error;
       })
   );
 });
 
-self.addEventListener("activate", e => {
+self.addEventListener("activate", (e) => {
   console.log("Activating service worker");
   e.waitUntil(
-    global.caches.keys().then(cacheNames => {
+    global.caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map(cacheName => {
+        cacheNames.map((cacheName) => {
           if (cacheName.indexOf(CACHE_NAME) === 0) {
             return null;
           }
@@ -51,7 +51,7 @@ self.addEventListener("activate", e => {
   );
 });
 
-self.addEventListener("fetch", event => {
+self.addEventListener("fetch", (event) => {
   if (process.env.REACT_APP_SW_DISABLE) {
     console.log("SW debug, skipping fetch");
     return;
@@ -73,7 +73,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  const resource = global.caches.match(request).then(response => {
+  const resource = global.caches.match(request).then((response) => {
     if (response) {
       console.log(`[SW] fetch URL ${requestUrl.href} from cache`);
       return response;
@@ -81,7 +81,7 @@ self.addEventListener("fetch", event => {
 
     // Load and cache known assets.
     return fetch(request)
-      .then(responseNetwork => {
+      .then((responseNetwork) => {
         if (!responseNetwork || !responseNetwork.ok) {
           console.log(
             `[SW] URL [${requestUrl.toString()}] wrong responseNetwork: ${
@@ -96,7 +96,7 @@ self.addEventListener("fetch", event => {
 
         global.caches
           .open(CACHE_NAME)
-          .then(cache => {
+          .then((cache) => {
             return cache.put(request, responseCache);
           })
           .then(() => {

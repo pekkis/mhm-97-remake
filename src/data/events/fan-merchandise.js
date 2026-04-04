@@ -17,7 +17,7 @@ IF vai = 5 THEN raha = raha - 40000
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficulty = yield select(managersDifficulty(manager));
@@ -34,7 +34,7 @@ const event = {
     );
   },
 
-  render: data => {
+  render: (data) => {
     let t = List();
     if (data.get("sales") === "good") {
       t = t.push(
@@ -53,7 +53,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
 
     if (data.get("sales") === "good") {

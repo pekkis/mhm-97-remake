@@ -28,11 +28,11 @@ export function* resolvedEvent(eventData) {
 }
 
 export function* processEvents() {
-  const eventsToProcess = yield select(state =>
+  const eventsToProcess = yield select((state) =>
     state.event
       .get("events")
-      .filter(e => e.get("resolved"))
-      .filterNot(e => e.get("processed"))
+      .filter((e) => e.get("resolved"))
+      .filterNot((e) => e.get("processed"))
   );
 
   for (const [, event] of eventsToProcess) {

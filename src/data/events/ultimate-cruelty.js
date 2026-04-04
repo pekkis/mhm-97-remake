@@ -34,7 +34,7 @@ const eventId = "ultimateCruelty";
 const event = {
   type: "manager",
 
-  create: function*(data) {
+  create: function* (data) {
     const { manager } = data;
 
     const difficulty = yield select(managersDifficulty(manager));
@@ -74,7 +74,7 @@ const event = {
     return;
   },
 
-  render: data => {
+  render: (data) => {
     let t = List.of(
       `Valtaisa hallisi sortui viime yönä! Huolimattomasta rakentamisesta johtunut onnettomuus hautasi alleen 5 ihmistä, ja syytteiltä välttyäksesi joudut maksamaan kipurahoja yhteensä ${a(
         data.get("amount")
@@ -90,7 +90,7 @@ const event = {
     return t;
   },
 
-  process: function*(data) {
+  process: function* (data) {
     const manager = data.get("manager");
     const amount = data.get("amount");
 
