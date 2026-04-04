@@ -1,6 +1,6 @@
 import { Map, List } from "immutable";
 import r from "./random";
-import { pipe } from "ramda";
+import { pipe } from "remeda";
 import { getEffective, getEffectiveOpponent } from "../services/effects";
 import services from "../data/services";
 
@@ -34,18 +34,18 @@ const playOvertime = (strengths, result) => {
     }
   } while (!victor);
 
-  return result.update(victor, g => g + 1).set("ot", true);
+  return result.update(victor, (g) => g + 1).set("ot", true);
 };
 
-export const simulate = game => {
+export const simulate = (game) => {
   const raw = Map({
     home: game.get("home"),
-    away: game.get("away")
+    away: game.get("away"),
   });
 
   const managers = Map({
     home: game.get("homeManager"),
-    away: game.get("awayManager")
+    away: game.get("awayManager"),
   });
 
   const teams = raw.map((obj, key, context) => {
@@ -63,16 +63,16 @@ export const simulate = game => {
     (team, i) => team.get("strength"),
     (team, i) => game.get("moraleEffect")(team),
     (team, i) => game.getIn(["advantage", i])(team),
-    (team, i) => team.get("readiness")
+    (team, i) => team.get("readiness"),
   );
 
-  const managerEffects = managers.map(manager => {
+  const managerEffects = managers.map((manager) => {
     if (!manager) {
       return List();
     }
     return manager
       .get("services")
-      .filter(s => s)
+      .filter((s) => s)
       .map((s, k) => {
         return services.getIn([k, "effect"])(competitionId, phaseId);
       });
@@ -88,7 +88,7 @@ export const simulate = game => {
 
   const strengths = teams.map((t, i) => {
     return (
-      effects.map(e => e(t, i)).reduce((r, s) => r + s, 0) +
+      effects.map((e) => e(t, i)).reduce((r, s) => r + s, 0) +
       managerEffects.get(i).reduce((r, e) => r + e, 0)
     );
   });
@@ -96,21 +96,21 @@ export const simulate = game => {
   const result = strengths
     .map((strength, i) => {
       return pipe(
-        strength => r.integer(0, strength),
-        val => val / base(),
-        val => (val < 0 ? 0 : val),
-        number => parseInt(number.toFixed(0), 10)
+        (strength) => r.integer(0, strength),
+        (val) => val / base(),
+        (val) => (val < 0 ? 0 : val),
+        (number) => parseInt(number.toFixed(0), 10),
       )(strength);
     })
     .set("overtime", false);
 
-  const info = List.of("home", "away").map(i => {
+  const info = List.of("home", "away").map((i) => {
     return Map({
       name: raw.getIn([i, "name"]),
       oStrength: raw.getIn([i, "strength"]),
       eStrength: teams.getIn([i, "strength"]),
       cStrength: strengths.get(i),
-      goals: result.get(i)
+      goals: result.get(i),
     });
   });
 
@@ -130,7 +130,7 @@ export const simulate = game => {
 };
 
 export default {
-  simulate
+  simulate,
 };
 
 export const resultFacts = (result, key) => {
@@ -145,7 +145,7 @@ export const resultFacts = (result, key) => {
   return {
     isWin,
     isDraw,
-    isLoss
+    isLoss,
   };
 };
 

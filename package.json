@@ -46,7 +46,6 @@
     "luxon": "^3.7.2",
     "polished": "^4.3.1",
     "prop-types": "^15.8.1",
-    "ramda": "^0.32.0",
     "random-js": "^2.1.0",
     "rc-slider": "^11.1.9",
     "react": "19.2.4",
@@ -66,6 +65,7 @@
     "redux": "^5.0.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-saga": "^1.4.2",
+    "remeda": "^2.33.7",
     "roundrobin": "^2.0.0",
     "styled-components": "^6.3.12",
     "styled-system": "^5.1.5",
@@ -75,7 +75,6 @@
     "typography": "^0.16.24"
   },
   "devDependencies": {
-    "@types/ramda": "^0.31.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/redux-saga": "^0.10.5",
