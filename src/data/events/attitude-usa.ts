@@ -4,7 +4,7 @@ import { addEvent } from "../../sagas/event";
 import { flag } from "../selectors";
 import { setFlag } from "../../sagas/game";
 import { alterStrength } from "../../ducks/country";
-import { MHMEvent } from "../../types/base";
+import type { MHMEvent } from "../../types/base";
 
 /*
 sat79:

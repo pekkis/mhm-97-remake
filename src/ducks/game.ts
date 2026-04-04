@@ -5,7 +5,7 @@ import managers from "../data/managers";
 
 import competitionList from "../data/competitions";
 import { META_QUIT_TO_MAIN_MENU, META_GAME_LOAD_STATE } from "./meta";
-import { Reducer } from "redux";
+import type { Reducer } from "redux";
 
 export const GAME_START = "GAME_START";
 export const GAME_ADVANCE_REQUEST = "GAME_ADVANCE_REQUEST";
