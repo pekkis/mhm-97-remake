@@ -29,7 +29,7 @@ function* definePekkalandiaStrength() {
 
   const avg = phl
     .get("teams")
-    .map(t => teams.getIn([t, "strength"]))
+    .map((t) => teams.getIn([t, "strength"]))
     .reduce((r, s) => r + s, 0);
 
   const strength = Math.round(avg / phl.get("teams").count());
@@ -43,41 +43,33 @@ function* worldChampionships() {
   yield call(setPhase, "world-championships");
   yield call(definePekkalandiaStrength);
 
-  const countries: Record<
-    string,
-    { iso: string; name: string; strength: number | undefined }
-  > = yield select(state => state.country.countries);
+  const countries: Record<string, { iso: string; name: string; strength: number | undefined }> =
+    yield select((state) => state.country.countries);
 
   const rawEntries = Object.values(countries)
-    .map(c => ({
+    .map((c) => ({
       id: c.iso,
       name: c.name,
       strength: c.strength,
       luck: getLuck(),
-      random: cinteger(0, 20) - cinteger(0, 10)
+      random: cinteger(0, 20) - cinteger(0, 10),
     }))
-    .sort(
-      (a, b) =>
-        (a.strength ?? 0) +
-        a.luck +
-        a.random -
-        ((b.strength ?? 0) + b.luck + b.random)
-    )
+    .sort((a, b) => (a.strength ?? 0) + a.luck + a.random - ((b.strength ?? 0) + b.luck + b.random))
     .reverse();
 
-  const entries = List(rawEntries.map(entry => Map(entry)));
+  const entries = List(rawEntries.map((entry) => Map(entry)));
 
   console.log(entries.toJS(), "entries");
 
   yield put({
     type: "GAME_WORLD_CHAMPIONSHIP_RESULTS",
-    payload: entries
+    payload: entries,
   });
 
   yield call(
     setSeasonStat,
     ["worldChampionships"],
-    entries.map(e => e.get("id"))
+    entries.map((e) => e.get("id")),
   );
 
   yield take("GAME_ADVANCE_REQUEST");
@@ -92,36 +84,26 @@ export default function* endOfSeasonPhase() {
 
   yield call(setPhase, "end-of-season");
 
-  const division = yield select(state =>
-    state.game.getIn(["competitions", "division"])
-  );
+  const division = yield select((state) => state.game.getIn(["competitions", "division"]));
 
-  const phl = yield select(state => state.game.getIn(["competitions", "phl"]));
+  const phl = yield select((state) => state.game.getIn(["competitions", "phl"]));
 
   const divisionVictor = victors(division.getIn(["phases", 3, "groups", 0]))
     .first()
     .get("id");
 
-  const presidentsTrophy = phl
-    .getIn(["phases", 0, "groups", 0, "stats"])
-    .first()
-    .get("id");
+  const presidentsTrophy = phl.getIn(["phases", 0, "groups", 0, "stats"]).first().get("id");
   yield call(setSeasonStat, ["presidentsTrophy"], presidentsTrophy);
 
-  const phlLoser = phl
-    .getIn(["phases", 0, "groups", 0, "stats"])
-    .last()
-    .get("id");
+  const phlLoser = phl.getIn(["phases", 0, "groups", 0, "stats"]).last().get("id");
 
   const phlFinals = phl.getIn(["phases", 3, "groups", 0]);
   const phlVictors = victors(phlFinals);
   const phlLosers = eliminated(phlFinals);
 
-  const medalists = List.of(
-    phlVictors.first(),
-    phlLosers.first(),
-    phlVictors.last()
-  ).map(e => e.get("id"));
+  const medalists = List.of(phlVictors.first(), phlLosers.first(), phlVictors.last()).map((e) =>
+    e.get("id"),
+  );
 
   yield call(setSeasonStat, ["medalists"], medalists);
 
@@ -137,7 +119,7 @@ export default function* endOfSeasonPhase() {
   yield take("GAME_ADVANCE_REQUEST");
 
   yield put({
-    type: "SEASON_END"
+    type: "SEASON_END",
   });
 
   if (divisionVictor !== phlLoser) {
