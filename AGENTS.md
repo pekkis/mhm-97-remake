@@ -22,6 +22,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - Store wiring: `src/store.js`, `src/services/redux.ts`, `src/config/redux.ts`
 
 Recent completed migrations:
+
 - JSX-bearing component files were renamed from `.js` to `.jsx`
 - `react-markdown` deprecated `source` prop migrated to children syntax
 - `src/components/Game.jsx` routing updated to modern `<Routes>/<Route element={...}>`
@@ -86,11 +87,13 @@ Recent completed migrations:
 ### P2 — TypeScript + Immutable → immer + native (unified migration)
 
 **Rationale:** Immutable.js typing is fundamentally broken (nested Maps with functions require `as any` at boundaries). Rather than type Immutable then replace it, do both simultaneously. This yields:
+
 - Type safety immediately (immer types well, natives are simple)
 - Cleaner, more ergonomic code
 - Faster migration velocity (no waste on Immutable typing)
 
 **Sequencing:**
+
 1. Pick a file (start with small services, then leaf reducers, work inward)
 2. Convert to TypeScript with native data structures + immer
 3. Test manually (user is regression suite for now)
@@ -98,6 +101,7 @@ Recent completed migrations:
 5. Build formal regression suite if drift is detected
 
 **Specifics:**
+
 - Each file: replace Immutable.js Map/List with native objects/arrays, add immer for any mutations
 - Shared domain types in `src/types/` as they emerge
 - Keep a shared `RootState` seed in Redux setup (`src/config/redux.ts`) and consume it in containers/selectors instead of local `any` state types
@@ -113,6 +117,21 @@ Recent completed migrations:
   - Use regression suite to verify save/load round-trips, phase sequencing, event generation remain identical
   - Fork's version mismatch was the only custom logic; superjson handles standard serialization
 - **Long term:** Evaluate selective Redux + Saga → RTK/RTK Query slices, but only for new async flows, not core game logic.
+- **Very long term:** XState is the only realistic architectural upgrade for the game engine itself (phase/turn loop is a textbook state machine). But this is a full engine rewrite — only viable after the TS migration is complete and a regression suite exists. Do not attempt piecemeal.
+
+### Saga TypeScript strategy
+
+`typed-redux-saga` is installed. When migrating saga files to TypeScript, use the typed wrappers instead of bare `redux-saga/effects`. This gives proper return type inference for `yield call()` without any architectural change.
+
+```ts
+// Instead of:
+import { call, put, take } from "redux-saga/effects";
+
+// Use:
+import { call, put, take } from "typed-redux-saga";
+```
+
+Do not use `typed-redux-saga/macro` — it requires a Babel transform and this project uses Vite (no Babel).
 
 ---
 
@@ -124,6 +143,7 @@ Recent completed migrations:
 - save/load serialization boundaries (`transit-immutable-js` in meta sagas)
 
 When touching these areas:
+
 - keep action names stable unless migration requires otherwise
 - preserve reducer shape and key paths
 - explicitly verify save/load still works
@@ -190,6 +210,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 ## Decision Heuristics
 
 When unsure, prefer:
+
 - explicitness over magic
 - typed boundaries over implicit `any`
 - isolated migrations over broad rewrites

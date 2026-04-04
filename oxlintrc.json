@@ -8,7 +8,7 @@
   "rules": {
     "no-empty-file": "off",
     "require-yield": "off",
-    "no-unused-vars": "off",
+    "no-unused-vars": "warn",
     "no-constant-condition": "off"
   }
 }

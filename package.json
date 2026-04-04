@@ -71,6 +71,7 @@
     "styled-system": "^5.1.5",
     "transit-immutable-js": "github:pekkis/transit-immutable-js",
     "transit-js": "^0.8.874",
+    "typed-redux-saga": "^1.5.0",
     "typography": "^0.16.24"
   },
   "devDependencies": {
