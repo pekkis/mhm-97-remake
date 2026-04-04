@@ -14,6 +14,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - UI stack: React 19, React Router 7, styled-components 6
 - State stack: Redux 5 + redux-saga + Immutable.js
 - Language mix: TypeScript + JavaScript + JSX (partial TS migration)
+- Lint/format stack: `oxlint` + `oxfmt` (ESLint/Prettier removed)
 - Styling stack: styled-components + styled-system + Emotion remnants
 - Persistence: localStorage with `transit-immutable-js`
 - Entry point: `src/client.tsx`
