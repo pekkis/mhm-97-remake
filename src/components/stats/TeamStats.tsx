@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import type { FC } from "react";
 import Tabs from "../ui/Tabs";
 import Tab from "../ui/Tab";
 import Season from "../data/Season";
@@ -6,8 +7,13 @@ import ResponsiveTable from "../responsive-table/ResponsiveTable";
 import Table from "../responsive-table/Table";
 import Td from "../responsive-table/Td";
 
-const TeamStats = props => {
-  const { stats, teams, countries } = props;
+type TeamStatsProps = {
+  stats: any;
+  teams: any;
+  countries: Record<string, { name: string }>;
+};
+
+const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
   const [tab, setTab] = useState(0);
 
   return (
@@ -26,13 +32,13 @@ const TeamStats = props => {
             <tbody>
               {stats
                 .get("seasons")
-                .map((season, seasonIndex) => {
+                .map((season: any, seasonIndex: number) => {
                   return (
                     <tr key={season}>
                       <Td className="fixed">
                         <Season index={seasonIndex} />
                       </Td>
-                      {season.get("medalists").map((m, k) => (
+                      {season.get("medalists").map((m: string, k: number) => (
                         <td key={k}>{teams.getIn([m, "name"])}</td>
                       ))}
                     </tr>
@@ -54,7 +60,7 @@ const TeamStats = props => {
           <tbody>
             {stats
               .get("seasons")
-              .map((season, seasonIndex) => {
+              .map((season: any, seasonIndex: number) => {
                 return (
                   <tr key={season}>
                     <td>
@@ -82,7 +88,7 @@ const TeamStats = props => {
           <tbody>
             {stats
               .get("seasons")
-              .map((season, seasonIndex) => {
+              .map((season: any, seasonIndex: number) => {
                 return (
                   <tr key={season}>
                     <td>
@@ -112,7 +118,7 @@ const TeamStats = props => {
           <tbody>
             {stats
               .get("seasons")
-              .map((season, seasonIndex) => {
+              .map((season: any, seasonIndex: number) => {
                 return (
                   <tr key={season}>
                     <td>
@@ -140,7 +146,7 @@ const TeamStats = props => {
             <tbody>
               {stats
                 .get("seasons")
-                .map((season, seasonIndex) => {
+                .map((season: any, seasonIndex: number) => {
                   return (
                     <tr key={season}>
                       <Td className="fixed">
@@ -149,7 +155,7 @@ const TeamStats = props => {
                       {season
                         .get("worldChampionships")
                         .take(3)
-                        .map((m, k) => (
+                        .map((m: string, k: number) => (
                           <td key={k}>{countries?.[m]?.name}</td>
                         ))}
                     </tr>

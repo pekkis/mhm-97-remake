@@ -2,10 +2,10 @@ import {
   createStore as reduxCreateStore,
   applyMiddleware,
   combineReducers,
-  Store,
-  Reducer,
-  Middleware,
-  StoreEnhancer
+  type Store,
+  type Reducer,
+  type Middleware,
+  type StoreEnhancer
 } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 

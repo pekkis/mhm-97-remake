@@ -7,7 +7,7 @@ import { cinteger } from "../../services/random";
 import { setSeasonStat, createSeasonStories } from "../stats";
 import { processChampionBets } from "../betting";
 import { competition, allTeams } from "../../data/selectors";
-import { csetStrength, setStrength } from "../../ducks/country";
+import { setStrength } from "../../ducks/country";
 
 const getLuck = () => {
   const isLucky = cinteger(1, 10);
@@ -43,28 +43,29 @@ function* worldChampionships() {
   yield call(setPhase, "world-championships");
   yield call(definePekkalandiaStrength);
 
-  const countries = yield select(state => state.country.countries);
+  const countries: Record<
+    string,
+    { iso: string; name: string; strength: number | undefined }
+  > = yield select(state => state.country.countries);
 
-  const entries = List(
-    Object.values(countries)
-      .map(c => {
-        return Map({
-          id: c.iso,
-          name: c.name,
-          strength: c.strength,
-          luck: getLuck(),
-          random: cinteger(0, 20) - cinteger(0, 10)
-        });
-      })
-      .sort(
-        (a, b) =>
-          a.get("strength") +
-          a.get("luck") +
-          a.get("random") -
-          (b.get("strength") + b.get("luck") + b.get("random"))
-      )
-      .reverse()
-  );
+  const rawEntries = Object.values(countries)
+    .map(c => ({
+      id: c.iso,
+      name: c.name,
+      strength: c.strength,
+      luck: getLuck(),
+      random: cinteger(0, 20) - cinteger(0, 10)
+    }))
+    .sort(
+      (a, b) =>
+        (a.strength ?? 0) +
+        a.luck +
+        a.random -
+        ((b.strength ?? 0) + b.luck + b.random)
+    )
+    .reverse();
+
+  const entries = List(rawEntries.map(entry => Map(entry)));
 
   console.log(entries.toJS(), "entries");
 

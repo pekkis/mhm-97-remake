@@ -1,7 +1,8 @@
 import { countries as countryList } from "../data/countries";
 import { produce } from "immer";
-import { MetaQuitToMainMenuAction, META_QUIT_TO_MAIN_MENU } from "./meta";
-import { Reducer } from "redux";
+import { META_QUIT_TO_MAIN_MENU } from "./meta";
+import type { MetaQuitToMainMenuAction } from "./meta";
+import type { Reducer } from "redux";
 
 type Country = {
   iso: string;

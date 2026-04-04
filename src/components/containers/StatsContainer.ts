@@ -1,10 +1,13 @@
 import { connect } from "react-redux";
 import Stats from "../Stats";
+import type { RootState } from "../../config/redux";
 
-export default connect(state => ({
+const mapStateToProps = (state: RootState) => ({
   manager: state.manager.getIn(["managers", state.manager.get("active")]),
   teams: state.game.get("teams"),
   competitions: state.game.get("competitions"),
   stats: state.stats,
   countries: state.country.countries
-}))(Stats);
+});
+
+export default connect(mapStateToProps)(Stats);

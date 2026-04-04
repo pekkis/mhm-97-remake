@@ -1,21 +1,24 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "jsx": "react",
-    "target": "esnext",
-    "module": "commonjs",
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
     "strict": true,
     "noImplicitAny": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": false,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "sourceMap": true,
     "noEmit": true,
     "isolatedModules": true,
-    "allowJs": true
+    "allowJs": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "types": ["vite/client"]
   },
   "include": ["src/**/*"]
 }

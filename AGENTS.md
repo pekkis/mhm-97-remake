@@ -50,6 +50,7 @@ Recent completed migrations:
    - New/edited modules should be TypeScript where feasible.
    - Add lightweight types around action payloads/selectors touched by a change.
    - Prefer `type` aliases by default; use `interface` only when declaration merging/extension semantics are explicitly needed.
+   - For React components, prefer the `FC<Props>` typing style where practical and readable.
 
 ---
 
@@ -68,6 +69,7 @@ Recent completed migrations:
 ### P0 — Toolchain and runtime stability
 
 - Keep dev/build working with Vite and Node 24 (`.nvmrc` => `v24`).
+- Keep TypeScript config migration-friendly during mixed JS/TS phase; avoid `verbatimModuleSyntax` until import hygiene is consistently type-only across the codebase.
 - Remove dead webpack-era leftovers after confirming unused:
   - webpack-related dependencies
   - legacy core-js upgrade plugin wiring (`src/config/corejs-upgrade.js`)
@@ -97,6 +99,7 @@ Recent completed migrations:
 **Specifics:**
 - Each file: replace Immutable.js Map/List with native objects/arrays, add immer for any mutations
 - Shared domain types in `src/types/` as they emerge
+- Keep a shared `RootState` seed in Redux setup (`src/config/redux.ts`) and consume it in containers/selectors instead of local `any` state types
 - Use `produce()` from immer instead of `.update()` / `.setIn()` chains
 
 ### P3 — State architecture evolution (controlled)
