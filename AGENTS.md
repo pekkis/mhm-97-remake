@@ -31,28 +31,34 @@ Recent completed migrations:
 
 ## Non-Negotiables for Agents
 
-1. **Vite-first only**
+1. **KISS: Keep It Simple, Stupid**
+   - Always prefer the simpler solution when possible.
+   - Simple does not mean easy — a well-designed simple solution often requires more thought than a complex one.
+   - Avoid over-engineering, unnecessary abstractions, and premature generalization.
+
+2. **Vite-first only**
    - Do not reintroduce Webpack config, plugins, or assumptions.
    - If legacy webpack references remain in deps/config, treat them as cleanup candidates.
 
-2. **Behavior preservation over stylistic churn**
+3. **Behavior preservation over stylistic churn**
    - The game simulation logic is sensitive (calendar/event/phase sequencing).
    - Avoid refactors that alter ordering, immutability semantics, or saga control flow unless explicitly required.
 
-3. **Small PR-sized changes**
+4. **Small PR-sized changes**
    - One concern per change set (e.g., router fixes, markdown API, one saga area, one reducer area).
    - Keep diffs reviewable.
 
-4. **No new legacy patterns**
+5. **No new legacy patterns**
    - Do not add new class components unless absolutely required.
    - Do not add new Immutable-heavy APIs in fresh code; prefer typed plain objects for new modules.
    - Prefer named exports; avoid default exports for new/edited modules unless interop absolutely requires it.
 
-5. **Type safety must trend upward**
+6. **Type safety must trend upward**
    - New/edited modules should be TypeScript where feasible.
    - Add lightweight types around action payloads/selectors touched by a change.
    - Prefer `type` aliases by default; use `interface` only when declaration merging/extension semantics are explicitly needed.
    - For React components, prefer the `FC<Props>` typing style where practical and readable.
+   - `type-fest` is installed (devDep) — use it freely for utility types (`Simplify`, `PartialDeep`, `SetRequired`, `Opaque`, etc.) instead of reinventing them.
 
 ---
 
