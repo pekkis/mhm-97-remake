@@ -1,5 +1,3 @@
-import { List, Map } from "immutable";
-
 /*
 IF vai = 1 AND mo < -6 THEN mo = -6
 IF vai = 2 AND mo < -10 THEN mo = -10
@@ -16,8 +14,23 @@ IF vai$ = "4" THEN vai = 4: banki = 0: ghalli = 0: moplus = -1: raha = -250000: 
 IF vai$ = "5" THEN vai = 5: banki = 0: ghalli = 0: moplus = -1: raha = -600000: GOTO hgg
 */
 
-const difficultyLevels = List.of(
-  Map({
+export type DifficultyLevel = {
+  value: string;
+  name: string;
+  description: string;
+  moraleMin: number;
+  moraleMax: number;
+  moraleBoost: number;
+  startBalance: number;
+  pranksPerSeason: number;
+  extra: number;
+  salary: (competition: string) => number;
+  rallyMorale: number;
+  rallyExtra: (competition: string) => number;
+};
+
+const difficultyLevels: DifficultyLevel[] = [
+  {
     value: "0",
     name: "Nörttivatsa",
     description: "Sokeria, sokeria!",
@@ -27,15 +40,11 @@ const difficultyLevels = List.of(
     startBalance: 1000000,
     pranksPerSeason: 5,
     extra: 3000,
-    salary: (competition) => {
-      return competition === "phl" ? 2600 : 2000;
-    },
+    salary: (competition) => (competition === "phl" ? 2600 : 2000),
     rallyMorale: 33,
-    rallyExtra: (competition) => {
-      return competition === "phl" ? 40000 : 10000;
-    }
-  }),
-  Map({
+    rallyExtra: (competition) => (competition === "phl" ? 40000 : 10000)
+  },
+  {
     value: "1",
     name: "Maitovatsa",
     description: "Rutkasti maitoa, kiitos!",
@@ -45,36 +54,25 @@ const difficultyLevels = List.of(
     startBalance: 500000,
     pranksPerSeason: 4,
     extra: 0,
-    salary: (competition) => {
-      return competition === "phl" ? 3000 : 2350;
-    },
+    salary: (competition) => (competition === "phl" ? 3000 : 2350),
     rallyMorale: 33,
-    rallyExtra: (competition) => {
-      return competition === "phl" ? 35000 : 10000;
-    }
-  }),
-
-  Map({
+    rallyExtra: (competition) => (competition === "phl" ? 35000 : 10000)
+  },
+  {
     value: "2",
     name: "Kahvivatsa",
     description: "Kahvi kahvina, maito maitona",
     moraleMin: -14,
     moraleMax: 12,
     moraleBoost: 0,
-    // startBalance: 0,
     startBalance: 0,
     pranksPerSeason: 3,
     extra: 0,
-    salary: (competition) => {
-      return competition === "phl" ? 3200 : 2700;
-    },
+    salary: (competition) => (competition === "phl" ? 3200 : 2700),
     rallyMorale: 33,
-    rallyExtra: (competition) => {
-      return competition === "phl" ? 30000 : 10000;
-    }
-  }),
-
-  Map({
+    rallyExtra: (competition) => (competition === "phl" ? 30000 : 10000)
+  },
+  {
     value: "3",
     name: "Vatsahaava",
     description: "Vahvan elämyksen ystäville",
@@ -84,15 +82,11 @@ const difficultyLevels = List.of(
     startBalance: -250000,
     pranksPerSeason: 2,
     extra: -3000,
-    salary: (competition) => {
-      return competition === "phl" ? 3500 : 2900;
-    },
+    salary: (competition) => (competition === "phl" ? 3500 : 2900),
     rallyMorale: 33,
-    rallyExtra: (competition) => {
-      return competition === "phl" ? 25000 : 10000;
-    }
-  }),
-  Map({
+    rallyExtra: (competition) => (competition === "phl" ? 25000 : 10000)
+  },
+  {
     value: "4",
     name: "Vatsakatarri",
     description: "Todellista tervanjuontia",
@@ -102,14 +96,10 @@ const difficultyLevels = List.of(
     startBalance: -600000,
     pranksPerSeason: 1,
     extra: -3000,
-    salary: (competition) => {
-      return competition === "phl" ? 4000 : 3200;
-    },
+    salary: (competition) => (competition === "phl" ? 4000 : 3200),
     rallyMorale: 15,
-    rallyExtra: (competition) => {
-      return competition === "phl" ? 20000 : 10000;
-    }
-  })
-);
+    rallyExtra: (competition) => (competition === "phl" ? 20000 : 10000)
+  }
+];
 
 export default difficultyLevels;

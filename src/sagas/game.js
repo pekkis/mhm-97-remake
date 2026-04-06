@@ -250,7 +250,7 @@ export function* seasonStart() {
       const team = yield select(managersTeam(managerId));
       const difficulty = yield select(managersDifficulty(managerId));
       const mainCompetition = yield select(managersMainCompetition(managerId));
-      const salaryPerStrength = difficultyLevels.getIn([difficulty, "salary"])(
+      const salaryPerStrength = difficultyLevels[difficulty].salary(
         mainCompetition
       );
       const totalSalary = salaryPerStrength * team.get("strength");
@@ -273,7 +273,7 @@ export function* seasonStart() {
     // Reset extra each season.
     yield setExtra(
       manager.get("id"),
-      difficultyLevels.getIn([manager.get("difficulty"), "extra"])
+      difficultyLevels[manager.get("difficulty")].extra
     );
   }
 

@@ -7,8 +7,8 @@ const getMoraleMinMax = (manager) => {
   const difficulty = manager ? manager.get("difficulty") : 2;
 
   return {
-    min: difficultyLevels.getIn([difficulty, "moraleMin"]),
-    max: difficultyLevels.getIn([difficulty, "moraleMax"])
+    min: difficultyLevels[difficulty].moraleMin,
+    max: difficultyLevels[difficulty].moraleMax
   };
 };
 

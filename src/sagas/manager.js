@@ -44,7 +44,7 @@ export function* addManager(details) {
       microphone: false,
       cheer: false
     }),
-    balance: difficultyLevels.getIn([details.difficulty, "startBalance"]),
+    balance: difficultyLevels[details.difficulty].startBalance,
     arena: Map({
       name: details.arena,
       level: mainCompetition === "phl" ? 3 : 0
@@ -164,7 +164,7 @@ export function* crisisMeeting(action) {
   const team = yield select(managersTeam(payload.manager));
   const competitions = yield select((state) => state.game.get("competitions"));
 
-  const moraleBoost = difficultyLevels.getIn([difficulty, "moraleBoost"]);
+  const moraleBoost = difficultyLevels[difficulty].moraleBoost;
 
   const crisisInfo = crisis(team, competitions);
 

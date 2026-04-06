@@ -26,10 +26,10 @@ const Pranks = (props) => {
   const phl = competitions.get("phl");
   const division = competitions.get("division");
 
-  const difficultyLevel = difficultyLevels.get(manager.get("difficulty"));
+  const difficultyLevel = difficultyLevels[manager.get("difficulty")];
 
   const canDo =
-    difficultyLevel.get("pranksPerSeason") > manager.get("pranksExecuted");
+    difficultyLevel.pranksPerSeason > manager.get("pranksExecuted");
 
   const targetCompetition = phl.get("teams").includes(manager.get("team"))
     ? phl

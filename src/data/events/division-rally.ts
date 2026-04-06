@@ -76,7 +76,7 @@ const event: MHMEvent<DivisionRallyData> = {
     yield* call(
       setExtra,
       manager,
-      (difficultyLevels.getIn([difficulty, "rallyExtra"]) as any)("division")
+      difficultyLevels[difficulty].rallyExtra("division")
     );
 
     yield* call(
@@ -86,7 +86,7 @@ const event: MHMEvent<DivisionRallyData> = {
       "rally",
       duration,
       Map({
-        rallyMorale: difficultyLevels.getIn([difficulty, "rallyMorale"]) as any
+        rallyMorale: difficultyLevels[difficulty].rallyMorale
       })
     );
   }

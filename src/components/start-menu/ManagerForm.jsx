@@ -44,24 +44,22 @@ const ManagerForm = (props) => {
 
               <Field>
                 <LabelDiv>Vaikeustaso</LabelDiv>
-                {difficultyLevels
-                  .map((dl) => {
+                {difficultyLevels.map((dl) => {
                     return (
-                      <div key={dl.get("value")}>
+                      <div key={dl.value}>
                         <label>
                           <Input
                             type="radio"
                             name="difficulty"
-                            value={dl.get("value")}
-                            checked={values.difficulty === dl.get("value")}
+                            value={dl.value}
+                            checked={values.difficulty === dl.value}
                             onChange={handleChange}
                           />{" "}
-                          {dl.get("name")} ({dl.get("description")})
+                          {dl.name} ({dl.description})
                         </label>
                       </div>
                     );
-                  })
-                  .toList()}
+                  })}
               </Field>
 
               <Field>
