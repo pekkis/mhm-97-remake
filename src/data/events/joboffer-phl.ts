@@ -63,14 +63,14 @@ const event: MHMEvent<JobofferPHLData> = {
     );
 
     const ranking =
-      table(group).findIndex((t: any) => t.get("id") === offerer.get("id")) + 1;
+      table(group).findIndex((t: any) => t.get("id") === offerer.id) + 1;
 
     yield* call(addEvent, {
       eventId,
       manager,
       oldTeam,
-      offerer: offerer.get("id"),
-      offererName: offerer.get("name"),
+      offerer: offerer.id,
+      offererName: offerer.name,
       ranking,
       resolved: false
     });

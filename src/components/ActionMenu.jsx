@@ -8,7 +8,7 @@ import { List } from "immutable";
 
 const ActionMenu = (props) => {
   const { manager, teams, closeMenu, saveGame, quitToMainMenu, turn } = props;
-  const team = getEffective(teams.get(manager.get("team")));
+  const team = getEffective(teams[manager.get("team")]);
 
   return (
     <div>
@@ -20,7 +20,7 @@ const ActionMenu = (props) => {
             </Link>
           </li>
 
-          {team.get("morale") <= CRISIS_MORALE_MAX && (
+          {team.morale <= CRISIS_MORALE_MAX && (
             <Calendar when={(c) => c.get("crisisMeeting")}>
               <li>
                 <Link onClick={() => closeMenu()} to="/kriisipalaveri">

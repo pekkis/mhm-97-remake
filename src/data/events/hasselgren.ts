@@ -55,8 +55,8 @@ const event: MHMEvent<HasselgrenData> = {
     const hasInsurance = data.hasInsurance;
     const team = yield* select(managersTeam(manager));
 
-    yield* call(addEffect, team.get("id"), ["strength"], -10, 5);
-    yield* call(decrementMorale, team.get("id"), 5);
+    yield* call(addEffect, team.id, ["strength"], -10, 5);
+    yield* call(decrementMorale, team.id, 5);
 
     if (hasInsurance) {
       yield* call(incrementInsuranceExtra, manager, 90);

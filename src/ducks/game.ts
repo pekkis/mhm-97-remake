@@ -1,7 +1,7 @@
 import { Map, List } from "immutable";
 import { produce } from "immer";
 
-import teams from "../data/teams";
+import teamDefs from "../data/teams";
 import managers from "../data/managers";
 
 import competitionList from "../data/competitions";
@@ -17,13 +17,33 @@ export const GAME_NEXT_TURN = "GAME_NEXT_TURN";
 export const SEASON_START = "SEASON_START";
 export const SEASON_END = "SEASON_END";
 
+export type TeamEffect = {
+  parameter: string[];
+  amount: number | string;
+  duration: number;
+  extra?: Record<string, unknown>;
+};
+
+export type Team = {
+  id: number;
+  name: string;
+  strength: number;
+  domestic: boolean;
+  morale: number;
+  strategy: number;
+  readiness: number;
+  effects: TeamEffect[];
+  opponentEffects: TeamEffect[];
+  manager?: string;
+};
+
 type GameState = {
   turn: { season: number; round: number; phase: string | undefined };
   flags: Record<string, boolean>;
   serviceBasePrices: Record<string, number>;
   managers: any;
   competitions: any;
-  teams: any;
+  teams: Team[];
   worldChampionshipResults: any;
 };
 
@@ -34,25 +54,32 @@ const defaultState: GameState = {
     insurance: 1000,
     coach: 3200,
     microphone: 500,
-    cheer: 3000
+    cheer: 3000,
   },
   managers,
   competitions: competitionList.map((c: any) => c.get("data")),
-  teams: List(teams.map((t) => Map({ ...t, strength: t.strength() }))),
-  worldChampionshipResults: undefined
+  teams: teamDefs.map((t) => ({
+    id: t.id,
+    name: t.name,
+    strength: t.strength(),
+    domestic: t.domestic,
+    morale: 0,
+    strategy: 2,
+    readiness: 0,
+    effects: [],
+    opponentEffects: [],
+  })),
+  worldChampionshipResults: undefined,
 };
 
 export const advance = (payload: any) => {
   return {
     type: GAME_ADVANCE_REQUEST,
-    payload
+    payload,
   };
 };
 
-export default function gameReducer(
-  state: GameState = defaultState,
-  action: any
-): GameState {
+export default function gameReducer(state: GameState = defaultState, action: any): GameState {
   const { type, payload } = action;
 
   switch (type) {
@@ -66,7 +93,7 @@ export default function gameReducer(
       return produce(state, (draft) => {
         draft.competitions = draft.competitions.updateIn(
           [payload.competition, "teams"],
-          (teams: any) => teams.filterNot((t: any) => t === payload.team)
+          (teams: any) => teams.filterNot((t: any) => t === payload.team),
         );
       });
 
@@ -74,22 +101,15 @@ export default function gameReducer(
       return produce(state, (draft) => {
         draft.competitions = draft.competitions.updateIn(
           [payload.competition, "teams"],
-          (teams: any) => teams.push(payload.team)
+          (teams: any) => teams.push(payload.team),
         );
       });
 
     case "COMPETITION_UPDATE_STATS":
       return produce(state, (draft) => {
         draft.competitions = draft.competitions.setIn(
-          [
-            payload.competition,
-            "phases",
-            payload.phase,
-            "groups",
-            payload.group,
-            "stats"
-          ],
-          payload.stats
+          [payload.competition, "phases", payload.phase, "groups", payload.group, "stats"],
+          payload.stats,
         );
       });
 
@@ -97,15 +117,14 @@ export default function gameReducer(
       return produce(state, (draft) => {
         draft.competitions = draft.competitions.setIn(
           [payload.competition, "teams"],
-          payload.teams
+          payload.teams,
         );
       });
 
     case "COMPETITION_START":
       return produce(state, (draft) => {
-        draft.competitions = draft.competitions.update(
-          payload.competition,
-          (c: any) => c.set("phases", List())
+        draft.competitions = draft.competitions.update(payload.competition, (c: any) =>
+          c.set("phases", List()),
         );
       });
 
@@ -118,17 +137,16 @@ export default function gameReducer(
 
     case SEASON_START:
       return produce(state, (draft) => {
-        draft.teams = draft.teams.map((t: any) => {
-          return t
-            .set("effects", List())
-            .set("opponentEffects", List())
-            .set("morale", 0)
-            .set("strategy", 2)
-            .set("readiness", 0);
-        });
+        for (const t of draft.teams) {
+          t.effects = [];
+          t.opponentEffects = [];
+          t.morale = 0;
+          t.strategy = 2;
+          t.readiness = 0;
+        }
         draft.flags.jarko = false;
         draft.competitions = draft.competitions.map((competition: any) =>
-          competition.set("phase", -1).set("phases", List())
+          competition.set("phase", -1).set("phases", List()),
         );
       });
 
@@ -150,23 +168,17 @@ export default function gameReducer(
             "schedule",
             payload.round,
             payload.pairing,
-            "result"
+            "result",
           ],
-          payload.result
+          payload.result,
         );
       });
 
     case "GAME_GAMEDAY_COMPLETE":
       return produce(state, (draft) => {
         draft.competitions = draft.competitions.updateIn(
-          [
-            payload.competition,
-            "phases",
-            payload.phase,
-            "groups",
-            payload.group
-          ],
-          (group: any) => group.update("round", (r: number) => r + 1)
+          [payload.competition, "phases", payload.phase, "groups", payload.group],
+          (group: any) => group.update("round", (r: number) => r + 1),
         );
       });
 
@@ -177,157 +189,103 @@ export default function gameReducer(
 
     case "TEAM_INCREMENT_MORALE":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.updateIn(
-          [payload.team, "morale"],
-          (m: number) =>
-            Math.min(payload.max, Math.max(payload.min, m + payload.amount))
-        );
+        const t = draft.teams[payload.team];
+        t.morale = Math.min(payload.max, Math.max(payload.min, t.morale + payload.amount));
       });
 
     case "TEAM_SET_MORALE":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.setIn(
-          [payload.team, "morale"],
-          Math.min(payload.max, Math.max(payload.min, payload.morale))
+        draft.teams[payload.team].morale = Math.min(
+          payload.max,
+          Math.max(payload.min, payload.morale),
         );
       });
 
     case "TEAM_SET_STRATEGY":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.setIn(
-          [payload.team, "strategy"],
-          payload.strategy
-        );
+        draft.teams[payload.team].strategy = payload.strategy;
       });
 
     case "TEAM_SET_READINESS":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.setIn(
-          [payload.team, "readiness"],
-          payload.readiness
-        );
+        draft.teams[payload.team].readiness = payload.readiness;
       });
 
     case "TEAM_INCUR_PENALTY":
       return produce(state, (draft) => {
         draft.competitions = draft.competitions.updateIn(
-          [
-            payload.competition,
-            "phases",
-            payload.phase,
-            "groups",
-            payload.group,
-            "penalties"
-          ],
+          [payload.competition, "phases", payload.phase, "groups", payload.group, "penalties"],
           List(),
-          (penalties: any) =>
-            penalties.push(
-              Map({ team: payload.team, penalty: payload.penalty })
-            )
+          (penalties: any) => penalties.push(Map({ team: payload.team, penalty: payload.penalty })),
         );
       });
 
     case "TEAM_INCREMENT_READINESS":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.updateIn(
-          [payload.team, "readiness"],
-          (r: number) => r + payload.amount
-        );
+        draft.teams[payload.team].readiness += payload.amount;
       });
 
     case "TEAM_INCREMENT_STRENGTH":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.updateIn(
-          [payload.team, "strength"],
-          (m: number) => m + payload.amount
-        );
+        draft.teams[payload.team].strength += payload.amount;
       });
 
     case "TEAM_SET_STRENGTH":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.setIn(
-          [payload.team, "strength"],
-          payload.amount
-        );
+        draft.teams[payload.team].strength = payload.amount;
       });
 
     case "TEAM_SET_STRENGTHS":
       return produce(state, (draft) => {
-        draft.teams = payload.reduce((teams: any, entry: any) => {
-          return teams.setIn([entry.id, "strength"], entry.strength);
-        }, draft.teams);
+        for (const entry of payload) {
+          draft.teams[entry.id].strength = entry.strength;
+        }
       });
 
     case "TEAM_DECREMENT_STRENGTH":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.updateIn(
-          [payload.team, "strength"],
-          (m: number) => m - payload.amount
-        );
+        draft.teams[payload.team].strength -= payload.amount;
       });
 
     case "TEAM_RENAME":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.setIn([payload.team, "name"], payload.name);
+        draft.teams[payload.team].name = payload.name;
       });
 
     case "TEAM_ADD_EFFECT":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.updateIn(
-          [payload.team, "effects"],
-          (effects: any) => effects.push(Map(payload.effect))
-        );
+        draft.teams[payload.team].effects.push(payload.effect);
       });
 
     case "TEAM_ADD_OPPONENT_EFFECT":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.updateIn(
-          [payload.team, "opponentEffects"],
-          (opponentEffects: any) => opponentEffects.push(Map(payload.effect))
-        );
+        draft.teams[payload.team].opponentEffects.push(payload.effect);
       });
 
     case "TEAM_REMOVE_MANAGER":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.removeIn([payload.team, "manager"]);
+        delete draft.teams[payload.team].manager;
       });
 
     case "TEAM_ADD_MANAGER":
       return produce(state, (draft) => {
-        draft.teams = draft.teams.setIn(
-          [payload.team, "manager"],
-          payload.manager
-        );
+        draft.teams[payload.team].manager = payload.manager;
       });
 
     case GAME_DECREMENT_DURATIONS:
       return produce(state, (draft) => {
-        draft.teams = draft.teams.map((team: any) => {
-          return team
-            .update("effects", (effects: any) =>
-              effects.map((e: any) =>
-                e.update("duration", (d: number) => d - 1)
-              )
-            )
-            .update("opponentEffects", (effects: any) =>
-              effects.map((e: any) =>
-                e.update("duration", (d: number) => d - 1)
-              )
-            );
-        });
+        for (const team of draft.teams) {
+          for (const e of team.effects) e.duration -= 1;
+          for (const e of team.opponentEffects) e.duration -= 1;
+        }
       });
 
     case GAME_CLEAR_EXPIRED:
       return produce(state, (draft) => {
-        draft.teams = draft.teams.map((team: any) => {
-          return team
-            .update("effects", (effects: any) =>
-              effects.filter((e: any) => e.get("duration") > 0)
-            )
-            .update("opponentEffects", (effects: any) =>
-              effects.filter((e: any) => e.get("duration") > 0)
-            );
-        });
+        for (const team of draft.teams) {
+          team.effects = team.effects.filter((e) => e.duration > 0);
+          team.opponentEffects = team.opponentEffects.filter((e) => e.duration > 0);
+        }
       });
 
     case GAME_NEXT_TURN:

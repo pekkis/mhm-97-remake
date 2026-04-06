@@ -48,11 +48,11 @@ const event: MHMEvent<EnemyProtestData> = {
       eventId,
       manager,
       otherManagerName: otherManager.get("name"),
-      otherTeam: otherTeam.get("id"),
-      otherTeamName: otherTeam.get("name"),
+      otherTeam: otherTeam.id,
+      otherTeamName: otherTeam.name,
       penalty,
       reward,
-      team: team.get("id"),
+      team: team.id,
       resolved: true
     });
   },

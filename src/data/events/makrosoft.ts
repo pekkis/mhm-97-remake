@@ -49,8 +49,8 @@ const event: MHMEvent<MakrosoftData> = {
       eventId,
       oldManager: oldManager.get("name"),
       newManager: newManager.get("name"),
-      team: team.get("id"),
-      teamName: team.get("name"),
+      team: team.id,
+      teamName: team.name,
       strengthLoss: 20,
       resolved: true
     });

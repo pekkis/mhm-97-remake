@@ -35,7 +35,7 @@ const tournamentList = List.of(
         amount
       )}__ pekkaa.`,
     isInvited: invitationCreator("phl", 5),
-    filter: (t) => t.get("strength") > 200
+    filter: (t) => t.strength > 200
   }),
   Map({
     name: "Go-Go Cola Cup",
@@ -45,7 +45,7 @@ const tournamentList = List.of(
         amount
       )}__ pekalla.`,
     isInvited: invitationCreator("phl", 9),
-    filter: (t) => Range(150, 225).includes(t.get("strength"))
+    filter: (t) => Range(150, 225).includes(t.strength)
   }),
   Map({
     name: "Cacca Cup",
@@ -55,7 +55,7 @@ const tournamentList = List.of(
         amount
       )}__ pekan palkkio.`,
     isInvited: invitationCreator("division", 5),
-    filter: (t) => t.get("strength") <= 175
+    filter: (t) => t.strength <= 175
   })
 );
 

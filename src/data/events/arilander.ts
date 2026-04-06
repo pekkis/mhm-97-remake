@@ -37,7 +37,7 @@ const event: MHMEvent<ArilanderData> = {
       manager,
       resolved: true,
       moraleLoss,
-      randomTeam: randomTeam.get("name")
+      randomTeam: randomTeam.name
     });
     return;
   },
@@ -56,7 +56,7 @@ Saat kuitenkin pitää paikkasi, koska todisteita ei ole.`
 
     const team = yield* select(managersTeam(manager));
 
-    yield* call(decrementMorale, team.get("id"), moraleLoss);
+    yield* call(decrementMorale, team.id, moraleLoss);
   }
 };
 

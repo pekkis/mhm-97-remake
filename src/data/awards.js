@@ -44,7 +44,7 @@ const createRandom = (
   news
 ) => {
   return function* (teamId) {
-    const team = yield select((state) => state.game.teams.getIn([teamId]));
+    const team = yield select((state) => state.game.teams[teamId]);
 
     const canDo = yield call(isEligible, teamId);
 
@@ -60,7 +60,7 @@ const createRandom = (
       putResolve({
         type: "TEAM_INCREMENT_STRENGTH",
         payload: {
-          team: team.get("id"),
+          team: team.id,
           amount: amountOfStrengthIncremented(team)
         }
       }),
@@ -87,9 +87,7 @@ const randomEvents = List.of(
       return strength > 400;
     },
     (team) => {
-      return `__${team.get(
-        "name"
-      )}__ kaatuu sisäisiin riitoihin! Pelaajat kävelevät ulos!`;
+      return `__${team.name}__ kaatuu sisäisiin riitoihin! Pelaajat kävelevät ulos!`;
     }
   ),
   createRandom(
@@ -106,9 +104,7 @@ const randomEvents = List.of(
       return strength > 300;
     },
     (team) => {
-      return `__${team.get(
-        "name"
-      )}__ hajoaa totaalisesti ulkomaiden rahaseuroihin!`;
+      return `__${team.name}__ hajoaa totaalisesti ulkomaiden rahaseuroihin!`;
     }
   ),
 
@@ -126,7 +122,7 @@ const randomEvents = List.of(
       return strength > 250;
     },
     (team) => {
-      return `__${team.get("name")}__ menettää useita pelaajiaan ulkomaille.`;
+      return `__${team.name}__ menettää useita pelaajiaan ulkomaille.`;
     }
   ),
 
@@ -144,7 +140,7 @@ const randomEvents = List.of(
       return strength > 210;
     },
     (team) => {
-      return `__${team.get("name")}__ menettää joitakin pelaajiaan ulkomaille.`;
+      return `__${team.name}__ menettää joitakin pelaajiaan ulkomaille.`;
     }
   ),
 
@@ -163,9 +159,7 @@ const randomEvents = List.of(
       return strength > 200 && rank > 8;
     },
     (team) => {
-      return `__${team.get(
-        "name"
-      )}__ ei päässyt play-offeihin ja myy pelaajiaan konkurssin uhatessa!!`;
+      return `__${team.name}__ ei päässyt play-offeihin ja myy pelaajiaan konkurssin uhatessa!!`;
     }
   ),
 
@@ -188,9 +182,7 @@ const randomEvents = List.of(
       return strength < 160 && rank <= 8;
     },
     (team) => {
-      return `__${team.get(
-        "name"
-      )}__:n  nuori joukkue saa rutkasti kokemusta play-offeista!`;
+      return `__${team.name}__:n  nuori joukkue saa rutkasti kokemusta play-offeista!`;
     }
   ),
 
@@ -208,9 +200,7 @@ const randomEvents = List.of(
       return strength < 150;
     },
     (team) => {
-      return `__${team.get(
-        "name"
-      )}__ saa uuden sponsorin joka ostaa joukkueelle uusia pelaajia!`;
+      return `__${team.name}__ saa uuden sponsorin joka ostaa joukkueelle uusia pelaajia!`;
     }
   ),
 
@@ -228,9 +218,7 @@ const randomEvents = List.of(
       return strength < 135;
     },
     (team) => {
-      return `__${team.get(
-        "name"
-      )}__ saa uuden, RIKKAAN sponsorin joka ostaa joukkueelle uusia pelaajia!`;
+      return `__${team.name}__ saa uuden, RIKKAAN sponsorin joka ostaa joukkueelle uusia pelaajia!`;
     }
   ),
 
@@ -248,9 +236,7 @@ const randomEvents = List.of(
       return strength < 140;
     },
     (team) => {
-      return `__${team.get(
-        "name"
-      )}__ lähtee tosissaan mukaan mestaruustaistoon rahan voimalla!`;
+      return `__${team.name}__ lähtee tosissaan mukaan mestaruustaistoon rahan voimalla!`;
     }
   ),
 
@@ -267,7 +253,7 @@ const randomEvents = List.of(
       return true;
     },
     (team) => {
-      return `__${team.get("name")}__:n veteraanipelaajia siirtyy eläkkeelle!`;
+      return `__${team.name}__:n veteraanipelaajia siirtyy eläkkeelle!`;
     }
   ),
   createRandom(
@@ -282,9 +268,7 @@ const randomEvents = List.of(
       return true;
     },
     (team) => {
-      return `__${team.get(
-        "name"
-      )}__:n juniorityö tuottaa lupaavan nuoren tähden!`;
+      return `__${team.name}__:n juniorityö tuottaa lupaavan nuoren tähden!`;
     }
   ),
   createRandom(
@@ -299,9 +283,7 @@ const randomEvents = List.of(
       return true;
     },
     (team) => {
-      return `__${team.get(
-        "name"
-      )}__:n pelaajia siirtyy rahan perässä muualle!`;
+      return `__${team.name}__:n pelaajia siirtyy rahan perässä muualle!`;
     }
   ),
   createRandom(
@@ -316,7 +298,7 @@ const randomEvents = List.of(
       return true;
     },
     (team) => {
-      return `__${team.get("name")}__ kokee menetyksen, pelaajia siirtyy pois!`;
+      return `__${team.name}__ kokee menetyksen, pelaajia siirtyy pois!`;
     }
   ),
   createRandom(
@@ -332,7 +314,7 @@ const randomEvents = List.of(
       return true;
     },
     (team) => {
-      return `__${team.get("name")}__ antaa rahan palaa kunnolla!`;
+      return `__${team.name}__ antaa rahan palaa kunnolla!`;
     }
   ),
 
@@ -356,9 +338,7 @@ const randomEvents = List.of(
       return strength > 160;
     },
     (team) => {
-      return `Divisioonaan tippunut __${team.get(
-        "name"
-      )}__ menettää rutkasti pelaajiansa liigaan.`;
+      return `Divisioonaan tippunut __${team.name}__ menettää rutkasti pelaajiansa liigaan.`;
     }
   ),
   createRandom(
@@ -381,9 +361,7 @@ const randomEvents = List.of(
       return strength > 130;
     },
     (team) => {
-      return `Divisioonaan tippunut __${team.get(
-        "name"
-      )}__ menettää pelaajiansa liigaan.`;
+      return `Divisioonaan tippunut __${team.name}__ menettää pelaajiansa liigaan.`;
     }
   ),
   createRandom(
@@ -406,9 +384,7 @@ const randomEvents = List.of(
       return strength > 120;
     },
     (team) => {
-      return `Nousua tavoitellut __${team.get(
-        "name"
-      )}__ ei onnistunut - pelaajat lähtevät!.`;
+      return `Nousua tavoitellut __${team.name}__ ei onnistunut - pelaajat lähtevät!.`;
     }
   ),
   createRandom(
@@ -431,9 +407,7 @@ const randomEvents = List.of(
       return strength > 140;
     },
     (team) => {
-      return `Nousua tavoitellut __${team.get(
-        "name"
-      )}__ ei onnistunut - pelaajat lähtevät joukoittain!.`;
+      return `Nousua tavoitellut __${team.name}__ ei onnistunut - pelaajat lähtevät joukoittain!.`;
     }
   ),
   createRandom(
@@ -450,7 +424,7 @@ const randomEvents = List.of(
       return strength < 82;
     },
     (team) => {
-      return `__${team.get("name")}__ saa uuden sponsorin!.`;
+      return `__${team.name}__ saa uuden sponsorin!.`;
     }
   ),
   createRandom(
@@ -467,7 +441,7 @@ const randomEvents = List.of(
       return strength < 72;
     },
     (team) => {
-      return `__${team.get("name")}__ saa uuden, hyvän sponsorin!.`;
+      return `__${team.name}__ saa uuden, hyvän sponsorin!.`;
     }
   ),
   createRandom(
@@ -484,7 +458,7 @@ const randomEvents = List.of(
       return strength < 62;
     },
     (team) => {
-      return `__${team.get("name")}__ saa uuden, loistavan sponsorin!.`;
+      return `__${team.name}__ saa uuden, loistavan sponsorin!.`;
     }
   ),
   createRandom(
@@ -500,7 +474,7 @@ const randomEvents = List.of(
       return true;
     },
     (team) => {
-      return `Liigajoukkueet värväävät __${team.get("name")}__:n pelaajia!`;
+      return `Liigajoukkueet värväävät __${team.name}__:n pelaajia!`;
     }
   ),
   createRandom(
@@ -516,9 +490,7 @@ const randomEvents = List.of(
       return true;
     },
     (team) => {
-      return `__${team.get(
-        "name"
-      )}__ kuluttaa todella paljon rahaa! Uusia pelaajia ostetaan roimasti!`;
+      return `__${team.name}__ kuluttaa todella paljon rahaa! Uusia pelaajia ostetaan roimasti!`;
     }
   ),
   createRandom(
@@ -534,23 +506,21 @@ const randomEvents = List.of(
       return true;
     },
     (team) => {
-      return `__${team.get("name")}__:n veteraanipelaajia lopettaa uransa.`;
+      return `__${team.name}__:n veteraanipelaajia lopettaa uransa.`;
     }
   ),
   createRandom(
     1,
     1,
     (team) => {
-      return 45 - team.get("strength");
+      return 45 - team.strength;
     },
     function* (teamId) {
       const strength = yield select(teamsStrength(teamId));
       return strength < 35;
     },
     (team) => {
-      return `__${team.get(
-        "name"
-      )}__ on jo luopumassa sarjapaikastaan, mutta uusi omistaja pelastaa joukkueen viime hetkellä!`;
+      return `__${team.name}__ on jo luopumassa sarjapaikastaan, mutta uusi omistaja pelastaa joukkueen viime hetkellä!`;
     }
   )
 ).map((r, i) => {
@@ -573,34 +543,33 @@ IF 10 * RND > 5 THEN vd(x) = vd(x) - 8: PRINT ld(x); ":n veteraanipelaajia lopet
 const createAward = (amount, strength, news) => {
   return {
     news,
-    data: (team) =>
-      Map({
-        id: team.get("id"),
-        name: team.get("name"),
-        amount,
-        strength
-      })
+    data: (team) => ({
+      id: team.id,
+      name: team.name,
+      amount,
+      strength
+    })
   };
 };
 
 const medalAwards = List.of(
   createAward(1500000, 29, (data) => {
-    return `__${data.get("name")}__ nettoaa mestaruudestaan ${data.get(
+    return `__${data.name}__ nettoaa mestaruudestaan ${data.get(
       "amount"
     )} pekkaa!`;
   }),
   createAward(1000000, 19, (data) => {
-    return `__${data.get("name")}__ nettoaa hopeastaan ${data.get(
+    return `__${data.name}__ nettoaa hopeastaan ${data.get(
       "amount"
     )} pekkaa!`;
   }),
   createAward(700000, 12, (data) => {
-    return `__${data.get("name")}__ nettoaa pronssistaan ${data.get(
+    return `__${data.name}__ nettoaa pronssistaan ${data.get(
       "amount"
     )} pekkaa!`;
   }),
   createAward(500000, 10, (data) => {
-    return `__${data.get("name")}__ nettoaa neljännestä sijastaan ${data.get(
+    return `__${data.name}__ nettoaa neljännestä sijastaan ${data.get(
       "amount"
     )} pekkaa!`;
   })
@@ -608,29 +577,29 @@ const medalAwards = List.of(
 
 const roundRobinAwards = List.of(
   createAward(500000, 10, (data) => {
-    return `__${data.get("name")}__ saa runkosarjan voitosta ${data.get(
+    return `__${data.name}__ saa runkosarjan voitosta ${data.get(
       "amount"
     )} pekkaa!`;
   }),
   createAward(400000, 7, (data) => {
-    return `__${data.get("name")}__ saa runkosarjan toisesta sijasta ${data.get(
+    return `__${data.name}__ saa runkosarjan toisesta sijasta ${data.get(
       "amount"
     )} pekkaa!`;
   }),
   createAward(300000, 6, (data) => {
     return `__${data.get(
       "name"
-    )}__ saa runkosarjan kolmannesta sijasta ${data.get("amount")} pekkaa!`;
+    )}__ saa runkosarjan kolmannesta sijasta ${data.amount} pekkaa!`;
   }),
   createAward(200000, 4, (data) => {
     return `__${data.get(
       "name"
-    )}__ saa runkosarjan neljännestä sijasta ${data.get("amount")} pekkaa!`;
+    )}__ saa runkosarjan neljännestä sijasta ${data.amount} pekkaa!`;
   }),
 
   Repeat(
     createAward(100000, 2, (data) => {
-      return `__${data.get("name")}__ saa playoff-bonuksen, ${data.get(
+      return `__${data.name}__ saa playoff-bonuksen, ${data.get(
         "amount"
       )} pekkaa!`;
     }),
@@ -643,7 +612,7 @@ const yieldAwards = function* (awards, to) {
 
   for (const [i, teamId] of to.entries()) {
     const award = awards.get(i);
-    const team = teams.get(teamId);
+    const team = teams[teamId];
 
     const manager = yield select(managerWhoControlsTeam(teamId));
     const data = award.data(team);
@@ -653,15 +622,15 @@ const yieldAwards = function* (awards, to) {
         type: "MANAGER_INCREMENT_BALANCE",
         payload: {
           manager: manager.get("id"),
-          amount: data.get("amount")
+          amount: data.amount
         }
       });
     } else {
       yield putResolve({
         type: "TEAM_INCREMENT_STRENGTH",
         payload: {
-          team: data.get("id"),
-          amount: data.get("strength")
+          team: data.id,
+          amount: data.strength
         }
       });
     }
@@ -700,7 +669,7 @@ const award = function* () {
 
   for (const [, team] of teams.entries()) {
     for (const randomEvent of randomEvents) {
-      yield call(randomEvent, team.get("id"));
+      yield call(randomEvent, team.id);
     }
   }
 };

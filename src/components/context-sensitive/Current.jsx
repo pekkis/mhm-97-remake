@@ -12,7 +12,7 @@ const CurrentEntry = styled.div`
 const Current = (props) => {
   const { invitations, manager, teams, className } = props;
 
-  const team = teams.get(manager.get("team"));
+  const team = teams[manager.get("team")];
 
   return (
     <div className={className}>
@@ -39,7 +39,7 @@ const Current = (props) => {
       </Calendar>
 
       <Calendar
-        when={(e) => e.get("crisisMeeting") && team.get("morale") <= -3}
+        when={(e) => e.get("crisisMeeting") && team.morale <= -3}
       >
         <CurrentEntry>
           <FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Joukkueen

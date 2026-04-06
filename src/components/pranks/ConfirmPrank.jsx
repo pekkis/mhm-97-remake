@@ -19,7 +19,7 @@ const ConfirmPrank = (props) => {
 
       <p>
         <strong>Uhri: </strong>
-        {teams.getIn([prank.victim, "name"])}
+        {teams[prank.victim]?.name}
       </p>
 
       <ButtonContainer>

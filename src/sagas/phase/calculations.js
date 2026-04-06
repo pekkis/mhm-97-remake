@@ -13,7 +13,7 @@ export default function* calculationsPhase() {
 
   for (const team of teams) {
     const readinessIncrementer = strategies.getIn([
-      team.get("strategy"),
+      team.strategy,
       "incrementReadiness"
     ]);
 
@@ -23,7 +23,7 @@ export default function* calculationsPhase() {
       yield put({
         type: "TEAM_INCREMENT_READINESS",
         payload: {
-          team: team.get("id"),
+          team: team.id,
           amount: amountToIncrement
         }
       });

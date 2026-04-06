@@ -57,7 +57,7 @@ const event: MHMEvent<UltimateCrueltyData> = {
     }
 
     const team = yield* select(managersTeam(manager));
-    if (team.get("strength") < 300) {
+    if (team.strength < 300) {
       return;
     }
 

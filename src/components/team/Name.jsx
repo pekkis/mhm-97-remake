@@ -11,9 +11,9 @@ const Name = (props) => {
 
   const humanControlled = managers
     .map((p) => p.get("team"))
-    .includes(team.get("id"));
+    .includes(team.id);
 
-  return <Span humanControlled={humanControlled}>{team.get("name")}</Span>;
+  return <Span humanControlled={humanControlled}>{team.name}</Span>;
 };
 
 Name.defaultProps = {

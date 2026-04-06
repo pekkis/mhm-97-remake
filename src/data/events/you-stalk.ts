@@ -45,8 +45,8 @@ const event: MHMEvent<YouStalkData> = {
       eventId,
       manager,
       duration,
-      team: team.get("id"),
-      teamName: team.get("name"),
+      team: team.id,
+      teamName: team.name,
       managerName: random.get("name"),
       resolved: true
     });

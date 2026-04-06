@@ -33,18 +33,18 @@ const DeveloperMenu = (props) => {
                   <tbody>
                     {c
                       .get("teams")
-                      .sortBy((t) => -teams.get(t).get("strength"))
+                      .sortBy((t) => -teams[t].strength)
                       .map((t) => {
-                        const team = teams.get(t);
+                        const team = teams[t];
                         const e = getEffective(team);
 
                         return (
-                          <tr key={team.get("id")}>
-                            <td>{team.get("name")}</td>
-                            <td>{team.get("strength")}</td>
-                            <td>{e.get("strength")}</td>
-                            <td>{e.get("morale")}</td>
-                            <td>{e.get("readiness")}</td>
+                          <tr key={team.id}>
+                            <td>{team.name}</td>
+                            <td>{team.strength}</td>
+                            <td>{e.strength}</td>
+                            <td>{e.morale}</td>
+                            <td>{e.readiness}</td>
                           </tr>
                         );
                       })}

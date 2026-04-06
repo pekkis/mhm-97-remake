@@ -26,8 +26,8 @@ const event: MHMEvent<RallialaData> = {
     const team = yield* select(managersTeam(manager));
 
     yield* call(addEvent, {
-      team: team.get("id"),
-      teamName: team.get("name"),
+      team: team.id,
+      teamName: team.name,
       eventId,
       manager,
       resolved: true,

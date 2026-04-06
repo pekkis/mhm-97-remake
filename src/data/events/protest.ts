@@ -15,7 +15,7 @@ type ProtestData = {
   victim: string;
   resolved: boolean;
   autoResolve: true;
-  perpetrator?: string;
+  perpetrator?: number;
   perpetratorTeamName?: string;
   victimTeamName?: string;
   success?: boolean;
@@ -43,13 +43,13 @@ const event: MHMEvent<ProtestData> = {
     const perpetratorTeam = yield* select(managersTeam(data.manager));
 
     const victimTeam = yield* select((state: any) =>
-      state.game.teams.getIn([data.victim])
+      state.game.teams[data.victim]
     );
 
     const resolved = produce(data, (draft) => {
-      draft.perpetrator = perpetratorTeam.get("id");
-      draft.perpetratorTeamName = perpetratorTeam.get("name");
-      draft.victimTeamName = victimTeam.get("name");
+      draft.perpetrator = perpetratorTeam.id;
+      draft.perpetratorTeamName = perpetratorTeam.name;
+      draft.victimTeamName = victimTeam.name;
       draft.success = r.bool();
       draft.resolved = true;
       draft.penalty = -3;

@@ -96,8 +96,8 @@ const event: MHMEvent<TaxEvasionData> = {
       resolved: false,
       otherManager: otherManager.get("id"),
       otherManagerName: otherManager.get("name"),
-      team: team.get("id"),
-      teamName: team.get("name")
+      team: team.id,
+      teamName: team.name
     });
   },
 

@@ -29,8 +29,8 @@ function* definePekkalandiaStrength() {
 
   const avg = phl
     .get("teams")
-    .map((t) => teams.getIn([t, "strength"]))
-    .reduce((r, s) => r + s, 0);
+    .map((t: number) => teams[t].strength)
+    .reduce((r: number, s: number) => r + s, 0);
 
   const strength = Math.round(avg / phl.get("teams").count());
 

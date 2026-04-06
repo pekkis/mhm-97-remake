@@ -33,16 +33,16 @@ const BettingForm = (props) => {
             {teamsAndOdds
               .map((team) => {
                 return (
-                  <div key={team.get("id")}>
+                  <div key={team.id}>
                     <label>
                       <input
                         name="team"
                         type="radio"
-                        value={team.get("id").toString()}
-                        checked={values.team === team.get("id").toString()}
+                        value={team.id.toString()}
+                        checked={values.team === team.id.toString()}
                         onChange={handleChange}
                       />
-                      {team.get("name")} ({team.get("odds")})
+                      {team.name} ({team.odds})
                     </label>
                   </div>
                 );

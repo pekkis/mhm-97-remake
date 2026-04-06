@@ -34,7 +34,7 @@ const Value = styled.div``;
 const ManagerInfo = (props) => {
   const { manager, teams, turn, details } = props;
 
-  const team = getEffective(teams.get(manager.get("team")));
+  const team = getEffective(teams[manager.get("team")]);
 
   return (
     <Box p={1} bg="bar">
@@ -44,12 +44,12 @@ const ManagerInfo = (props) => {
         <Details>
           <Detail>
             <Title>Voima</Title>
-            <Value>{team.get("strength")}</Value>
+            <Value>{team.strength}</Value>
           </Detail>
 
           <Detail>
             <Title>Moraali</Title>
-            <Value>{team.get("morale")}</Value>
+            <Value>{team.morale}</Value>
           </Detail>
 
           <Detail>

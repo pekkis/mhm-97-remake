@@ -46,8 +46,8 @@ const event: MHMEvent<JatovrelData> = {
       eventId,
       manager,
       duration,
-      team: team.get("id"),
-      teamName: team.get("name"),
+      team: team.id,
+      teamName: team.name,
       resolved: true
     });
     return;

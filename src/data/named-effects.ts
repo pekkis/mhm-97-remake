@@ -1,9 +1,7 @@
-import type { Map } from "immutable";
-
-type NamedEffectFn = (current: number, extra: Map<string, unknown>) => number;
+type NamedEffectFn = (current: number, extra: Record<string, unknown>) => number;
 
 const namedEffects: Record<string, NamedEffectFn> = {
-  rally: (_morale, extra) => extra.get("rallyMorale") as number
+  rally: (_morale, extra) => extra.rallyMorale as number
 };
 
 export default namedEffects;

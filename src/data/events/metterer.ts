@@ -78,7 +78,7 @@ const event: MHMEvent<MettererData> = {
 
     yield* call(
       addOpponentEffect,
-      team.get("id"),
+      team.id,
       ["strength"],
       effectSize,
       duration

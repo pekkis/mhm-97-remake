@@ -43,7 +43,7 @@ const event: MHMEvent<KarijurriData> = {
     const duration = data.duration;
     const team = yield* select(managersTeam(manager));
 
-    yield* call(addEffect, team.get("id"), ["strength"], strength, duration);
+    yield* call(addEffect, team.id, ["strength"], strength, duration);
   }
 };
 

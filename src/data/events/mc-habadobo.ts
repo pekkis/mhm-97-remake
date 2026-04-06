@@ -60,7 +60,7 @@ const event: MHMEvent<McHabadoboData> = {
 
     const team = yield* select(managersTeam(manager));
 
-    if (team.get("strength") < 250) {
+    if (team.strength < 250) {
       return;
     }
 

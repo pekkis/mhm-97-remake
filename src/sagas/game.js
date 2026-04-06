@@ -63,11 +63,11 @@ export function* beforeGame(action) {
 
     const p = g.getIn(["schedule", round, pairing]);
 
-    const t = p.map((p) => g.getIn(["teams", p])).map((tid) => teams.get(tid));
+    const t = p.map((p) => g.getIn(["teams", p])).map((tid) => teams[tid]);
 
     const humansInGame = t
-      .filter((t) => t.get("manager") !== undefined)
-      .map((t) => t.get("manager"))
+      .filter((t) => t.manager !== undefined)
+      .map((t) => t.manager)
       .toList();
 
     if (humansInGame.count() === 0) {
@@ -80,7 +80,7 @@ export function* beforeGame(action) {
       .map((s) => s.get("id"));
 
     const gameIsInteresting = t.every((t) =>
-      interestingTeams.includes(t.get("id"))
+      interestingTeams.includes(t.id)
     );
     if (!gameIsInteresting) {
       return;
@@ -211,13 +211,13 @@ export function* seasonStart() {
   // Re-strength European teams.
   const reStrengths = teams.slice(24).map((t) => {
     return {
-      id: t.get("id"),
-      strength: teamData[t.get("id")].strength()
+      id: t.id,
+      strength: teamData[t.id].strength()
     };
   });
   yield put({
     type: "TEAM_SET_STRENGTHS",
-    payload: reStrengths.toJS()
+    payload: reStrengths
   });
 
   // Start all competitions.
@@ -251,7 +251,7 @@ export function* seasonStart() {
       const salaryPerStrength = difficultyLevels[difficulty].salary(
         mainCompetition
       );
-      const totalSalary = salaryPerStrength * team.get("strength");
+      const totalSalary = salaryPerStrength * team.strength;
       yield call(decrementBalance, managerId, totalSalary);
 
       const hasInsurance = yield select(

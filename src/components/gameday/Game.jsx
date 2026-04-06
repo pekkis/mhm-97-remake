@@ -31,14 +31,14 @@ const Game = (props) => {
       <Team>
         <TeamName
           managers={managers}
-          team={teams.get(context.getIn(["teams", pairing.get("home")]))}
+          team={teams[context.getIn(["teams", pairing.get("home")])]}
         />
       </Team>
       <Separator>-</Separator>
       <Team>
         <TeamName
           managers={managers}
-          team={teams.get(context.getIn(["teams", pairing.get("away")]))}
+          team={teams[context.getIn(["teams", pairing.get("away")])]}
         />
       </Team>
       <Result>

@@ -64,8 +64,8 @@ Mies saa luonnollisesti potkut, ja uutta joukkueenohtajaa etsitään. Moraali la
     const duration = data.duration;
     const effect = data.effect;
 
-    yield* call(decrementMorale, team.get("id"), 5);
-    yield* call(addEffect, team.get("id"), ["strength"], effect, duration);
+    yield* call(decrementMorale, team.id, 5);
+    yield* call(addEffect, team.id, ["strength"], effect, duration);
   }
 };
 

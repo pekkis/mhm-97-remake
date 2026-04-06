@@ -39,8 +39,8 @@ const event: MHMEvent<OneckyData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      team: team.get("id"),
-      teamName: team.get("name"),
+      team: team.id,
+      teamName: team.name,
       otherManager: random.get("name"),
       resolved: true
     });

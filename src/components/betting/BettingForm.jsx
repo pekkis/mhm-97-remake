@@ -47,15 +47,15 @@ const BettingForm = (props) => {
                 <div key={i}>
                   <div>
                     <TeamName
-                      team={teams.get(
+                      team={teams[
                         group.getIn(["teams", pairing.get("home")])
-                      )}
+                      ]}
                     />{" "}
                     -{" "}
                     <TeamName
-                      team={teams.get(
+                      team={teams[
                         group.getIn(["teams", pairing.get("away")])
-                      )}
+                      ]}
                     />
                   </div>
                   <div>

@@ -28,7 +28,7 @@ const event: MHMEvent<SimonovSuccessData> = {
     const { manager } = data;
 
     const team = yield* select(managersTeam(manager));
-    if (team.get("strategy") !== 0) {
+    if (team.strategy !== 0) {
       return;
     }
 

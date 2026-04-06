@@ -43,14 +43,14 @@ export default Map({
     const teams = yield select((state) => state.game.teams);
 
     for (const [, stat] of tournament.get("stats").entries()) {
-      const team = teams.get(stat.get("id"));
+      const team = teams[stat.get("id")];
 
-      if (team.get("domestic", true)) {
-        yield call(incrementReadiness, team.get("id"), -2);
+      if (team.domestic) {
+        yield call(incrementReadiness, team.id, -2);
 
-        if (team.get("manager") !== undefined) {
+        if (team.manager !== undefined) {
           const award = tournamentList.getIn([group, "award"]);
-          const manager = managers.get(team.get("manager"));
+          const manager = managers.get(team.manager);
           console.log("manager", manager.toJS());
 
           yield all([
@@ -90,7 +90,7 @@ export default Map({
       }),
       base: () => 20,
       moraleEffect: (team) => {
-        return team.get("morale") * 2;
+        return team.morale * 2;
       }
     })
   }),
@@ -113,7 +113,7 @@ export default Map({
     console.log("INVITED", invited.toJS());
 
     const reducer = Map({
-      teams: teams,
+      teams: List(teams),
       groups: List(),
       invited
     });
@@ -132,7 +132,7 @@ export default Map({
           .filter(tournament.get("filter"))
           .sortBy(() => r.real(1, 1000))
           .take(6 - invitedTeams.count())
-          .map((t) => t.get("id"))
+          .map((t) => t.id)
       );
 
       return re
@@ -150,7 +150,7 @@ export default Map({
           )
         )
         .update("teams", (teams) =>
-          teams.filterNot((t) => participants.contains(t.get("id")))
+          teams.filterNot((t) => participants.contains(t.id))
         );
     }, reducer);
 

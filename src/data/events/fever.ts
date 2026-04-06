@@ -64,12 +64,12 @@ const event: MHMEvent<FeverData> = {
 
     yield* call(
       addEffect,
-      team.get("id"),
+      team.id,
       ["strength"],
-      -Math.round(team.get("strength") * 0.5),
+      -Math.round(team.strength * 0.5),
       1
     );
-    yield* call(addEffect, team.get("id"), ["morale"], -6, 1);
+    yield* call(addEffect, team.id, ["morale"], -6, 1);
 
     if (hasInsurance) {
       yield* call(incrementBalance, manager, data.amount);

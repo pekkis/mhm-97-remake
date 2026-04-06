@@ -37,8 +37,8 @@ const event: MHMEvent<FloristData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      team: team.get("id"),
-      teamName: team.get("name"),
+      team: team.id,
+      teamName: team.name,
       resolved: true
     });
     return;

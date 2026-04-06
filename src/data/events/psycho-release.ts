@@ -54,7 +54,7 @@ const event: MHMEvent<PsychoReleaseData> = {
       eventId,
       manager,
       otherManager: psychoManager.get("name"),
-      otherTeam: randomTeam.get("name"),
+      otherTeam: randomTeam.name,
       letter: cinteger(0, 4),
       resolved: true
     });

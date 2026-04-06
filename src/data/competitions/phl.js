@@ -47,7 +47,7 @@ export default Map({
       }),
       base: () => 20,
       moraleEffect: (team) => {
-        return team.get("morale") * 2;
+        return team.morale * 2;
       }
     })
   }),

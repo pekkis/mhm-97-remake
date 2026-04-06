@@ -57,24 +57,22 @@ const odds = (competition, teams) => {
   const average =
     competition
       .get("teams")
-      .map((t) => teams.get(t))
-      .reduce((r, t) => r + t.get("strength"), 0) /
+      .map((t) => teams[t])
+      .reduce((r, t) => r + t.strength, 0) /
     competition.get("teams").count();
 
   const odds = competition
     .get("teams")
-    .map((t) => teams.get(t))
-    .map((team) => {
-      return Map({
-        id: team.get("id"),
-        name: team.get("name"),
-        odds: getOdds(team.get("strength"), average)
-      });
-    });
+    .map((t) => teams[t])
+    .map((team) => ({
+      id: team.id,
+      name: team.name,
+      odds: getOdds(team.strength, average)
+    }));
 
-  return Map(odds.map((o) => [o.get("id"), o]))
-    .sortBy((t) => t.get("name"))
-    .sortBy((t) => t.get("odds"));
+  return Map(odds.map((o) => [o.id, o]))
+    .sortBy((t) => t.name)
+    .sortBy((t) => t.odds);
 };
 
 export default odds;

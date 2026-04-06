@@ -72,12 +72,12 @@ const ManagerForm = (props) => {
                         <optgroup key={c.get("id")} label={c.get("name")}>
                           {c
                             .get("teams")
-                            .map((t) => teams.get(t))
-                            .sortBy((t) => t.get("name"))
+                            .map((t) => teams[t])
+                            .sortBy((t) => t.name)
                             .map((t) => {
                               return (
-                                <option key={t.get("id")} value={t.get("id")}>
-                                  {t.get("name")}
+                                <option key={t.id} value={t.id}>
+                                  {t.name}
                                 </option>
                               );
                             })}

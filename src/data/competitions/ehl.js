@@ -83,20 +83,20 @@ function* ehlAwards() {
 
   for (const [ranking, stat] of finalTournament.get("stats").entries()) {
     console.log("stat", stat.toJS());
-    const team = teams.get(stat.get("id"));
+    const team = teams[stat.get("id")];
 
     if (ranking === 0) {
-      yield call(setSeasonStat, ["ehlChampion"], team.get("id"));
+      yield call(setSeasonStat, ["ehlChampion"], team.id);
     }
 
-    if (team.get("domestic", true)) {
-      yield call(incrementReadiness, team.get("id"), -2);
+    if (team.domestic) {
+      yield call(incrementReadiness, team.id, -2);
 
-      console.log("team", ranking, team.toJS());
+      console.log("team", ranking, team);
 
-      if (team.get("manager") !== undefined) {
+      if (team.manager !== undefined) {
         const amount = awards.getIn([ranking, "amount"]);
-        const manager = managers.get(team.get("manager"));
+        const manager = managers.get(team.manager);
         console.log("manager", manager.toJS());
 
         yield all([
@@ -111,7 +111,7 @@ function* ehlAwards() {
         // Give strength to domestic computer teams
         yield call(
           incrementStrength,
-          team.get("id"),
+          team.id,
           awards.getIn([ranking, "strength"])
         );
       }
@@ -154,9 +154,8 @@ export default Map({
 
     const foreignTeams = yield select((state) =>
       state.game.teams
-        .slice(24)
-        .take(17)
-        .map((t) => t.get("id"))
+        .slice(24, 24 + 17)
+        .map((t) => t.id)
     );
 
     const teams = ehlTeams.concat(foreignTeams).sortBy(() => r.real(1, 10000));
@@ -202,7 +201,7 @@ export default Map({
       }),
       base: () => 20,
       moraleEffect: (team) => {
-        return team.get("morale") * 2;
+        return team.morale * 2;
       }
     })
   }),

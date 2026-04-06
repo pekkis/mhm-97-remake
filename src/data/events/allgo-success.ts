@@ -29,7 +29,7 @@ const event: MHMEvent<AllgoSuccessData> = {
     const { manager } = data;
 
     const team = yield* select(managersTeam(manager));
-    if (team.get("strategy") !== 1) {
+    if (team.strategy !== 1) {
       return;
     }
 

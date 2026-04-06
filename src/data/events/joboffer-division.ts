@@ -49,8 +49,8 @@ const event: MHMEvent<JobofferDivisionData> = {
       eventId,
       manager,
       oldTeam,
-      offerer: offerer.get("id"),
-      offererName: offerer.get("name"),
+      offerer: offerer.id,
+      offererName: offerer.name,
       resolved: false
     });
   },

@@ -41,8 +41,8 @@ Recent completed migrations:
 - `src/data/teams.ts` — plain `TeamDefinition[]` array
 - `src/data/pranks.ts` — plain `Record<string, Prank>` + `PrankInstance` type
 - `src/data/difficulty-levels.ts` — plain `DifficultyLevel[]` array
-- `src/data/named-effects.ts` — plain `Record<string, NamedEffectFn>`
-- `src/services/effects.ts` — typed with pragmatic `ImmutableObj`/`ImmutableEffect` aliases
+- `src/data/named-effects.ts` — plain `Record<string, NamedEffectFn>` (Immutable Map param removed)
+- `src/services/effects.ts` — fully typed with plain `Team` + `TeamEffect` (no more Immutable)
 - `src/services/round-robin.ts` — native arrays, 17 vitest tests
 - `src/services/tournament.ts` — typed, wraps `roundRobin()` in Immutable (band-aid until competitions de-immutable)
 
@@ -51,7 +51,7 @@ Recent completed migrations:
 - `src/ducks/prank.ts` — plain `{ pranks: PrankInstance[] }` + immer
 - `src/ducks/ui.ts` — plain `UiState` + immer + discriminated `UiAction` union
 - `src/ducks/event.ts` — immer `produce()`
-- `src/ducks/game.ts` — **root is plain `GameState`** + immer; inner `teams`/`competitions`/`managers` still Immutable
+- `src/ducks/game.ts` — **root is plain `GameState`** + immer; `teams` is typed `Team[]`; `competitions`/`managers` still Immutable
 - `src/ducks/country.ts` — already plain
 - `src/ducks/meta.ts` — typed
 
@@ -70,15 +70,14 @@ type GameState = {
   serviceBasePrices: Record<string, number>; // PLAIN
   managers: any; // still Immutable
   competitions: any; // still Immutable (deeply nested Maps)
-  teams: any; // still Immutable List<Map> ← NEXT TARGET
+  teams: Team[]; // PLAIN — typed array indexed by team id
   worldChampionshipResults: any;
 };
 ```
 
 ### Still Immutable (known remaining)
 
-- `state.game.teams` — `List<Map<string, any>>` — **next target** (~33 consumer sites + ~20 reducer cases)
-- `state.game.competitions` — deeply nested Immutable Maps (phases/groups/stats/schedule)
+- `state.game.competitions` — deeply nested Immutable Maps (phases/groups/stats/schedule) — **next target candidate**
 - `state.game.managers` — Immutable (shared with manager duck)
 - `state.manager` — full Immutable duck
 - `state.stats` — full Immutable duck
@@ -87,15 +86,21 @@ type GameState = {
 - `src/data/competitions/*.js` — saga generators using Immutable throughout
 - `src/data/calendar.js` — Immutable List
 
-### Next target: `teams` de-immutable
+### Completed: `teams` de-immutable
 
-Convert `state.game.teams` from `List<Map<string, any>>` to typed `Team[]`.
+Converted `state.game.teams` from `List<Map<string, any>>` to typed `Team[]`.
 
-**Approximate Team shape:**
+**Types defined in `src/ducks/game.ts`:**
 
 ```ts
-type Effect = { name: string; amount: number | string; duration: number };
-type Team = {
+export type TeamEffect = {
+  parameter: string[]; // always ["strength"] or ["morale"] in practice
+  amount: number | string;
+  duration: number;
+  extra?: Record<string, unknown>;
+};
+
+export type Team = {
   id: number;
   name: string;
   strength: number;
@@ -103,19 +108,21 @@ type Team = {
   morale: number;
   strategy: number;
   readiness: number;
-  effects: Effect[];
-  opponentEffects: Effect[];
+  effects: TeamEffect[];
+  opponentEffects: TeamEffect[];
   manager?: string;
 };
 ```
 
-**Strategy:**
+**Scope:** ~16 reducer cases, selectors, ~76 event files, ~12 component files, ~6 saga files, ~4 competition data files, effects.ts, named-effects.ts, game service, awards, crisis, championship-betting.
 
-1. Define `Team` and `Effect` types
-2. Rewrite `defaultState` to produce `Team[]` from `TeamDefinition[]`
-3. Update ~20 reducer cases from Immutable ops to direct mutations (immer handles it)
-4. Mechanical `sed`/`perl` replacement of ~33 consumer access patterns
-5. Build + typecheck verify
+### Gotchas learned from teams migration
+
+- **sed + nested `.get()` = bracket chaos:** `sed 's/teams\.get(\(.*\))/teams[\1]/g'` breaks when the argument itself contains `.get("...")` — it eats the closing paren. Use more targeted patterns or manual fixes for nested cases.
+- **`perl -pi -e` multiline `.get(\n"name"\n)` patterns** are fragile — better to fix multiline cases manually rather than risk broken template literals.
+- **`foreignTeams` selector returns `Team[]` now** — tournament seed code wraps it in `List()` at the boundary where it enters Immutable-land.
+- **Effect parameters are always single-element arrays** (`["strength"]`, `["morale"]`) — no deep paths exist in practice.
+- **`pekkalandianTeams` uses `.slice(0, 24)` not `.take(24)`** — native array equivalent.
 
 ### Proven migration technique
 
@@ -306,7 +313,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 
 1. Update `README.md` to current install/run commands (`pnpm` + `vite`).
 2. Inventory and remove webpack-only dependencies/config that are now dead.
-3. Replace Jest plans with Vitest + Testing Library setup (Vite-native); add scripts for lint/typecheck/test so modernization has consistent gates.
+3. Vitest is configured (`vitest.config.ts`, `@vitest/ui` installed, Jest fully removed); add scripts for lint/typecheck/test so modernization has consistent gates.
 4. Add a small regression suite around:
    - game start/load/save
    - one full turn phase progression

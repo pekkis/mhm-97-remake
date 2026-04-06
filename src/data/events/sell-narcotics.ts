@@ -53,7 +53,7 @@ const event: MHMEvent<SellNarcoticsData> = {
 
   resolve: function* (data) {
     const victimTeam = yield* select((state: any) =>
-      state.game.teams.getIn([data.victim])
+      state.game.teams[data.victim]
     );
 
     const victimPlaysInPHL = yield* select(
@@ -68,7 +68,7 @@ const event: MHMEvent<SellNarcoticsData> = {
     const resolved = produce(data, (draft) => {
       draft.skillLost = skillLost;
       draft.fine = fine;
-      draft.victimTeamName = victimTeam.get("name");
+      draft.victimTeamName = victimTeam.name;
       draft.caught = r.bool(0.7);
       draft.resolved = true;
     });

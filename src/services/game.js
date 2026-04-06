@@ -60,10 +60,10 @@ export const simulate = (game) => {
   const phaseId = game.get("phaseId");
 
   const effects = List.of(
-    (team, i) => team.get("strength"),
+    (team, i) => team.strength,
     (team, i) => game.get("moraleEffect")(team),
     (team, i) => game.getIn(["advantage", i])(team),
-    (team, i) => team.get("readiness")
+    (team, i) => team.readiness
   );
 
   const managerEffects = managers.map((manager) => {
@@ -107,9 +107,9 @@ export const simulate = (game) => {
 
   const info = List.of("home", "away").map((i) => {
     return Map({
-      name: raw.getIn([i, "name"]),
-      oStrength: raw.getIn([i, "strength"]),
-      eStrength: teams.getIn([i, "strength"]),
+      name: raw.get(i).name,
+      oStrength: raw.get(i).strength,
+      eStrength: teams.get(i).strength,
       cStrength: strengths.get(i),
       goals: result.get(i)
     });

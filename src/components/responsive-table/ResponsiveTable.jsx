@@ -69,7 +69,7 @@ const ResponsiveTable = (props) => {
   const clone = React.cloneElement(children, { isClone: true });
 
   // console.log("clone", clone);
-  // const cteams = competition.get("teams").map(tid => teams.get(tid));
+  // const cteams = competition.get("teams").map(tid => teams[tid]);
   return (
     <TableScroller>
       <TableWrapper>{children}</TableWrapper>

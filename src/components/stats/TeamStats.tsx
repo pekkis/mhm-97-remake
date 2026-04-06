@@ -39,7 +39,7 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
                         <Season index={seasonIndex} />
                       </Td>
                       {season.get("medalists").map((m: string, k: number) => (
-                        <td key={k}>{teams.getIn([m, "name"])}</td>
+                        <td key={k}>{teams[m]?.name}</td>
                       ))}
                     </tr>
                   );
@@ -67,7 +67,7 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
                       <Season index={seasonIndex} />
                     </td>
                     <td>
-                      {teams.getIn([season.get("presidentsTrophy"), "name"])}
+                      {teams[season.get("presidentsTrophy")]?.name}
                     </td>
                   </tr>
                 );
@@ -95,10 +95,10 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
                       <Season index={seasonIndex} />
                     </td>
                     <td>
-                      {teams.getIn([season.get("promoted"), "name"], "-")}
+                      {teams[season.get("promoted")]?.name ?? "-"}
                     </td>
                     <td>
-                      {teams.getIn([season.get("relegated"), "name"], "-")}
+                      {teams[season.get("relegated")]?.name ?? "-"}
                     </td>
                   </tr>
                 );
@@ -124,7 +124,7 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
                     <td>
                       <Season index={seasonIndex} />
                     </td>
-                    <td>{teams.getIn([season.get("ehlChampion"), "name"])}</td>
+                    <td>{teams[season.get("ehlChampion")]?.name}</td>
                   </tr>
                 );
               })

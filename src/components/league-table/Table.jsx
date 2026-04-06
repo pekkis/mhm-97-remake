@@ -43,9 +43,9 @@ const Table = (props) => {
             <TableRow key={t.get("id")} dark={colors.get(i) === "d"}>
               <td className="fixed">
                 {t.get("managerControlled") ? (
-                  <strong>{teams.getIn([t.get("id"), "name"])}</strong>
+                  <strong>{teams[t.get("id")]?.name}</strong>
                 ) : (
-                  teams.getIn([t.get("id"), "name"])
+                  teams[t.get("id")]?.name
                 )}
               </td>
               <td>{t.get("gamesPlayed")}</td>

@@ -37,7 +37,7 @@ const Story = (props) => {
                 {competitions.getIn([story.get("mainCompetition"), "abbr"])}
               </Td>
               <Td className="fixed">{story.get("ranking") + 1}</Td>
-              <Td className="fixed">{teams.getIn([t.get("id"), "name"])}</Td>
+              <Td className="fixed">{teams[t.get("id")]?.name}</Td>
               <Td>{t.get("gamesPlayed")}</Td>
               <td>{t.get("wins")}</td>
               <td>{t.get("draws")}</td>

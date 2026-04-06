@@ -53,8 +53,8 @@ const event: MHMEvent<HabadoboData> = {
       eventId,
       manager,
       duration,
-      team: team.get("id"),
-      teamName: team.get("name"),
+      team: team.id,
+      teamName: team.name,
       managerName: random.get("name"),
       newManagerName: random2.get("name"),
       resolved: true

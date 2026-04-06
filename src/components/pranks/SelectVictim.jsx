@@ -19,7 +19,7 @@ const SelectVictim = (props) => {
           .map((teamId) => {
             return (
               <Button key={teamId} block onClick={() => selectVictim(teamId)}>
-                {teams.get(teamId).get("name")}
+                {teams[teamId].name}
               </Button>
             );
           })}

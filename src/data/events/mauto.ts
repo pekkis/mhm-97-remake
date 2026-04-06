@@ -108,8 +108,8 @@ const event: MHMEvent<MautoData> = {
     const resolved = produce(data, (draft) => {
       draft.changeOfMind = value === "y" && difficulty >= 3;
       draft.agree = value === "y";
-      draft.team = team.get("id");
-      draft.teamName = team.get("name");
+      draft.team = team.id;
+      draft.teamName = team.name;
       draft.resolved = true;
     });
 

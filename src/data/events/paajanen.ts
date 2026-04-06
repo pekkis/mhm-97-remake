@@ -62,9 +62,9 @@ Kurinpitovaliokunta lätkäisee sinulle ${data.duration} ottelun toimitsijakiell
     const duration = data.duration;
     yield* call(
       addEffect,
-      team.get("id"),
+      team.id,
       ["strength"],
-      -Math.round(0.14 * team.get("strength")),
+      -Math.round(0.14 * team.strength),
       duration
     );
   }

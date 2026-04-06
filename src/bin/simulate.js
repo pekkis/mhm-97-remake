@@ -11,8 +11,8 @@ store.dispatch({
 
 const state = store.getState();
 
-const home = state.game.teams.getIn([1]);
-const away = state.game.teams.getIn([2]);
+const home = state.game.teams[1];
+const away = state.game.teams[2];
 
 const game = Map({
   home,

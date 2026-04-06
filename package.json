@@ -1,6 +1,6 @@
 {
   "name": "mhm-97-remake",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A remake of MHM 97",
   "keywords": [
     "MHM 97",
@@ -76,7 +76,6 @@
     "@types/react-dom": "^19.2.3",
     "@vitest/ui": "^4.1.2",
     "dotenv": "^17.3.1",
-    "jest": "^30.3.0",
     "normalize.css": "^8.0.1",
     "oxfmt": "^0.43.0",
     "oxlint": "^1.58.0",
@@ -91,11 +90,5 @@
     "vite": "^8.0.3",
     "vitest": "^4.1.2"
   },
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(css)$": "<rootDir>/__mocks__/styleMock.js",
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(pcss)$": "identity-obj-proxy"
-    }
-  }
+  "packageManager": "pnpm@10.33.0"
 }

@@ -55,7 +55,7 @@ const event: MHMEvent<HaanperaDivorceData> = {
     const competesInPHL = yield* select(managerCompetesIn(manager, "phl"));
     const skillGain = competesInPHL ? 8 : 4;
 
-    yield* call(incrementStrength, team.get("id"), skillGain);
+    yield* call(incrementStrength, team.id, skillGain);
     yield* call(setFlag, "haanperaMarried", false);
   }
 };

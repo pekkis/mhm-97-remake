@@ -56,12 +56,12 @@ const event: MHMEvent<HaanperaMarriesData> = {
 
     yield* call(
       addEffect,
-      team.get("id"),
+      team.id,
       ["strength"],
-      -Math.round(team.get("strength") * 0.33),
+      -Math.round(team.strength * 0.33),
       1
     );
-    yield* call(incrementMorale, team.get("id"), 4);
+    yield* call(incrementMorale, team.id, 4);
     yield* call(setFlag, "haanperaMarried", true);
   }
 };

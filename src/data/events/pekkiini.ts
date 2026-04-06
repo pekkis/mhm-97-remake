@@ -40,7 +40,7 @@ const event: MHMEvent<PekkiiniData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      amount: Math.round(team.get("strength") * 0.5),
+      amount: Math.round(team.strength * 0.5),
       duration: 7 - difficulty,
       resolved: true
     });
@@ -56,7 +56,7 @@ const event: MHMEvent<PekkiiniData> = {
     const team = yield* select(managersTeam(data.manager));
     yield* call(
       addEffect,
-      team.get("id"),
+      team.id,
       ["strength"],
       data.amount,
       data.duration

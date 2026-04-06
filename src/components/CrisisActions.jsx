@@ -15,7 +15,7 @@ const TransferMarket = (props) => {
   const { manager, teams, competitions, crisisMeeting } = props;
 
   const balance = manager.get("balance");
-  const team = getEffective(teams.get(manager.get("team")));
+  const team = getEffective(teams[manager.get("team")]);
 
   const crisisInfo = crisis(team, competitions);
 
@@ -46,7 +46,7 @@ const TransferMarket = (props) => {
             block
             disabled={
               balance < crisisInfo.get("amount") ||
-              team.get("morale") > CRISIS_MORALE_MAX
+              team.morale > CRISIS_MORALE_MAX
             }
             onClick={() => {
               crisisMeeting(manager.get("id"));

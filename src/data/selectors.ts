@@ -3,12 +3,7 @@ import r from "../services/random";
 import { victors } from "../services/playoffs";
 import { List, type Map } from "immutable";
 import type { RootState } from "../config/redux";
-
-/**
- * Immutable Map representing a team in the game state.
- * Will become a typed plain object when the game duck is de-immutabled.
- */
-type ImmutableTeam = Map<string, any>;
+import type { Team } from "../ducks/game";
 
 /**
  * Immutable Map representing a manager in the manager state.
@@ -18,7 +13,7 @@ type ImmutableManager = Map<string, any>;
 type Selector<T> = (state: RootState) => T;
 
 export const foreignTeams = (state: RootState) =>
-  state.game.teams.filter((t: ImmutableTeam) => !t.get("domestic"));
+  state.game.teams.filter((t) => !t.domestic);
 
 export const totalGamesPlayed =
   (
@@ -46,14 +41,14 @@ export const totalGamesPlayed =
 export const teamsManagerId =
   (team: number): Selector<string | undefined> =>
   (state) =>
-    state.game.teams.getIn([team, "manager"]) as string | undefined;
+    state.game.teams[team]?.manager;
 
 export const teamsManager =
   (team: number): Selector<ImmutableManager | undefined> =>
   (state) =>
     state.manager.getIn([
       "managers",
-      state.game.teams.getIn([team, "manager"])
+      state.game.teams[team]?.manager
     ]);
 
 export const managerObject =
@@ -93,7 +88,7 @@ export const managersCompetitions = (manager: string) => (state: RootState) => {
 export const teamsStrength =
   (team: number): Selector<number> =>
   (state) =>
-    state.game.teams.getIn([team, "strength"]) as number;
+    state.game.teams[team].strength;
 
 export const teamWasRelegated =
   (team: number): Selector<boolean> =>
@@ -198,14 +193,13 @@ export const teamsCompetitions = (team: number) => (state: RootState) => {
 export const teamHasActiveEffects =
   (team: number): Selector<boolean> =>
   (state) => {
-    const effects: any = state.game.teams.getIn([team, "effects"]);
-    return effects.count() > 0;
+    return state.game.teams[team].effects.length > 0;
   };
 
 export const allTeams = (state: RootState) => state.game.teams;
 
 export const pekkalandianTeams = (state: RootState) =>
-  state.game.teams.take(24);
+  state.game.teams.slice(0, 24);
 
 export const managerHasService =
   (manager: string, service: string): Selector<boolean> =>
@@ -242,10 +236,9 @@ export const managerFlag =
     state.manager.getIn(["managers", manager, "flags", flag]);
 
 export const managersTeam =
-  (manager: string): Selector<ImmutableTeam> =>
+  (manager: string): Selector<Team> =>
   (state) =>
-    state.game.teams.getIn([state.manager.getIn(["managers", manager, "team"])
-    ]) as ImmutableTeam;
+    state.game.teams[state.manager.getIn(["managers", manager, "team"])];
 
 export const managersBalance =
   (manager: string): Selector<number> =>
@@ -255,7 +248,7 @@ export const managersBalance =
 export const managersTeamId =
   (manager: string): Selector<number> =>
   (state) => {
-    return managersTeam(manager)(state).get("id");
+    return managersTeam(manager)(state).id;
   };
 
 export const managersDifficulty =
@@ -268,8 +261,8 @@ export const randomRankedTeam =
     competitionId: string,
     phaseId: number,
     range: number[],
-    f: (t: ImmutableTeam) => boolean = () => true
-  ): Selector<ImmutableTeam | false> =>
+    f: (t: Team) => boolean = () => true
+  ): Selector<Team | false> =>
   (state) => {
     const managers = state.manager
       .get("managers")
@@ -288,8 +281,8 @@ export const randomRankedTeam =
         .get("stats")
         .map((s: Map<string, any>) => s.get("id"))
         .filter((_t: any, i: number) => range.includes(i))
-        .map((t: number) => state.game.teams.getIn([t]))
-        .filterNot((t: ImmutableTeam) => managers.includes(t.get("manager")))
+        .map((t: number) => state.game.teams[t])
+        .filterNot((t: Team) => managers.includes(t.manager))
         .filter(f);
     });
 
@@ -299,8 +292,8 @@ export const randomRankedTeam =
       return false;
     }
 
-    const randomized: ImmutableTeam = r.pick(ret.toArray());
-    return state.game.teams.getIn([randomized.get("id")]) as ImmutableTeam;
+    const randomized: Team = r.pick(ret.toArray());
+    return state.game.teams[randomized.id];
   };
 
 export const randomTeamFrom =
@@ -308,8 +301,8 @@ export const randomTeamFrom =
     competitions: string[],
     canBeHumanControlled = false,
     excluded: number[] = [],
-    f: (t: ImmutableTeam) => boolean = () => true
-  ): Selector<ImmutableTeam> =>
+    f: (t: Team) => boolean = () => true
+  ): Selector<Team> =>
   (state) => {
     console.log(excluded, "excommunicado");
 
@@ -322,20 +315,20 @@ export const randomTeamFrom =
       .filter((c: Map<string, any>) => competitions.includes(c.get("id")))
       .map((c: Map<string, any>) => c.get("teams"))
       .flatten(true)
-      .map((t: any) => state.game.teams.getIn([t]))
-      .filter((t: ImmutableTeam) => {
+      .map((t: any) => state.game.teams[t])
+      .filter((t: Team) => {
         console.log("T", t);
-        return canBeHumanControlled || !managersTeams.includes(t.get("id"));
+        return canBeHumanControlled || !managersTeams.includes(t.id);
       })
-      .filterNot((t: ImmutableTeam) => excluded.includes(t.get("id")))
+      .filterNot((t: Team) => excluded.includes(t.id))
       .filter(f);
 
     if (teams.count() === 0) {
       throw new Error("Could not find a team!");
     }
 
-    const randomized: ImmutableTeam = r.pick(teams.toArray());
-    return state.game.teams.getIn([randomized.get("id")]) as ImmutableTeam;
+    const randomized: Team = r.pick(teams.toArray());
+    return state.game.teams[randomized.id];
   };
 
 export const interestingCompetitions =
@@ -348,7 +341,7 @@ export const interestingCompetitions =
           return phase
             .get("groups")
             .some((group: Map<string, any>) =>
-              group.get("teams").includes(team.get("id"))
+              group.get("teams").includes(team.id)
             );
         });
       })
