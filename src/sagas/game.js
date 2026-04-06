@@ -214,7 +214,7 @@ export function* seasonStart() {
   const reStrengths = teams.slice(24).map((t) => {
     return {
       id: t.get("id"),
-      strength: teamData.get(t.get("id")).get("strength")()
+      strength: teamData[t.get("id")].strength()
     };
   });
   yield put({

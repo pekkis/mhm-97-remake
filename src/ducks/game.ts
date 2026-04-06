@@ -41,7 +41,7 @@ const defaultState: Map<string, any> = Map({
 
   competitions: competitionList.map((c) => c.get("data")),
 
-  teams: teams.map((t) => t.update("strength", (s) => s())),
+  teams: List(teams.map((t) => Map({ ...t, strength: t.strength() }))),
 
   worldChampionshipResults: undefined
 });
