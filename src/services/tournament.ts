@@ -8,11 +8,11 @@ const tournamentScheduler = (numberOfTeams: number) => {
         round.map((pairing) => {
           return Map({
             home: pairing[0],
-            away: pairing[1],
+            away: pairing[1]
           });
-        }),
+        })
       );
-    }),
+    })
   );
 };
 

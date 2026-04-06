@@ -1,8 +1,8 @@
-import { Map, List } from "immutable";
+import { produce } from "immer";
 
-const defaultState = Map({
-  pranks: List()
-});
+const defaultState = {
+  pranks: []
+};
 
 export const cancelPrank = (id) => {
   return {
@@ -47,10 +47,14 @@ export default function prankReducer(state = defaultState, action) {
       return payload.prank;
 
     case "PRANK_ADD":
-      return state.update("pranks", (pranks) => pranks.push(payload));
+      return produce(state, (draft) => {
+        draft.pranks.push(payload);
+      });
 
     case "PRANK_DISMISS":
-      return state.deleteIn(["pranks", payload]);
+      return produce(state, (draft) => {
+        draft.pranks.splice(payload, 1);
+      });
 
     default:
       return state;

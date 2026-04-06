@@ -2,13 +2,13 @@ import { select, call, put } from "redux-saga/effects";
 import prankTypes from "../../data/pranks";
 
 export default function* prankPhase() {
-  const pranks = yield select((state) => state.prank.get("pranks"));
+  const pranks = yield select((state) => state.prank.pranks);
 
   console.log("PRANK FUCKING TIME!");
 
   for (const [prankId, prank] of pranks.entries()) {
-    console.log("PRANK TO EXECUTE", prank.toJS());
-    const prankInfo = prankTypes[prank.get("type")];
+    console.log("PRANK TO EXECUTE", prank);
+    const prankInfo = prankTypes[prank.type];
     const prankExecutor = prankInfo.execute;
 
     yield call(prankExecutor, prank);

@@ -1,5 +1,4 @@
 import { put, call, select } from "redux-saga/effects";
-import { Map } from "immutable";
 
 import prankTypes from "../data/pranks";
 import { managerCompetesIn } from "../data/selectors";
@@ -10,18 +9,12 @@ export function* orderPrank(action) {
     payload: { manager, victim, type }
   } = action;
 
-  const prank = Map({
-    manager,
-    victim,
-    type
-  });
+  const prank = { manager, victim, type };
 
   const competesInPHL = yield select(managerCompetesIn(manager, "phl"));
   const targetCompetition = competesInPHL ? "phl" : "division";
 
-  const prankPrice = prankTypes[prank.get("type")].price(
-    targetCompetition
-  );
+  const prankPrice = prankTypes[prank.type].price(targetCompetition);
 
   yield call(decrementBalance, manager, prankPrice);
 
@@ -30,7 +23,7 @@ export function* orderPrank(action) {
     payload: prank
   });
 
-  const prankOrderer = prankTypes[prank.get("type")].order;
+  const prankOrderer = prankTypes[prank.type].order;
 
   yield call(prankOrderer, prank);
 }
