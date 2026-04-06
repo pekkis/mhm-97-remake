@@ -5,8 +5,8 @@ const tournamentScheduler = (numberOfTeams) => {
   return roundRobin(numberOfTeams).map((round) => {
     return round.map((pairing) => {
       return Map({
-        home: pairing.get(0),
-        away: pairing.get(1)
+        home: pairing[0],
+        away: pairing[1]
       });
     });
   });

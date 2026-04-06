@@ -223,7 +223,7 @@ export default Map({
             round: 0,
             name: `lohko ${groupId + 1}`,
             teams: teamSlice,
-            schedule: rr(teamSlice.count(), times),
+            schedule: List(rr(teamSlice.count(), times).map((round) => List(round.map((p) => Map(p))))),
             colors: List.of("d", "l", "l", "l"),
             penalties: List()
           });

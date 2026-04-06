@@ -96,11 +96,12 @@ export const simulate = (game) => {
   const result = strengths
     .map((strength, i) => {
       return pipe(
-        (strength) => r.integer(0, strength),
+        strength,
+        (s) => r.integer(0, s),
         (val) => val / base(),
         (val) => (val < 0 ? 0 : val),
         (number) => parseInt(number.toFixed(0), 10)
-      )(strength);
+      );
     })
     .set("overtime", false);
 

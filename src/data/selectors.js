@@ -129,9 +129,9 @@ export const teamsPositionInRoundRobin =
   };
 
 export const teamCompetesIn = (team, competition) => (state) => {
-  return pipe(teamsCompetitions(team), (competitions) =>
-    competitions.map((c) => c.get("id")).includes(competition)
-  )(state);
+  return pipe(teamsCompetitions(team)(state), (competitions) => {
+    return competitions.map((c) => c.get("id")).includes(competition);
+  });
 };
 
 export const teamsCompetitions = (team) => (state) => {

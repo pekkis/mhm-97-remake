@@ -69,7 +69,11 @@ export default Map({
             name: "runkosarja",
             teams,
             times,
-            schedule: rr(teams.count(), times),
+            schedule: List(
+              rr(teams.count(), times).map((round) =>
+                List(round.map((p) => Map(p)))
+              )
+            ),
             colors: List.of(
               "d",
               "d",

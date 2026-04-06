@@ -12,14 +12,18 @@
     "type": "git",
     "url": "https://github.com/pekkis/react-training-broilerplate"
   },
+  "type": "module",
   "main": "src",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "lint": "oxlint -c oxlintrc.json .",
-    "format": "oxfmt -c .oxfmt.json . --write",
-    "format:check": "oxfmt -c .oxfmt.json . --check",
-    "typecheck": "tsc"
+    "lint": "oxlint -c oxlint.config.ts .",
+    "format": "oxfmt -c oxfmt.config.ts . --write",
+    "format:check": "oxfmt -c oxfmt.config.ts . --check",
+    "typecheck": "tsc",
+    "test": "vitest",
+    "test:run": "vitest --run",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@emotion/core": "^11.0.0",
@@ -27,6 +31,7 @@
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.3.0",
+    "@redux-devtools/extension": "^4.0.0",
     "@redux-saga/delay-p": "^1.3.1",
     "@sentry/browser": "^10.47.0",
     "@types/react-redux": "^7.1.34",
@@ -57,7 +62,6 @@
     "react-toggle": "^4.1.3",
     "react-typography": "^0.16.23",
     "redux": "^5.0.1",
-    "redux-devtools-extension": "^2.13.9",
     "redux-saga": "^1.4.2",
     "remeda": "^2.33.7",
     "roundrobin": "^2.0.0",
@@ -71,7 +75,7 @@
   "devDependencies": {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@types/redux-saga": "^0.10.5",
+    "@vitest/ui": "^4.1.2",
     "dotenv": "^17.3.1",
     "jest": "^30.3.0",
     "normalize.css": "^8.0.1",
@@ -85,7 +89,8 @@
     "postcss-preset-env": "^11.2.0",
     "type-fest": "^5.5.0",
     "typescript": "^6.0.2",
-    "vite": "^8.0.3"
+    "vite": "^8.0.3",
+    "vitest": "^4.1.2"
   },
   "jest": {
     "moduleNameMapper": {

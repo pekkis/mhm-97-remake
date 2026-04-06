@@ -6,7 +6,7 @@ const n = 8;
 
 const r = scheduler(12, 2);
 
-console.log(r.toJS());
+console.log(JSON.stringify(r, null, 2));
 
 // const r = roundRobin(x);
 
@@ -15,12 +15,12 @@ const lussi = Range(1, x + 1)
   .map((i) => {
     return r.reduce(
       (counts, round) => {
-        const pairing = round.find((pairing) => pairing.includes(i));
+        const pairing = round.find((pairing) => pairing.home === i || pairing.away === i);
         if (!pairing) {
           return counts;
         }
 
-        if (pairing.get("home") === i) {
+        if (pairing.home === i) {
           return {
             home: counts.home + 1,
             away: counts.away
@@ -38,8 +38,8 @@ const lussi = Range(1, x + 1)
 
 console.log(lussi.toJS());
 
-const poop = r.map((r) => {
-  return r.filter((x) => x.includes(n));
+const poop = r.map((round) => {
+  return round.filter((p) => p.home === n || p.away === n);
 });
 
 // console.log("schedule length", schedule.count());
