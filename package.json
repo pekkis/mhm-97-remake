@@ -41,7 +41,6 @@
     "graphql": "^16.13.2",
     "immer": "^11.1.4",
     "immutable": "^5.1.5",
-    "lodash": "^4.17.23",
     "luxon": "^3.7.2",
     "polished": "^4.3.1",
     "prop-types": "^15.8.1",

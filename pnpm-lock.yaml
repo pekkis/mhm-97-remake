@@ -53,9 +53,6 @@ importers:
       immutable:
         specifier: ^5.1.5
         version: 5.1.5
-      lodash:
-        specifier: ^4.17.23
-        version: 4.17.23
       luxon:
         specifier: ^3.7.2
         version: 3.7.2
