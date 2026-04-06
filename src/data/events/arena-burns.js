@@ -48,7 +48,7 @@ const event = {
     const hasInsurance = yield select(managerHasService(manager, "insurance"));
     const amount = !hasInsurance
       ? 0
-      : arenas.getIn([newArenaLevel, "price"]) * 3;
+      : arenas[newArenaLevel].price * 3;
 
     yield call(
       addEvent,

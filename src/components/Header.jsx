@@ -1,8 +1,7 @@
-import React from "react";
 import styled from "styled-components";
 import Button from "./form/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { toggleMenu } from "../ducks/ui";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.header`
   background-color: rgb(133, 133, 133);
@@ -33,11 +32,18 @@ const Header = (props) => {
   const { back, menu, history, advanceEnabled, advance, toggleMenu, forward } =
     props;
 
+  const navigate = useNavigate();
+
   return (
     <Container>
       {back && (
         <div className="advance">
-          <Button block onClick={() => history.push("/")}>
+          <Button
+            block
+            onClick={() => {
+              navigate("/");
+            }}
+          >
             Päävalikkoon
           </Button>
         </div>

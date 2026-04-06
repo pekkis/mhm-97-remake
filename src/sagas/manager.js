@@ -219,11 +219,11 @@ export function* improveArena(action) {
   const currentArena = yield select(managersArena(manager));
   const nextArenaLevel = currentArena.get("level") + 1;
 
-  const newArena = arenas.get(nextArenaLevel);
+  const newArena = arenas[nextArenaLevel];
 
-  yield decrementBalance(manager, newArena.get("price"));
+  yield decrementBalance(manager, newArena.price);
 
-  yield call(setArenaLevel, manager, newArena.get("id"));
+  yield call(setArenaLevel, manager, newArena.id);
 
   yield call(
     addNotification,

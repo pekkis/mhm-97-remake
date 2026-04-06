@@ -24,10 +24,10 @@ const Arenas = (props) => {
 
   const currentLevel = manager.getIn(["arena", "level"]);
 
-  const nextLevel = arenas.get(currentLevel + 1);
+  const nextLevel = arenas[currentLevel + 1];
 
   const canDo =
-    currentLevel < 9 && manager.get("balance") >= nextLevel.get("price");
+    currentLevel < 9 && manager.get("balance") >= nextLevel.price;
 
   return (
     <HeaderedPage>
@@ -44,12 +44,12 @@ const Arenas = (props) => {
           {arenas
             .map((arena, level) => {
               return (
-                <Arena current={level === currentLevel} key={arena.get("id")}>
-                  {arena.get("name")}
+                <Arena current={level === currentLevel} key={arena.id}>
+                  {arena.name}
                 </Arena>
               );
             })
-            .reverse()}
+            .toReversed()}
         </ArenaHierarchy>
 
         <ButtonRow>
@@ -62,7 +62,7 @@ const Arenas = (props) => {
               }}
             >
               <div>Paranna halliolosuhteitasi</div>
-              <div>{currency(nextLevel.get("price"))}</div>
+              <div>{currency(nextLevel.price)}</div>
             </Button>
           )}
         </ButtonRow>
