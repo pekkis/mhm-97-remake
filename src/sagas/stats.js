@@ -24,9 +24,7 @@ export function* stats() {
 export function* calculatePhaseStats(action) {
   const { payload } = action;
   const phase = yield select((state) =>
-    state.game.getIn([
-      "competitions",
-      payload.competition,
+    state.game.competitions.getIn([payload.competition,
       "phases",
       payload.phase
     ])
@@ -44,9 +42,7 @@ export function* calculatePhaseStats(action) {
 
 function* groupStats(competitionId, phaseId, groupId) {
   const group = yield select((state) =>
-    state.game.getIn([
-      "competitions",
-      competitionId,
+    state.game.competitions.getIn([competitionId,
       "phases",
       phaseId,
       "groups",
@@ -124,15 +120,13 @@ export function* createSeasonStories() {
     const mainCompetition = yield select(managersMainCompetition(managerId));
 
     const competition = yield select((state) =>
-      state.game.getIn(["competitions", mainCompetition])
+      state.game.competitions.getIn([mainCompetition])
     );
 
     console.log(competition.toJS(), "competitiore");
 
     const group = yield select((state) =>
-      state.game.getIn([
-        "competitions",
-        mainCompetition,
+      state.game.competitions.getIn([mainCompetition,
         "phases",
         0,
         "groups",

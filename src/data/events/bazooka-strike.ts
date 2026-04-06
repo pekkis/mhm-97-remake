@@ -26,7 +26,7 @@ const event: MHMEvent<BazookaStrikeData> = {
     const victimManager = yield* select(randomManager());
 
     const victimTeam = yield* select((state: any) =>
-      state.game.getIn(["teams", victim])
+      state.game.teams.getIn([victim])
     );
 
     yield* call(addEvent, {
@@ -49,7 +49,7 @@ Iskun tekijäksi ilmoittautuu PVA. Miliisi ei kommentoi. Joukkue joutuu joka tap
 
   process: function* (data) {
     const team = yield* select((state: any) =>
-      state.game.getIn(["teams", data.victim])
+      state.game.teams.getIn([data.victim])
     );
 
     const skillLost = Math.round(0.75 * team.get("strength"));

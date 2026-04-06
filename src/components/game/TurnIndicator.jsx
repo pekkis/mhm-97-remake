@@ -4,7 +4,7 @@ const TurnIndicator = (props) => {
   const { turn } = props;
   return (
     <span>
-      {turn.get("season")}, {turn.get("round")} / {turn.get("phase")}
+      {turn.season}, {turn.round} / {turn.phase}
     </span>
   );
 };

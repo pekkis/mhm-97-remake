@@ -29,34 +29,34 @@ const Phase = (props) => {
   const { turn } = props;
 
   switch (true) {
-    case turn.get("phase") === "select-strategy":
+    case turn.phase === "select-strategy":
       return <SelectStrategy />;
 
-    case turn.get("phase") === "championship-betting":
+    case turn.phase === "championship-betting":
       return <ChampionshipBetting />;
 
-    case turn.get("phase") === "event":
+    case turn.phase === "event":
       return <Events />;
 
-    case turn.get("phase") === "gala":
+    case turn.phase === "gala":
       return <Gala />;
 
-    case turn.get("phase") === "news":
+    case turn.phase === "news":
       return <News />;
 
-    case turn.get("phase") === "gameday":
+    case turn.phase === "gameday":
       return <Gameday />;
 
-    case turn.get("phase") === "world-championships":
+    case turn.phase === "world-championships":
       return <WorldChampionships />;
 
-    case turn.get("phase") === "end-of-season":
+    case turn.phase === "end-of-season":
       return <EndOfSeason />;
 
-    case turn.get("phase") === "results":
+    case turn.phase === "results":
       return <GamedayResults />;
 
-    case turn.get("phase") === "action":
+    case turn.phase === "action":
       return (
         <Routes>
           <Route path="/" element={<MainMenu />} />

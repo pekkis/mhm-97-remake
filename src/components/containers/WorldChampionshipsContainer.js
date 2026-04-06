@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import WorldChampionships from "../WorldChampionships";
 export default connect((state) => ({
-  results: state.game.get("worldChampionshipResults"),
-  turn: state.game.get("turn")
+  results: state.game.worldChampionshipResults,
+  turn: state.game.turn
 }))(WorldChampionships);

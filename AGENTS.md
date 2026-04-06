@@ -169,6 +169,7 @@ When touching these areas:
 
 ### During coding
 
+- **Never use `npx`.** Use `pnpm run <script>` or `pnpm exec <binary>` instead.
 - Prefer extensionless imports unless build requires explicit extension.
 - Match existing style in each file; do not run mass formatting unrelated to task.
 - Keep user-visible strings/language unchanged unless requested.
@@ -197,7 +198,7 @@ Because scripts are minimal, use practical checks:
 
 1. `pnpm dev` starts and renders without immediate crashes.
 2. `pnpm build` succeeds.
-3. For TypeScript-touched changes, run `pnpm exec tsc --noEmit`.
+3. For TypeScript-touched changes, run `pnpm run typecheck --noEmit` (or `pnpm exec tsc --noEmit`).
 4. For API migrations, grep for old patterns to ensure full removal.
 
 If one check is known-broken for unrelated reasons, state that explicitly and still run all applicable checks.

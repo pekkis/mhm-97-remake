@@ -32,9 +32,7 @@ export function* processChampionBets() {
 
 export function* bettingResults(round) {
   const pairings = yield select((state) =>
-    state.game.getIn([
-      "competitions",
-      "phl",
+    state.game.competitions.getIn(["phl",
       "phases",
       0,
       "groups",

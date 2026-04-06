@@ -18,7 +18,7 @@ const EndOfSeason = (props) => {
 
       <Box p={1}>
         <h2>
-          Kausi <Season long index={turn.get("season")} />
+          Kausi <Season long index={turn.season} />
         </h2>
 
         <Announcements

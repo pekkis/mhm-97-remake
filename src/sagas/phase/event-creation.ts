@@ -161,7 +161,7 @@ export default function* eventCreationPhase() {
   yield call(setPhase, "event-creation");
 
   const managers = yield select((state) => state.manager.get("managers"));
-  const round = yield select((state) => state.game.getIn(["turn", "round"]));
+  const round = yield select((state) => state.game.turn.round);
 
   const calendarEntry = calendar.get(round);
 

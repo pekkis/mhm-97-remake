@@ -51,9 +51,7 @@ export function* beforeGame(action) {
 
   if (competition === "phl" && phase === 0 && group === 0 && round >= 5) {
     const g = yield select((state) =>
-      state.game.getIn([
-        "competitions",
-        competition,
+      state.game.competitions.getIn([competition,
         "phases",
         phase,
         "groups",
@@ -61,7 +59,7 @@ export function* beforeGame(action) {
       ])
     );
 
-    const teams = yield select((state) => state.game.get("teams"));
+    const teams = yield select((state) => state.game.teams);
 
     const p = g.getIn(["schedule", round, pairing]);
 
@@ -105,9 +103,9 @@ export function* gameLoop() {
   yield fork(stats);
 
   do {
-    const turn = yield select((state) => state.game.get("turn"));
+    const turn = yield select((state) => state.game.turn);
 
-    const roundData = calendar.get(turn.get("round"));
+    const roundData = calendar.get(turn.round);
 
     const phases = roundData.get("phases");
 
@@ -205,8 +203,8 @@ export function* groupEnd(competition, phase, group) {
 }
 
 export function* seasonStart() {
-  const turn = yield select((state) => state.game.get("turn"));
-  const season = turn.get("season");
+  const turn = yield select((state) => state.game.turn);
+  const season = turn.season;
 
   const teams = yield select(allTeams);
 
@@ -225,7 +223,7 @@ export function* seasonStart() {
   // Start all competitions.
   for (const [key, competitionObj] of competitionData) {
     yield competitionStart(key);
-    // const competitions = yield select(state => state.game.get("competitions"));
+    // const competitions = yield select(state => state.game.competitions);
 
     /*
     const seed = competitionObj.getIn(["seed", 0])(competitions);
@@ -311,7 +309,7 @@ export function* setFlag(flag, value) {
 
 export function* incrementServiceBasePrice(service, amount) {
   const currentAmount = yield select((state) =>
-    state.game.getIn(["serviceBasePrices", service])
+    state.game.serviceBasePrices[service]
   );
 
   yield put({
@@ -337,7 +335,7 @@ export function* setPhase(phase) {
 }
 
 export function* seedCompetition(competitionId, phase) {
-  const competitions = yield select((state) => state.game.get("competitions"));
+  const competitions = yield select((state) => state.game.competitions);
   const competitionObj = competitionData.getIn([competitionId]);
 
   const seeder = competitionObj.getIn(["seed", phase]);

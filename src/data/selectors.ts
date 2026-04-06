@@ -18,7 +18,7 @@ type ImmutableManager = Map<string, any>;
 type Selector<T> = (state: RootState) => T;
 
 export const foreignTeams = (state: RootState) =>
-  state.game.get("teams").filter((t: ImmutableTeam) => !t.get("domestic"));
+  state.game.teams.filter((t: ImmutableTeam) => !t.get("domestic"));
 
 export const totalGamesPlayed =
   (
@@ -46,14 +46,14 @@ export const totalGamesPlayed =
 export const teamsManagerId =
   (team: number): Selector<string | undefined> =>
   (state) =>
-    state.game.getIn(["teams", team, "manager"]) as string | undefined;
+    state.game.teams.getIn([team, "manager"]) as string | undefined;
 
 export const teamsManager =
   (team: number): Selector<ImmutableManager | undefined> =>
   (state) =>
     state.manager.getIn([
       "managers",
-      state.game.getIn(["teams", team, "manager"])
+      state.game.teams.getIn([team, "manager"])
     ]);
 
 export const managerObject =
@@ -83,7 +83,7 @@ export const managerById =
     state.manager.getIn(["managers", manager]);
 
 export const managersCompetitions = (manager: string) => (state: RootState) => {
-  return state.game.get("competitions").filter((c: Map<string, any>) => {
+  return state.game.competitions.filter((c: Map<string, any>) => {
     return c
       .get("teams")
       .includes(state.manager.getIn(["managers", manager, "team"]));
@@ -93,15 +93,13 @@ export const managersCompetitions = (manager: string) => (state: RootState) => {
 export const teamsStrength =
   (team: number): Selector<number> =>
   (state) =>
-    state.game.getIn(["teams", team, "strength"]) as number;
+    state.game.teams.getIn([team, "strength"]) as number;
 
 export const teamWasRelegated =
   (team: number): Selector<boolean> =>
   (state) => {
     const phlLoser = (
-      state.game.getIn([
-        "competitions",
-        "phl",
+      state.game.competitions.getIn(["phl",
         "phases",
         0,
         "groups",
@@ -117,7 +115,7 @@ export const teamWasRelegated =
     }
 
     const divisionVictor = victors(
-      state.game.getIn(["competitions", "division", "phases", 3, "groups", 0])
+      state.game.competitions.getIn(["division", "phases", 3, "groups", 0])
     )
       .first()
       .get("id");
@@ -138,7 +136,7 @@ export const teamWasPromoted =
     }
 
     const divisionVictor = victors(
-      state.game.getIn(["competitions", "division", "phases", 3, "groups", 0])
+      state.game.competitions.getIn(["division", "phases", 3, "groups", 0])
     )
       .first()
       .get("id");
@@ -157,9 +155,7 @@ export const teamsPositionInRoundRobin =
     phase: number
   ): Selector<number | false> =>
   (state) => {
-    const thePhase: any = state.game.getIn([
-      "competitions",
-      competition,
+    const thePhase: any = state.game.competitions.getIn([competition,
       "phases",
       phase
     ]);
@@ -194,7 +190,7 @@ export const teamCompetesIn =
   };
 
 export const teamsCompetitions = (team: number) => (state: RootState) => {
-  return state.game.get("competitions").filter((c: Map<string, any>) => {
+  return state.game.competitions.filter((c: Map<string, any>) => {
     return c.get("teams", List()).includes(team);
   });
 };
@@ -202,14 +198,14 @@ export const teamsCompetitions = (team: number) => (state: RootState) => {
 export const teamHasActiveEffects =
   (team: number): Selector<boolean> =>
   (state) => {
-    const effects: any = state.game.getIn(["teams", team, "effects"]);
+    const effects: any = state.game.teams.getIn([team, "effects"]);
     return effects.count() > 0;
   };
 
-export const allTeams = (state: RootState) => state.game.get("teams");
+export const allTeams = (state: RootState) => state.game.teams;
 
 export const pekkalandianTeams = (state: RootState) =>
-  state.game.get("teams").take(24);
+  state.game.teams.take(24);
 
 export const managerHasService =
   (manager: string, service: string): Selector<boolean> =>
@@ -226,7 +222,7 @@ export const managerWhoControlsTeam =
   };
 
 export const competition = (id: string) => (state: RootState) =>
-  state.game.getIn(["competitions", id]);
+  state.game.competitions.getIn([id]);
 
 export const managerCompetesIn =
   (manager: string, competition: string): Selector<boolean> =>
@@ -238,7 +234,7 @@ export const managerCompetesIn =
   };
 
 export const flag = (flag: string) => (state: RootState) => {
-  return state.game.getIn(["flags", flag]);
+  return state.game.flags[flag];
 };
 
 export const managerFlag =
@@ -248,9 +244,7 @@ export const managerFlag =
 export const managersTeam =
   (manager: string): Selector<ImmutableTeam> =>
   (state) =>
-    state.game.getIn([
-      "teams",
-      state.manager.getIn(["managers", manager, "team"])
+    state.game.teams.getIn([state.manager.getIn(["managers", manager, "team"])
     ]) as ImmutableTeam;
 
 export const managersBalance =
@@ -282,9 +276,7 @@ export const randomRankedTeam =
       .map((m: ImmutableManager) => m.get("id"));
 
     const ret = (
-      state.game.getIn([
-        "competitions",
-        competitionId,
+      state.game.competitions.getIn([competitionId,
         "phases",
         phaseId,
         "groups"
@@ -296,7 +288,7 @@ export const randomRankedTeam =
         .get("stats")
         .map((s: Map<string, any>) => s.get("id"))
         .filter((_t: any, i: number) => range.includes(i))
-        .map((t: number) => state.game.getIn(["teams", t]))
+        .map((t: number) => state.game.teams.getIn([t]))
         .filterNot((t: ImmutableTeam) => managers.includes(t.get("manager")))
         .filter(f);
     });
@@ -308,7 +300,7 @@ export const randomRankedTeam =
     }
 
     const randomized: ImmutableTeam = r.pick(ret.toArray());
-    return state.game.getIn(["teams", randomized.get("id")]) as ImmutableTeam;
+    return state.game.teams.getIn([randomized.get("id")]) as ImmutableTeam;
   };
 
 export const randomTeamFrom =
@@ -325,13 +317,12 @@ export const randomTeamFrom =
       .get("managers")
       .map((p: ImmutableManager) => p.get("team"));
 
-    const teams = state.game
-      .get("competitions")
+    const teams = state.game.competitions
       .toList()
       .filter((c: Map<string, any>) => competitions.includes(c.get("id")))
       .map((c: Map<string, any>) => c.get("teams"))
       .flatten(true)
-      .map((t: any) => state.game.getIn(["teams", t]))
+      .map((t: any) => state.game.teams.getIn([t]))
       .filter((t: ImmutableTeam) => {
         console.log("T", t);
         return canBeHumanControlled || !managersTeams.includes(t.get("id"));
@@ -344,15 +335,14 @@ export const randomTeamFrom =
     }
 
     const randomized: ImmutableTeam = r.pick(teams.toArray());
-    return state.game.getIn(["teams", randomized.get("id")]) as ImmutableTeam;
+    return state.game.teams.getIn([randomized.get("id")]) as ImmutableTeam;
   };
 
 export const interestingCompetitions =
   (manager: string) => (state: RootState) => {
     const team = managersTeam(manager)(state);
 
-    return state.game
-      .get("competitions")
+    return state.game.competitions
       .filter((competition: Map<string, any>) => {
         return competition.get("phases").some((phase: Map<string, any>) => {
           return phase
@@ -370,8 +360,7 @@ export const randomManager =
   (state) => {
     // Psycho event filter out.
     const psycho = flag("psycho")(state);
-    const managers = state.game
-      .get("managers")
+    const managers = state.game.managers
       .filterNot((m: ImmutableManager) => m.get("id") === psycho)
       .filterNot((m: ImmutableManager) => exclude.includes(m.get("id")));
 

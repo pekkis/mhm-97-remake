@@ -4,8 +4,8 @@ import type { RootState } from "../../config/redux";
 
 const mapStateToProps = (state: RootState) => ({
   manager: state.manager.getIn(["managers", state.manager.get("active")]),
-  teams: state.game.get("teams"),
-  competitions: state.game.get("competitions"),
+  teams: state.game.teams,
+  competitions: state.game.competitions,
   stats: state.stats,
   countries: state.country.countries
 });

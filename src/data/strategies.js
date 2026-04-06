@@ -13,7 +13,7 @@ const strategies = List.of(
     description: `Joukkueen huippukunto ajoittuu play-offeihin. Koko kesä treenataan täysillä, ja sarjan alkuvaihessa "pojat" tuppaavat olemaan hiukan väsyneitä. Loppua kohden tahti kuitenkin paranee, ja play-offeissa tahti on hirmuinen!`,
     initialReadiness: () => -22,
     incrementReadiness: (turn) => {
-      if (turn.get("round") >= 54) {
+      if (turn.round >= 54) {
         return 0;
       }
       return 1;
@@ -25,11 +25,11 @@ const strategies = List.of(
     description: `Kaikki pistetään peliin heti sarjan alusta alkaen! Tahti on kova, mutta "pojat" hiipuvat kevättä kohden melkoisesti...`,
     initialReadiness: () => 24,
     incrementReadiness: (turn) => {
-      if (turn.get("round") >= 54) {
+      if (turn.round >= 54) {
         return 0;
       }
 
-      if (turn.get("round") > 44) {
+      if (turn.round > 44) {
         return -2;
       }
 

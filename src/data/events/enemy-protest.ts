@@ -72,7 +72,7 @@ Protesti menee läpi, ja teiltä vähennetään ${Math.abs(data.penalty)} pistet
     const team = data.team;
 
     const competitions = yield* select((state: any) =>
-      state.game.get("competitions")
+      state.game.competitions
     );
 
     const competition = competitions

@@ -44,7 +44,7 @@ const createRandom = (
   news
 ) => {
   return function* (teamId) {
-    const team = yield select((state) => state.game.getIn(["teams", teamId]));
+    const team = yield select((state) => state.game.teams.getIn([teamId]));
 
     const canDo = yield call(isEligible, teamId);
 
@@ -639,7 +639,7 @@ const roundRobinAwards = List.of(
 ).flatten(true);
 
 const yieldAwards = function* (awards, to) {
-  const teams = yield select((state) => state.game.get("teams"));
+  const teams = yield select((state) => state.game.teams);
 
   for (const [i, teamId] of to.entries()) {
     const award = awards.get(i);

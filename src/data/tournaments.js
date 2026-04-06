@@ -12,9 +12,7 @@ const invitationCreator = (competitionId, maxRanking) => {
     }
 
     const stats = yield select((state) =>
-      state.game.getIn([
-        "competitions",
-        mainCompetition,
+      state.game.competitions.getIn([mainCompetition,
         "phases",
         0,
         "groups",

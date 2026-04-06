@@ -92,7 +92,7 @@ const ActionMenu = (props) => {
       </nav>
       <Button
         block
-        disabled={turn.get("phase") !== "action"}
+        disabled={turn.phase !== "action"}
         type="button"
         onClick={() => {
           saveGame();

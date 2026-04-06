@@ -8,15 +8,15 @@ import {
 } from "../../ducks/prank";
 export default connect(
   (state) => ({
-    turn: state.game.get("turn"),
+    turn: state.game.turn,
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
     managers: state.manager.get("managers"),
-    teams: state.game.get("teams"),
+    teams: state.game.teams,
     events: state.event.events,
     news: state.news.get("news"),
     advanceEnabled: state.ui.advanceEnabled,
     prank: state.ui.prank,
-    competitions: state.game.get("competitions")
+    competitions: state.game.competitions
   }),
   { orderPrank, selectPrankType, selectPrankVictim, cancelPrank }
 )(Pranks);

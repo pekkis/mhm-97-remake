@@ -17,7 +17,7 @@ function* playGame(
   competitionId,
   phaseId
 ) {
-  const teams = yield select((state) => state.game.get("teams"));
+  const teams = yield select((state) => state.game.teams);
 
   const home = teams.get(group.getIn(["teams", pairing.get("home")]));
   const away = teams.get(group.getIn(["teams", pairing.get("away")]));
@@ -79,7 +79,7 @@ function* completeGameday(competition, phase, group, round) {
 
 export function* gameday(payload) {
   const competition = yield select((state) =>
-    state.game.getIn(["competitions", payload])
+    state.game.competitions.getIn([payload])
   );
 
   const phase = competition.getIn(["phases", competition.get("phase")]);
@@ -111,9 +111,7 @@ export function* gameday(payload) {
       console.log(gameParams, "gameParams");
 
       const round = yield select((state) =>
-        state.game.getIn([
-          "competitions",
-          payload,
+        state.game.competitions.getIn([payload,
           "phases",
           competition.get("phase"),
           "groups",
@@ -197,9 +195,7 @@ export function* gameday(payload) {
     });
 
     const theGroup = yield select((state) =>
-      state.game.getIn([
-        "competitions",
-        payload,
+      state.game.competitions.getIn([payload,
         "phases",
         competition.get("phase"),
         "groups",

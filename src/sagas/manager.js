@@ -162,7 +162,7 @@ export function* crisisMeeting(action) {
 
   const difficulty = yield select(managersDifficulty(payload.manager));
   const team = yield select(managersTeam(payload.manager));
-  const competitions = yield select((state) => state.game.get("competitions"));
+  const competitions = yield select((state) => state.game.competitions);
 
   const moraleBoost = difficultyLevels[difficulty].moraleBoost;
 
@@ -311,9 +311,7 @@ export function* afterGameday(competition, phase, groupId, round) {
   const managers = yield select((state) => state.manager.get("managers"));
 
   const group = yield select((state) =>
-    state.game.getIn([
-      "competitions",
-      competition,
+    state.game.competitions.getIn([competition,
       "phases",
       phase,
       "groups",

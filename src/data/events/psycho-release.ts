@@ -45,7 +45,7 @@ const event: MHMEvent<PsychoReleaseData> = {
     }
 
     const psychoManager = yield* select((state: any) =>
-      state.game.getIn(["managers", psycho])
+      state.game.managers.getIn([psycho])
     );
 
     const randomTeam = yield* select(randomTeamFrom(["division"]));

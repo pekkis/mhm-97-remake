@@ -18,7 +18,7 @@ const WorldChampionships = (props) => {
       <Header forward="Palkintogaala" />
 
       <Box p={1}>
-        <h2>Maailmanmestaruuskisat {turn.get("season") + 1}</h2>
+        <h2>Maailmanmestaruuskisat {turn.season + 1}</h2>
 
         <div>
           {results

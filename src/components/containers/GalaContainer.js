@@ -5,11 +5,11 @@ import { betChampion } from "../../ducks/betting";
 import { interestingCompetitions } from "../../data/selectors";
 export default connect(
   (state) => ({
-    turn: state.game.get("turn"),
+    turn: state.game.turn,
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
     managers: state.manager.get("managers"),
-    teams: state.game.get("teams"),
-    competitions: state.game.get("competitions"),
+    teams: state.game.teams,
+    competitions: state.game.competitions,
     events: state.event.events,
     news: state.news.get("news"),
     interestingCompetitions: interestingCompetitions(

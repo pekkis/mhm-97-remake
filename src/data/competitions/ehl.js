@@ -75,11 +75,11 @@ IF elt(y) = eds3 AND edus3 <> u AND seh(elt(y)) = yy THEN v(edus3) = v(edus3) + 
 
 function* ehlAwards() {
   const finalTournament = yield select((state) =>
-    state.game.getIn(["competitions", "ehl", "phases", 1, "groups", 0])
+    state.game.competitions.getIn(["ehl", "phases", 1, "groups", 0])
   );
 
   const managers = yield select((state) => state.manager.get("managers"));
-  const teams = yield select((state) => state.game.get("teams"));
+  const teams = yield select((state) => state.game.teams);
 
   for (const [ranking, stat] of finalTournament.get("stats").entries()) {
     console.log("stat", stat.toJS());
@@ -143,8 +143,8 @@ export default Map({
   start: function* () {
     // const ehlTeams = yield select(state => state.game.get("ehlParticipants"));
 
-    const turn = yield select((state) => state.game.get("turn"));
-    const season = turn.get("season");
+    const turn = yield select((state) => state.game.turn);
+    const season = turn.season;
 
     const ehlTeams = yield select((state) =>
       state.stats.getIn(["seasons", season - 1, "medalists"], List.of(2, 3, 5))
@@ -153,8 +153,7 @@ export default Map({
     console.log(ehlTeams, "lussi?");
 
     const foreignTeams = yield select((state) =>
-      state.game
-        .get("teams")
+      state.game.teams
         .slice(24)
         .take(17)
         .map((t) => t.get("id"))

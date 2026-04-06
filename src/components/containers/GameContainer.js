@@ -5,7 +5,7 @@ import { startGame, loadGame } from "../../ducks/meta";
 export default connect(
   (state) => ({
     started: state.meta.get("started"),
-    turn: state.game.get("turn"),
+    turn: state.game.turn,
     menu: state.ui.menu
   }),
   { startGame, loadGame }

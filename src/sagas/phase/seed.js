@@ -11,7 +11,7 @@ export default function* seedPhase() {
     payload: "seed"
   });
 
-  const round = yield select((state) => state.game.getIn(["turn", "round"]));
+  const round = yield select((state) => state.game.turn.round);
   const seeds = calendar.getIn([round, "seed"], List());
 
   console.log("SEEDS", seeds.toJS());

@@ -92,11 +92,11 @@ export default function* endOfSeasonPhase() {
   yield call(setPhase, "end-of-season");
 
   const division = yield select((state) =>
-    state.game.getIn(["competitions", "division"])
+    state.game.competitions.getIn(["division"])
   );
 
   const phl = yield select((state) =>
-    state.game.getIn(["competitions", "phl"])
+    state.game.competitions.getIn(["phl"])
   );
 
   const divisionVictor = victors(division.getIn(["phases", 3, "groups", 0]))

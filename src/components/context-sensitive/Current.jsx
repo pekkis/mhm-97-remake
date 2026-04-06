@@ -26,8 +26,8 @@ const Current = (props) => {
 
       <Calendar
         when={(turn, c) => {
-          const nextTurn = c.get(turn.get("round") + 1);
-          return turn.get("transferMarket") && !nextTurn.get("transferMarket");
+          const nextTurn = c.get(turn.round + 1);
+          return turn.transferMarket && !nextTurn.get("transferMarket");
         }}
       >
         <CurrentEntry>

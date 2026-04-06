@@ -4,10 +4,10 @@ import { bet } from "../../ducks/betting";
 
 export default connect(
   (state) => ({
-    turn: state.game.get("turn"),
+    turn: state.game.turn,
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
-    teams: state.game.get("teams"),
-    competition: state.game.getIn(["competitions", "phl"])
+    teams: state.game.teams,
+    competition: state.game.competitions.getIn(["phl"])
   }),
   { bet }
 )(Betting);

@@ -31,9 +31,7 @@ export default Map({
 
   groupEnd: function* (phase, group) {
     const tournament = yield select((state) =>
-      state.game.getIn([
-        "competitions",
-        "tournaments",
+      state.game.competitions.getIn(["tournaments",
         "phases",
         phase,
         "groups",
@@ -42,7 +40,7 @@ export default Map({
     );
 
     const managers = yield select((state) => state.manager.get("managers"));
-    const teams = yield select((state) => state.game.get("teams"));
+    const teams = yield select((state) => state.game.teams);
 
     for (const [, stat] of tournament.get("stats").entries()) {
       const team = teams.get(stat.get("id"));

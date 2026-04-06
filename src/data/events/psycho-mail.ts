@@ -54,7 +54,7 @@ const event: MHMEvent<PsychoMailData> = {
     }
 
     const psychoManager = yield* select((state: any) =>
-      state.game.getIn(["managers", psycho])
+      state.game.managers.getIn([psycho])
     );
 
     yield* call(addEvent, {

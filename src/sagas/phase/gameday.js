@@ -7,7 +7,7 @@ import { setPhase } from "../game";
 export default function* gamedayPhase() {
   yield call(setPhase, "gameday");
 
-  const round = yield select((state) => state.game.getIn(["turn", "round"]));
+  const round = yield select((state) => state.game.turn.round);
 
   const calendarEntry = calendar.get(round);
   const gamedays = calendarEntry.get("gamedays", List());

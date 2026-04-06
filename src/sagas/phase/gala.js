@@ -7,15 +7,15 @@ import { randomManager } from "../../data/selectors";
 export default function* galaPhase() {
   yield call(setPhase, "gala");
 
-  const teams = yield select((state) => state.game.get("teams"));
+  const teams = yield select((state) => state.game.teams);
   const managers = yield select((state) => state.manager.get("managers"));
 
   const phlRegularSeason = yield select((state) =>
-    state.game.getIn(["competitions", "phl", "phases", 0, "groups", 0])
+    state.game.competitions.getIn(["phl", "phases", 0, "groups", 0])
   );
 
   const phlFinals = yield select((state) =>
-    state.game.getIn(["competitions", "phl", "phases", 3, "groups", 0])
+    state.game.competitions.getIn(["phl", "phases", 3, "groups", 0])
   );
 
   const phlLast = teams.get(phlRegularSeason.get("stats").last().get("id"));
@@ -31,7 +31,7 @@ export default function* galaPhase() {
     .map((t) => teams.get(t));
 
   const divFinals = yield select((state) =>
-    state.game.getIn(["competitions", "division", "phases", 3, "groups", 0])
+    state.game.competitions.getIn(["division", "phases", 3, "groups", 0])
   );
 
   const divFinalists = divFinals
@@ -40,7 +40,7 @@ export default function* galaPhase() {
     .map((t) => teams.get(t));
 
   const divRegularSeason = yield select((state) =>
-    state.game.getIn(["competitions", "division", "phases", 0, "groups", 0])
+    state.game.competitions.getIn(["division", "phases", 0, "groups", 0])
   );
 
   const otherManager = yield select(randomManager());

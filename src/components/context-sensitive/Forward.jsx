@@ -5,7 +5,7 @@ import { List } from "immutable";
 const Forward = (props) => {
   const { turn, competitions } = props;
 
-  const calendarEntry = calendar.get(turn.get("round"));
+  const calendarEntry = calendar.get(turn.round);
 
   const gamedays = calendarEntry.get("gamedays", List());
 

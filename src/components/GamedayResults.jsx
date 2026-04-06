@@ -11,7 +11,7 @@ import Box from "./styled-system/Box";
 const GamedayResults = (props) => {
   const { turn, managers, teams, competitions } = props;
 
-  const calendarEntry = calendar.get(turn.get("round"));
+  const calendarEntry = calendar.get(turn.round);
 
   const currentCompetitions = calendarEntry
     .get("gamedays", List())
