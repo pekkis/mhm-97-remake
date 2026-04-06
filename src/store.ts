@@ -3,11 +3,13 @@ import {
   getMiddlewares,
   getReducers,
   getEnhancers,
-  getSagaMiddleware
+  getSagaMiddleware,
+  type RootState
 } from "./config/redux";
+import type { Store } from "redux";
 import getSagas from "./getSagas";
 
-export default function getStore(initialState) {
+export default function getStore(initialState?: RootState): Store {
   const store = createStore(
     getReducers(),
     getMiddlewares(),
