@@ -1,4 +1,4 @@
-import { Map, List } from "immutable";
+import { Map } from "immutable";
 import { call, select, put, all } from "redux-saga/effects";
 import { addEvent } from "../../sagas/event";
 import { flag } from "../selectors";
@@ -38,17 +38,17 @@ const event: MHMEvent = {
   },
 
   render: (data) => {
-    let t = List.of(
+    const lines = [
       `__Kanadassa__ asenne MM-kisoja kohtaan on muuttunut radikaalisti.`
-    );
+    ];
 
     if (data.get("attitude") === true) {
-      t = t.push(`Tästä edespäin kaikki supertähdet tulevat kisoihin!`);
+      lines.push(`Tästä edespäin kaikki supertähdet tulevat kisoihin!`);
     } else {
-      t = t.push(`Tästä lähtien heitä edustaa rupuinen yliopistojoukkue!`);
+      lines.push(`Tästä lähtien heitä edustaa rupuinen yliopistojoukkue!`);
     }
 
-    return t;
+    return lines;
   },
 
   process: function* (data) {

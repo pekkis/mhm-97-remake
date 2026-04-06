@@ -26,7 +26,10 @@ export default function eventReducer(state = defaultState, action) {
 
     case "EVENT_ADD":
       const id = crypto.randomUUID();
-      return state.setIn(["events", id], payload.event.set("id", id));
+      const eventMap = Map.isMap(payload.event)
+        ? payload.event
+        : Map(payload.event);
+      return state.setIn(["events", id], eventMap.set("id", id));
 
     case "EVENT_RESOLVE":
       return state.setIn(["events", payload.id], payload.event);

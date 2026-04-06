@@ -1,8 +1,9 @@
-import { Map, List } from "immutable";
-import { call, select } from "redux-saga/effects";
+import { call } from "typed-redux-saga";
+import { select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
 import { addEffect } from "../../sagas/team";
 import { randomTeamFrom, randomManager } from "../selectors";
+import type { MHMEvent, MHMEventData } from "../../types/base";
 
 /*
 sat60:
@@ -19,47 +20,41 @@ RETURN*/
 
 const eventId = "youStalk";
 
-const event = {
+const event: MHMEvent = {
   type: "manager",
 
   create: function* (data) {
     const { manager } = data;
 
-    const team = yield select(randomTeamFrom(["phl"], false, []));
+    const team = yield* select(randomTeamFrom(["phl"], false, []));
     const duration = 5;
-    const random = yield select(randomManager());
+    const random = yield* select(randomManager());
 
-    yield call(
-      addEvent,
-      Map({
-        eventId,
-        manager,
-        duration,
-        team: team.get("id"),
-        teamName: team.get("name"),
-        managerName: random.get("name"),
-        resolved: true
-      })
-    );
-    return;
+    yield* call(addEvent, {
+      eventId,
+      manager,
+      duration,
+      team: team.get("id"),
+      teamName: team.get("name"),
+      managerName: random.get("name"),
+      resolved: true
+    });
   },
 
   render: (data) => {
-    let t = List.of(
+    return [
       `Liigasta:
 
 __${data.get("managerName")}__ valmentaa joukkuetta __${data.get(
         "teamName"
       )}__. Sinä kyttäät lehtien mukaan hänen paikkaansa, ja joukkue-paran pakka menee hetkeksi hiukan sekaisin!`
-    );
-
-    return t;
+    ];
   },
 
   process: function* (data) {
     const team = data.get("team");
     const duration = data.get("duration");
-    yield call(addEffect, team, ["strength"], -15, duration);
+    yield* call(addEffect, team, ["strength"], -15, duration);
   }
 };
 

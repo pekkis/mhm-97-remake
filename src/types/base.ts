@@ -1,13 +1,21 @@
-import { Effect } from "redux-saga/effects";
-import { List } from "immutable";
+import type { Effect } from "redux-saga/effects";
+import type { Map } from "immutable";
 
-export type MHMEventTypes = "manager";
+export type MHMEventType = "manager";
 
 export type MHMEventGenerator = Generator<Effect, void, unknown>;
 
-export interface MHMEvent {
-  type: MHMEventTypes;
+/**
+ * Event data as stored in the Redux store.
+ * Still Immutable Map during migration — will become a typed plain object per-event later.
+ */
+export type MHMEventData = Map<string, any>;
+
+export type MHMEvent = {
+  type: MHMEventType;
   create: (data: any) => MHMEventGenerator;
-  render: (data: any) => List<string>;
-  process: (data: any) => MHMEventGenerator;
-}
+  render: (data: MHMEventData) => string[];
+  process: (data: MHMEventData) => MHMEventGenerator;
+  options?: (data: MHMEventData) => Map<string, string>;
+  resolve?: (data: MHMEventData, value: string) => MHMEventGenerator;
+};
