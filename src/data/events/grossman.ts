@@ -45,7 +45,9 @@ const event: MHMEvent<GrossmanData> = {
       `Urheilun tappaja, pienten seurojen kirous, kuuluisan Grossman-päätöksen aikaansaaja, __Marc Grossman__, haluaisi pelata joukkueessasi. Otatko kaikkialla vihatun Grossmanin joukkueeseesi?`
     ];
 
-    if (!data.resolved) return lines;
+    if (!data.resolved) {
+      return lines;
+    }
 
     lines.push(
       `__Grossman__ pillahtaa itkuun. Hänen uransa on tuhottu, vaikka hän tarkoitti vain hyvää.`

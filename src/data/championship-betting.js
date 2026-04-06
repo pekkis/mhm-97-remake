@@ -63,8 +63,8 @@ const odds = (competition, teams) => {
       name: team.name,
       odds: getOdds(team.strength, average)
     }))
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .sort((a, b) => a.odds - b.odds);
+    .toSorted((a, b) => a.name.localeCompare(b.name))
+    .toSorted((a, b) => a.odds - b.odds);
 
   return oddsArr;
 };

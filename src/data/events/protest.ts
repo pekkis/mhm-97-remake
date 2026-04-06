@@ -42,8 +42,8 @@ const event: MHMEvent<ProtestData> = {
 
     const perpetratorTeam = yield* select(managersTeam(data.manager));
 
-    const victimTeam = yield* select((state: any) =>
-      state.game.teams[data.victim]
+    const victimTeam = yield* select(
+      (state: any) => state.game.teams[data.victim]
     );
 
     const resolved = produce(data, (draft) => {
@@ -88,9 +88,7 @@ const event: MHMEvent<ProtestData> = {
 
     const penalizedTeam = success ? data.victim : data.perpetrator!;
 
-    const competitions = yield* select((state: any) =>
-      state.game.competitions
-    );
+    const competitions = yield* select((state: any) => state.game.competitions);
 
     const competition = competitions
       .filterNot((c: any) => c.get("id") === "ehl")

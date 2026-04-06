@@ -24,7 +24,9 @@ const texts = (data: SuddenDeathData): string[] => {
     lines.push(`Etelälä joutuu maksamaan sinulle ${a(data.amount)} pekkaa`);
   }
 
-  if (!data.resolved) return lines;
+  if (!data.resolved) {
+    return lines;
+  }
 
   lines.push(`Uskoitko? Ainakin ensimmäisellä kerralla... :)`);
   return lines;

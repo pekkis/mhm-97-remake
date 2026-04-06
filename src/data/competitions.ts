@@ -12,9 +12,11 @@ const competitionEntries: [string, CompetitionDefinition][] = [
 ];
 
 // Sort by weight (ascending) to match the original Immutable Map.sortBy behavior
-competitionEntries.sort((a, b) => a[1].data.weight - b[1].data.weight);
+const sorted = competitionEntries.toSorted(
+  (a, b) => a[1].data.weight - b[1].data.weight
+);
 
 const competitions: Record<string, CompetitionDefinition> =
-  Object.fromEntries(competitionEntries);
+  Object.fromEntries(sorted);
 
 export default competitions;

@@ -30,8 +30,8 @@ const DeveloperMenu = (props) => {
                 </thead>
 
                 <tbody>
-                  {[...c.teams]
-                    .sort((a, b) => teams[b].strength - teams[a].strength)
+                  {c.teams
+                    .toSorted((a, b) => teams[b].strength - teams[a].strength)
                     .map((t) => {
                       const team = teams[t];
                       const e = getEffective(team);

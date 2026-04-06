@@ -25,7 +25,9 @@ const event: MHMEvent<PauligkahviData> = {
     const { manager } = data;
 
     const competesInPHL = yield* select(managerCompetesIn(manager, "phl"));
-    if (!competesInPHL) return;
+    if (!competesInPHL) {
+      return;
+    }
 
     yield* call(addEvent, {
       eventId,
@@ -56,7 +58,9 @@ const event: MHMEvent<PauligkahviData> = {
       `Superpakillesi, Pauli G. Kahville, ei pikkuraha enää riitä. Mies vaatii ${data.amount} pekan korotusta ja edustusautoa. Suostutko?`
     ];
 
-    if (!data.resolved) return lines;
+    if (!data.resolved) {
+      return lines;
+    }
 
     if (data.agree) {
       lines.push(`Pauli hymyilee muikeasti.`);

@@ -54,13 +54,7 @@ const event: MHMEvent<PekkiiniData> = {
 
   process: function* (data) {
     const team = yield* select(managersTeam(data.manager));
-    yield* call(
-      addEffect,
-      team.id,
-      ["strength"],
-      data.amount,
-      data.duration
-    );
+    yield* call(addEffect, team.id, ["strength"], data.amount, data.duration);
   }
 };
 

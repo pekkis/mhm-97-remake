@@ -53,7 +53,9 @@ const event: MHMEvent<VoodooData> = {
       `Haitilta saapunut tumma mies lupaa tuplata joukkueesi voiman ${a(data.amount)} pekalla. Maksatko?`
     ];
 
-    if (!data.resolved) return lines;
+    if (!data.resolved) {
+      return lines;
+    }
 
     if (data.agree) {
       lines.push("Yhteishenki paranee kun pelaajat uskovat itseensä enemmän!!");

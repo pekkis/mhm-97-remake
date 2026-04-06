@@ -76,13 +76,7 @@ const event: MHMEvent<MettererData> = {
 
     const team = yield* select(managersTeam(manager));
 
-    yield* call(
-      addOpponentEffect,
-      team.id,
-      ["strength"],
-      effectSize,
-      duration
-    );
+    yield* call(addOpponentEffect, team.id, ["strength"], effectSize, duration);
   }
 };
 

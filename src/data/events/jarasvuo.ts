@@ -61,7 +61,9 @@ const event: MHMEvent<JarasvuoData> = {
 Miten rankaiset pelaajaa?`
     ];
 
-    if (!data.resolved) return lines;
+    if (!data.resolved) {
+      return lines;
+    }
 
     if (data.solution === "nothing") {
       lines.push(

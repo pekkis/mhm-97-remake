@@ -32,9 +32,7 @@ export default function* calculationsPhase() {
 
   const managers = yield select((state) => state.manager.get("managers"));
 
-  const basePrices = yield select((state) =>
-    state.game.serviceBasePrices
-  );
+  const basePrices = yield select((state) => state.game.serviceBasePrices);
 
   for (const [managerId, manager] of managers.entries()) {
     const managersServices = manager

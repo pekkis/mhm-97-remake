@@ -54,11 +54,11 @@ const defaultState: GameState = {
     insurance: 1000,
     coach: 3200,
     microphone: 500,
-    cheer: 3000,
+    cheer: 3000
   },
   managers,
   competitions: Object.fromEntries(
-    Object.entries(competitionList).map(([key, def]) => [key, { ...def.data }]),
+    Object.entries(competitionList).map(([key, def]) => [key, { ...def.data }])
   ),
   teams: teamDefs.map((t) => ({
     id: t.id,
@@ -69,19 +69,22 @@ const defaultState: GameState = {
     strategy: 2,
     readiness: 0,
     effects: [],
-    opponentEffects: [],
+    opponentEffects: []
   })),
-  worldChampionshipResults: undefined,
+  worldChampionshipResults: undefined
 };
 
 export const advance = (payload: any) => {
   return {
     type: GAME_ADVANCE_REQUEST,
-    payload,
+    payload
   };
 };
 
-export default function gameReducer(state: GameState = defaultState, action: any): GameState {
+export default function gameReducer(
+  state: GameState = defaultState,
+  action: any
+): GameState {
   const { type, payload } = action;
 
   switch (type) {
@@ -104,8 +107,9 @@ export default function gameReducer(state: GameState = defaultState, action: any
 
     case "COMPETITION_UPDATE_STATS":
       return produce(state, (draft) => {
-        draft.competitions[payload.competition].phases[payload.phase].groups[payload.group].stats =
-          payload.stats;
+        draft.competitions[payload.competition].phases[payload.phase].groups[
+          payload.group
+        ].stats = payload.stats;
       });
 
     case "COMPETITION_SET_TEAMS":
@@ -120,7 +124,8 @@ export default function gameReducer(state: GameState = defaultState, action: any
 
     case "COMPETITION_SEED":
       return produce(state, (draft) => {
-        draft.competitions[payload.competition].phases[payload.phase] = payload.seed;
+        draft.competitions[payload.competition].phases[payload.phase] =
+          payload.seed;
         draft.competitions[payload.competition].phase = payload.phase;
       });
 
@@ -148,14 +153,16 @@ export default function gameReducer(state: GameState = defaultState, action: any
 
     case "GAME_GAME_RESULT":
       return produce(state, (draft) => {
-        draft.competitions[payload.competition].phases[payload.phase].groups[payload.group]
-          .schedule[payload.round][payload.pairing].result = payload.result;
+        draft.competitions[payload.competition].phases[payload.phase].groups[
+          payload.group
+        ].schedule[payload.round][payload.pairing].result = payload.result;
       });
 
     case "GAME_GAMEDAY_COMPLETE":
       return produce(state, (draft) => {
-        draft.competitions[payload.competition].phases[payload.phase].groups[payload.group]
-          .round += 1;
+        draft.competitions[payload.competition].phases[payload.phase].groups[
+          payload.group
+        ].round += 1;
       });
 
     case "GAME_SET_PHASE":
@@ -166,14 +173,17 @@ export default function gameReducer(state: GameState = defaultState, action: any
     case "TEAM_INCREMENT_MORALE":
       return produce(state, (draft) => {
         const t = draft.teams[payload.team];
-        t.morale = Math.min(payload.max, Math.max(payload.min, t.morale + payload.amount));
+        t.morale = Math.min(
+          payload.max,
+          Math.max(payload.min, t.morale + payload.amount)
+        );
       });
 
     case "TEAM_SET_MORALE":
       return produce(state, (draft) => {
         draft.teams[payload.team].morale = Math.min(
           payload.max,
-          Math.max(payload.min, payload.morale),
+          Math.max(payload.min, payload.morale)
         );
       });
 
@@ -189,11 +199,17 @@ export default function gameReducer(state: GameState = defaultState, action: any
 
     case "TEAM_INCUR_PENALTY":
       return produce(state, (draft) => {
-        const group = draft.competitions[payload.competition].phases[payload.phase].groups[payload.group];
+        const group =
+          draft.competitions[payload.competition].phases[payload.phase].groups[
+            payload.group
+          ];
         if (!("penalties" in group)) {
           (group as any).penalties = [];
         }
-        (group as any).penalties.push({ team: payload.team, penalty: payload.penalty });
+        (group as any).penalties.push({
+          team: payload.team,
+          penalty: payload.penalty
+        });
       });
 
     case "TEAM_INCREMENT_READINESS":
@@ -251,8 +267,12 @@ export default function gameReducer(state: GameState = defaultState, action: any
     case GAME_DECREMENT_DURATIONS:
       return produce(state, (draft) => {
         for (const team of draft.teams) {
-          for (const e of team.effects) e.duration -= 1;
-          for (const e of team.opponentEffects) e.duration -= 1;
+          for (const e of team.effects) {
+            e.duration -= 1;
+          }
+          for (const e of team.opponentEffects) {
+            e.duration -= 1;
+          }
         }
       });
 
@@ -260,7 +280,9 @@ export default function gameReducer(state: GameState = defaultState, action: any
       return produce(state, (draft) => {
         for (const team of draft.teams) {
           team.effects = team.effects.filter((e) => e.duration > 0);
-          team.opponentEffects = team.opponentEffects.filter((e) => e.duration > 0);
+          team.opponentEffects = team.opponentEffects.filter(
+            (e) => e.duration > 0
+          );
         }
       });
 

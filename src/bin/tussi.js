@@ -15,7 +15,9 @@ const lussi = Range(1, x + 1)
   .map((i) => {
     return r.reduce(
       (counts, round) => {
-        const pairing = round.find((pairing) => pairing.home === i || pairing.away === i);
+        const pairing = round.find(
+          (pairing) => pairing.home === i || pairing.away === i
+        );
         if (!pairing) {
           return counts;
         }

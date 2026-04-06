@@ -26,8 +26,7 @@ const Arenas = (props) => {
 
   const nextLevel = arenas[currentLevel + 1];
 
-  const canDo =
-    currentLevel < 9 && manager.get("balance") >= nextLevel.price;
+  const canDo = currentLevel < 9 && manager.get("balance") >= nextLevel.price;
 
   return (
     <HeaderedPage>

@@ -55,7 +55,9 @@ const event: MHMEvent<SopupeliData> = {
       `Nimetön soittaja lupaa siirtää joukkueenne tilille ${a(data.amount)} pekkaa jos "järjestät" joukkueesi tappion seuraavassa ottelussa. Suostutko sopupeliin?`
     ];
 
-    if (!data.resolved) return lines;
+    if (!data.resolved) {
+      return lines;
+    }
 
     if (data.agree) {
       lines.push(`Soittaja lupaa suorittaa transaktion välittömästi.`);

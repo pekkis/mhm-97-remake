@@ -54,7 +54,9 @@ const event: MHMEvent<KecklinData> = {
       `Ykkösmaalivahtinne Limmo Kecklin haluaa ${a(data.amount)} pekan palkankorotuksen. Suostutko?`
     ];
 
-    if (!data.resolved) return lines;
+    if (!data.resolved) {
+      return lines;
+    }
 
     if (!data.agree) {
       lines.push(

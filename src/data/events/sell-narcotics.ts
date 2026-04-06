@@ -52,8 +52,8 @@ const event: MHMEvent<SellNarcoticsData> = {
   },
 
   resolve: function* (data) {
-    const victimTeam = yield* select((state: any) =>
-      state.game.teams[data.victim]
+    const victimTeam = yield* select(
+      (state: any) => state.game.teams[data.victim]
     );
 
     const victimPlaysInPHL = yield* select(

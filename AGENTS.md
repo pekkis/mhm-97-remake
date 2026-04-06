@@ -195,6 +195,7 @@ Full type hierarchy: `GameResult`, `Pairing`, `TeamStat`, `MatchupStat`, `Matchu
    - Do not add new class components unless absolutely required.
    - Do not add new Immutable-heavy APIs in fresh code; prefer typed plain objects for new modules.
    - Prefer named exports; avoid default exports for new/edited modules unless interop absolutely requires it.
+   - **Prefer non-mutating array methods:** use `toSorted()` over `[...arr].sort()` or `arr.sort()`, `toReversed()` over `reverse()`, `toSpliced()` over `splice()`, and `with()` over index assignment. Avoid in-place mutation even on freshly created arrays — consistency matters more than micro-optimization.
 
 6. **Type safety must trend upward**
    - New/edited modules should be TypeScript where feasible.

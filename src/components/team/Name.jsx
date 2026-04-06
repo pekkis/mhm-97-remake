@@ -9,9 +9,7 @@ const Span = styled.span`
 const Name = (props) => {
   const { team, managers } = props;
 
-  const humanControlled = managers
-    .map((p) => p.get("team"))
-    .includes(team.id);
+  const humanControlled = managers.map((p) => p.get("team")).includes(team.id);
 
   return <Span humanControlled={humanControlled}>{team.name}</Span>;
 };

@@ -85,7 +85,9 @@ const event: MHMEvent<BoxingData> = {
       `Manageri __${data.otherManager}__ haastaa sinut nyrkkeilyotteluun! Otatko haasteen vastaan?`
     ];
 
-    if (!data.resolved) return lines;
+    if (!data.resolved) {
+      return lines;
+    }
 
     if (data.agree) {
       const text = results[data.result as number].text(data);

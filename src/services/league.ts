@@ -85,17 +85,25 @@ export const groupStats = (group: Group): TeamStat[] => {
 };
 
 export const sortStats = (stats: TeamStat[]): TeamStat[] => {
-  return [...stats].sort((a, b) => {
+  return stats.toSorted((a, b) => {
     // points desc
-    if (b.points !== a.points) return b.points - a.points;
+    if (b.points !== a.points) {
+      return b.points - a.points;
+    }
     // goal diff desc
     const diffA = a.goalsFor - a.goalsAgainst;
     const diffB = b.goalsFor - b.goalsAgainst;
-    if (diffB !== diffA) return diffB - diffA;
+    if (diffB !== diffA) {
+      return diffB - diffA;
+    }
     // goalsFor desc
-    if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
+    if (b.goalsFor !== a.goalsFor) {
+      return b.goalsFor - a.goalsFor;
+    }
     // wins desc
-    if (b.wins !== a.wins) return b.wins - a.wins;
+    if (b.wins !== a.wins) {
+      return b.wins - a.wins;
+    }
     // stable by id
     return a.id - b.id;
   });

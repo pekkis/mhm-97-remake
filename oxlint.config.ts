@@ -10,6 +10,7 @@ export default defineConfig({
     "no-empty-file": "off",
     "require-yield": "off",
     "no-unused-vars": "warn",
-    "no-constant-condition": "off"
+    "no-constant-condition": "off",
+    curly: "error"
   }
 });

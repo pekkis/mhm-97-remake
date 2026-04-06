@@ -66,9 +66,7 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
                     <td>
                       <Season index={seasonIndex} />
                     </td>
-                    <td>
-                      {teams[season.get("presidentsTrophy")]?.name}
-                    </td>
+                    <td>{teams[season.get("presidentsTrophy")]?.name}</td>
                   </tr>
                 );
               })
@@ -94,12 +92,8 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
                     <td>
                       <Season index={seasonIndex} />
                     </td>
-                    <td>
-                      {teams[season.get("promoted")]?.name ?? "-"}
-                    </td>
-                    <td>
-                      {teams[season.get("relegated")]?.name ?? "-"}
-                    </td>
+                    <td>{teams[season.get("promoted")]?.name ?? "-"}</td>
+                    <td>{teams[season.get("relegated")]?.name ?? "-"}</td>
                   </tr>
                 );
               })

@@ -35,7 +35,9 @@ const texts = (data: JarkoData): string[] => {
     `NHL on ollut liian kova pala Jarko Mantuselle. Hän haluaisi palata kotimaahan, ja sinun joukkueeseesi. Myös __${data.otherTeamName}__ on kiinnostunut pelaajasta. Siirtosumma on pienehkö ${a(data.amount)}, ja pelaajan voima on ${data.strength}.`
   ];
 
-  if (!data.resolved) return lines;
+  if (!data.resolved) {
+    return lines;
+  }
 
   if (!data.enoughMoney) {
     lines.push(`Rahatilanne ei anna mahdollisuutta ostaa Mantusta.`);
@@ -56,12 +58,16 @@ const event: MHMEvent<JarkoData> = {
   create: function* (data) {
     const { manager } = data;
     const jarkoFlag = yield* select(flag("jarko"));
-    if (jarkoFlag) return;
+    if (jarkoFlag) {
+      return;
+    }
 
     const team = yield* select(managersTeamId(manager));
     const otherTeam = yield* select(randomTeamFrom(["phl"], false));
     const playsInPHL = yield* select(teamCompetesIn(team, "phl"));
-    if (!playsInPHL) return;
+    if (!playsInPHL) {
+      return;
+    }
 
     const strength = 15;
     const amount = 200000;

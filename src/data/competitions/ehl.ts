@@ -127,7 +127,7 @@ const ehl: CompetitionDefinition = {
 
     // ehlTeams is Immutable List from stats — convert to array
     const ehlArr: number[] = ehlTeams.toArray ? ehlTeams.toArray() : ehlTeams;
-    const allTeams = [...ehlArr, ...foreignTeamIds].sort(
+    const allTeams = [...ehlArr, ...foreignTeamIds].toSorted(
       () => r.real(1, 10000) - 5000
     );
 

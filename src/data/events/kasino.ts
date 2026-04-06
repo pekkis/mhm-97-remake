@@ -63,7 +63,9 @@ const event: MHMEvent<KasinoData> = {
   Yhtäkkiä ääni päässäsi sanoo: 'Laita ${data.amount} pekkaa joukkueen kassasta peliin, niin voitto on sinun!' Otatko riskin?`
     ];
 
-    if (!data.resolved) return lines;
+    if (!data.resolved) {
+      return lines;
+    }
 
     if (!data.participate) {
       lines.push("Pelkuri.");
@@ -82,7 +84,9 @@ const event: MHMEvent<KasinoData> = {
   },
 
   process: function* (data) {
-    if (!data.participate) return;
+    if (!data.participate) {
+      return;
+    }
 
     const victory = data.success ? data.amount * 3 : -data.amount;
     yield* call(incrementBalance, data.manager, victory);

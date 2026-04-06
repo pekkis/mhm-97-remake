@@ -57,7 +57,9 @@ const event: MHMEvent<OtsohalliData> = {
       `Suuri olutpanimo on halukas sponsoroimaan joukkuettasi! Se maksaa ${a(data.amount)} pekkaa, jos hallin nimi muutetaan __Otso-Halliksi__. Otatko tarjouksen vastaan?"`
     ];
 
-    if (!data.resolved) return lines;
+    if (!data.resolved) {
+      return lines;
+    }
 
     if (data.agree) {
       lines.push(`Sponsoritarroja liimaillaan hallilla jo tätä lukiessasi.`);

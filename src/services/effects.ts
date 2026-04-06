@@ -1,7 +1,11 @@
 import namedEffects from "../data/named-effects";
 import type { Team, TeamEffect } from "../ducks/game";
 
-const affect = (target: Team, source: Team, field: "effects" | "opponentEffects"): Team => {
+const affect = (
+  target: Team,
+  source: Team,
+  field: "effects" | "opponentEffects"
+): Team => {
   const effects: TeamEffect[] = source[field];
   return effects.reduce((obj: Team, effect: TeamEffect) => {
     const key = effect.parameter[0] as keyof Team;

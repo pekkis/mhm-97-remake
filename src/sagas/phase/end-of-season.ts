@@ -90,13 +90,9 @@ export default function* endOfSeasonPhase() {
 
   yield call(setPhase, "end-of-season");
 
-  const division = yield select((state) =>
-    state.game.competitions.division
-  );
+  const division = yield select((state) => state.game.competitions.division);
 
-  const phl = yield select((state) =>
-    state.game.competitions.phl
-  );
+  const phl = yield select((state) => state.game.competitions.phl);
 
   const divisionVictor = victors(division.phases[3].groups[0])[0].id;
 

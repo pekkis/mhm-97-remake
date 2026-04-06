@@ -38,9 +38,7 @@ const Current = (props) => {
         </CurrentEntry>
       </Calendar>
 
-      <Calendar
-        when={(e) => e.get("crisisMeeting") && team.morale <= -3}
-      >
+      <Calendar when={(e) => e.get("crisisMeeting") && team.morale <= -3}>
         <CurrentEntry>
           <FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Joukkueen
           moraali on huono. <Link to="/kriisipalaveri">Kriisipalaveri</Link>{" "}

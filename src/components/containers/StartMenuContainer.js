@@ -9,8 +9,9 @@ export default connect(
     starting: state.meta.get("starting"),
     manager: state.meta.get("manager"),
     teams: state.game.teams,
-    competitions: state.game.competitions
-      .filter((c, k) => ["phl", "division"].includes(k))
+    competitions: state.game.competitions.filter((c, k) =>
+      ["phl", "division"].includes(k)
+    )
   }),
   { startGame, loadGame, advance }
 )(StartMenu);

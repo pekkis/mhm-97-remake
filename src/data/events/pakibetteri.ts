@@ -26,7 +26,9 @@ const event: MHMEvent<PakibetteriData> = {
     const { manager } = data;
 
     const competesInPHL = yield* select(managerCompetesIn(manager, "phl"));
-    if (!competesInPHL) return;
+    if (!competesInPHL) {
+      return;
+    }
 
     yield* call(addEvent, {
       eventId,
@@ -57,7 +59,9 @@ const event: MHMEvent<PakibetteriData> = {
       `NHL-seura Florida Panthersin kykyjenetsijä ehdottaa: eestiläinen pakki Paki-Betteri Erg kiinnostaa heitä, mutta he haluavat ensin nähdä hänen taitonsa. Suostutko ottamaan Ergin joukkueeseen, kun Panthers maksaisi joukkueellenne ${data.duration} ottelun koeajasta ${a(data.amount)} pekkaa?`
     ];
 
-    if (!data.resolved) return lines;
+    if (!data.resolved) {
+      return lines;
+    }
 
     if (!data.agree) {
       lines.push(`Paki-Betteri ei liity joukkueeseen.`);

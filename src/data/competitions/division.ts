@@ -61,7 +61,7 @@ const division: CompetitionDefinition = {
   seed: [
     (competitions: Record<string, Competition>) => {
       const competition = competitions.division;
-      const teams = [...competition.teams].sort(() => r.real(1, 1000) - 500);
+      const teams = competition.teams.toSorted(() => r.real(1, 1000) - 500);
       const times = 2;
       return {
         teams,

@@ -8,7 +8,7 @@ const getMoraleMinMax = (manager) => {
 
   return {
     min: difficultyLevels[difficulty].moraleMin,
-    max: difficultyLevels[difficulty].moraleMax,
+    max: difficultyLevels[difficulty].moraleMax
   };
 };
 
@@ -20,8 +20,8 @@ export function* incurPenalty(competition, phase, group, team, penalty) {
       phase,
       group,
       team,
-      penalty,
-    },
+      penalty
+    }
   });
   yield call(calculateGroupStats, competition, phase, group);
 }
@@ -31,8 +31,8 @@ export function* setStrategy(teamId, strategy) {
     type: "TEAM_SET_STRATEGY",
     payload: {
       team: teamId,
-      strategy,
-    },
+      strategy
+    }
   });
 }
 
@@ -46,8 +46,8 @@ export function* setMorale(teamId, morale) {
       team: teamId,
       morale,
       min,
-      max,
-    },
+      max
+    }
   });
 }
 
@@ -62,8 +62,8 @@ export function* incrementMorale(teamId, amount) {
       team: teamId,
       amount,
       min,
-      max,
-    },
+      max
+    }
   });
 }
 
@@ -72,8 +72,8 @@ export function* setReadiness(teamId, readiness) {
     type: "TEAM_SET_READINESS",
     payload: {
       team: teamId,
-      readiness,
-    },
+      readiness
+    }
   });
 }
 
@@ -82,8 +82,8 @@ export function* incrementReadiness(teamId, amount) {
     type: "TEAM_INCREMENT_READINESS",
     payload: {
       team: teamId,
-      amount,
-    },
+      amount
+    }
   });
 }
 
@@ -96,9 +96,9 @@ export function* addEffect(team, parameter, amount, duration, extra) {
         amount,
         duration,
         parameter,
-        extra,
-      },
-    },
+        extra
+      }
+    }
   });
 }
 
@@ -110,9 +110,9 @@ export function* addOpponentEffect(team, parameter, amount, duration) {
       effect: {
         amount,
         duration,
-        parameter,
-      },
-    },
+        parameter
+      }
+    }
   });
 }
 
@@ -125,8 +125,8 @@ export function* incrementStrength(teamId, amount) {
     type: "TEAM_INCREMENT_STRENGTH",
     payload: {
       team: teamId,
-      amount,
-    },
+      amount
+    }
   });
 }
 

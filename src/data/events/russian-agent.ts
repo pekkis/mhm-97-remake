@@ -24,7 +24,9 @@ const texts = (data: RussianAgentData): string[] => {
     `Venäjän agenttisi soittaa ja tarjoaa "huippupelaajaa" __Moskovan ZSKA__:sta. Et tiedä mitään hänen tasostaan, mutta toisaalta hintakin on vain ${c(data.amount)}. Päätös täytyy joka tapauksessa tehdä _heti_.`
   ];
 
-  if (!data.resolved) return lines;
+  if (!data.resolved) {
+    return lines;
+  }
 
   if (data.agree) {
     lines.push("Pelaaja saapuu seuraavalla vuorokoneella!");
@@ -42,7 +44,9 @@ const event: MHMEvent<RussianAgentData> = {
 
     const team = yield* select(managersTeamId(manager));
     const playsInPHL = yield* select(teamCompetesIn(team, "phl"));
-    if (!playsInPHL) return;
+    if (!playsInPHL) {
+      return;
+    }
 
     yield* call(addEvent, {
       eventId,
@@ -79,7 +83,9 @@ const event: MHMEvent<RussianAgentData> = {
     const manager = data.manager;
     const team = yield* select(managersTeamId(manager));
 
-    if (!data.agree) return;
+    if (!data.agree) {
+      return;
+    }
 
     const skillGained = cinteger(1, 11);
     yield* call(incrementStrength, team, skillGained);

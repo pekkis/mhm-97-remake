@@ -39,7 +39,9 @@ const event: MHMEvent<IncredibleFeelingData> = {
   create: function* (data) {
     const { manager } = data;
 
-    const team = yield* select(randomTeamFrom(["phl"], false, [], (t: Team) => t.strength < 200));
+    const team = yield* select(
+      randomTeamFrom(["phl"], false, [], (t: Team) => t.strength < 200)
+    );
     if (!team) {
       return;
     }
@@ -54,14 +56,14 @@ const event: MHMEvent<IncredibleFeelingData> = {
       team: team.id,
       teamName: team.name,
       managerName: random.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `Kovin nimetön __${data.teamName}__ on saanut uskomattoman fiiliksen päälle! Kaikki pelaavat vain joukkueen menestyksen eteen, ja manageri __${data.managerName}__ lupaa pelaajiensa jaksavan koko pitkän kauden loppuun!`,
+      `Kovin nimetön __${data.teamName}__ on saanut uskomattoman fiiliksen päälle! Kaikki pelaavat vain joukkueen menestyksen eteen, ja manageri __${data.managerName}__ lupaa pelaajiensa jaksavan koko pitkän kauden loppuun!`
     ];
   },
 
@@ -69,7 +71,7 @@ const event: MHMEvent<IncredibleFeelingData> = {
     const team = data.team;
     const duration = data.duration;
     yield* call(addEffect, team, ["strength"], 50, duration);
-  },
+  }
 };
 
 export default event;

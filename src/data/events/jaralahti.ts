@@ -28,7 +28,9 @@ const texts = (data: JaralahtiData): string[] => {
     `Miliisi soittaa kotiisi yöllä. Tähtipuolustajasi __Kale Jaralahti__ on juuri narahtanut kaupungin keskustassa auton ratista huumepöllyssä.`
   ];
 
-  if (!data.resolved) return lines;
+  if (!data.resolved) {
+    return lines;
+  }
 
   if (!data.support) {
     lines.push("Pelaaja katoaa lopullisesti aamuun mennessä!");

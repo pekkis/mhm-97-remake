@@ -45,21 +45,21 @@ const ManagerForm = (props) => {
               <Field>
                 <LabelDiv>Vaikeustaso</LabelDiv>
                 {difficultyLevels.map((dl) => {
-                    return (
-                      <div key={dl.value}>
-                        <label>
-                          <Input
-                            type="radio"
-                            name="difficulty"
-                            value={dl.value}
-                            checked={values.difficulty === dl.value}
-                            onChange={handleChange}
-                          />{" "}
-                          {dl.name} ({dl.description})
-                        </label>
-                      </div>
-                    );
-                  })}
+                  return (
+                    <div key={dl.value}>
+                      <label>
+                        <Input
+                          type="radio"
+                          name="difficulty"
+                          value={dl.value}
+                          checked={values.difficulty === dl.value}
+                          onChange={handleChange}
+                        />{" "}
+                        {dl.name} ({dl.description})
+                      </label>
+                    </div>
+                  );
+                })}
               </Field>
 
               <Field>

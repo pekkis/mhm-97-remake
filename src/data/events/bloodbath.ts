@@ -48,9 +48,7 @@ const event: MHMEvent<BloodbathData> = {
     const random2 = yield* select(randomManager([random.get("id")]));
 
     const team = yield* select(randomTeamFrom(["phl"], false, []));
-    const team2 = yield* select(
-      randomTeamFrom(["phl"], false, [team.id])
-    );
+    const team2 = yield* select(randomTeamFrom(["phl"], false, [team.id]));
 
     yield* call(addEvent, {
       eventId,
