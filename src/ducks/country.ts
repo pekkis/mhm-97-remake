@@ -4,7 +4,7 @@ import { META_QUIT_TO_MAIN_MENU } from "./meta";
 import type { MetaQuitToMainMenuAction } from "./meta";
 import type { Reducer } from "redux";
 
-type Country = {
+export type Country = {
   iso: string;
   name: string;
   strength: number | undefined;
@@ -19,12 +19,12 @@ const defaultState: CountryState = {
     (acc, country) => {
       acc[country.iso] = {
         ...country,
-        strength: country.strength()
+        strength: country.strength(),
       };
       return acc;
     },
-    {} as Record<string, Country>
-  )
+    {} as Record<string, Country>,
+  ),
 };
 
 const COUNTRY_ALTER_STRENGTH = "COUNTRY_ALTER_STRENGTH";
@@ -46,26 +46,20 @@ type CountrySetStrengthAction = {
   };
 };
 
-export const alterStrength = (
-  country: string,
-  amount: number
-): CountryAlterStrengthAction => ({
+export const alterStrength = (country: string, amount: number): CountryAlterStrengthAction => ({
   type: COUNTRY_ALTER_STRENGTH,
   payload: {
     country,
-    amount
-  }
+    amount,
+  },
 });
 
-export const setStrength = (
-  country: string,
-  strength: number
-): CountrySetStrengthAction => ({
+export const setStrength = (country: string, strength: number): CountrySetStrengthAction => ({
   type: COUNTRY_SET_STRENGTH,
   payload: {
     country,
-    strength
-  }
+    strength,
+  },
 });
 
 type CountryActions =
@@ -73,10 +67,7 @@ type CountryActions =
   | MetaQuitToMainMenuAction
   | CountrySetStrengthAction;
 
-const countryReducer: Reducer<CountryState, CountryActions> = (
-  state = defaultState,
-  action
-) => {
+const countryReducer: Reducer<CountryState, CountryActions> = (state = defaultState, action) => {
   switch (action.type) {
     case META_QUIT_TO_MAIN_MENU:
       return defaultState;
@@ -84,8 +75,7 @@ const countryReducer: Reducer<CountryState, CountryActions> = (
     case COUNTRY_SET_STRENGTH:
       return produce(state, (draft) => {
         if (draft.countries[action.payload.country]) {
-          draft.countries[action.payload.country].strength =
-            action.payload.strength;
+          draft.countries[action.payload.country].strength = action.payload.strength;
         }
       });
 

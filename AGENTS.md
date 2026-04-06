@@ -26,6 +26,8 @@ Recent completed migrations:
 - JSX-bearing component files were renamed from `.js` to `.jsx`
 - `react-markdown` deprecated `source` prop migrated to children syntax
 - `src/components/Game.jsx` routing updated to modern `<Routes>/<Route element={...}>`
+- Added `@` path alias support in Vite + TypeScript config (`@` => `src`) for incremental import migration
+- TypeScript checker profile optimized for migration speed: TS/TSX-only include + incremental cache (`.tsbuildinfo`); unused checks handled by `oxlint`
 
 ---
 
@@ -59,6 +61,7 @@ Recent completed migrations:
    - Prefer `type` aliases by default; use `interface` only when declaration merging/extension semantics are explicitly needed.
    - For React components, prefer the `FC<Props>` typing style where practical and readable.
    - `type-fest` is installed (devDep) — use it freely for utility types (`Simplify`, `PartialDeep`, `SetRequired`, `Opaque`, etc.) instead of reinventing them.
+   - `remeda` is installed — prefer native JS first, then `remeda` for TS-friendly utility composition in new/edited modules (do not reintroduce `ramda`).
 
 ---
 
@@ -205,7 +208,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 
 1. Update `README.md` to current install/run commands (`pnpm` + `vite`).
 2. Inventory and remove webpack-only dependencies/config that are now dead.
-3. Add scripts for lint/typecheck/test so modernization has consistent gates.
+3. Replace Jest plans with Vitest + Testing Library setup (Vite-native); add scripts for lint/typecheck/test so modernization has consistent gates.
 4. Add a small regression suite around:
    - game start/load/save
    - one full turn phase progression
