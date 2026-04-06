@@ -6,15 +6,15 @@ import pranks from "../../data/pranks";
 const ConfirmPrank = (props) => {
   const { cancel, manager, teams, prank, execute } = props;
 
-  const prankInfo = pranks.get(prank.get("type"));
+  const prankInfo = pranks[prank.get("type")];
 
-  console.log(prankInfo.toJS(), "pinfo");
+  console.log(prankInfo, "pinfo");
 
   return (
     <div>
       <p>
         <strong>Jäynä: </strong>
-        {prankInfo.get("name")}
+        {prankInfo.name}
       </p>
 
       <p>

@@ -19,7 +19,7 @@ export function* orderPrank(action) {
   const competesInPHL = yield select(managerCompetesIn(manager, "phl"));
   const targetCompetition = competesInPHL ? "phl" : "division";
 
-  const prankPrice = prankTypes.getIn([prank.get("type"), "price"])(
+  const prankPrice = prankTypes[prank.get("type")].price(
     targetCompetition
   );
 
@@ -30,7 +30,7 @@ export function* orderPrank(action) {
     payload: prank
   });
 
-  const prankOrderer = prankTypes.getIn([prank.get("type"), "order"]);
+  const prankOrderer = prankTypes[prank.get("type")].order;
 
   yield call(prankOrderer, prank);
 }

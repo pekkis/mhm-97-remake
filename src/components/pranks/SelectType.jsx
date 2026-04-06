@@ -9,27 +9,25 @@ const SelectType = (props) => {
   return (
     <div>
       <ButtonContainer>
-        {pranks
-          .map((prank, i) => {
-            const price = prank.get("price")(competition);
+        {Object.entries(pranks).map(([key, prank]) => {
+          const price = prank.price(competition);
 
-            return (
-              <Button
-                disabled={!enabled || price > manager.get("balance")}
-                block
-                key={i}
-                onClick={() => {
-                  selectType(i);
-                }}
-              >
-                <div>{prank.get("name")}</div>
-                <div>
-                  <small>{c(price)}</small>
-                </div>
-              </Button>
-            );
-          })
-          .toList()}
+          return (
+            <Button
+              disabled={!enabled || price > manager.get("balance")}
+              block
+              key={key}
+              onClick={() => {
+                selectType(key);
+              }}
+            >
+              <div>{prank.name}</div>
+              <div>
+                <small>{c(price)}</small>
+              </div>
+            </Button>
+          );
+        })}
       </ButtonContainer>
     </div>
   );

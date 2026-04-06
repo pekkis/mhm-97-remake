@@ -8,8 +8,8 @@ export default function* prankPhase() {
 
   for (const [prankId, prank] of pranks.entries()) {
     console.log("PRANK TO EXECUTE", prank.toJS());
-    const prankInfo = prankTypes.get(prank.get("type"));
-    const prankExecutor = prankInfo.get("execute");
+    const prankInfo = prankTypes[prank.get("type")];
+    const prankExecutor = prankInfo.execute;
 
     yield call(prankExecutor, prank);
     yield put({
