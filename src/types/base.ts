@@ -6,16 +6,29 @@ export type MHMEventType = "manager";
 export type MHMEventGenerator = Generator<Effect, void, unknown>;
 
 /**
- * Event data as stored in the Redux store.
- * Still Immutable Map during migration — will become a typed plain object per-event later.
+ * Base fields present on all stored event data.
+ * `id` is injected by the event reducer on EVENT_ADD.
  */
-export type MHMEventData = Map<string, any>;
+export type BaseEventFields = {
+  id: string;
+  eventId: string;
+  manager: string;
+  resolved: boolean;
+  processed?: boolean;
+};
 
-export type MHMEvent = {
+/**
+ * A game event definition, generic over its event-specific data shape.
+ *
+ * TData carries the full stored shape (BaseEventFields + event-specific fields).
+ * During the migration, JS event files use the unparameterized default and remain untyped.
+ * Newly converted TS event files specify their TData for full type safety.
+ */
+export type MHMEvent<TData extends BaseEventFields = BaseEventFields> = {
   type: MHMEventType;
-  create: (data: any) => MHMEventGenerator;
-  render: (data: MHMEventData) => string[];
-  process: (data: MHMEventData) => MHMEventGenerator;
-  options?: (data: MHMEventData) => Map<string, string>;
-  resolve?: (data: MHMEventData, value: string) => MHMEventGenerator;
+  create: (data: { manager: string }) => MHMEventGenerator;
+  render: (data: TData) => string[];
+  process: (data: TData) => MHMEventGenerator;
+  options?: (data: TData) => Map<string, string>;
+  resolve?: (data: TData, value: string) => MHMEventGenerator;
 };

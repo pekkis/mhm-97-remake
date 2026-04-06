@@ -3,7 +3,7 @@ import { select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
 import { addEffect } from "../../sagas/team";
 import { randomTeamFrom, randomManager } from "../selectors";
-import type { MHMEvent, MHMEventData } from "../../types/base";
+import type { MHMEvent } from "../../types/base";
 
 /*
 sat60:
@@ -20,7 +20,18 @@ RETURN*/
 
 const eventId = "youStalk";
 
-const event: MHMEvent = {
+type YouStalkData = {
+  id: string;
+  eventId: typeof eventId;
+  manager: string;
+  resolved: true;
+  duration: number;
+  team: number;
+  teamName: string;
+  managerName: string;
+};
+
+const event: MHMEvent<YouStalkData> = {
   type: "manager",
 
   create: function* (data) {
@@ -45,16 +56,12 @@ const event: MHMEvent = {
     return [
       `Liigasta:
 
-__${data.get("managerName")}__ valmentaa joukkuetta __${data.get(
-        "teamName"
-      )}__. Sinä kyttäät lehtien mukaan hänen paikkaansa, ja joukkue-paran pakka menee hetkeksi hiukan sekaisin!`
+__${data.managerName}__ valmentaa joukkuetta __${data.teamName}__. Sinä kyttäät lehtien mukaan hänen paikkaansa, ja joukkue-paran pakka menee hetkeksi hiukan sekaisin!`
     ];
   },
 
   process: function* (data) {
-    const team = data.get("team");
-    const duration = data.get("duration");
-    yield* call(addEffect, team, ["strength"], -15, duration);
+    yield* call(addEffect, data.team, ["strength"], -15, data.duration);
   }
 };
 

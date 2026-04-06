@@ -8,7 +8,7 @@ export default connect(
     managers: state.manager.get("managers"),
     teams: state.game.get("teams"),
     competitions: state.game.get("competitions"),
-    events: state.event.get("events"),
+    events: state.event.events,
     news: state.news.get("news")
   }),
   { crisisMeeting }

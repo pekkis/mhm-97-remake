@@ -5,7 +5,7 @@ import events from "../data/events";
 export function* resolveEvent(action) {
   const { event, value } = action.payload;
 
-  const eventObj = events.get(event.get("eventId"));
+  const eventObj = events.get(event.eventId);
 
   yield eventObj.resolve(event, value);
 }
@@ -21,7 +21,7 @@ export function* resolvedEvent(eventData) {
   yield put({
     type: "EVENT_RESOLVE",
     payload: {
-      id: eventData.get("id"),
+      id: eventData.id,
       event: eventData
     }
   });
@@ -29,18 +29,15 @@ export function* resolvedEvent(eventData) {
 
 export function* processEvents() {
   const eventsToProcess = yield select((state) =>
-    state.event
-      .get("events")
-      .filter((e) => e.get("resolved"))
-      .filterNot((e) => e.get("processed"))
+    Object.values(state.event.events).filter((e) => e.resolved && !e.processed)
   );
 
-  for (const [, event] of eventsToProcess) {
-    yield events.get(event.get("eventId")).process(event);
+  for (const event of eventsToProcess) {
+    yield events.get(event.eventId).process(event);
     yield put({
       type: "EVENT_SET_PROCESSED",
       payload: {
-        id: event.get("id")
+        id: event.id
       }
     });
   }

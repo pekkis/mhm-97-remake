@@ -13,14 +13,13 @@ export default function* eventPhase() {
   });
 
   const autoresolveEvents = yield select((state) =>
-    state.event
-      .get("events")
-      .filterNot((e) => e.get("resolved"))
-      .filter((e) => e.get("autoResolve"))
+    Object.values(state.event.events).filter(
+      (e) => !e.resolved && e.autoResolve
+    )
   );
 
-  for (const [, event] of autoresolveEvents) {
-    const eventObj = events.get(event.get("eventId"));
+  for (const event of autoresolveEvents) {
+    const eventObj = events.get(event.eventId);
     yield eventObj.resolve(event);
   }
 
@@ -28,11 +27,9 @@ export default function* eventPhase() {
 
   let unresolved;
   do {
-    unresolved = yield select((state) =>
-      state.event
-        .get("events")
-        .filterNot((e) => e.get("resolved"))
-        .count()
+    unresolved = yield select(
+      (state) =>
+        Object.values(state.event.events).filter((e) => !e.resolved).length
     );
 
     if (unresolved) {

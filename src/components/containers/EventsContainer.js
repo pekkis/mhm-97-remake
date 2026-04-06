@@ -8,7 +8,7 @@ export default connect(
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
     managers: state.manager.get("managers"),
     teams: state.game.get("teams"),
-    events: state.event.get("events"),
+    events: state.event.events,
     news: state.news.get("news"),
     advanceEnabled: state.ui.get("advanceEnabled")
   }),
