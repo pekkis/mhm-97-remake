@@ -36,11 +36,11 @@ const TeamStats = (props) => {
         </Tab>
         <Tab title="Ura numeroina">
           <div>
-            {List.of("phl", "division", "ehl")
-              .map((c) => competitions.get(c))
+            {["phl", "division", "ehl"]
+              .map((c) => competitions[c])
               .map((c) => {
                 const stat = stats.getIn(
-                  ["managers", manager.get("id"), "games", c.get("id"), "0"],
+                  ["managers", manager.get("id"), "games", c.id, "0"],
                   Map({
                     win: 0,
                     draw: 0,
@@ -49,8 +49,8 @@ const TeamStats = (props) => {
                 );
 
                 return (
-                  <div key={c}>
-                    <h3>{c.get("name")}</h3>
+                  <div key={c.id}>
+                    <h3>{c.name}</h3>
 
                     <table>
                       <tbody>

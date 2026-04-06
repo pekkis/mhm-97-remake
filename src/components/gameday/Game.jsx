@@ -31,22 +31,22 @@ const Game = (props) => {
       <Team>
         <TeamName
           managers={managers}
-          team={teams[context.getIn(["teams", pairing.get("home")])]}
+          team={teams[context.teams[pairing.home]]}
         />
       </Team>
       <Separator>-</Separator>
       <Team>
         <TeamName
           managers={managers}
-          team={teams[context.getIn(["teams", pairing.get("away")])]}
+          team={teams[context.teams[pairing.away]]}
         />
       </Team>
       <Result>
-        {pairing.get("result") && (
+        {pairing.result && (
           <>
-            <Score>{pairing.getIn(["result", "home"])}</Score>
+            <Score>{pairing.result.home}</Score>
             <Separator>-</Separator>
-            <Score>{pairing.getIn(["result", "away"])}</Score>
+            <Score>{pairing.result.away}</Score>
           </>
         )}
       </Result>

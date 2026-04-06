@@ -8,7 +8,6 @@ import {
 } from "redux-saga/effects";
 import competitionTypes from "../services/competition-type";
 import { resultFacts } from "../services/game";
-import { List, Map } from "immutable";
 
 import { STATS_UPDATE_FROM_FACTS, STATS_SET_SEASON_STAT } from "../ducks/stats";
 import { managersMainCompetition } from "../data/selectors";
@@ -23,37 +22,25 @@ export function* stats() {
 
 export function* calculatePhaseStats(action) {
   const { payload } = action;
-  const phase = yield select((state) =>
-    state.game.competitions.getIn([payload.competition,
-      "phases",
-      payload.phase
-    ])
+  const phase = yield select(
+    (state) =>
+      state.game.competitions[payload.competition].phases[payload.phase]
   );
 
   yield all(
-    phase
-      .get("groups")
-      .map((group, groupId) =>
-        call(groupStats, payload.competition, payload.phase, groupId)
-      )
-      .toJS()
+    phase.groups.map((group, groupId) =>
+      call(groupStats, payload.competition, payload.phase, groupId)
+    )
   );
 }
 
 function* groupStats(competitionId, phaseId, groupId) {
-  const group = yield select((state) =>
-    state.game.competitions.getIn([competitionId,
-      "phases",
-      phaseId,
-      "groups",
-      groupId
-    ])
+  const group = yield select(
+    (state) =>
+      state.game.competitions[competitionId].phases[phaseId].groups[groupId]
   );
 
-  const stats = yield call(
-    competitionTypes.getIn([group.get("type"), "stats"]),
-    group
-  );
+  const stats = yield call(competitionTypes[group.type].stats, group);
 
   yield putResolve({
     type: "COMPETITION_UPDATE_STATS",
@@ -75,28 +62,24 @@ function* gameResult(action) {
     payload: { competition, phase, meta, result }
   } = action;
 
-  const streaksToUpdate = List.of("home", "away")
-    .map((which) => {
-      const team = meta.getIn([which, "team"]);
-      const manager = meta.getIn([which, "manager"]);
-      const facts = resultFacts(result, which);
+  const streaksToUpdate = ["home", "away"].map((which) => {
+    const team = meta[which].team;
+    const manager = meta[which].manager;
+    const facts = resultFacts(result, which);
 
-      return {
+    return put({
+      type: STATS_UPDATE_FROM_FACTS,
+      payload: {
         team: team.toString(),
         competition,
         phase: phase.toString(),
         manager,
         facts
-      };
-    })
-    .map((payload) =>
-      put({
-        type: STATS_UPDATE_FROM_FACTS,
-        payload
-      })
-    );
+      }
+    });
+  });
 
-  yield all(streaksToUpdate.toJS());
+  yield all(streaksToUpdate);
 }
 
 export function* setSeasonStat(path, value) {
@@ -119,26 +102,18 @@ export function* createSeasonStories() {
 
     const mainCompetition = yield select(managersMainCompetition(managerId));
 
-    const competition = yield select((state) =>
-      state.game.competitions.getIn([mainCompetition])
+    const competition = yield select(
+      (state) => state.game.competitions[mainCompetition]
     );
 
-    console.log(competition.toJS(), "competitiore");
-
-    const group = yield select((state) =>
-      state.game.competitions.getIn([mainCompetition,
-        "phases",
-        0,
-        "groups",
-        0
-      ])
+    const group = yield select(
+      (state) => state.game.competitions[mainCompetition].phases[0].groups[0]
     );
 
-    const [ranking, stat] = group
-      .get("stats")
-      .findEntry((s) => s.get("id") === teamId);
+    const ranking = group.stats.findIndex((s) => s.id === teamId);
+    const stat = group.stats[ranking];
 
-    const story = Map({
+    const story = {
       mainCompetition,
       mainCompetitionStat: stat,
       ranking,
@@ -146,12 +121,11 @@ export function* createSeasonStories() {
       relegated: teamId === stats.get("relegated"),
       medal: stats.get("medalists").findIndex((m) => m === teamId),
       ehlChampion: stats.get("ehlChampionship") === teamId,
-      lastPhase: competition
-        .get("phases")
-        .findLastKey((phase) => phase.get("teams").includes(teamId))
-    });
+      lastPhase: competition.phases.findLastIndex((phase) =>
+        phase.teams.includes(teamId)
+      )
+    };
 
-    console.log("story", story.toJS());
     yield call(setSeasonStat, ["stories", managerId], story);
   }
 }

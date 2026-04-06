@@ -22,14 +22,14 @@ const Pranks = (props) => {
     prank
   } = props;
 
-  const phl = competitions.get("phl");
-  const division = competitions.get("division");
+  const phl = competitions.phl;
+  const division = competitions.division;
 
   const difficultyLevel = difficultyLevels[manager.get("difficulty")];
 
   const canDo = difficultyLevel.pranksPerSeason > manager.get("pranksExecuted");
 
-  const targetCompetition = phl.get("teams").includes(manager.get("team"))
+  const targetCompetition = phl.teams.includes(manager.get("team"))
     ? phl
     : division;
 
@@ -57,7 +57,7 @@ const Pranks = (props) => {
             <SelectType
               manager={manager}
               enabled={canDo}
-              competition={targetCompetition.get("name")}
+              competition={targetCompetition.name}
               selectType={selectPrankType}
               cancel={cancelPrank}
             />

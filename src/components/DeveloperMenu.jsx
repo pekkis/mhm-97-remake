@@ -14,46 +14,43 @@ const DeveloperMenu = (props) => {
       <Box p={1}>
         <h2>Devausinfo</h2>
 
-        {competitions
-          .map((c) => {
-            return (
-              <div key={c.get("id")}>
-                <h2>{c.get("name")}</h2>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Joukkue</th>
-                      <th>O-voima</th>
-                      <th>E-voima</th>
-                      <th>E-moraali</th>
-                      <th>E-valmius</th>
-                    </tr>
-                  </thead>
+        {Object.values(competitions).map((c) => {
+          return (
+            <div key={c.id}>
+              <h2>{c.name}</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Joukkue</th>
+                    <th>O-voima</th>
+                    <th>E-voima</th>
+                    <th>E-moraali</th>
+                    <th>E-valmius</th>
+                  </tr>
+                </thead>
 
-                  <tbody>
-                    {c
-                      .get("teams")
-                      .sortBy((t) => -teams[t].strength)
-                      .map((t) => {
-                        const team = teams[t];
-                        const e = getEffective(team);
+                <tbody>
+                  {[...c.teams]
+                    .sort((a, b) => teams[b].strength - teams[a].strength)
+                    .map((t) => {
+                      const team = teams[t];
+                      const e = getEffective(team);
 
-                        return (
-                          <tr key={team.id}>
-                            <td>{team.name}</td>
-                            <td>{team.strength}</td>
-                            <td>{e.strength}</td>
-                            <td>{e.morale}</td>
-                            <td>{e.readiness}</td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
-              </div>
-            );
-          })
-          .toList()}
+                      return (
+                        <tr key={team.id}>
+                          <td>{team.name}</td>
+                          <td>{team.strength}</td>
+                          <td>{e.strength}</td>
+                          <td>{e.morale}</td>
+                          <td>{e.readiness}</td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
       </Box>
     </HeaderedPage>
   );

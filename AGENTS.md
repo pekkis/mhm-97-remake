@@ -51,7 +51,7 @@ Recent completed migrations:
 - `src/ducks/prank.ts` — plain `{ pranks: PrankInstance[] }` + immer
 - `src/ducks/ui.ts` — plain `UiState` + immer + discriminated `UiAction` union
 - `src/ducks/event.ts` — immer `produce()`
-- `src/ducks/game.ts` — **root is plain `GameState`** + immer; `teams` is typed `Team[]`; `competitions`/`managers` still Immutable
+- `src/ducks/game.ts` — **root is plain `GameState`** + immer; `teams` is typed `Team[]`; `competitions` is typed `Record<string, Competition>`; `managers` still Immutable
 - `src/ducks/country.ts` — already plain
 - `src/ducks/meta.ts` — typed
 
@@ -69,22 +69,24 @@ type GameState = {
   flags: Record<string, boolean>; // PLAIN
   serviceBasePrices: Record<string, number>; // PLAIN
   managers: any; // still Immutable
-  competitions: any; // still Immutable (deeply nested Maps)
+  competitions: Record<string, Competition>; // PLAIN — typed with full hierarchy
   teams: Team[]; // PLAIN — typed array indexed by team id
-  worldChampionshipResults: any;
+  worldChampionshipResults: any; // still Immutable (List of Maps)
 };
 ```
 
 ### Still Immutable (known remaining)
 
-- `state.game.competitions` — deeply nested Immutable Maps (phases/groups/stats/schedule) — **next target candidate**
 - `state.game.managers` — Immutable (shared with manager duck)
+- `state.game.worldChampionshipResults` — Immutable `List(Map(...))`
 - `state.manager` — full Immutable duck
 - `state.stats` — full Immutable duck
 - `state.betting`, `state.news`, `state.notification`, `state.invitation` — Immutable ducks
 - `src/data/events/*.ts` — event registry uses Immutable Map
-- `src/data/competitions/*.js` — saga generators using Immutable throughout
 - `src/data/calendar.js` — Immutable List
+- `src/data/services.js` — Immutable OrderedMap/Map
+- `src/data/transfer-market.js` — likely Immutable
+- `src/data/arenas.js`, `src/data/strategies.js` — likely Immutable
 
 ### Completed: `teams` de-immutable
 
@@ -127,6 +129,41 @@ export type Team = {
 ### Proven migration technique
 
 For bulk consumer updates, use `sed` for single-line patterns and `perl -0777` for multiline patterns. This handled 162 call sites in minutes during the game reducer root migration.
+
+### Completed: `competitions` de-immutable
+
+Converted `state.game.competitions` from deeply nested `OrderedMap(Map(Map(...)))` to typed `Record<string, Competition>`.
+
+**Types defined in `src/types/competitions.ts`:**
+
+Full type hierarchy: `GameResult`, `Pairing`, `TeamStat`, `MatchupStat`, `MatchupTeamStat`, `Penalty`, `RoundRobinGroup`, `TournamentGroup`, `PlayoffGroup`, `Group`, `Phase`, `Competition`, `GamedayAdvantage`, `GamedayParams`, `CompetitionParameters`, `GameFacts`, `CompetitionDefinition`.
+
+**Scope of changes (~35 files):**
+
+- Types: `src/types/competitions.ts`
+- Services: `league.ts`, `playoffs.ts`, `game.ts`, `competition-type.ts`, `tournament.ts`
+- Competition definitions: `phl.ts`, `division.ts`, `ehl.ts`, `competitions/tournaments.ts`
+- Top-level: `competitions.ts`, `tournaments.ts`
+- Reducer: All 9 competition cases in `game.ts`
+- Selectors: `data/selectors.ts` (~12 sites)
+- Sagas: `gameday.js`, `stats.js`, `sagas/game.js`, `betting.js`, `manager.js`, `invitation.js`, `phase/gala.js`, `phase/end-of-season.ts`
+- Data: `crisis.js`, `awards.js`, `championship-betting.js`, `events/joboffer-phl.ts`
+- Components: `Gameday.jsx`, `GamedayResults.jsx`, `Pranks.jsx`, `ChampionshipBetting.jsx`, `DeveloperMenu.jsx`, `LeagueTables.jsx`, `ActionMenu.jsx`, `Invitations.jsx`, `Stats.jsx`, `CrisisActions.jsx`
+- Sub-components: `gameday/Games.jsx`, `gameday/Results.jsx`, `gameday/Game.jsx`, `league-table/Table.jsx`, `playoffs/Matchups.jsx`, `betting/BettingForm.jsx`, `championship-betting/BettingForm.jsx`, `context-sensitive/Forward.jsx`, `context-sensitive/Situation.jsx`, `pranks/SelectVictim.jsx`, `stats/ManagerStats.jsx`, `stats/Story.jsx`
+- Containers: `BettingContainer.js`
+
+### Gotchas learned from competitions migration
+
+- **`Group` union type causes `.id` unavailable:** `TeamStat | MatchupStat` union means `.id` doesn't exist on `MatchupStat`. Fix: cast to `TeamStat[]` when accessing round-robin group stats (`as TeamStat[]`).
+- **`victors()` expects `PlayoffGroup`:** The `Group` union doesn't narrow automatically. Cast to `PlayoffGroup` at call sites.
+- **`roundRobin()` vs `scheduler()`:** `roundRobin(n)` returns raw `number[][][]` (1 arg). `scheduler(n, times)` returns `Pairing[][]` (2 args). Competition seed files needed `scheduler`, not `roundRobin`.
+- **`GeneratorFunction` type is strict:** TypeScript's builtin `GeneratorFunction` requires `[Symbol.toStringTag]`. Use `(...args: any[]) => Generator<any, any, any>` for saga generator types in `CompetitionDefinition`.
+- **Immutable `.first()/.last()` → `[0]/[length-1]`:** Not a complex pattern but very common across UI components.
+- **`competitionTypes` was a nested `Map(Map(...))`:** Now `Record<string, CompetitionType>`. Access changed from `.getIn([type, "playMatch"])` to `[type].playMatch`.
+- **`pairing.includes(index)` → `pairing.home === index || pairing.away === index`:** Immutable Maps had `.includes()` which checked values; plain objects need explicit field checks.
+- **`odds()` returned Immutable Map, now returns plain array:** Consumer code changed from `.getIn([id, "odds"])` to `.find(t => t.id === id)?.odds`.
+- **Old `.js` files survive alongside `.ts`:** Vite prefers `.ts` but the dead `.js` files cause confusing grep results. Always delete old files after conversion.
+- **`crisis()` returned `Map({...})`:** Consumers used `.get("amount")`. Converted to return plain object, consumers use `.amount`.
 
 ### Pre-existing issues (not migration-related)
 
@@ -314,7 +351,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 1. Update `README.md` to current install/run commands (`pnpm` + `vite`).
 2. Inventory and remove webpack-only dependencies/config that are now dead.
 3. Vitest is configured (`vitest.config.ts`, `@vitest/ui` installed, Jest fully removed); add scripts for lint/typecheck/test so modernization has consistent gates.
-4. Add a small regression suite around:
+   I4. Add a small regression suite around:
    - game start/load/save
    - one full turn phase progression
    - event creation sanity

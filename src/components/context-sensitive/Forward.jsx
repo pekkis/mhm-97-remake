@@ -14,8 +14,8 @@ const Forward = (props) => {
       <div>
         Pelipäivä (
         {gamedays
-          .map((gd) => competitions.get(gd))
-          .map((c) => c.get("abbr"))
+          .map((gd) => competitions[gd])
+          .map((c) => c.abbr)
           .join(", ")}
         )
       </div>

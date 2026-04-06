@@ -13,19 +13,19 @@ const LeagueTables = (props) => {
       <Box p={1}>
         <h2>Sarjataulukot</h2>
 
-        {competitions
-          .filter((c) => c.get("phase") >= 0)
+        {Object.values(competitions)
+          .filter((c) => c.phase >= 0)
           .map((c) => {
-            const phase = c.getIn(["phases", 0]);
-            const groups = phase.get("groups");
+            const phase = c.phases[0];
+            const groups = phase.groups;
 
             return (
-              <div key={c.get("id")}>
-                <h3>{c.get("name")}</h3>
+              <div key={c.id}>
+                <h3>{c.name}</h3>
                 {groups.map((group, i) => {
                   return (
                     <div key={i}>
-                      <h4>{group.get("name")}</h4>
+                      <h4>{group.name}</h4>
                       <Table
                         division={group}
                         managers={managers}
@@ -36,8 +36,7 @@ const LeagueTables = (props) => {
                 })}
               </div>
             );
-          })
-          .toList()}
+          })}
       </Box>
     </HeaderedPage>
   );

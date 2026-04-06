@@ -1,18 +1,16 @@
-import { Map } from "immutable";
-
 import { CRISIS_COST, CRISIS_MORALE_MAX } from "../data/constants";
 
 const crisis = (team, competitions) => {
-  const division = competitions.get("division");
+  const division = competitions.division;
 
-  const amount = division.get("teams").includes(team.id)
+  const amount = division.teams.includes(team.id)
     ? CRISIS_COST / 2
     : CRISIS_COST;
 
-  return Map({
+  return {
     amount,
     moraleGain: 4
-  });
+  };
 };
 
 export default crisis;

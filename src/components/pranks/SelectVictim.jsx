@@ -13,8 +13,7 @@ const SelectVictim = (props) => {
           Peruuta jäynä
         </Button>
 
-        {competition
-          .get("teams")
+        {competition.teams
           .filter((teamId) => teamId !== manager.get("team"))
           .map((teamId) => {
             return (

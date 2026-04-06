@@ -30,7 +30,7 @@ const ChampionshipBetting = (props) => {
         <BettingForm
           manager={manager}
           betChampion={betChampion}
-          competition={competitions.get("phl")}
+          competition={competitions.phl}
           teams={teams}
         />
 

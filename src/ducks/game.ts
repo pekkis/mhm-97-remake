@@ -1,4 +1,3 @@
-import { Map, List } from "immutable";
 import { produce } from "immer";
 
 import teamDefs from "../data/teams";
@@ -6,6 +5,7 @@ import managers from "../data/managers";
 
 import competitionList from "../data/competitions";
 import { META_QUIT_TO_MAIN_MENU, META_GAME_LOAD_STATE } from "./meta";
+import type { Competition } from "../types/competitions";
 
 export const GAME_START = "GAME_START";
 export const GAME_ADVANCE_REQUEST = "GAME_ADVANCE_REQUEST";
@@ -42,7 +42,7 @@ type GameState = {
   flags: Record<string, boolean>;
   serviceBasePrices: Record<string, number>;
   managers: any;
-  competitions: any;
+  competitions: Record<string, Competition>;
   teams: Team[];
   worldChampionshipResults: any;
 };
@@ -57,7 +57,9 @@ const defaultState: GameState = {
     cheer: 3000,
   },
   managers,
-  competitions: competitionList.map((c: any) => c.get("data")),
+  competitions: Object.fromEntries(
+    Object.entries(competitionList).map(([key, def]) => [key, { ...def.data }]),
+  ),
   teams: teamDefs.map((t) => ({
     id: t.id,
     name: t.name,
@@ -91,48 +93,35 @@ export default function gameReducer(state: GameState = defaultState, action: any
 
     case "COMPETITION_REMOVE_TEAM":
       return produce(state, (draft) => {
-        draft.competitions = draft.competitions.updateIn(
-          [payload.competition, "teams"],
-          (teams: any) => teams.filterNot((t: any) => t === payload.team),
-        );
+        const comp = draft.competitions[payload.competition];
+        comp.teams = comp.teams.filter((t) => t !== payload.team);
       });
 
     case "COMPETITION_ADD_TEAM":
       return produce(state, (draft) => {
-        draft.competitions = draft.competitions.updateIn(
-          [payload.competition, "teams"],
-          (teams: any) => teams.push(payload.team),
-        );
+        draft.competitions[payload.competition].teams.push(payload.team);
       });
 
     case "COMPETITION_UPDATE_STATS":
       return produce(state, (draft) => {
-        draft.competitions = draft.competitions.setIn(
-          [payload.competition, "phases", payload.phase, "groups", payload.group, "stats"],
-          payload.stats,
-        );
+        draft.competitions[payload.competition].phases[payload.phase].groups[payload.group].stats =
+          payload.stats;
       });
 
     case "COMPETITION_SET_TEAMS":
       return produce(state, (draft) => {
-        draft.competitions = draft.competitions.setIn(
-          [payload.competition, "teams"],
-          payload.teams,
-        );
+        draft.competitions[payload.competition].teams = payload.teams;
       });
 
     case "COMPETITION_START":
       return produce(state, (draft) => {
-        draft.competitions = draft.competitions.update(payload.competition, (c: any) =>
-          c.set("phases", List()),
-        );
+        draft.competitions[payload.competition].phases = [];
       });
 
     case "COMPETITION_SEED":
       return produce(state, (draft) => {
-        draft.competitions = draft.competitions
-          .setIn([payload.competition, "phases", payload.phase], payload.seed)
-          .setIn([payload.competition, "phase"], payload.phase);
+        draft.competitions[payload.competition].phases[payload.phase] = payload.seed;
+        draft.competitions[payload.competition].phase = payload.phase;
       });
 
     case SEASON_START:
@@ -145,9 +134,10 @@ export default function gameReducer(state: GameState = defaultState, action: any
           t.readiness = 0;
         }
         draft.flags.jarko = false;
-        draft.competitions = draft.competitions.map((competition: any) =>
-          competition.set("phase", -1).set("phases", List()),
-        );
+        for (const comp of Object.values(draft.competitions)) {
+          comp.phase = -1;
+          comp.phases = [];
+        }
       });
 
     case SEASON_END:
@@ -158,28 +148,14 @@ export default function gameReducer(state: GameState = defaultState, action: any
 
     case "GAME_GAME_RESULT":
       return produce(state, (draft) => {
-        draft.competitions = draft.competitions.setIn(
-          [
-            payload.competition,
-            "phases",
-            payload.phase,
-            "groups",
-            payload.group,
-            "schedule",
-            payload.round,
-            payload.pairing,
-            "result",
-          ],
-          payload.result,
-        );
+        draft.competitions[payload.competition].phases[payload.phase].groups[payload.group]
+          .schedule[payload.round][payload.pairing].result = payload.result;
       });
 
     case "GAME_GAMEDAY_COMPLETE":
       return produce(state, (draft) => {
-        draft.competitions = draft.competitions.updateIn(
-          [payload.competition, "phases", payload.phase, "groups", payload.group],
-          (group: any) => group.update("round", (r: number) => r + 1),
-        );
+        draft.competitions[payload.competition].phases[payload.phase].groups[payload.group]
+          .round += 1;
       });
 
     case "GAME_SET_PHASE":
@@ -213,11 +189,11 @@ export default function gameReducer(state: GameState = defaultState, action: any
 
     case "TEAM_INCUR_PENALTY":
       return produce(state, (draft) => {
-        draft.competitions = draft.competitions.updateIn(
-          [payload.competition, "phases", payload.phase, "groups", payload.group, "penalties"],
-          List(),
-          (penalties: any) => penalties.push(Map({ team: payload.team, penalty: payload.penalty })),
-        );
+        const group = draft.competitions[payload.competition].phases[payload.phase].groups[payload.group];
+        if (!("penalties" in group)) {
+          (group as any).penalties = [];
+        }
+        (group as any).penalties.push({ team: payload.team, penalty: payload.penalty });
       });
 
     case "TEAM_INCREMENT_READINESS":

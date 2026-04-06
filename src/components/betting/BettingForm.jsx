@@ -4,15 +4,15 @@ import Slider from "rc-slider";
 import { amount as a } from "../../services/format";
 import Button from "../form/Button";
 import TeamName from "../team/Name";
-import { Seq, List } from "immutable";
+import { List } from "immutable";
 
 const BettingForm = (props) => {
   const { manager, competition, teams, bet } = props;
 
-  const group = competition.getIn(["phases", 0, "groups", 0]);
-  const round = group.get("round");
+  const group = competition.phases[0].groups[0];
+  const round = group.round;
 
-  const pairings = group.getIn(["schedule", round]);
+  const pairings = group.schedule[round];
 
   return (
     <Formik
@@ -46,17 +46,8 @@ const BettingForm = (props) => {
               return (
                 <div key={i}>
                   <div>
-                    <TeamName
-                      team={teams[
-                        group.getIn(["teams", pairing.get("home")])
-                      ]}
-                    />{" "}
-                    -{" "}
-                    <TeamName
-                      team={teams[
-                        group.getIn(["teams", pairing.get("away")])
-                      ]}
-                    />
+                    <TeamName team={teams[group.teams[pairing.home]]} /> -{" "}
+                    <TeamName team={teams[group.teams[pairing.away]]} />
                   </div>
                   <div>
                     <label>

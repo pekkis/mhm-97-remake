@@ -21,7 +21,7 @@ const BettingForm = (props) => {
           manager.get("id"),
           parseInt(values.team, 10),
           parseInt(values.amount, 10),
-          teamsAndOdds.getIn([parseInt(values.team, 10), "odds"])
+          teamsAndOdds.find((t) => t.id === parseInt(values.team, 10))?.odds
         );
       }}
     >
@@ -30,24 +30,22 @@ const BettingForm = (props) => {
           <form onSubmit={handleSubmit}>
             <h3>Valitse ehdokkaasi</h3>
 
-            {teamsAndOdds
-              .map((team) => {
-                return (
-                  <div key={team.id}>
-                    <label>
-                      <input
-                        name="team"
-                        type="radio"
-                        value={team.id.toString()}
-                        checked={values.team === team.id.toString()}
-                        onChange={handleChange}
-                      />
-                      {team.name} ({team.odds})
-                    </label>
-                  </div>
-                );
-              })
-              .toList()}
+            {teamsAndOdds.map((team) => {
+              return (
+                <div key={team.id}>
+                  <label>
+                    <input
+                      name="team"
+                      type="radio"
+                      value={team.id.toString()}
+                      checked={values.team === team.id.toString()}
+                      onChange={handleChange}
+                    />
+                    {team.name} ({team.odds})
+                  </label>
+                </div>
+              );
+            })}
 
             <h3>Valitse panos</h3>
 

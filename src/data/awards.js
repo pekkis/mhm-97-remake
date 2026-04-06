@@ -554,54 +554,36 @@ const createAward = (amount, strength, news) => {
 
 const medalAwards = List.of(
   createAward(1500000, 29, (data) => {
-    return `__${data.name}__ nettoaa mestaruudestaan ${data.get(
-      "amount"
-    )} pekkaa!`;
+    return `__${data.name}__ nettoaa mestaruudestaan ${data.amount} pekkaa!`;
   }),
   createAward(1000000, 19, (data) => {
-    return `__${data.name}__ nettoaa hopeastaan ${data.get(
-      "amount"
-    )} pekkaa!`;
+    return `__${data.name}__ nettoaa hopeastaan ${data.amount} pekkaa!`;
   }),
   createAward(700000, 12, (data) => {
-    return `__${data.name}__ nettoaa pronssistaan ${data.get(
-      "amount"
-    )} pekkaa!`;
+    return `__${data.name}__ nettoaa pronssistaan ${data.amount} pekkaa!`;
   }),
   createAward(500000, 10, (data) => {
-    return `__${data.name}__ nettoaa neljännestä sijastaan ${data.get(
-      "amount"
-    )} pekkaa!`;
+    return `__${data.name}__ nettoaa neljännestä sijastaan ${data.amount} pekkaa!`;
   })
 );
 
 const roundRobinAwards = List.of(
   createAward(500000, 10, (data) => {
-    return `__${data.name}__ saa runkosarjan voitosta ${data.get(
-      "amount"
-    )} pekkaa!`;
+    return `__${data.name}__ saa runkosarjan voitosta ${data.amount} pekkaa!`;
   }),
   createAward(400000, 7, (data) => {
-    return `__${data.name}__ saa runkosarjan toisesta sijasta ${data.get(
-      "amount"
-    )} pekkaa!`;
+    return `__${data.name}__ saa runkosarjan toisesta sijasta ${data.amount} pekkaa!`;
   }),
   createAward(300000, 6, (data) => {
-    return `__${data.get(
-      "name"
-    )}__ saa runkosarjan kolmannesta sijasta ${data.amount} pekkaa!`;
+    return `__${data.name}__ saa runkosarjan kolmannesta sijasta ${data.amount} pekkaa!`;
   }),
   createAward(200000, 4, (data) => {
-    return `__${data.get(
-      "name"
-    )}__ saa runkosarjan neljännestä sijasta ${data.amount} pekkaa!`;
+    return `__${data.name}__ saa runkosarjan neljännestä sijasta ${data.amount} pekkaa!`;
   }),
 
   Repeat(
     createAward(100000, 2, (data) => {
-      return `__${data.name}__ saa playoff-bonuksen, ${data.get(
-        "amount"
-      )} pekkaa!`;
+      return `__${data.name}__ saa playoff-bonuksen, ${data.amount} pekkaa!`;
     }),
     4
   ).toList()
@@ -645,24 +627,23 @@ const yieldAwards = function* (awards, to) {
 const award = function* () {
   const phl = yield select(competition("phl"));
 
-  const finalPhase = phl.getIn(["phases", 3, "groups", 0]);
+  const finalPhase = phl.phases[3].groups[0];
 
   const winners = victors(finalPhase);
   const losers = eliminated(finalPhase);
 
   const ranking = List.of(
-    winners.first(),
-    losers.first(),
-    winners.last(),
-    losers.last()
-  ).map((r) => r.get("id"));
+    winners[0],
+    losers[0],
+    winners[winners.length - 1],
+    losers[losers.length - 1]
+  ).map((r) => r.id);
 
   yield call(yieldAwards, medalAwards, ranking);
 
-  const tableEntries = phl
-    .getIn(["phases", 0, "groups", 0, "stats"])
-    .map((t) => t.get("id"))
-    .take(8);
+  const tableEntries = phl.phases[0].groups[0].stats
+    .slice(0, 8)
+    .map((t) => t.id);
 
   yield call(yieldAwards, roundRobinAwards, tableEntries);
   const teams = yield select(pekkalandianTeams);

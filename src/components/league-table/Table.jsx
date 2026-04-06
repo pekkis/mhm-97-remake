@@ -14,13 +14,12 @@ const TableRow = styled.tr`
 
 const Table = (props) => {
   const { managers, teams, division, isClone } = props;
-  const colors = division.get("colors");
-  const tbl = division.get("stats").map((entry) => {
-    return entry.set(
-      "managerControlled",
-      managers.map((p) => p.get("team")).includes(entry.get("id"))
-    );
-  });
+  const colors = division.colors;
+  const managerTeams = managers.map((p) => p.get("team"));
+  const tbl = division.stats.map((entry) => ({
+    ...entry,
+    managerControlled: managerTeams.includes(entry.id)
+  }));
 
   return (
     <RTable isClone={isClone}>
@@ -40,22 +39,22 @@ const Table = (props) => {
       <tbody>
         {tbl.map((t, i) => {
           return (
-            <TableRow key={t.get("id")} dark={colors.get(i) === "d"}>
+            <TableRow key={t.id} dark={colors?.[i] === "d"}>
               <td className="fixed">
-                {t.get("managerControlled") ? (
-                  <strong>{teams[t.get("id")]?.name}</strong>
+                {t.managerControlled ? (
+                  <strong>{teams[t.id]?.name}</strong>
                 ) : (
-                  teams[t.get("id")]?.name
+                  teams[t.id]?.name
                 )}
               </td>
-              <td>{t.get("gamesPlayed")}</td>
-              <td>{t.get("wins")}</td>
-              <td>{t.get("draws")}</td>
-              <td>{t.get("losses")}</td>
-              <td>{t.get("points")}</td>
-              <td>{t.get("goalsFor")}</td>
+              <td>{t.gamesPlayed}</td>
+              <td>{t.wins}</td>
+              <td>{t.draws}</td>
+              <td>{t.losses}</td>
+              <td>{t.points}</td>
+              <td>{t.goalsFor}</td>
               <td>-</td>
-              <td>{t.get("goalsAgainst")}</td>
+              <td>{t.goalsAgainst}</td>
             </TableRow>
           );
         })}

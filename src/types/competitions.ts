@@ -1,0 +1,148 @@
+import type { Team } from "../ducks/game";
+
+// --- Game result ---
+
+export type GameResult = {
+  home: number;
+  away: number;
+  overtime: boolean;
+};
+
+// --- Pairing (a single scheduled game) ---
+
+export type Pairing = {
+  home: number;
+  away: number;
+  result?: GameResult;
+};
+
+// --- Stats ---
+
+export type TeamStat = {
+  index: number;
+  id: number;
+  gamesPlayed: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  points: number;
+};
+
+export type MatchupTeamStat = {
+  index: number;
+  id: number;
+  wins: number;
+  losses: number;
+};
+
+export type MatchupStat = {
+  home: MatchupTeamStat;
+  away: MatchupTeamStat;
+};
+
+// --- Penalty ---
+
+export type Penalty = {
+  team: number;
+  penalty: number;
+};
+
+// --- Groups ---
+
+export type RoundRobinGroup = {
+  type: "round-robin";
+  round: number;
+  name: string;
+  teams: number[];
+  times?: number;
+  schedule: Pairing[][];
+  stats: TeamStat[];
+  penalties: Penalty[];
+  colors: string[];
+};
+
+export type TournamentGroup = {
+  type: "tournament";
+  round: number;
+  name: string;
+  teams: number[];
+  schedule: Pairing[][];
+  stats: TeamStat[];
+  penalties: Penalty[];
+  colors: string[];
+};
+
+export type PlayoffGroup = {
+  type: "playoffs";
+  round: number;
+  name?: string;
+  teams: number[];
+  matchups: [number, number][];
+  winsToAdvance: number;
+  schedule: Pairing[][];
+  stats: MatchupStat[];
+};
+
+export type Group = RoundRobinGroup | TournamentGroup | PlayoffGroup;
+
+// --- Phase ---
+
+export type Phase = {
+  type: "round-robin" | "playoffs" | "tournament";
+  name: string;
+  teams: number[];
+  groups: Group[];
+};
+
+// --- Competition (in state.game.competitions) ---
+
+export type Competition = {
+  id: string;
+  abbr: string;
+  name: string;
+  weight: number;
+  phase: number;
+  teams: number[];
+  phases: Phase[];
+};
+
+// --- Competition Definitions (the imported data file, has functions) ---
+
+export type GamedayAdvantage = {
+  home: (team: Team) => number;
+  away: (team: Team) => number;
+};
+
+export type GamedayParams = {
+  advantage: GamedayAdvantage;
+  base: () => number;
+  moraleEffect: (team: Team) => number;
+};
+
+export type CompetitionParameters = {
+  gameday: (phase: number, group?: number) => GamedayParams;
+};
+
+export type GameFacts = {
+  isWin: boolean;
+  isDraw: boolean;
+  isLoss: boolean;
+};
+
+export type CompetitionDefinition = {
+  data: Competition;
+  relegateTo: string | false;
+  promoteTo: string | false;
+  parameters: CompetitionParameters;
+  gameBalance: (phase: number, facts: GameFacts, manager: any) => number;
+  moraleBoost: (phase: number, facts: GameFacts, manager: any) => number;
+  readinessBoost: (phase: number, facts: GameFacts, manager: any) => number;
+  seed: Array<
+    | ((competitions: Record<string, Competition>) => Phase)
+    | ((...args: any[]) => Generator<any, any, any>)
+  >;
+  start?: (...args: any[]) => Generator<any, any, any>;
+  groupEnd?: (phase: number, group: number) => Generator;
+};

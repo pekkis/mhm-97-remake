@@ -3,14 +3,9 @@ import React from "react";
 const Matchups = (props) => {
   const { managers, teams, group } = props;
 
-  console.log(group.toJS(), "group");
+  console.log(group, "group");
 
-  const matches = group.get("stats").map((entry) => {
-    return entry.set(
-      "managerController",
-      managers.map((p) => p.get("team")).includes(entry.get("id"))
-    );
-  });
+  const matches = group.stats;
 
   return (
     <table>
@@ -18,11 +13,11 @@ const Matchups = (props) => {
         {matches.map((m, i) => {
           return (
             <tr key={i}>
-              <td>{teams[m.getIn(["home", "id"])]?.name}</td>
+              <td>{teams[m.home.id]?.name}</td>
               <td>-</td>
-              <td>{teams[m.getIn(["away", "id"])]?.name}</td>
+              <td>{teams[m.away.id]?.name}</td>
               <td>
-                {m.getIn(["home", "wins"])}-{m.getIn(["away", "wins"])}
+                {m.home.wins}-{m.away.wins}
               </td>
             </tr>
           );

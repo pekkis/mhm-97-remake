@@ -72,7 +72,7 @@ const ActionMenu = (props) => {
             when={(e, c, s) => {
               return (
                 e.get("gamedays", List()).includes("phl") &&
-                s.game.getIn(["competitions", "phl", "phase"]) === 0
+                s.game.competitions.phl.phase === 0
               );
             }}
           >

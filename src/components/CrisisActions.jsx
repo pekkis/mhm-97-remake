@@ -39,14 +39,13 @@ const TransferMarket = (props) => {
         >
           <p>
             Kriisipalaveri auttaa joukkuetta unohtamaan tappioputken ja
-            keskittymään tulevaan. Se maksaa {c(crisisInfo.get("amount"))}.
+            keskittymään tulevaan. Se maksaa {c(crisisInfo.amount)}.
           </p>
 
           <Button
             block
             disabled={
-              balance < crisisInfo.get("amount") ||
-              team.morale > CRISIS_MORALE_MAX
+              balance < crisisInfo.amount || team.morale > CRISIS_MORALE_MAX
             }
             onClick={() => {
               crisisMeeting(manager.get("id"));

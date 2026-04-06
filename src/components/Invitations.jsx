@@ -20,12 +20,12 @@ const Invitations = (props) => {
         <h2>Turnauskutsut</h2>
 
         {invitations.map((i, index) => {
-          const t = tournamentList.get(i.get("tournament"));
+          const t = tournamentList[i.get("tournament")];
           return (
             <div key={index}>
-              <h3>{t.get("name")}</h3>
+              <h3>{t.name}</h3>
 
-              <Markdown>{t.get("description")(t.get("award"))}</Markdown>
+              <Markdown>{t.description(t.award)}</Markdown>
 
               <Button
                 block

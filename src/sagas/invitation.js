@@ -28,8 +28,13 @@ export function* createInvitations() {
   const managers = yield select((state) => state.manager.get("managers"));
 
   for (const [managerId] of managers) {
-    for (const [tournamentId, tournament] of tournamentList.entries()) {
-      const isInvited = yield call(tournament.get("isInvited"), managerId);
+    for (
+      let tournamentId = 0;
+      tournamentId < tournamentList.length;
+      tournamentId++
+    ) {
+      const tournament = tournamentList[tournamentId];
+      const isInvited = yield call(tournament.isInvited, managerId);
       if (isInvited) {
         yield put({
           type: INVITATION_ADD,

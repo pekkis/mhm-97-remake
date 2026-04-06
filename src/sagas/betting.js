@@ -31,18 +31,11 @@ export function* processChampionBets() {
 }
 
 export function* bettingResults(round) {
-  const pairings = yield select((state) =>
-    state.game.competitions.getIn(["phl",
-      "phases",
-      0,
-      "groups",
-      0,
-      "schedule",
-      round
-    ])
+  const pairings = yield select(
+    (state) => state.game.competitions.phl.phases[0].groups[0].schedule[round]
   );
 
-  const facts = pairings.map((p) => resultFacts(p.get("result"), "home"));
+  const facts = pairings.map((p) => resultFacts(p.result, "home"));
   const correctCoupon = facts.map((f) => {
     if (f.isWin) {
       return "1";
@@ -59,7 +52,7 @@ export function* bettingResults(round) {
   for (const bet of bets) {
     const correct = bet
       .get("coupon")
-      .filter((c, i) => c === correctCoupon.get(i))
+      .filter((c, i) => c === correctCoupon[i])
       .count();
 
     const victory = victories.get(correct);

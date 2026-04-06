@@ -1,5 +1,3 @@
-import { Map } from "immutable";
-
 /*
 IF v(x) >= yttre - 100 THEN ker(x) = 460: GOTO esukki
 IF v(x) <= yttre - 100 THEN ker(x) = 1000: GOTO esukki
@@ -55,24 +53,20 @@ const getOdds = (strength, average) => {
 
 const odds = (competition, teams) => {
   const average =
-    competition
-      .get("teams")
-      .map((t) => teams[t])
-      .reduce((r, t) => r + t.strength, 0) /
-    competition.get("teams").count();
+    competition.teams.map((t) => teams[t]).reduce((r, t) => r + t.strength, 0) /
+    competition.teams.length;
 
-  const odds = competition
-    .get("teams")
+  const oddsArr = competition.teams
     .map((t) => teams[t])
     .map((team) => ({
       id: team.id,
       name: team.name,
       odds: getOdds(team.strength, average)
-    }));
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .sort((a, b) => a.odds - b.odds);
 
-  return Map(odds.map((o) => [o.id, o]))
-    .sortBy((t) => t.name)
-    .sortBy((t) => t.odds);
+  return oddsArr;
 };
 
 export default odds;

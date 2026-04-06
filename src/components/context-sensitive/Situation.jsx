@@ -12,23 +12,22 @@ const Situation = (props) => {
   return (
     <div>
       {interesting
-        .map((i) => competitions.get(i))
+        .map((i) => competitions[i])
         .map((competition, key) => {
-          const phaseNo = competition.get("phase");
-          const phase = competition.getIn(["phases", phaseNo]);
+          const phaseNo = competition.phase;
+          const phase = competition.phases[phaseNo];
 
           return (
-            <div key={competition}>
-              <h3>{competition.get("name")}</h3>
+            <div key={competition.id}>
+              <h3>{competition.name}</h3>
 
               <Streaks competition={key} team={manager.get("team")} />
 
-              {phase
-                .get("groups")
+              {phase.groups
                 .filter(
                   (group) =>
-                    phase.get("groups").count() === 1 ||
-                    group.get("teams").includes(manager.get("team"))
+                    phase.groups.length === 1 ||
+                    group.teams.includes(manager.get("team"))
                 )
                 .map((group, i) => {
                   return (
@@ -38,14 +37,14 @@ const Situation = (props) => {
 
                         <Games
                           context={group}
-                          round={group.get("round")}
+                          round={group.round}
                           teams={teams}
                           managers={List.of(manager)}
                         />
                       </div>
 
                       <div>
-                        {phase.get("type") === "round-robin" && (
+                        {phase.type === "round-robin" && (
                           <div>
                             <h4>Sarjataulukko</h4>
                             <ResponsiveTable>
@@ -57,7 +56,7 @@ const Situation = (props) => {
                             </ResponsiveTable>
                           </div>
                         )}
-                        {phase.get("type") === "tournament" && (
+                        {phase.type === "tournament" && (
                           <div>
                             <h4>Tilanne</h4>
                             <ResponsiveTable>
@@ -70,7 +69,7 @@ const Situation = (props) => {
                           </div>
                         )}
 
-                        {phase.get("type") === "playoffs" && (
+                        {phase.type === "playoffs" && (
                           <div>
                             <h4>Tilanteet playoff-sarjoissa</h4>
                             <Matchups
@@ -86,8 +85,7 @@ const Situation = (props) => {
                 })}
             </div>
           );
-        })
-        .toList()}
+        })}
     </div>
   );
 };

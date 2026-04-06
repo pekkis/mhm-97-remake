@@ -7,7 +7,7 @@ export default connect(
     turn: state.game.turn,
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
     teams: state.game.teams,
-    competition: state.game.competitions.getIn(["phl"])
+    competition: state.game.competitions.phl
   }),
   { bet }
 )(Betting);

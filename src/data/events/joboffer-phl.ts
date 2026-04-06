@@ -53,17 +53,16 @@ const event: MHMEvent<JobofferPHLData> = {
 
     const oldTeam = yield* select(managersTeamId(manager));
 
-    const ehlTeams = yield* select((state: any) =>
-      state.game.competitions.getIn(["ehl", "teams"])
+    const ehlTeams = yield* select(
+      (state: any) => state.game.competitions.ehl.teams
     );
     const offerer = yield* select(randomTeamFrom(["phl"], false, ehlTeams));
 
-    const group = yield* select((state: any) =>
-      state.game.competitions.getIn(["phl", "phases", 0, "groups", 0])
+    const group = yield* select(
+      (state: any) => state.game.competitions.phl.phases[0].groups[0]
     );
 
-    const ranking =
-      table(group).findIndex((t: any) => t.get("id") === offerer.id) + 1;
+    const ranking = table(group).findIndex((t: any) => t.id === offerer.id) + 1;
 
     yield* call(addEvent, {
       eventId,

@@ -15,7 +15,7 @@ const GamedayResults = (props) => {
 
   const currentCompetitions = calendarEntry
     .get("gamedays", List())
-    .map((c) => competitions.get(c));
+    .map((c) => competitions[c]);
 
   return (
     <HeaderedPage>
@@ -24,21 +24,17 @@ const GamedayResults = (props) => {
         <h2>Tulokset</h2>
 
         {currentCompetitions.map((competition) => {
-          const currentPhase = competition.getIn([
-            "phases",
-            competition.get("phase")
-          ]);
+          const currentPhase = competition.phases[competition.phase];
 
           return (
-            <div key={competition.get("name")}>
-              {currentPhase.get("groups").map((group, groupIndex) => {
-                const currentRound = group.get("round") - 1;
+            <div key={competition.name}>
+              {currentPhase.groups.map((group, groupIndex) => {
+                const currentRound = group.round - 1;
 
                 return (
                   <div key={groupIndex}>
                     <h3>
-                      {competition.get("name")}, {group.get("name")} [
-                      {currentRound}]
+                      {competition.name}, {group.name} [{currentRound}]
                     </h3>
 
                     <Results
@@ -48,7 +44,7 @@ const GamedayResults = (props) => {
                       managers={managers}
                     />
 
-                    {currentPhase.get("type") === "tournament" && (
+                    {currentPhase.type === "tournament" && (
                       <div>
                         <Table
                           division={group}
