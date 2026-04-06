@@ -1,5 +1,4 @@
 import type { Effect } from "redux-saga/effects";
-import type { Map } from "immutable";
 
 export type MHMEventType = "manager";
 
@@ -29,6 +28,6 @@ export type MHMEvent<TData extends BaseEventFields = BaseEventFields> = {
   create: (data: { manager: string }) => MHMEventGenerator;
   render: (data: TData) => string[];
   process: (data: TData) => MHMEventGenerator;
-  options?: (data: TData) => Map<string, string>;
+  options?: (data: TData) => Record<string, string>;
   resolve?: (data: TData, value: string) => MHMEventGenerator;
 };

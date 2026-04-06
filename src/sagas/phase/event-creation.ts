@@ -169,6 +169,10 @@ export default function* eventCreationPhase() {
     for (const [, manager] of managers) {
       const eventId = getEventId();
 
+      if (!eventId) {
+        return;
+      }
+
       const eventObj = events.get(eventId);
       if (!eventObj) {
         return;

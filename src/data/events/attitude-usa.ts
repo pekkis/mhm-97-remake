@@ -1,5 +1,4 @@
-import { Map } from "immutable";
-import { call, select, all, put } from "redux-saga/effects";
+import { call, select, all, put } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
 import { flag } from "../selectors";
 import { setFlag } from "../../sagas/game";
@@ -18,34 +17,39 @@ const eventId = "attitudeUSA";
 
 const difference = 35;
 
-const event: MHMEvent = {
+type AttitudeUSAData = {
+  id: string;
+  eventId: typeof eventId;
+  manager: string;
+  attitude: boolean;
+  resolved: true;
+};
+
+const event: MHMEvent<AttitudeUSAData> = {
   type: "manager",
 
   create: function* (data) {
     const { manager } = data;
 
-    const attitude = yield select(flag("usa"));
+    const attitude = yield* select(flag("usa"));
 
-    yield call(
-      addEvent,
-      Map({
-        eventId,
-        manager,
-        attitude: !attitude,
-        resolved: true
-      })
-    );
+    yield* call(addEvent, {
+      eventId,
+      manager,
+      attitude: !attitude,
+      resolved: true,
+    });
     return;
   },
 
   render: (data) => {
     const lines = [
-      `__Yhdysvalloissa__ asenne MM-kisoja kohtaan on muuttunut radikaalisti.`
+      `__Yhdysvalloissa__ asenne MM-kisoja kohtaan on muuttunut radikaalisti.`,
     ];
 
-    if (data.get("attitude") === true) {
+    if (data.attitude === true) {
       lines.push(
-        `Tästä edespäin kaikki parhaat jenkinpurijat tulevat kisoihin!`
+        `Tästä edespäin kaikki parhaat jenkinpurijat tulevat kisoihin!`,
       );
     } else {
       lines.push(`Tästä lähtien supertähdet pysyvät kotona Jenkeissä.`);
@@ -55,11 +59,11 @@ const event: MHMEvent = {
   },
 
   process: function* (data) {
-    const attitude = data.get("attitude");
+    const attitude = data.attitude;
     const amount = attitude ? difference : -difference;
-    yield all([
+    yield* all([
       call(setFlag, "usa", attitude),
-      put(alterStrength("US", amount))
+      put(alterStrength("US", amount)),
     ]);
   }
 };

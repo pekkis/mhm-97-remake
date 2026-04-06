@@ -26,24 +26,21 @@ const Events = (props) => {
             </Markdown>
             {!e.resolved && (
               <ul>
-                {event
-                  .options(e)
-                  .map((option, key) => {
-                    return (
-                      <li key={key}>
-                        <a
-                          href="#"
-                          onClick={(evt) => {
-                            evt.preventDefault();
-                            resolveEvent(e, key);
-                          }}
-                        >
-                          {option}
-                        </a>
-                      </li>
-                    );
-                  })
-                  .toList()}
+                {Object.entries(event.options(e)).map(([key, option]) => {
+                  return (
+                    <li key={key}>
+                      <a
+                        href="#"
+                        onClick={(evt) => {
+                          evt.preventDefault();
+                          resolveEvent(e, key);
+                        }}
+                      >
+                        {option}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
