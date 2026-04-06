@@ -31,6 +31,103 @@ Recent completed migrations:
 
 ---
 
+## Migration Status (as of 2026-04-06)
+
+### Completed de-immutable + TypeScript conversions
+
+**Data files:**
+
+- `src/data/countries.ts` — plain `Country` type + `Record<string, Country>`
+- `src/data/teams.ts` — plain `TeamDefinition[]` array
+- `src/data/pranks.ts` — plain `Record<string, Prank>` + `PrankInstance` type
+- `src/data/difficulty-levels.ts` — plain `DifficultyLevel[]` array
+- `src/data/named-effects.ts` — plain `Record<string, NamedEffectFn>`
+- `src/services/effects.ts` — typed with pragmatic `ImmutableObj`/`ImmutableEffect` aliases
+- `src/services/round-robin.ts` — native arrays, 17 vitest tests
+- `src/services/tournament.ts` — typed, wraps `roundRobin()` in Immutable (band-aid until competitions de-immutable)
+
+**Reducers (ducks):**
+
+- `src/ducks/prank.ts` — plain `{ pranks: PrankInstance[] }` + immer
+- `src/ducks/ui.ts` — plain `UiState` + immer + discriminated `UiAction` union
+- `src/ducks/event.ts` — immer `produce()`
+- `src/ducks/game.ts` — **root is plain `GameState`** + immer; inner `teams`/`competitions`/`managers` still Immutable
+- `src/ducks/country.ts` — already plain
+- `src/ducks/meta.ts` — typed
+
+**Other:**
+
+- `src/store.ts`, `src/getSagas.ts` — typed
+- lodash fully removed from codebase + `package.json`
+- `typed-redux-saga` in use for all converted saga files
+
+### `GameState` current shape
+
+```ts
+type GameState = {
+  turn: { season: number; round: number; phase: string | undefined }; // PLAIN
+  flags: Record<string, boolean>; // PLAIN
+  serviceBasePrices: Record<string, number>; // PLAIN
+  managers: any; // still Immutable
+  competitions: any; // still Immutable (deeply nested Maps)
+  teams: any; // still Immutable List<Map> ← NEXT TARGET
+  worldChampionshipResults: any;
+};
+```
+
+### Still Immutable (known remaining)
+
+- `state.game.teams` — `List<Map<string, any>>` — **next target** (~33 consumer sites + ~20 reducer cases)
+- `state.game.competitions` — deeply nested Immutable Maps (phases/groups/stats/schedule)
+- `state.game.managers` — Immutable (shared with manager duck)
+- `state.manager` — full Immutable duck
+- `state.stats` — full Immutable duck
+- `state.betting`, `state.news`, `state.notification`, `state.invitation` — Immutable ducks
+- `src/data/events/*.ts` — event registry uses Immutable Map
+- `src/data/competitions/*.js` — saga generators using Immutable throughout
+- `src/data/calendar.js` — Immutable List
+
+### Next target: `teams` de-immutable
+
+Convert `state.game.teams` from `List<Map<string, any>>` to typed `Team[]`.
+
+**Approximate Team shape:**
+
+```ts
+type Effect = { name: string; amount: number | string; duration: number };
+type Team = {
+  id: number;
+  name: string;
+  strength: number;
+  domestic: boolean;
+  morale: number;
+  strategy: number;
+  readiness: number;
+  effects: Effect[];
+  opponentEffects: Effect[];
+  manager?: string;
+};
+```
+
+**Strategy:**
+
+1. Define `Team` and `Effect` types
+2. Rewrite `defaultState` to produce `Team[]` from `TeamDefinition[]`
+3. Update ~20 reducer cases from Immutable ops to direct mutations (immer handles it)
+4. Mechanical `sed`/`perl` replacement of ~33 consumer access patterns
+5. Build + typecheck verify
+
+### Proven migration technique
+
+For bulk consumer updates, use `sed` for single-line patterns and `perl -0777` for multiline patterns. This handled 162 call sites in minutes during the game reducer root migration.
+
+### Pre-existing issues (not migration-related)
+
+- `Root.tsx` has 2 TS errors about `DefaultTheme.colors` — styled-components theme typing gap
+- CSS `:global` pseudo-class warnings from lightningcss (legacy `.pcss` file)
+
+---
+
 ## Non-Negotiables for Agents
 
 1. **KISS: Keep It Simple, Stupid**
