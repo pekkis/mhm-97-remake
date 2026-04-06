@@ -1,4 +1,3 @@
-import React from "react";
 import ManagerInfo from "./containers/ManagerInfoContainer";
 import Header from "./containers/HeaderContainer";
 import HeaderedPage from "./ui/HeaderedPage";
@@ -28,8 +27,7 @@ const Pranks = (props) => {
 
   const difficultyLevel = difficultyLevels[manager.get("difficulty")];
 
-  const canDo =
-    difficultyLevel.pranksPerSeason > manager.get("pranksExecuted");
+  const canDo = difficultyLevel.pranksPerSeason > manager.get("pranksExecuted");
 
   const targetCompetition = phl.get("teams").includes(manager.get("team"))
     ? phl
@@ -55,7 +53,7 @@ const Pranks = (props) => {
             </p>
           )}
 
-          {!prank.get("type") && (
+          {!prank.type && (
             <SelectType
               manager={manager}
               enabled={canDo}
@@ -65,7 +63,7 @@ const Pranks = (props) => {
             />
           )}
 
-          {prank.get("type") && !prank.get("victim") && (
+          {prank.type && !prank.victim && (
             <SelectVictim
               manager={manager}
               prank={prank}
@@ -76,7 +74,7 @@ const Pranks = (props) => {
             />
           )}
 
-          {prank.get("type") && prank.get("victim") && (
+          {prank.type && prank.victim && (
             <ConfirmPrank
               manager={manager}
               prank={prank}

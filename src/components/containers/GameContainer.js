@@ -6,7 +6,7 @@ export default connect(
   (state) => ({
     started: state.meta.get("started"),
     turn: state.game.get("turn"),
-    menu: state.ui.get("menu")
+    menu: state.ui.menu
   }),
   { startGame, loadGame }
 )(Game);

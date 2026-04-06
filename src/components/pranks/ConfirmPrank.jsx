@@ -6,7 +6,7 @@ import pranks from "../../data/pranks";
 const ConfirmPrank = (props) => {
   const { cancel, manager, teams, prank, execute } = props;
 
-  const prankInfo = pranks[prank.get("type")];
+  const prankInfo = pranks[prank.type];
 
   console.log(prankInfo, "pinfo");
 
@@ -19,14 +19,14 @@ const ConfirmPrank = (props) => {
 
       <p>
         <strong>Uhri: </strong>
-        {teams.getIn([prank.get("victim"), "name"])}
+        {teams.getIn([prank.victim, "name"])}
       </p>
 
       <ButtonContainer>
         <Button
           block
           onClick={() => {
-            execute(manager.get("id"), prank.get("type"), prank.get("victim"));
+            execute(manager.get("id"), prank.type, prank.victim);
           }}
         >
           Varmista

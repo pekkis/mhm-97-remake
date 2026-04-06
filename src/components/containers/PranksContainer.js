@@ -14,8 +14,8 @@ export default connect(
     teams: state.game.get("teams"),
     events: state.event.events,
     news: state.news.get("news"),
-    advanceEnabled: state.ui.get("advanceEnabled"),
-    prank: state.ui.get("prank"),
+    advanceEnabled: state.ui.advanceEnabled,
+    prank: state.ui.prank,
     competitions: state.game.get("competitions")
   }),
   { orderPrank, selectPrankType, selectPrankVictim, cancelPrank }

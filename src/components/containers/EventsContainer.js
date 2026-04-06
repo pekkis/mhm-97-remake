@@ -10,7 +10,7 @@ export default connect(
     teams: state.game.get("teams"),
     events: state.event.events,
     news: state.news.get("news"),
-    advanceEnabled: state.ui.get("advanceEnabled")
+    advanceEnabled: state.ui.advanceEnabled
   }),
   { advance, resolveEvent }
 )(Events);
