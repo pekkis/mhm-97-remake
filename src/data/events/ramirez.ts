@@ -39,14 +39,14 @@ const event: MHMEvent<RamirezData> = {
       manager,
       hasInsurance,
       amount: 90000,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     const t = [
-      `Espanjalaisvahvistuksesi __Jorge Ramirez__, liigan komeimmaksi ja egoistisimmaksi mainittu pelaaja, kompastuu harjoituksissa kaatuen ja murtaen kuuluisan kyömynenänsä! Sopimuksen erikoispykälä velvoittaa sinut maksamaan plastiikkakirurgikulut, ${a(data.amount)} pekkaa!`,
+      `Espanjalaisvahvistuksesi __Jorge Ramirez__, liigan komeimmaksi ja egoistisimmaksi mainittu pelaaja, kompastuu harjoituksissa kaatuen ja murtaen kuuluisan kyömynenänsä! Sopimuksen erikoispykälä velvoittaa sinut maksamaan plastiikkakirurgikulut, ${a(data.amount)} pekkaa!`
     ];
 
     if (data.hasInsurance) {
@@ -66,7 +66,7 @@ const event: MHMEvent<RamirezData> = {
       const amount = data.amount;
       yield* call(decrementBalance, manager, amount);
     }
-  },
+  }
 };
 
 export default event;

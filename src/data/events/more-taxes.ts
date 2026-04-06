@@ -54,19 +54,19 @@ const event: MHMEvent<MoreTaxesData> = {
       eventId,
       manager,
       resolved: true,
-      amount,
+      amount
     });
   },
 
   render: (data) => {
     return [
-      `Aaaaargh! Verokarhu päättää mätkäistä ${a(data.amount)} pekan lisäveron joukkueellesi!`,
+      `Aaaaargh! Verokarhu päättää mätkäistä ${a(data.amount)} pekan lisäveron joukkueellesi!`
     ];
   },
 
   process: function* (data) {
     yield* call(decrementBalance, data.manager, data.amount);
-  },
+  }
 };
 
 export default event;

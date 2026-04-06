@@ -6,7 +6,7 @@ import {
   flag,
   randomTeamFrom,
   managersTeam,
-  managersDifficulty,
+  managersDifficulty
 } from "../selectors";
 import { addEvent } from "../../sagas/event";
 import { incrementBalance } from "../../sagas/manager";
@@ -32,7 +32,7 @@ type MautoData = {
 const texts = (data: MautoData): string[] => {
   const lines = [
     `Monikansallinen autotehdas __Mautomobiles__ haluaa sponsoroida joukkuettasi!
-    Jos joukkueen nimeksi vaihdetaan _${data.newName}_, rahoittavat he toimintaanne ${data.amount} pekalla! Suostutko?`,
+    Jos joukkueen nimeksi vaihdetaan _${data.newName}_, rahoittavat he toimintaanne ${data.amount} pekalla! Suostutko?`
   ];
 
   if (!data.resolved) {
@@ -42,20 +42,20 @@ const texts = (data: MautoData): string[] => {
   if (data.changeOfMind) {
     return [
       ...lines,
-      `Mauto muuttaa yhtäkkiä mielipidettään ja sponsoroikin toista joukkuetta (__${data.teamName}__).`,
+      `Mauto muuttaa yhtäkkiä mielipidettään ja sponsoroikin toista joukkuetta (__${data.teamName}__).`
     ];
   }
 
   if (!data.agree) {
     return [
       ...lines,
-      `Mautomobiles sponsoroi joukkuetta __${data.teamName}__.`,
+      `Mautomobiles sponsoroi joukkuetta __${data.teamName}__.`
     ];
   }
 
   return [
     ...lines,
-    `Mautomobilesin toimitusjohtaja hymyilee kuin Naantalin aurinko. "Olkoon alkava yhteistyömme pitkä ja menestyksekäs!"`,
+    `Mautomobilesin toimitusjohtaja hymyilee kuin Naantalin aurinko. "Olkoon alkava yhteistyömme pitkä ja menestyksekäs!"`
   ];
 };
 
@@ -80,7 +80,7 @@ const event: MHMEvent<MautoData> = {
       manager,
       newName: "Mauto HT",
       resolved: false,
-      amount: 4000000,
+      amount: 4000000
     });
     return;
   },
@@ -88,7 +88,7 @@ const event: MHMEvent<MautoData> = {
   options: (data) => {
     return {
       y: `Suostun. Kauan eläköön ${data.newName} `,
-      n: "En suostu. Pitäköön mautonsa!",
+      n: "En suostu. Pitäköön mautonsa!"
     } as any;
   },
 
@@ -117,8 +117,8 @@ const event: MHMEvent<MautoData> = {
       type: "EVENT_RESOLVE",
       payload: {
         id: resolved.id,
-        event: resolved,
-      },
+        event: resolved
+      }
     });
   },
 
@@ -133,8 +133,8 @@ const event: MHMEvent<MautoData> = {
       type: "TEAM_RENAME",
       payload: {
         team: data.team,
-        name: data.newName,
-      },
+        name: data.newName
+      }
     });
 
     if (!data.agree || data.changeOfMind) {
@@ -146,11 +146,11 @@ const event: MHMEvent<MautoData> = {
         type: "MANAGER_RENAME_ARENA",
         payload: {
           manager: data.manager,
-          name: "Mauto Center",
-        },
+          name: "Mauto Center"
+        }
       });
     }
-  },
+  }
 };
 
 export default event;

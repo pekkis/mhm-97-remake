@@ -22,7 +22,7 @@ const bookNames: ((data: BookData) => string)[] = [
   (data) => `${data.managerName}: legenda jo eläessään`,
   () => `Mestarimanagerin tarina`,
   () => `Managerikukkulan kuningas`,
-  () => `Kapina hallilla`,
+  () => `Kapina hallilla`
 ];
 
 const eventId = "book";
@@ -59,14 +59,14 @@ const event: MHMEvent<BookData> = {
       manager,
       managerName: m.get("name"),
       book,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `Kuuluisa kirjailija __Seppo Kuningas__ hahmottelee uutta teosta. "${bookNames[data.book](data)}" on kirjan nimi, ja se kertoo sinun elämästäsi!`,
+      `Kuuluisa kirjailija __Seppo Kuningas__ hahmottelee uutta teosta. "${bookNames[data.book](data)}" on kirjan nimi, ja se kertoo sinun elämästäsi!`
     ];
   },
 
@@ -74,7 +74,7 @@ const event: MHMEvent<BookData> = {
     const manager = data.manager;
     const team = yield* select(managersTeamId(manager));
     yield* call(incrementMorale, team, 2);
-  },
+  }
 };
 
 export default event;

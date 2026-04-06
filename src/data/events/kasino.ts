@@ -27,7 +27,7 @@ const event: MHMEvent<KasinoData> = {
       eventId,
       manager,
       resolved: false,
-      amount: 150000,
+      amount: 150000
     });
   },
 
@@ -35,7 +35,7 @@ const event: MHMEvent<KasinoData> = {
     return {
       p: "Kaikki punaiselle!",
       m: "Kaikki mustalle!",
-      e: "Ei. Uhkapeli on syntiä.",
+      e: "Ei. Uhkapeli on syntiä."
     } as any;
   },
 
@@ -52,7 +52,7 @@ const event: MHMEvent<KasinoData> = {
 
     yield* put({
       type: "EVENT_RESOLVE",
-      payload: { id: resolved.id, event: resolved },
+      payload: { id: resolved.id, event: resolved }
     });
   },
 
@@ -60,7 +60,7 @@ const event: MHMEvent<KasinoData> = {
     const lines = [
       `Olet eräänä iltana kasinolla.
 
-  Yhtäkkiä ääni päässäsi sanoo: 'Laita ${data.amount} pekkaa joukkueen kassasta peliin, niin voitto on sinun!' Otatko riskin?`,
+  Yhtäkkiä ääni päässäsi sanoo: 'Laita ${data.amount} pekkaa joukkueen kassasta peliin, niin voitto on sinun!' Otatko riskin?`
     ];
 
     if (!data.resolved) return lines;
@@ -76,7 +76,7 @@ const event: MHMEvent<KasinoData> = {
     }
 
     lines.push(
-      `JESS! Voitit omasi takaisin sekä ${data.amount * 3} pekkaa lisää!`,
+      `JESS! Voitit omasi takaisin sekä ${data.amount * 3} pekkaa lisää!`
     );
     return lines;
   },
@@ -86,7 +86,7 @@ const event: MHMEvent<KasinoData> = {
 
     const victory = data.success ? data.amount * 3 : -data.amount;
     yield* call(incrementBalance, data.manager, victory);
-  },
+  }
 };
 
 export default event;

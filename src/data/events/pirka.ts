@@ -23,20 +23,20 @@ const event: MHMEvent<PirkaData> = {
       eventId,
       manager,
       resolved: true,
-      amount: 80000,
+      amount: 80000
     });
     return;
   },
 
   render: (data) => {
     return [
-      `Ikääntynyt rokkitähti, __Pirka__, kuolee ja lahjoittaa koko omaisuutensa joukkueelle (${data.amount} pekkaa ja kiinanpalatsikoiran).`,
+      `Ikääntynyt rokkitähti, __Pirka__, kuolee ja lahjoittaa koko omaisuutensa joukkueelle (${data.amount} pekkaa ja kiinanpalatsikoiran).`
     ];
   },
 
   process: function* (data) {
     yield* call(incrementBalance, data.manager, data.amount);
-  },
+  }
 };
 
 export default event;

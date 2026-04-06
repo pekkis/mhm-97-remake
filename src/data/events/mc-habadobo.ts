@@ -7,13 +7,13 @@ import {
   managersDifficulty,
   managersTeam,
   managerHasService,
-  managersArena,
+  managersArena
 } from "../selectors";
 import { amount as a } from "../../services/format";
 import {
   decrementBalance,
   incrementBalance,
-  incrementInsuranceExtra,
+  incrementInsuranceExtra
 } from "../../sagas/manager";
 import type { MHMEvent } from "../../types/base";
 
@@ -64,9 +64,7 @@ const event: MHMEvent<McHabadoboData> = {
       return;
     }
 
-    const hasInsurance = yield* select(
-      managerHasService(manager, "insurance"),
-    );
+    const hasInsurance = yield* select(managerHasService(manager, "insurance"));
 
     const amount = 650000;
     const insuranceClaim = Math.round(0.8 * amount);
@@ -77,7 +75,7 @@ const event: MHMEvent<McHabadoboData> = {
       hasInsurance,
       amount,
       insuranceClaim,
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -87,14 +85,12 @@ const event: MHMEvent<McHabadoboData> = {
       `Joukkueen fanikaupan vieressä sijaitsevaan moottoripyöräkerho __MC Habadobon__ isännöimään kapakkaan suunnattu leikkimielinen sinkoisku osuu harhaan!
 
 Lukematon määrä fanituotteita ja muuta krääsää tuhoutuu. Lasku kohoaa ${a(
-        data.amount,
-      )} pekkaan!`,
+        data.amount
+      )} pekkaan!`
     ];
 
     if (data.hasInsurance) {
-      t.push(
-        `Etelälä maksaa laskusta ${a(data.insuranceClaim)} pekkaa.`,
-      );
+      t.push(`Etelälä maksaa laskusta ${a(data.insuranceClaim)} pekkaa.`);
     }
 
     return t;
@@ -115,10 +111,10 @@ Lukematon määrä fanituotteita ja muuta krääsää tuhoutuu. Lasku kohoaa ${a
       yield* call(
         incrementInsuranceExtra,
         manager,
-        40 * (currentArena.get("level") + 1),
+        40 * (currentArena.get("level") + 1)
       );
     }
-  },
+  }
 };
 
 export default event;

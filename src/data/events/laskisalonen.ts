@@ -4,7 +4,7 @@ import { addOpponentEffect } from "../../sagas/team";
 import {
   managerCompetesIn,
   managerHasService,
-  managersTeamId,
+  managersTeamId
 } from "../selectors";
 import { amount as a } from "../../services/format";
 import { incrementBalance, incrementInsuranceExtra } from "../../sagas/manager";
@@ -32,9 +32,7 @@ const event: MHMEvent<LaskisalonenData> = {
     const competesInPHL = yield* select(managerCompetesIn(manager, "phl"));
     const strength = competesInPHL ? -150 : -75;
 
-    const hasInsurance = yield* select(
-      managerHasService(manager, "insurance"),
-    );
+    const hasInsurance = yield* select(managerHasService(manager, "insurance"));
 
     yield* call(addEvent, {
       eventId,
@@ -43,21 +41,19 @@ const event: MHMEvent<LaskisalonenData> = {
       resolved: true,
       duration: 1,
       hasInsurance,
-      amount: 35000,
+      amount: 35000
     });
     return;
   },
 
   render: (data) => {
     const t = [
-      `Molemmat maalivahtinne ovat loukkaantuneet! Ainoa halukas tuuraaja on 300-kiloinen __Läski-Salonen__, joka kaikeksi onneksi tukkii maalin _tosi tehokkaasti_, mutta valitettavasti vain ${data.duration} ottelun ajan!`,
+      `Molemmat maalivahtinne ovat loukkaantuneet! Ainoa halukas tuuraaja on 300-kiloinen __Läski-Salonen__, joka kaikeksi onneksi tukkii maalin _tosi tehokkaasti_, mutta valitettavasti vain ${data.duration} ottelun ajan!`
     ];
 
     if (data.hasInsurance) {
       t.push(
-        `Etelälä on velvollinen maksamaan korvauksina ${a(
-          data.amount,
-        )} pekkaa!`,
+        `Etelälä on velvollinen maksamaan korvauksina ${a(data.amount)} pekkaa!`
       );
     }
 
@@ -78,7 +74,7 @@ const event: MHMEvent<LaskisalonenData> = {
       yield* call(incrementBalance, manager, amount);
       yield* call(incrementInsuranceExtra, manager, 90);
     }
-  },
+  }
 };
 
 /*

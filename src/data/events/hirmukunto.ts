@@ -49,7 +49,7 @@ const event: MHMEvent<HirmukuntoData> = {
       team: team.get("id"),
       teamName: team.get("name"),
       managerName: random.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -58,7 +58,7 @@ const event: MHMEvent<HirmukuntoData> = {
     return [
       `Divisioonasta:
 
-__${data.teamName}__ on päättänyt manageriguru ${data.managerName}:n johdolla nousta liigaan! He ovat _hirmukunnossa!_`,
+__${data.teamName}__ on päättänyt manageriguru ${data.managerName}:n johdolla nousta liigaan! He ovat _hirmukunnossa!_`
     ];
   },
 
@@ -73,9 +73,9 @@ __${data.teamName}__ on päättänyt manageriguru ${data.managerName}:n johdolla
       team,
       ["strength"],
       Math.round(strength / 2),
-      duration,
+      duration
     );
-  },
+  }
 };
 
 export default event;

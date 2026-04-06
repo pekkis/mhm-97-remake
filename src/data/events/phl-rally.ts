@@ -6,7 +6,7 @@ import {
   managerCompetesIn,
   managerFlag,
   managersTeamId,
-  managersDifficulty,
+  managersDifficulty
 } from "../selectors";
 import { setFlag, setExtra } from "../../sagas/manager";
 import difficultyLevels from "../../data/difficulty-levels";
@@ -47,14 +47,14 @@ const event: MHMEvent<PhlRallyData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (_data) => {
     return [
-      `Uusi ohjelmanjulistuksesi "KULTA ON VÄRIMME" saa aikaan todellisen jääkiekkobuumin! Kansa ryntää hallille ja taistelu mestaruudesta on todella alkanut`,
+      `Uusi ohjelmanjulistuksesi "KULTA ON VÄRIMME" saa aikaan todellisen jääkiekkobuumin! Kansa ryntää hallille ja taistelu mestaruudesta on todella alkanut`
     ];
   },
 
@@ -71,7 +71,7 @@ const event: MHMEvent<PhlRallyData> = {
     yield* call(
       setExtra,
       manager,
-      (difficultyLevels.getIn([difficulty, "rallyExtra"]) as any)("phl"),
+      (difficultyLevels.getIn([difficulty, "rallyExtra"]) as any)("phl")
     );
 
     yield* call(
@@ -81,10 +81,10 @@ const event: MHMEvent<PhlRallyData> = {
       "rally",
       duration,
       Map({
-        rallyMorale: difficultyLevels.getIn([difficulty, "rallyMorale"]) as any,
-      }),
+        rallyMorale: difficultyLevels.getIn([difficulty, "rallyMorale"]) as any
+      })
     );
-  },
+  }
 };
 
 /*

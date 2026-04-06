@@ -36,14 +36,14 @@ const event: MHMEvent<AllgoSuccessData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `Pelaajiesi kunto on osoittautunut odotettuakin paremmaksi! Kuluttavasta "kaikki peliin"-strategiastanne huolimatta "pojat" jaksavat yhä treenata entistäkin kovemmin, ja tämä näkyy toivottavasti peliesityksissä pitkälle kevääseen!`,
+      `Pelaajiesi kunto on osoittautunut odotettuakin paremmaksi! Kuluttavasta "kaikki peliin"-strategiastanne huolimatta "pojat" jaksavat yhä treenata entistäkin kovemmin, ja tämä näkyy toivottavasti peliesityksissä pitkälle kevääseen!`
     ];
   },
 
@@ -51,7 +51,7 @@ const event: MHMEvent<AllgoSuccessData> = {
     const manager = data.manager;
     const team = yield* select(managersTeamId(manager));
     yield* call(incrementReadiness, team, 6);
-  },
+  }
 };
 
 export default event;

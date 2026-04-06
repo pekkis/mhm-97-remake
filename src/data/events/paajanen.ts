@@ -42,7 +42,7 @@ const event: MHMEvent<PaajanenData> = {
       eventId,
       manager,
       duration,
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -51,7 +51,7 @@ const event: MHMEvent<PaajanenData> = {
     return [
       `Ottelun tuomari __Hekka Paajanen__ oli todella surkea. Kolmannessa erässä, saatuanne jäähyn syyttä, kohotat syyttävän keskisormesi miestä kohti ja lausut pari valittua sanaa hänen taidoistaan!
 
-Kurinpitovaliokunta lätkäisee sinulle ${data.duration} ottelun toimitsijakiellon!`,
+Kurinpitovaliokunta lätkäisee sinulle ${data.duration} ottelun toimitsijakiellon!`
     ];
   },
 
@@ -65,9 +65,9 @@ Kurinpitovaliokunta lätkäisee sinulle ${data.duration} ottelun toimitsijakiell
       team.get("id"),
       ["strength"],
       -Math.round(0.14 * team.get("strength")),
-      duration,
+      duration
     );
-  },
+  }
 };
 
 export default event;

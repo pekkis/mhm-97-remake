@@ -4,7 +4,7 @@ import {
   managersDifficulty,
   randomManager,
   managerCompetesIn,
-  randomTeamFrom,
+  randomTeamFrom
 } from "../selectors";
 import { addEvent } from "../../sagas/event";
 import { incurPenalty } from "../../sagas/team";
@@ -53,7 +53,7 @@ const event: MHMEvent<EnemyProtestData> = {
       penalty,
       reward,
       team: team.get("id"),
-      resolved: true,
+      resolved: true
     });
   },
 
@@ -61,7 +61,7 @@ const event: MHMEvent<EnemyProtestData> = {
     return [
       `Manageri __${data.otherManagerName}__ ja joukkueensa __${data.otherTeamName}__ tekevät protestin joukkuettasi vastaan.
 
-Protesti menee läpi, ja teiltä vähennetään ${Math.abs(data.penalty)} pistettä. ${data.otherTeamName} saa ${Math.abs(data.reward)} lisäpistettä.`,
+Protesti menee läpi, ja teiltä vähennetään ${Math.abs(data.penalty)} pistettä. ${data.otherTeamName} saa ${Math.abs(data.reward)} lisäpistettä.`
     ];
   },
 
@@ -85,9 +85,9 @@ Protesti menee läpi, ja teiltä vähennetään ${Math.abs(data.penalty)} pistet
 
     yield* all([
       call(incurPenalty, competition.get("id"), 0, groupId, team, penalty),
-      call(incurPenalty, competition.get("id"), 0, groupId, otherTeam, reward),
+      call(incurPenalty, competition.get("id"), 0, groupId, otherTeam, reward)
     ]);
-  },
+  }
 };
 
 /*

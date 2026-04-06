@@ -21,12 +21,12 @@ type PseliKind = "good" | "bad";
 const pselit: Record<PseliKind, { text: string; moraleChange: number }> = {
   good: {
     text: `Pseli menee todella pserseelleen, mutta lastensairaala saa joka tapauksessa rahaa. Moraali nousee hyväntekeväisyystempauksen johdosta.`,
-    moraleChange: 4,
+    moraleChange: 4
   },
   bad: {
     text: `Pseli menee todella pserseelleen, ja kun Pertti vielä pimittää kaikki rahat ja lehdistökin repostelee jutulla, moraali laskee.`,
-    moraleChange: -4,
-  },
+    moraleChange: -4
+  }
 };
 
 type PertinPselitData = {
@@ -51,7 +51,7 @@ const event: MHMEvent<PertinPselitData> = {
       eventId,
       manager,
       pseli,
-      resolved: true,
+      resolved: true
     });
   },
 
@@ -67,7 +67,7 @@ const event: MHMEvent<PertinPselitData> = {
     const team = yield* select(managersTeamId(data.manager));
 
     yield* call(incrementMorale, team, pselit[data.pseli].moraleChange);
-  },
+  }
 };
 
 export default event;

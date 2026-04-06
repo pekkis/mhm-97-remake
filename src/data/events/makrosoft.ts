@@ -52,7 +52,7 @@ const event: MHMEvent<MakrosoftData> = {
       team: team.get("id"),
       teamName: team.get("name"),
       strengthLoss: 20,
-      resolved: true,
+      resolved: true
     });
   },
 
@@ -60,7 +60,7 @@ const event: MHMEvent<MakrosoftData> = {
     return [
       `${data.teamName}:n sponsori __Makrosoft__ on mennyt konkurssiin. Velkojat ovat joukkueen kimpussa, ja syntipukiksi leimataan manageri ${data.oldManager}. Hän saa potkut, ja tilalle palkataan ${data.newManager}.
 
-Palkanmaksu viivästyy, ja muutama joukkueen pelaaja siirtyy ulkomaille.`,
+Palkanmaksu viivästyy, ja muutama joukkueen pelaaja siirtyy ulkomaille.`
     ];
   },
 
@@ -68,7 +68,7 @@ Palkanmaksu viivästyy, ja muutama joukkueen pelaaja siirtyy ulkomaille.`,
     const team = data.team;
     const strengthLoss = data.strengthLoss;
     yield* call(decrementStrength, team, strengthLoss);
-  },
+  }
 };
 
 export default event;

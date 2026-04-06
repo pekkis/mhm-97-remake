@@ -33,14 +33,14 @@ const event: MHMEvent<OtsohalliData> = {
       eventId,
       manager,
       amount: 800000,
-      resolved: false,
+      resolved: false
     });
   },
 
   options: () =>
     ({
       agree: "Kyllä. Olutraha kelpaa aina!",
-      disagree: "Ei. Onpa kerrassaan moraaliton ehdotus!",
+      disagree: "Ei. Onpa kerrassaan moraaliton ehdotus!"
     }) as any,
 
   resolve: function* (data, value) {
@@ -54,7 +54,7 @@ const event: MHMEvent<OtsohalliData> = {
 
   render: (data) => {
     const lines = [
-      `Suuri olutpanimo on halukas sponsoroimaan joukkuettasi! Se maksaa ${a(data.amount)} pekkaa, jos hallin nimi muutetaan __Otso-Halliksi__. Otatko tarjouksen vastaan?"`,
+      `Suuri olutpanimo on halukas sponsoroimaan joukkuettasi! Se maksaa ${a(data.amount)} pekkaa, jos hallin nimi muutetaan __Otso-Halliksi__. Otatko tarjouksen vastaan?"`
     ];
 
     if (!data.resolved) return lines;
@@ -63,7 +63,7 @@ const event: MHMEvent<OtsohalliData> = {
       lines.push(`Sponsoritarroja liimaillaan hallilla jo tätä lukiessasi.`);
     } else {
       lines.push(
-        `Panimon edustaja on selvästi kummissaan, mutta ei voi kuin hyväksyä päätöksesi.`,
+        `Panimon edustaja on selvästi kummissaan, mutta ei voi kuin hyväksyä päätöksesi.`
       );
     }
 
@@ -76,7 +76,7 @@ const event: MHMEvent<OtsohalliData> = {
       yield* call(incrementBalance, manager, data.amount);
       yield* call(renameArena, manager, "Otso-Halli");
     }
-  },
+  }
 };
 
 export default event;

@@ -42,7 +42,7 @@ const event: MHMEvent<OneckyData> = {
       team: team.get("id"),
       teamName: team.get("name"),
       otherManager: random.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -51,14 +51,14 @@ const event: MHMEvent<OneckyData> = {
     return [
       `__${data.teamName}__ pääsee otsikoihin, kun joukkueessa pelaava __Jatakar Onecky__, liigan suurin sika, yrittää potkaista vastustajaansa luistimella naamaan.
 
-Tuomari seisoo vieressä, mutta Oneckyn vaikutusvaltainen tukija, manageri ${data.otherManager}, hoitaa asian siten, että Onecky selviää ilman seuraamuksia."`,
+Tuomari seisoo vieressä, mutta Oneckyn vaikutusvaltainen tukija, manageri ${data.otherManager}, hoitaa asian siten, että Onecky selviää ilman seuraamuksia."`
     ];
   },
 
   process: function* (data) {
     const team = data.team;
     yield* call(addEffect, team, ["morale"], -5, 3);
-  },
+  }
 };
 
 export default event;

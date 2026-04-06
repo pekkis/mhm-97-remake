@@ -37,19 +37,19 @@ const event: MHMEvent<AttitudeUSAData> = {
       eventId,
       manager,
       attitude: !attitude,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     const lines = [
-      `__Yhdysvalloissa__ asenne MM-kisoja kohtaan on muuttunut radikaalisti.`,
+      `__Yhdysvalloissa__ asenne MM-kisoja kohtaan on muuttunut radikaalisti.`
     ];
 
     if (data.attitude === true) {
       lines.push(
-        `Tästä edespäin kaikki parhaat jenkinpurijat tulevat kisoihin!`,
+        `Tästä edespäin kaikki parhaat jenkinpurijat tulevat kisoihin!`
       );
     } else {
       lines.push(`Tästä lähtien supertähdet pysyvät kotona Jenkeissä.`);
@@ -63,7 +63,7 @@ const event: MHMEvent<AttitudeUSAData> = {
     const amount = attitude ? difference : -difference;
     yield* all([
       call(setFlag, "usa", attitude),
-      put(alterStrength("US", amount)),
+      put(alterStrength("US", amount))
     ]);
   }
 };

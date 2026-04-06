@@ -20,7 +20,7 @@ const event: MHMEvent<CleandrugData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: true,
+      resolved: true
     });
   },
 
@@ -28,7 +28,7 @@ const event: MHMEvent<CleandrugData> = {
     return [`Kaikki pelaajasi olivat puhtaita huumausainetesteissä.`];
   },
 
-  process: function* () {},
+  process: function* () {}
 };
 
 export default event;

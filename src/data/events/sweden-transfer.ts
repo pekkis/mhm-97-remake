@@ -2,7 +2,7 @@ import { select, call } from "typed-redux-saga";
 import {
   managersTeamId,
   teamCompetesIn,
-  managerHasService,
+  managerHasService
 } from "../selectors";
 import { amount as a } from "../../services/format";
 import { incrementMorale } from "../../sagas/team";
@@ -36,9 +36,7 @@ const event: MHMEvent<SwedenTransferData> = {
     const moraleBoost = playsInPHL ? -2 : 2;
     const strengthLoss = playsInPHL ? 12 : 7;
 
-    const hasInsurance = yield* select(
-      managerHasService(manager, "insurance"),
-    );
+    const hasInsurance = yield* select(managerHasService(manager, "insurance"));
 
     yield* call(addEvent, {
       eventId,
@@ -48,15 +46,15 @@ const event: MHMEvent<SwedenTransferData> = {
       hasInsurance,
       moraleBoost,
       strengthLoss,
-      resolved: true,
+      resolved: true
     });
   },
 
   render: (data) => {
     const t = [
       `Joukkueen nuori, lupaava taituri siirtyy Ruotsiin kesken kauden. Nyyh! Ruotsalaiset korvaavat menetyksen ${a(
-        data.amount,
-      )} pekalla!`,
+        data.amount
+      )} pekalla!`
     ];
 
     if (data.hasInsurance) {
@@ -82,7 +80,7 @@ const event: MHMEvent<SwedenTransferData> = {
       yield* call(incrementBalance, manager, amount / 2);
       yield* call(incrementInsuranceExtra, manager, 100);
     }
-  },
+  }
 };
 
 /*

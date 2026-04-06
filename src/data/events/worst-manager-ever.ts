@@ -34,14 +34,14 @@ const event: MHMEvent<WorstManagerEverData> = {
       eventId,
       manager,
       otherManager: random.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `__Ilta-Pekkis__ rankkaa sinut _kaikkien aikojen huonoimmaksi_ manageriksi! Listan kärjestä löytyy ${data.otherManager}.`,
+      `__Ilta-Pekkis__ rankkaa sinut _kaikkien aikojen huonoimmaksi_ manageriksi! Listan kärjestä löytyy ${data.otherManager}.`
     ];
   },
 
@@ -49,7 +49,7 @@ const event: MHMEvent<WorstManagerEverData> = {
     const manager = data.manager;
     const team = yield* select(managersTeamId(manager));
     yield* call(decrementMorale, team, 1);
-  },
+  }
 };
 
 export default event;

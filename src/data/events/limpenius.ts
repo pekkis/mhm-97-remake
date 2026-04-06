@@ -42,14 +42,14 @@ const event: MHMEvent<LimpeniusData> = {
       resolved: true,
       amount: 60000,
       moraleChange: 4,
-      success: r.bool(0.6),
+      success: r.bool(0.6)
     });
     return;
   },
 
   render: (data) => {
     const t = [
-      `Ilta-Maso kirjoittaa häväistysjutun sinusta ja __Landa Limpeniuksesta__. Haastat Ilta-Mason oikeuteen!`,
+      `Ilta-Maso kirjoittaa häväistysjutun sinusta ja __Landa Limpeniuksesta__. Haastat Ilta-Mason oikeuteen!`
     ];
 
     if (data.success) {
@@ -79,7 +79,7 @@ const event: MHMEvent<LimpeniusData> = {
       yield* call(decrementBalance, manager, amount);
       yield* call(decrementMorale, team, moraleChange);
     }
-  },
+  }
 };
 
 export default event;

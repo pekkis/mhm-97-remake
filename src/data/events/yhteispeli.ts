@@ -25,7 +25,12 @@ const event: MHMEvent<YhteispeliData> = {
     const { manager } = data;
 
     const team = yield* select(
-      randomTeamFrom(["division"], false, [], (t: any) => t.get("strength") > 120),
+      randomTeamFrom(
+        ["division"],
+        false,
+        [],
+        (t: any) => t.get("strength") > 120
+      )
     );
     if (!team) {
       return;
@@ -41,7 +46,7 @@ const event: MHMEvent<YhteispeliData> = {
       team: team.get("id"),
       teamName: team.get("name"),
       managerName: random.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -50,7 +55,7 @@ const event: MHMEvent<YhteispeliData> = {
     return [
       `Divisioonasta:
 
-Manageri ${data.managerName}:lla on käsissään huippujoukkue __${data.teamName}__. Taitavista yksilöistä koostuvalla joukkueella on kuitenkin tällä hetkellä suuria ongelmia yhteispelinsä kanssa.`,
+Manageri ${data.managerName}:lla on käsissään huippujoukkue __${data.teamName}__. Taitavista yksilöistä koostuvalla joukkueella on kuitenkin tällä hetkellä suuria ongelmia yhteispelinsä kanssa.`
     ];
   },
 
@@ -58,7 +63,7 @@ Manageri ${data.managerName}:lla on käsissään huippujoukkue __${data.teamName
     const team = data.team;
     const duration = data.duration;
     yield* call(addEffect, team, ["strength"], -30, duration);
-  },
+  }
 };
 
 /*

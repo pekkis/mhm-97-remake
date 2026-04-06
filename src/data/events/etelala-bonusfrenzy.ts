@@ -33,30 +33,24 @@ const event: MHMEvent<EtelalaBonusFrenzyData> = {
 
     const amount = -(30 * (arena.get("level") + 1));
 
-    const hasInsurance = yield* select(
-      managerHasService(manager, "insurance"),
-    );
+    const hasInsurance = yield* select(managerHasService(manager, "insurance"));
 
     yield* call(addEvent, {
       eventId,
       manager,
       amount,
       hasInsurance,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
-    const t = [
-      `Etelälä julkistaa suuren kansainvälisen __bonustempauksen__!`,
-    ];
+    const t = [`Etelälä julkistaa suuren kansainvälisen __bonustempauksen__!`];
 
     if (data.hasInsurance) {
       t.push(
-        `Vakuutussummasi laskee ${a(
-          Math.abs(data.amount),
-        )} pekan verran!`,
+        `Vakuutussummasi laskee ${a(Math.abs(data.amount))} pekan verran!`
       );
     }
 
@@ -67,7 +61,7 @@ const event: MHMEvent<EtelalaBonusFrenzyData> = {
     const manager = data.manager;
     const amount = data.amount;
     yield* call(incrementInsuranceExtra, manager, amount);
-  },
+  }
 };
 
 export default event;

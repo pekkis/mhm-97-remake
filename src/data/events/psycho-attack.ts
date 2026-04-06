@@ -54,7 +54,7 @@ const event: MHMEvent<PsychoAttackData> = {
       manager,
       otherManagerId: random.get("id"),
       otherManager: random.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -65,14 +65,14 @@ const event: MHMEvent<PsychoAttackData> = {
 
 Hän kertoo _vihanneensa_ sinua siitä saakka kun ensimmäisen kerran näki sinut vastustajan aitiossa, ja tulleensa tappamaan sinut.
 
-Juuri, kun hän tähtää kohti päätäsi, kaahaa paikalle miliisi, ja seonnut manageriraukka säntää kujalle. Myöhemmin hänet saadaan kui tenkin kiinni ja suljetaan Tiukukosken mielisairaalaan.`,
+Juuri, kun hän tähtää kohti päätäsi, kaahaa paikalle miliisi, ja seonnut manageriraukka säntää kujalle. Myöhemmin hänet saadaan kui tenkin kiinni ja suljetaan Tiukukosken mielisairaalaan.`
     ];
   },
 
   process: function* (data) {
     const otherManagerId = data.otherManagerId;
     yield* call(setFlag, "psycho", otherManagerId);
-  },
+  }
 };
 
 export default event;

@@ -7,7 +7,7 @@ import {
   setInsuranceExtra,
   setBalance,
   setArenaLevel,
-  setService,
+  setService
 } from "../../sagas/manager";
 import { setMorale, setReadiness, setStrategy } from "../../sagas/team";
 import { cinteger } from "../../services/random";
@@ -51,14 +51,14 @@ const event: MHMEvent<JobofferDivisionData> = {
       oldTeam,
       offerer: offerer.get("id"),
       offererName: offerer.get("name"),
-      resolved: false,
+      resolved: false
     });
   },
 
   options: () => {
     return {
       agree: `Kyllä otan!`,
-      disagree: "En ota. Minun on hyvä täällä.",
+      disagree: "En ota. Minun on hyvä täällä."
     } as any;
   },
 
@@ -83,7 +83,7 @@ const event: MHMEvent<JobofferDivisionData> = {
 
   render: (data) => {
     const lines = [
-      `__${data.offererName}__ tarjoaa sinulle työpaikkaa!! Joukkue yrittää tosissaan nousua liigaan, ja sillä onkin uusi, todella mainio sponsorisopimus! Sponsori kuitenkin vaatii nimenomaisesti sinut manageriksi. Otatko tarjouksen vastaan?`,
+      `__${data.offererName}__ tarjoaa sinulle työpaikkaa!! Joukkue yrittää tosissaan nousua liigaan, ja sillä onkin uusi, todella mainio sponsorisopimus! Sponsori kuitenkin vaatii nimenomaisesti sinut manageriksi. Otatko tarjouksen vastaan?`
     ];
 
     if (!data.resolved) {
@@ -92,11 +92,11 @@ const event: MHMEvent<JobofferDivisionData> = {
 
     if (data.agree) {
       lines.push(
-        `Katselet ympärillesi viimeistä kertaa. Tämä paikka on _niiiiin_ nähty.`,
+        `Katselet ympärillesi viimeistä kertaa. Tämä paikka on _niiiiin_ nähty.`
       );
     } else {
       lines.push(
-        `OK, ei sitten. Tehtävään palkataan __${data.otherManager}__.`,
+        `OK, ei sitten. Tehtävään palkataan __${data.otherManager}__.`
       );
     }
 
@@ -113,7 +113,7 @@ const event: MHMEvent<JobofferDivisionData> = {
         call(hireManager, manager, offerer),
         call(setBalance, manager, 2000000),
         ...["coach", "cheer", "insurance", "microphone"].map((s) =>
-          call(setService, manager, s, false),
+          call(setService, manager, s, false)
         ),
         call(setArenaLevel, manager, 2 + cinteger(0, 2)),
         call(setInsuranceExtra, manager, 0),
@@ -121,10 +121,10 @@ const event: MHMEvent<JobofferDivisionData> = {
         call(setMorale, oldTeam, 0),
         call(setMorale, offerer, 100),
         call(setStrategy, oldTeam, 2),
-        call(setReadiness, oldTeam, 0),
+        call(setReadiness, oldTeam, 0)
       ]);
     }
-  },
+  }
 };
 
 export default event;

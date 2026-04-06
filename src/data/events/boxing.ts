@@ -23,27 +23,27 @@ type BoxingData = {
 
 const results = [
   {
-    text: (_data: BoxingData) => `Ottelu päättyy hienosti: tyrmäät vastustajasi!`,
-    moraleGain: 10,
+    text: (_data: BoxingData) =>
+      `Ottelu päättyy hienosti: tyrmäät vastustajasi!`,
+    moraleGain: 10
   },
   {
     text: (_data: BoxingData) => `Ottelu päättyy hyväksesi tuomariäänin!`,
-    moraleGain: 6,
+    moraleGain: 6
   },
   {
     text: (_data: BoxingData) => `Ottelu päättyy tasapeliin!`,
-    moraleGain: 4,
+    moraleGain: 4
   },
   {
-    text: (_data: BoxingData) =>
-      `Ottelu päättyy tappioosi tuomariäänillä!`,
-    moraleGain: 3,
+    text: (_data: BoxingData) => `Ottelu päättyy tappioosi tuomariäänillä!`,
+    moraleGain: 3
   },
   {
     text: (data: BoxingData) =>
       `Ottelu päättyy, kun vastustajasi tyrmää sinut! Lääkärilasku kohoaa ${a(data.amount!)} pekkaan.`,
-    moraleGain: 1,
-  },
+    moraleGain: 1
+  }
 ];
 
 const event: MHMEvent<BoxingData> = {
@@ -58,14 +58,14 @@ const event: MHMEvent<BoxingData> = {
       eventId,
       manager,
       otherManager: random.get("name"),
-      resolved: false,
+      resolved: false
     });
   },
 
   options: () => {
     return {
       agree: `Otan haasteen vastaan. Nyrkkini on kova ja voittoni varma!`,
-      disagree: `En ota haastetta vastaan. Aivoni ovat kovat, nyrkkini pehmeät.`,
+      disagree: `En ota haastetta vastaan. Aivoni ovat kovat, nyrkkini pehmeät.`
     } as any;
   },
 
@@ -82,7 +82,7 @@ const event: MHMEvent<BoxingData> = {
 
   render: (data) => {
     const lines = [
-      `Manageri __${data.otherManager}__ haastaa sinut nyrkkeilyotteluun! Otatko haasteen vastaan?`,
+      `Manageri __${data.otherManager}__ haastaa sinut nyrkkeilyotteluun! Otatko haasteen vastaan?`
     ];
 
     if (!data.resolved) return lines;
@@ -92,7 +92,7 @@ const event: MHMEvent<BoxingData> = {
       lines.push(text);
     } else {
       lines.push(
-        `Selvä. __${data.otherManager}__ haukkuu sinut julkisesti pelkuriksi ja _nörtiksi_!`,
+        `Selvä. __${data.otherManager}__ haukkuu sinut julkisesti pelkuriksi ja _nörtiksi_!`
       );
     }
 
@@ -114,7 +114,7 @@ const event: MHMEvent<BoxingData> = {
     } else {
       yield* call(decrementMorale, team, 7);
     }
-  },
+  }
 };
 
 export default event;

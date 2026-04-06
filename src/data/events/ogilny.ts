@@ -32,7 +32,7 @@ const event: MHMEvent<OgilnyData> = {
       duration,
       team: team.get("id"),
       teamName: team.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -41,7 +41,7 @@ const event: MHMEvent<OgilnyData> = {
     return [
       `Liigasta:
 
-Auts! ${data.teamName}:n liukas venäläishyökkääjä Malexander Ogilny loukkaa nivusensa kun viuhuva lämäri kolahtaa sopivasti oikeaan paikkaan. Mies on poissa ${data.duration} viikkoa.`,
+Auts! ${data.teamName}:n liukas venäläishyökkääjä Malexander Ogilny loukkaa nivusensa kun viuhuva lämäri kolahtaa sopivasti oikeaan paikkaan. Mies on poissa ${data.duration} viikkoa.`
     ];
   },
 
@@ -50,7 +50,7 @@ Auts! ${data.teamName}:n liukas venäläishyökkääjä Malexander Ogilny loukka
     const duration = data.duration;
 
     yield* call(addEffect, team, ["strength"], -15, duration);
-  },
+  }
 };
 
 /*

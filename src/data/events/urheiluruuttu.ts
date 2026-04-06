@@ -38,14 +38,14 @@ const event: MHMEvent<UrheiluruuttuData> = {
       manager,
       showerCam,
       moraleGain: showerCam ? -4 : 4,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     const t = [
-      `Urheilu-Ruuttu tekee joukkueestanne suuren jutun! Moraali nousee kohisten...`,
+      `Urheilu-Ruuttu tekee joukkueestanne suuren jutun! Moraali nousee kohisten...`
     ];
 
     if (data.showerCam) {
@@ -63,7 +63,7 @@ const event: MHMEvent<UrheiluruuttuData> = {
     const team = yield* select(managersTeamId(manager));
 
     yield* call(incrementMorale, team, moraleGain);
-  },
+  }
 };
 
 export default event;

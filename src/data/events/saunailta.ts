@@ -45,7 +45,7 @@ const event: MHMEvent<SaunailtaData> = {
       manager,
       effect,
       duration,
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -54,7 +54,7 @@ const event: MHMEvent<SaunailtaData> = {
     return [
       `Rento saunailta muuttuu katastrofiksi, kun ajaudutte joukkueenjohtajan kanssa käsirysyyn pelillisten erimielisyyksien vuoksi.
 
-Mies saa luonnollisesti potkut, ja uutta joukkueenohtajaa etsitään. Moraali laskee, ja joukkueen peli menee vähäksi aikaa sekaisin.`,
+Mies saa luonnollisesti potkut, ja uutta joukkueenohtajaa etsitään. Moraali laskee, ja joukkueen peli menee vähäksi aikaa sekaisin.`
     ];
   },
 
@@ -66,7 +66,7 @@ Mies saa luonnollisesti potkut, ja uutta joukkueenohtajaa etsitään. Moraali la
 
     yield* call(decrementMorale, team.get("id"), 5);
     yield* call(addEffect, team.get("id"), ["strength"], effect, duration);
-  },
+  }
 };
 
 export default event;

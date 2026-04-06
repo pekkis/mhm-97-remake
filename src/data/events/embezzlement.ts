@@ -2,14 +2,14 @@ import { call, select } from "typed-redux-saga";
 import {
   managersDifficulty,
   managerObject,
-  managerHasService,
+  managerHasService
 } from "../selectors";
 import { amount as a } from "../../services/format";
 import { addEvent } from "../../sagas/event";
 import {
   incrementBalance,
   decrementBalance,
-  incrementInsuranceExtra,
+  incrementInsuranceExtra
 } from "../../sagas/manager";
 import type { MHMEvent } from "../../types/base";
 
@@ -52,12 +52,10 @@ const event: MHMEvent<EmbezzlementData> = {
 
     const amountEmbezzled = embezzledAmount(
       managerObj.get("balance"),
-      difficulty,
+      difficulty
     );
 
-    const hasInsurance = yield* select(
-      managerHasService(manager, "insurance"),
-    );
+    const hasInsurance = yield* select(managerHasService(manager, "insurance"));
     const amountReimbursed = hasInsurance
       ? Math.round(0.8 * amountEmbezzled)
       : 0;
@@ -67,21 +65,21 @@ const event: MHMEvent<EmbezzlementData> = {
       manager,
       amountEmbezzled,
       amountReimbursed,
-      resolved: true,
+      resolved: true
     });
   },
 
   render: (data) => {
     const t = [
       `Yksi johtokunnan jäsen katoaa, vieden mukanaan aimo siivun joukkueen kassasta. Tililtänne uupuu yhteensä __${a(
-        data.amountEmbezzled,
-      )}__ pekkaa.`,
+        data.amountEmbezzled
+      )}__ pekkaa.`
     ];
     if (data.amountReimbursed) {
       t.push(
         `Etelälä maksaa teille korvauksena __${a(
-          data.amountReimbursed,
-        )}__ pekkaa.`,
+          data.amountReimbursed
+        )}__ pekkaa.`
       );
     }
     return t;
@@ -97,10 +95,10 @@ const event: MHMEvent<EmbezzlementData> = {
       yield* call(
         incrementInsuranceExtra,
         manager,
-        Math.round(data.amountReimbursed / 60),
+        Math.round(data.amountReimbursed / 60)
       );
     }
-  },
+  }
 };
 
 /*

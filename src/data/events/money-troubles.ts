@@ -28,7 +28,12 @@ const event: MHMEvent<MoneyTroublesData> = {
 
     const phlTeam = yield* select(randomRankedTeam("phl", 0, [9, 10, 11]));
     const divTeam = yield* select(
-      randomTeamFrom(["division"], false, [], (t: any) => t.get("strength") > 95),
+      randomTeamFrom(
+        ["division"],
+        false,
+        [],
+        (t: any) => t.get("strength") > 95
+      )
     );
 
     if (!phlTeam || !divTeam) {
@@ -46,7 +51,7 @@ const event: MHMEvent<MoneyTroublesData> = {
       divTeam: divTeam.get("id"),
       divTeamName: divTeam.get("name"),
       strengthTransfer: cinteger(0, 15) + 12,
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -55,7 +60,7 @@ const event: MHMEvent<MoneyTroublesData> = {
     return [
       `Divisioonasta:
 
-Manageri ${data.otherManager} ja joukkueensa __${data.divTeamName}__ pistävät tuulemaan! He ostavat rahavaikeuksiin joutuneelta liigajoukkueelta (__${data.phlTeamName})__ heidän parhaat pelaajansa.`,
+Manageri ${data.otherManager} ja joukkueensa __${data.divTeamName}__ pistävät tuulemaan! He ostavat rahavaikeuksiin joutuneelta liigajoukkueelta (__${data.phlTeamName})__ heidän parhaat pelaajansa.`
     ];
   },
 
@@ -66,7 +71,7 @@ Manageri ${data.otherManager} ja joukkueensa __${data.divTeamName}__ pistävät 
 
     yield* call(decrementStrength, phlTeam, strengthTransfer);
     yield* call(incrementStrength, divTeam, strengthTransfer);
-  },
+  }
 };
 
 export default event;

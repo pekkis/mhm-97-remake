@@ -32,16 +32,14 @@ const event: MHMEvent<EtelalaDescendsData> = {
 
     const amount = -(cinteger(0, 100) + 50);
 
-    const hasInsurance = yield* select(
-      managerHasService(manager, "insurance"),
-    );
+    const hasInsurance = yield* select(managerHasService(manager, "insurance"));
 
     yield* call(addEvent, {
       eventId,
       manager,
       amount,
       hasInsurance,
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -59,7 +57,7 @@ const event: MHMEvent<EtelalaDescendsData> = {
   process: function* (data) {
     const amount = data.amount;
     yield* call(incrementServiceBasePrice, "insurance", amount);
-  },
+  }
 };
 
 export default event;

@@ -5,7 +5,7 @@ import {
   decrementMorale,
   decrementStrength,
   incrementMorale,
-  addEffect,
+  addEffect
 } from "../../sagas/team";
 import { managersTeamId, managerCompetesIn } from "../selectors";
 import { incrementBalance } from "../../sagas/manager";
@@ -34,7 +34,7 @@ const event: MHMEvent<JarasvuoData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: false,
+      resolved: false
     });
   },
 
@@ -42,7 +42,7 @@ const event: MHMEvent<JarasvuoData> = {
     ({
       fine: "Annan sakon.",
       ban: "Annan kolme ottelua kurinpidollista pelikieltoa.",
-      nothing: "En tee mitään. Pojat ovat poikia!",
+      nothing: "En tee mitään. Pojat ovat poikia!"
     }) as any,
 
   resolve: function* (data, value) {
@@ -58,14 +58,14 @@ const event: MHMEvent<JarasvuoData> = {
     const lines = [
       `Huippupelaajanne on Sari Jarasvuon ohjelmassa haastattelussa. Hän ryöpyttää jostain syystä useita kanssapelaajiaan, valmentajaa ja koko organisaatiota. Kaikki saavat osansa.
 
-Miten rankaiset pelaajaa?`,
+Miten rankaiset pelaajaa?`
     ];
 
     if (!data.resolved) return lines;
 
     if (data.solution === "nothing") {
       lines.push(
-        `Seuraus on KAPINA!!! Kaikki kaatuu päälle, johtokunta kokoontuu, pelaajat lopettavat protestina harjoittelun, fanit buuavat sinulle. Muutama pelaaja jopa lopettaa uransakin.`,
+        `Seuraus on KAPINA!!! Kaikki kaatuu päälle, johtokunta kokoontuu, pelaajat lopettavat protestina harjoittelun, fanit buuavat sinulle. Muutama pelaaja jopa lopettaa uransakin.`
       );
     }
 
@@ -99,7 +99,7 @@ Miten rankaiset pelaajaa?`,
       yield* call(addEffect, team, ["strength"], -15, 3);
       yield* call(incrementMorale, team, 5);
     }
-  },
+  }
 };
 
 export default event;

@@ -37,14 +37,14 @@ const event: MHMEvent<BankMistakeData> = {
       manager,
       amount: 500000,
       bribe: difficulty === 4 && 200000,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     const t = [
-      `Pankkinne on tehnyt virheen. Tilillänne on __${a(data.amount)}__ pekkaa liikaa. Kukaan ei huomaa mitään...`,
+      `Pankkinne on tehnyt virheen. Tilillänne on __${a(data.amount)}__ pekkaa liikaa. Kukaan ei huomaa mitään...`
     ];
 
     if (data.bribe) {
@@ -65,7 +65,7 @@ const event: MHMEvent<BankMistakeData> = {
     if (bribe) {
       yield* call(decrementBalance, manager, bribe);
     }
-  },
+  }
 };
 
 export default event;

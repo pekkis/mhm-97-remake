@@ -35,7 +35,7 @@ const event: MHMEvent<BazookaStrikeData> = {
       victim,
       victimTeamName: victimTeam.get("name"),
       victimManager: victimManager.get("name"),
-      resolved: true,
+      resolved: true
     });
   },
 
@@ -43,7 +43,7 @@ const event: MHMEvent<BazookaStrikeData> = {
     return [
       `Pum! Matkalla vieraspeliin __${data.victimTeamName}__ kohtaa yllättäviä hankaluuksia. Silminnäkijäkuvauksen mukaan metsänrajasta sinkoutuu liikkeelle toisen ison kötinän aikainen panssarinyrkki, ja yks kaks tilausajon värjää punaiseksi liekkien kajo.
 
-Iskun tekijäksi ilmoittautuu PVA. Miliisi ei kommentoi. Joukkue joutuu joka tapauksessa turvautumaan junioreihinsa, ja manageri __${data.victimManager}__ vannoo löytävänsä syylliset!`,
+Iskun tekijäksi ilmoittautuu PVA. Miliisi ei kommentoi. Joukkue joutuu joka tapauksessa turvautumaan junioreihinsa, ja manageri __${data.victimManager}__ vannoo löytävänsä syylliset!`
     ];
   },
 
@@ -54,7 +54,7 @@ Iskun tekijäksi ilmoittautuu PVA. Miliisi ei kommentoi. Joukkue joutuu joka tap
 
     const skillLost = Math.round(0.75 * team.get("strength"));
     yield* call(decrementStrength, data.victim, skillLost);
-  },
+  }
 };
 
 export default event;

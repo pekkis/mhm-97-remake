@@ -33,7 +33,7 @@ const event: MHMEvent<ProtestData> = {
       manager,
       victim,
       resolved: false,
-      autoResolve: true,
+      autoResolve: true
     });
   },
 
@@ -43,7 +43,7 @@ const event: MHMEvent<ProtestData> = {
     const perpetratorTeam = yield* select(managersTeam(data.manager));
 
     const victimTeam = yield* select((state: any) =>
-      state.game.getIn(["teams", data.victim]),
+      state.game.getIn(["teams", data.victim])
     );
 
     const resolved = produce(data, (draft) => {
@@ -59,23 +59,23 @@ const event: MHMEvent<ProtestData> = {
       type: "EVENT_RESOLVE",
       payload: {
         id: resolved.id,
-        event: resolved,
-      },
+        event: resolved
+      }
     });
   },
 
   render: (data) => {
     const lines = [
-      `Jääkiekkoliiton hallitus on juhlallisesti ynnä virallisesti kokoontunut ja käsitellyt protestisi mitä reiluimmassa ja tasapuolisimmassa hengessä. Päätös on lopullinen, eikä siitä voi valittaa.`,
+      `Jääkiekkoliiton hallitus on juhlallisesti ynnä virallisesti kokoontunut ja käsitellyt protestisi mitä reiluimmassa ja tasapuolisimmassa hengessä. Päätös on lopullinen, eikä siitä voi valittaa.`
     ];
 
     if (data.success) {
       lines.push(
-        `Argumenttisi todetaan päteviksi. __${data.victimTeamName}__ tuomitaan menettämään ${Math.abs(data.penalty!)} pistettä rangaistuksena väitetystä sääntörikkomuksesta.`,
+        `Argumenttisi todetaan päteviksi. __${data.victimTeamName}__ tuomitaan menettämään ${Math.abs(data.penalty!)} pistettä rangaistuksena väitetystä sääntörikkomuksesta.`
       );
     } else {
       lines.push(
-        `Argumenttisi todetaan hölynpölyksi. __${data.perpetratorTeamName}__ tuomitaan menettämään ${Math.abs(data.penalty!)} pistettä rangaistuksena aiheettomasta syytöksestä.`,
+        `Argumenttisi todetaan hölynpölyksi. __${data.perpetratorTeamName}__ tuomitaan menettämään ${Math.abs(data.penalty!)} pistettä rangaistuksena aiheettomasta syytöksestä.`
       );
     }
 
@@ -89,7 +89,7 @@ const event: MHMEvent<ProtestData> = {
     const penalizedTeam = success ? data.victim : data.perpetrator!;
 
     const competitions = yield* select((state: any) =>
-      state.game.get("competitions"),
+      state.game.get("competitions")
     );
 
     const competition = competitions
@@ -106,9 +106,9 @@ const event: MHMEvent<ProtestData> = {
       0,
       groupId,
       penalizedTeam,
-      penalty,
+      penalty
     );
-  },
+  }
 };
 
 export default event;

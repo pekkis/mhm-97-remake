@@ -6,7 +6,7 @@ import {
   randomManager,
   managerHasService,
   managersDifficulty,
-  managersArena,
+  managersArena
 } from "../selectors";
 import { currency as c, amount as a } from "../../services/format";
 import r from "../../services/random";
@@ -38,7 +38,7 @@ type TaxEvasionData = {
 
 const texts = (data: TaxEvasionData): string[] => {
   const lines = [
-    `Olet saanut tietää, että __${data.teamName}__:n manageri __${data.otherManagerName}__ on kiertänyt veroja. Julkistatko tiedon, vaikka samalla on riski että omat vilppisi tulevat julkisuuteen? Tieto ajaisi todennäköisesti joukkueen konkurssiin.`,
+    `Olet saanut tietää, että __${data.teamName}__:n manageri __${data.otherManagerName}__ on kiertänyt veroja. Julkistatko tiedon, vaikka samalla on riski että omat vilppisi tulevat julkisuuteen? Tieto ajaisi todennäköisesti joukkueen konkurssiin.`
   ];
 
   if (!data.resolved) {
@@ -48,32 +48,32 @@ const texts = (data: TaxEvasionData): string[] => {
   if (!data.agree) {
     return [
       ...lines,
-      `OK. ${data.otherManagerName} saa siis jatkaa rikollista toimintaansa.`,
+      `OK. ${data.otherManagerName} saa siis jatkaa rikollista toimintaansa.`
     ];
   }
 
   if (data.caught) {
     lines.push(
-      `Oi voi! Omat veronkiertosi paljastuvat, ja saat ${a(data.fine!)} pekan sakot!`,
+      `Oi voi! Omat veronkiertosi paljastuvat, ja saat ${a(data.fine!)} pekan sakot!`
     );
     if (data.hasInsurance) {
       lines.push(
-        `Vakuutuspetoksesikin tulevat ilmi, ja Etel„l„ sakottaa sinua ${a(data.fine2!)} pekalla!!!`,
+        `Vakuutuspetoksesikin tulevat ilmi, ja Etel„l„ sakottaa sinua ${a(data.fine2!)} pekalla!!!`
       );
     }
   } else {
     lines.push(
-      `Haa haa. ${data.otherManagerName} joutuu kohtaamaan talousrikosmiliisin ypöyksin!`,
+      `Haa haa. ${data.otherManagerName} joutuu kohtaamaan talousrikosmiliisin ypöyksin!`
     );
   }
 
   lines.push(
-    `${data.teamName} saa kauheat mätkyt, ja huippupelaajat evakuoituvat uppoavasta laivasta!`,
+    `${data.teamName} saa kauheat mätkyt, ja huippupelaajat evakuoituvat uppoavasta laivasta!`
   );
 
   if (data.getPlayer) {
     lines.push(
-      `Yksi heistä haluaa pelipaikan, jonka ystävällisesti annat (vain palkka maksettava)`,
+      `Yksi heistä haluaa pelipaikan, jonka ystävällisesti annat (vain palkka maksettava)`
     );
   }
 
@@ -97,14 +97,14 @@ const event: MHMEvent<TaxEvasionData> = {
       otherManager: otherManager.get("id"),
       otherManagerName: otherManager.get("name"),
       team: team.get("id"),
-      teamName: team.get("name"),
+      teamName: team.get("name")
     });
   },
 
   options: () => {
     return {
       agree: `Paljastan vilpin.`,
-      disagree: `En paljasta vilppiä.`,
+      disagree: `En paljasta vilppiä.`
     } as any;
   },
 
@@ -131,8 +131,8 @@ const event: MHMEvent<TaxEvasionData> = {
       type: "EVENT_RESOLVE",
       payload: {
         id: resolved.id,
-        event: resolved,
-      },
+        event: resolved
+      }
     });
   },
 
@@ -168,10 +168,10 @@ const event: MHMEvent<TaxEvasionData> = {
       yield* call(
         incrementInsuranceExtra,
         manager,
-        200 * (arena.get("level") + 1),
+        200 * (arena.get("level") + 1)
       );
     }
-  },
+  }
 };
 
 export default event;

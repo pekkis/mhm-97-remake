@@ -27,20 +27,20 @@ const event: MHMEvent<ConcertData> = {
       eventId,
       manager,
       resolved: true,
-      amount: 10000 + 20000 * (arena.get("level") + 1),
+      amount: 10000 + 20000 * (arena.get("level") + 1)
     });
     return;
   },
 
   render: (data) => {
     return [
-      `Joukkueesi areenalla pidetään suuri rock-konsertti. Tuotto: ${a(data.amount)} pekkaa.`,
+      `Joukkueesi areenalla pidetään suuri rock-konsertti. Tuotto: ${a(data.amount)} pekkaa.`
     ];
   },
 
   process: function* (data) {
     yield* call(incrementBalance, data.manager, data.amount);
-  },
+  }
 };
 
 export default event;

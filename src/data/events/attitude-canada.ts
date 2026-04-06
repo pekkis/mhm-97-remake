@@ -37,13 +37,13 @@ const event: MHMEvent<AttitudeCanadaData> = {
       eventId,
       manager,
       attitude: !attitude,
-      resolved: true,
+      resolved: true
     });
   },
 
   render: (data) => {
     const lines = [
-      `__Kanadassa__ asenne MM-kisoja kohtaan on muuttunut radikaalisti.`,
+      `__Kanadassa__ asenne MM-kisoja kohtaan on muuttunut radikaalisti.`
     ];
 
     if (data.attitude === true) {
@@ -60,7 +60,7 @@ const event: MHMEvent<AttitudeCanadaData> = {
     const amount = attitude ? difference : -difference;
     yield* all([
       call(setFlag, "canada", attitude),
-      put(alterStrength("CA", amount)),
+      put(alterStrength("CA", amount))
     ]);
   }
 };

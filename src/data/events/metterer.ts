@@ -30,14 +30,14 @@ const event: MHMEvent<MettererData> = {
       manager,
       strength: 30,
       resolved: false,
-      duration: 3,
+      duration: 3
     });
   },
 
   options: () =>
     ({
       agree: "Aina on tilaa yhdelle Karkukselle!",
-      disagree: "Ei. Karkus pysyköön kotona.",
+      disagree: "Ei. Karkus pysyköön kotona."
     }) as any,
 
   resolve: function* (data, value) {
@@ -52,14 +52,14 @@ const event: MHMEvent<MettererData> = {
 
   render: (data) => {
     const lines = [
-      `Karkus Metterer, tunnettu maalivahti, haluaisi tulla joukkueeseesi pelaamaan 3 ottelun ajaksi kun Elitserienissä peliaikaa ei siunaannu. Otatko Karkuksen mukaan?`,
+      `Karkus Metterer, tunnettu maalivahti, haluaisi tulla joukkueeseesi pelaamaan 3 ottelun ajaksi kun Elitserienissä peliaikaa ei siunaannu. Otatko Karkuksen mukaan?`
     ];
 
     if (!data.agree) {
       lines.push(`Ei sitten.`);
     } else {
       lines.push(
-        `Karkus on iloinen ja kiittelee kovasti. Miehen todellinen pelikunto selvinnee lähipäivinä.`,
+        `Karkus on iloinen ja kiittelee kovasti. Miehen todellinen pelikunto selvinnee lähipäivinä.`
       );
     }
 
@@ -81,9 +81,9 @@ const event: MHMEvent<MettererData> = {
       team.get("id"),
       ["strength"],
       effectSize,
-      duration,
+      duration
     );
-  },
+  }
 };
 
 export default event;

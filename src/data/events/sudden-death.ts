@@ -17,13 +17,11 @@ type SuddenDeathData = {
 
 const texts = (data: SuddenDeathData): string[] => {
   const lines = [
-    `Kaikki pelaajasi ovat saaneet surmansa lento-onnettomuudessa! Johtokunta kehottaa sinua etsimään uusia kiekkoilijoita`,
+    `Kaikki pelaajasi ovat saaneet surmansa lento-onnettomuudessa! Johtokunta kehottaa sinua etsimään uusia kiekkoilijoita`
   ];
 
   if (data.hasInsurance) {
-    lines.push(
-      `Etelälä joutuu maksamaan sinulle ${a(data.amount)} pekkaa`,
-    );
+    lines.push(`Etelälä joutuu maksamaan sinulle ${a(data.amount)} pekkaa`);
   }
 
   if (!data.resolved) return lines;
@@ -42,14 +40,14 @@ const event: MHMEvent<SuddenDeathData> = {
       eventId,
       manager,
       amount: 15000000,
-      resolved: false,
+      resolved: false
     });
   },
 
   options: () => {
     return {
       ok: `Aaaaasia selvä. `,
-      wtf: `Hiiiieno homma. Kiitos infosta.`,
+      wtf: `Hiiiieno homma. Kiitos infosta.`
     } as any;
   },
 
@@ -60,7 +58,7 @@ const event: MHMEvent<SuddenDeathData> = {
 
     yield* put({
       type: "EVENT_RESOLVE",
-      payload: { id: resolved.id, event: resolved },
+      payload: { id: resolved.id, event: resolved }
     });
   },
 
@@ -68,7 +66,7 @@ const event: MHMEvent<SuddenDeathData> = {
     return texts(data);
   },
 
-  process: function* () {},
+  process: function* () {}
 };
 
 export default event;

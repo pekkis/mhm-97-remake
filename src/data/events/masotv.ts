@@ -31,20 +31,20 @@ const event: MHMEvent<MasotvData> = {
       eventId,
       manager,
       resolved: true,
-      amount: 30000,
+      amount: 30000
     });
     return;
   },
 
   render: (data) => {
     return [
-      `__Maso TV__ ostaa seuraavan ottelunne televisiointioikeudet. He maksavat joukkueelle ${a(data.amount)} pekkaa.`,
+      `__Maso TV__ ostaa seuraavan ottelunne televisiointioikeudet. He maksavat joukkueelle ${a(data.amount)} pekkaa.`
     ];
   },
 
   process: function* (data) {
     yield* call(incrementBalance, data.manager, data.amount);
-  },
+  }
 };
 
 export default event;

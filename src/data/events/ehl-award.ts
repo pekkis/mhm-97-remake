@@ -34,23 +34,23 @@ const prophecies: Prophecies = {
   phl: {
     good: {
       prophecy: `Ennustajaeukko lupaa __kolmea__ peräkkäistä mestaruutta!`,
-      moraleChange: 5,
+      moraleChange: 5
     },
     bad: {
       prophecy: `Ennustajaeukko lupaa pudotusta __divisioonaan__.`,
-      moraleChange: -5,
-    },
+      moraleChange: -5
+    }
   },
   division: {
     good: {
       prophecy: `Ennustajaeukko lupaa __liiganousua__.`,
-      moraleChange: 5,
+      moraleChange: 5
     },
     bad: {
       prophecy: `Ennustajaeukko lupaa __vaikeita aikoja__.`,
-      moraleChange: -5,
-    },
-  },
+      moraleChange: -5
+    }
+  }
 };
 
 /*
@@ -85,7 +85,7 @@ const event: MHMEvent<EhlAwardData> = {
       manager,
       competition,
       omen,
-      resolved: true,
+      resolved: true
     });
   },
 
@@ -99,9 +99,9 @@ const event: MHMEvent<EhlAwardData> = {
     yield* call(
       incrementMorale,
       team,
-      prophecies[data.competition][data.omen].moraleChange,
+      prophecies[data.competition][data.omen].moraleChange
     );
-  },
+  }
 };
 
 export default event;

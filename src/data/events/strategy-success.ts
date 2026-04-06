@@ -29,14 +29,14 @@ const event: MHMEvent<StrategySuccessData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `Pelaajiesi kunto kohenee jostain syystä silmissä! Kiekko liikkuu kovalla sykkeellä treeneissä ja peliesityksetkin kohenevat.`,
+      `Pelaajiesi kunto kohenee jostain syystä silmissä! Kiekko liikkuu kovalla sykkeellä treeneissä ja peliesityksetkin kohenevat.`
     ];
   },
 
@@ -44,7 +44,7 @@ const event: MHMEvent<StrategySuccessData> = {
     const manager = data.manager;
     const team = yield* select(managersTeamId(manager));
     yield* call(incrementReadiness, team, 3);
-  },
+  }
 };
 
 export default event;

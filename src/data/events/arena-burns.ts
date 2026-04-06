@@ -3,13 +3,13 @@ import { addEvent } from "../../sagas/event";
 import {
   incrementBalance,
   incrementInsuranceExtra,
-  setArenaLevel,
+  setArenaLevel
 } from "../../sagas/manager";
 import { amount as a } from "../../services/format";
 import {
   managerHasService,
   managersDifficulty,
-  managersArena,
+  managersArena
 } from "../selectors";
 import arenas from "../../data/arenas";
 import type { MHMEvent } from "../../types/base";
@@ -55,9 +55,7 @@ const event: MHMEvent<ArenaBurnsData> = {
 
     const newArenaLevel = currentArena.get("level") - 3;
 
-    const hasInsurance = yield* select(
-      managerHasService(manager, "insurance"),
-    );
+    const hasInsurance = yield* select(managerHasService(manager, "insurance"));
     const amount = !hasInsurance ? 0 : arenas[newArenaLevel].price * 3;
 
     yield* call(addEvent, {
@@ -66,20 +64,16 @@ const event: MHMEvent<ArenaBurnsData> = {
       newArenaLevel,
       amount,
       resolved: true,
-      hasInsurance,
+      hasInsurance
     });
     return;
   },
 
   render: (data) => {
-    const t = [
-      `Hallissa riehunut tulipalo huonontaa sen ominaisuuksia. ÖRR!`,
-    ];
+    const t = [`Hallissa riehunut tulipalo huonontaa sen ominaisuuksia. ÖRR!`];
 
     if (data.hasInsurance) {
-      t.push(
-        `Etelälä joutuu korvaamaan tuhoja ${a(data.amount)} pekalla!`,
-      );
+      t.push(`Etelälä joutuu korvaamaan tuhoja ${a(data.amount)} pekalla!`);
     }
 
     return t;
@@ -97,7 +91,7 @@ const event: MHMEvent<ArenaBurnsData> = {
       yield* call(incrementBalance, manager, amount);
       yield* call(incrementInsuranceExtra, manager, 90);
     }
-  },
+  }
 };
 
 export default event;

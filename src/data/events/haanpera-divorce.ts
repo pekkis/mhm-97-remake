@@ -37,14 +37,14 @@ const event: MHMEvent<HaanperaDivorceData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `Pelaaja Aki Haanperän avioliitto päättyy eroon! Mies on onnellinen kun pääsee eroon nalkuttavasta vaimosta ja parantaa otteitaan!`,
+      `Pelaaja Aki Haanperän avioliitto päättyy eroon! Mies on onnellinen kun pääsee eroon nalkuttavasta vaimosta ja parantaa otteitaan!`
     ];
   },
 
@@ -57,7 +57,7 @@ const event: MHMEvent<HaanperaDivorceData> = {
 
     yield* call(incrementStrength, team.get("id"), skillGain);
     yield* call(setFlag, "haanperaMarried", false);
-  },
+  }
 };
 
 export default event;

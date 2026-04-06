@@ -57,7 +57,7 @@ const event: MHMEvent<HabadoboData> = {
       teamName: team.get("name"),
       managerName: random.get("name"),
       newManagerName: random2.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -68,7 +68,7 @@ const event: MHMEvent<HabadoboData> = {
 
 Managerivelho ${data.managerName}:n _HabaDobo-systeemi_ on osoittautunut suureksi flopiksi! __${data.teamName}__:n pelaajat eivät pysty noudattamaan käsittämättömiä kuvioita.
 
-${data.managerName} saa potkut. Tilalle tulee ${data.newManagerName}, jolla on kova työ saada joukkue jaloilleen.`,
+${data.managerName} saa potkut. Tilalle tulee ${data.newManagerName}, jolla on kova työ saada joukkue jaloilleen.`
     ];
   },
 
@@ -76,7 +76,7 @@ ${data.managerName} saa potkut. Tilalle tulee ${data.newManagerName}, jolla on k
     const team = data.team;
     const duration = data.duration;
     yield* call(addEffect, team, ["strength"], -40, duration);
-  },
+  }
 };
 
 export default event;

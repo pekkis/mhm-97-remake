@@ -3,7 +3,7 @@ import {
   managersTeamId,
   teamCompetesIn,
   managerHasService,
-  teamHasActiveEffects,
+  teamHasActiveEffects
 } from "../selectors";
 import { currency as c } from "../../services/format";
 import { cinteger } from "../../services/random";
@@ -45,9 +45,7 @@ const event: MHMEvent<KuralahtiData> = {
       return;
     }
 
-    const hasInsurance = yield* select(
-      managerHasService(manager, "insurance"),
-    );
+    const hasInsurance = yield* select(managerHasService(manager, "insurance"));
 
     yield* call(addEvent, {
       eventId,
@@ -55,13 +53,13 @@ const event: MHMEvent<KuralahtiData> = {
       duration: cinteger(1, 7),
       amount: 5000,
       hasInsurance,
-      resolved: true,
+      resolved: true
     });
   },
 
   render: (data) => {
     const t = [
-      `Lähetät raikulihyökkääjä __Jallu Kuralahden__ huumevieroitukseen ${data.duration} pelin ajaksi.`,
+      `Lähetät raikulihyökkääjä __Jallu Kuralahden__ huumevieroitukseen ${data.duration} pelin ajaksi.`
     ];
 
     if (data.hasInsurance) {
@@ -84,7 +82,7 @@ const event: MHMEvent<KuralahtiData> = {
       yield* call(incrementBalance, manager, data.amount);
       yield* call(incrementInsuranceExtra, manager, 60);
     }
-  },
+  }
 };
 
 export default event;

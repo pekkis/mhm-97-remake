@@ -24,16 +24,14 @@ const event: MHMEvent<HasselgrenData> = {
   create: function* (data) {
     const { manager } = data;
 
-    const hasInsurance = yield* select(
-      managerHasService(manager, "insurance"),
-    );
+    const hasInsurance = yield* select(managerHasService(manager, "insurance"));
 
     yield* call(addEvent, {
       eventId,
       manager,
       amount: 40000,
       resolved: true,
-      hasInsurance,
+      hasInsurance
     });
     return;
   },
@@ -41,8 +39,8 @@ const event: MHMEvent<HasselgrenData> = {
   render: (data) => {
     const t = [
       `Pelaaja __Thomas Hasselgren__ hakkasi edellisessä ottelussa erään pelaajan henkihieveriin! Hän saa 5 ottelun pelikiellon, ja muiden pelaajien moraali laskee! Lisäksi joukkueesi tuomitaan ${a(
-        data.amount,
-      )} pekan sakkoihin!`,
+        data.amount
+      )} pekan sakkoihin!`
     ];
 
     if (data.hasInsurance) {
@@ -65,7 +63,7 @@ const event: MHMEvent<HasselgrenData> = {
     } else {
       yield* call(decrementBalance, manager, data.amount);
     }
-  },
+  }
 };
 
 /*

@@ -43,7 +43,7 @@ const event: MHMEvent<RandomDudeData> = {
       strengthGain,
       team: team.get("id"),
       teamName: team.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -52,7 +52,7 @@ const event: MHMEvent<RandomDudeData> = {
     return [
       `Divisioonasta:
 
-__${data.teamName}__ ostaa ulkolaisvahvistuksen, josta kukaan ei ole koskaan kuullut puhuttavankaan! Miehen pelikunto on siis täysi arvoitus.`,
+__${data.teamName}__ ostaa ulkolaisvahvistuksen, josta kukaan ei ole koskaan kuullut puhuttavankaan! Miehen pelikunto on siis täysi arvoitus.`
     ];
   },
 
@@ -60,7 +60,7 @@ __${data.teamName}__ ostaa ulkolaisvahvistuksen, josta kukaan ei ole koskaan kuu
     const team = data.team;
     const strengthGain = data.strengthGain;
     yield* call(incrementStrength, team, strengthGain);
-  },
+  }
 };
 
 export default event;

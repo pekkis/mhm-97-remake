@@ -47,17 +47,17 @@ const event: MHMEvent<SellNarcoticsData> = {
       manager,
       victim,
       resolved: false,
-      autoResolve: true,
+      autoResolve: true
     });
   },
 
   resolve: function* (data) {
     const victimTeam = yield* select((state: any) =>
-      state.game.getIn(["teams", data.victim]),
+      state.game.getIn(["teams", data.victim])
     );
 
     const victimPlaysInPHL = yield* select(
-      teamCompetesIn(data.victim as any, "phl"),
+      teamCompetesIn(data.victim as any, "phl")
     );
 
     const skillLost = victimPlaysInPHL
@@ -77,19 +77,19 @@ const event: MHMEvent<SellNarcoticsData> = {
       type: "EVENT_RESOLVE",
       payload: {
         id: resolved.id,
-        event: resolved,
-      },
+        event: resolved
+      }
     });
   },
 
   render: (data) => {
     const lines = [
-      `Voi ei! __${data.victimTeamName}__ on kohdannut suuren tragedian. Joukkueen tähtipelaaja on löytynyt kotoaan kuolleena. Miliisi ei tiedota tapahtumista, mutta huhut väittävät syyksi tuntemattoman muuntohuumeen yliannostusta.`,
+      `Voi ei! __${data.victimTeamName}__ on kohdannut suuren tragedian. Joukkueen tähtipelaaja on löytynyt kotoaan kuolleena. Miliisi ei tiedota tapahtumista, mutta huhut väittävät syyksi tuntemattoman muuntohuumeen yliannostusta.`
     ];
 
     if (data.caught) {
       lines.push(
-        `Vaikka miliisi ei julkisesti tapahtumista puhukaan, sinulle he kyllä soittavat. On tapahtunut "pikku kämmi", ja tarvitaan lisävoitelua. Joudut pulittamaan ylimääräiset __${a(data.fine!)}__ pekkaa. Ystäväsi Jaarnio pahoittelee suuresti.`,
+        `Vaikka miliisi ei julkisesti tapahtumista puhukaan, sinulle he kyllä soittavat. On tapahtunut "pikku kämmi", ja tarvitaan lisävoitelua. Joudut pulittamaan ylimääräiset __${a(data.fine!)}__ pekkaa. Ystäväsi Jaarnio pahoittelee suuresti.`
       );
     }
 
@@ -102,7 +102,7 @@ const event: MHMEvent<SellNarcoticsData> = {
     if (data.caught) {
       yield* call(decrementBalance, data.manager, data.fine!);
     }
-  },
+  }
 };
 
 export default event;

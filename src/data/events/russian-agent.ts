@@ -21,7 +21,7 @@ type RussianAgentData = {
 
 const texts = (data: RussianAgentData): string[] => {
   const lines = [
-    `Venäjän agenttisi soittaa ja tarjoaa "huippupelaajaa" __Moskovan ZSKA__:sta. Et tiedä mitään hänen tasostaan, mutta toisaalta hintakin on vain ${c(data.amount)}. Päätös täytyy joka tapauksessa tehdä _heti_.`,
+    `Venäjän agenttisi soittaa ja tarjoaa "huippupelaajaa" __Moskovan ZSKA__:sta. Et tiedä mitään hänen tasostaan, mutta toisaalta hintakin on vain ${c(data.amount)}. Päätös täytyy joka tapauksessa tehdä _heti_.`
   ];
 
   if (!data.resolved) return lines;
@@ -48,14 +48,14 @@ const event: MHMEvent<RussianAgentData> = {
       eventId,
       manager,
       amount: 50000,
-      resolved: false,
+      resolved: false
     });
   },
 
   options: () => {
     return {
       agree: `Ostan mysteeripelaajan`,
-      disagree: `En osta mysteeripelaajaa`,
+      disagree: `En osta mysteeripelaajaa`
     } as any;
   },
 
@@ -67,7 +67,7 @@ const event: MHMEvent<RussianAgentData> = {
 
     yield* put({
       type: "EVENT_RESOLVE",
-      payload: { id: resolved.id, event: resolved },
+      payload: { id: resolved.id, event: resolved }
     });
   },
 
@@ -84,7 +84,7 @@ const event: MHMEvent<RussianAgentData> = {
     const skillGained = cinteger(1, 11);
     yield* call(incrementStrength, team, skillGained);
     yield* call(decrementBalance, manager, data.amount);
-  },
+  }
 };
 
 export default event;

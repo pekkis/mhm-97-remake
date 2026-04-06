@@ -31,14 +31,14 @@ const event: MHMEvent<SopupeliData> = {
       eventId,
       manager,
       amount,
-      resolved: false,
+      resolved: false
     });
   },
 
   options: () =>
     ({
       agree: "Kyllä. Sopu sijaa antaa!",
-      disagree: "En. Kunnia ennen lompakkoa!",
+      disagree: "En. Kunnia ennen lompakkoa!"
     }) as any,
 
   resolve: function* (data, value) {
@@ -52,7 +52,7 @@ const event: MHMEvent<SopupeliData> = {
 
   render: (data) => {
     const lines = [
-      `Nimetön soittaja lupaa siirtää joukkueenne tilille ${a(data.amount)} pekkaa jos "järjestät" joukkueesi tappion seuraavassa ottelussa. Suostutko sopupeliin?`,
+      `Nimetön soittaja lupaa siirtää joukkueenne tilille ${a(data.amount)} pekkaa jos "järjestät" joukkueesi tappion seuraavassa ottelussa. Suostutko sopupeliin?`
     ];
 
     if (!data.resolved) return lines;
@@ -73,7 +73,7 @@ const event: MHMEvent<SopupeliData> = {
       yield* call(incrementBalance, manager, data.amount);
       yield* call(addEffect, team, ["strength"], -1000, 1);
     }
-  },
+  }
 };
 
 export default event;

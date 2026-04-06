@@ -48,7 +48,7 @@ const event: MHMEvent<JatovrelData> = {
       duration,
       team: team.get("id"),
       teamName: team.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -59,7 +59,7 @@ const event: MHMEvent<JatovrelData> = {
 
 __${data.teamName}__ on joutunut kauhean tapaturman uhriksi. Heidän tshekkivahvistuksensa __Oreslav Jatovrel__ on törmännyt laitaan kohtalokkain seurauksin. Jatovrelin ura on paketissa, ja joukkue shokissa!
 
-Kaikki toivovat tiukennusta sääntöihin, ja liigan johto myös lupaa niitä. _toim. huom. Jaroslav Otevrel never forget 2019_`,
+Kaikki toivovat tiukennusta sääntöihin, ja liigan johto myös lupaa niitä. _toim. huom. Jaroslav Otevrel never forget 2019_`
     ];
   },
 
@@ -73,9 +73,9 @@ Kaikki toivovat tiukennusta sääntöihin, ja liigan johto myös lupaa niitä. _
       team,
       ["strength"],
       Math.round(-0.33 * strength),
-      duration,
+      duration
     );
-  },
+  }
 };
 
 export default event;

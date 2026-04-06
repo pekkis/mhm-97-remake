@@ -1,14 +1,11 @@
 import { call, select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
-import {
-  incrementInsuranceExtra,
-  incrementBalance,
-} from "../../sagas/manager";
+import { incrementInsuranceExtra, incrementBalance } from "../../sagas/manager";
 import { addOpponentEffect } from "../../sagas/team";
 import {
   managerHasService,
   managerCompetesIn,
-  managersTeamId,
+  managersTeamId
 } from "../selectors";
 import { cinteger } from "../../services/random";
 import type { MHMEvent } from "../../types/base";
@@ -32,9 +29,7 @@ const event: MHMEvent<JuznetsovData> = {
   create: function* (data) {
     const { manager } = data;
 
-    const hasInsurance = yield* select(
-      managerHasService(manager, "insurance"),
-    );
+    const hasInsurance = yield* select(managerHasService(manager, "insurance"));
     const competesInPHL = yield* select(managerCompetesIn(manager, "phl"));
 
     yield* call(addEvent, {
@@ -44,14 +39,14 @@ const event: MHMEvent<JuznetsovData> = {
       amount: 7000,
       duration: cinteger(0, 3) + 2,
       resolved: true,
-      hasInsurance,
+      hasInsurance
     });
     return;
   },
 
   render: (data) => {
     const t = [
-      `Auts! Venäläispakki Kuri Juznetsov törmää harjoituksissa pää edellä laitaan ja on seuraavat ${data.duration} ottelua pyörällä päästään!`,
+      `Auts! Venäläispakki Kuri Juznetsov törmää harjoituksissa pää edellä laitaan ja on seuraavat ${data.duration} ottelua pyörällä päästään!`
     ];
 
     if (data.hasInsurance) {
@@ -74,7 +69,7 @@ const event: MHMEvent<JuznetsovData> = {
       yield* call(incrementBalance, manager, amount);
       yield* call(incrementInsuranceExtra, manager, 50);
     }
-  },
+  }
 };
 
 /*

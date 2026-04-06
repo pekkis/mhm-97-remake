@@ -34,14 +34,14 @@ const event: MHMEvent<BestManagerEverData> = {
       eventId,
       manager,
       otherManager: random.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `__Ilta-Maso__ rankkaa sinut _kaikkien aikojen parhaaksi_ manageriksi! Listan hänniltä löytyy ${data.otherManager}.`,
+      `__Ilta-Maso__ rankkaa sinut _kaikkien aikojen parhaaksi_ manageriksi! Listan hänniltä löytyy ${data.otherManager}.`
     ];
   },
 
@@ -49,7 +49,7 @@ const event: MHMEvent<BestManagerEverData> = {
     const manager = data.manager;
     const team = yield* select(managersTeamId(manager));
     yield* call(incrementMorale, team, 1);
-  },
+  }
 };
 
 export default event;

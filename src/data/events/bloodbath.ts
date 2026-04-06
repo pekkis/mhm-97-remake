@@ -49,7 +49,7 @@ const event: MHMEvent<BloodbathData> = {
 
     const team = yield* select(randomTeamFrom(["phl"], false, []));
     const team2 = yield* select(
-      randomTeamFrom(["phl"], false, [team.get("id")]),
+      randomTeamFrom(["phl"], false, [team.get("id")])
     );
 
     yield* call(addEvent, {
@@ -61,7 +61,7 @@ const event: MHMEvent<BloodbathData> = {
       team2: team2.get("id"),
       teamName: team.get("name"),
       teamName2: team2.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -70,7 +70,7 @@ const event: MHMEvent<BloodbathData> = {
     return [
       `__${data.teamName}__:n ja __${data.teamName2}__:n pelaajat ovat ottaneet väkivaltaisesti yhteen! Miliisi löytää tappelupaikalta yhden molempien joukkueiden pelaajista kuolleena sekä verisen pensasleikkurin.
 
-Muita asianomaisia ei koskaan saada kiinni. Kaikki kiistävät osallisuutensa, managerit __${data.otherManager}__ ja __${data.otherManager2}__ mukaanlukien."`,
+Muita asianomaisia ei koskaan saada kiinni. Kaikki kiistävät osallisuutensa, managerit __${data.otherManager}__ ja __${data.otherManager2}__ mukaanlukien."`
     ];
   },
 
@@ -81,7 +81,7 @@ Muita asianomaisia ei koskaan saada kiinni. Kaikki kiistävät osallisuutensa, m
     for (const teamId of [team, team2]) {
       yield* call(decrementStrength, teamId, cinteger(0, 12) + 6);
     }
-  },
+  }
 };
 
 export default event;

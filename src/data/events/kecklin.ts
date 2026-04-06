@@ -30,14 +30,14 @@ const event: MHMEvent<KecklinData> = {
       manager,
       amount: 150000,
       resolved: false,
-      duration: 3,
+      duration: 3
     });
   },
 
   options: () =>
     ({
       agree: "Suostun, mutta vain pakon edessä.",
-      disagree: "Ei tule kuulonkaan.",
+      disagree: "Ei tule kuulonkaan."
     }) as any,
 
   resolve: function* (data, value) {
@@ -51,14 +51,14 @@ const event: MHMEvent<KecklinData> = {
 
   render: (data) => {
     const lines = [
-      `Ykkösmaalivahtinne Limmo Kecklin haluaa ${a(data.amount)} pekan palkankorotuksen. Suostutko?`,
+      `Ykkösmaalivahtinne Limmo Kecklin haluaa ${a(data.amount)} pekan palkankorotuksen. Suostutko?`
     ];
 
     if (!data.resolved) return lines;
 
     if (!data.agree) {
       lines.push(
-        `Kecklin kohauttaa olkapäitään. "No, aina kannattaa yrittää."`,
+        `Kecklin kohauttaa olkapäitään. "No, aina kannattaa yrittää."`
       );
     } else {
       lines.push(`Kecklin on oikein tyytyväinen itseensä poistuessaan.`);
@@ -78,7 +78,7 @@ const event: MHMEvent<KecklinData> = {
     }
 
     yield* call(addOpponentEffect, team, ["strength"], strength, 1);
-  },
+  }
 };
 
 export default event;

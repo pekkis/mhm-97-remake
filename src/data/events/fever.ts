@@ -40,14 +40,14 @@ const event: MHMEvent<FeverData> = {
       manager,
       amount: 10000,
       resolved: true,
-      hasInsurance,
+      hasInsurance
     });
     return;
   },
 
   render: (data) => {
     const t = [
-      `Omituinen kuumetauti iskee joukkueeseen. Puolet pelaajista makaa petissä seuraavan ottelun ajan!`,
+      `Omituinen kuumetauti iskee joukkueeseen. Puolet pelaajista makaa petissä seuraavan ottelun ajan!`
     ];
 
     if (data.hasInsurance) {
@@ -75,7 +75,7 @@ const event: MHMEvent<FeverData> = {
       yield* call(incrementBalance, manager, data.amount);
       yield* call(incrementInsuranceExtra, manager, 90);
     }
-  },
+  }
 };
 
 export default event;

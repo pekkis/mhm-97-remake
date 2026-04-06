@@ -38,7 +38,7 @@ const event: MHMEvent<FanMerchandiseData> = {
       manager,
       amount: 40000,
       resolved: true,
-      sales: difficulty === 4 ? "bad" : "good",
+      sales: difficulty === 4 ? "bad" : "good"
     });
   },
 
@@ -65,7 +65,7 @@ const event: MHMEvent<FanMerchandiseData> = {
     } else {
       yield* call(decrementBalance, manager, data.amount);
     }
-  },
+  }
 };
 
 export default event;

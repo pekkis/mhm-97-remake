@@ -47,7 +47,7 @@ const event: MHMEvent<ForeignLegionData> = {
     const { manager } = data;
 
     const team = yield* select(
-      randomTeamFrom(["phl"], false, [], (t: any) => t.get("strength") >= 270),
+      randomTeamFrom(["phl"], false, [], (t: any) => t.get("strength") >= 270)
     );
     if (!team) {
       return;
@@ -65,7 +65,7 @@ const event: MHMEvent<ForeignLegionData> = {
       teamName: team.get("name"),
       managerName: random.get("name"),
       managerName2: random2.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -74,7 +74,7 @@ const event: MHMEvent<ForeignLegionData> = {
     return [
       `Liigan huippujoukkue __${data.teamName}__ on törmännyt pelaajapolitiikallaan jäävuoreen! Tähtiä vilisevä mestariehdokas on muuttunut riitaisaksi muukalaislegioonaksi, jossa kaikki vihaavat kaikkia!
 
-Manageri __${data.managerName}__ saa lähteä. Tilalle palkataan __${data.managerName2}__, mutta tilanne ei oletettavasti muutu mihinkään...`,
+Manageri __${data.managerName}__ saa lähteä. Tilalle palkataan __${data.managerName2}__, mutta tilanne ei oletettavasti muutu mihinkään...`
     ];
   },
 
@@ -82,7 +82,7 @@ Manageri __${data.managerName}__ saa lähteä. Tilalle palkataan __${data.manage
     const team = data.team;
     const duration = data.duration;
     yield* call(addEffect, team, ["strength"], -60, duration);
-  },
+  }
 };
 
 export default event;

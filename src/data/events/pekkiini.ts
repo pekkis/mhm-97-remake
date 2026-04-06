@@ -42,20 +42,26 @@ const event: MHMEvent<PekkiiniData> = {
       manager,
       amount: Math.round(team.get("strength") * 0.5),
       duration: 7 - difficulty,
-      resolved: true,
+      resolved: true
     });
   },
 
   render: (data) => {
     return [
-      `On löytynyt uusi piriste, __pekkiini__, jota ei ole vielä ehditty kieltämään. Laki aineen kiellosta astuu valitettavasti voimaan jo _${data.duration} viikon kuluttua_, mutta tohtorinne pumppaa pelaajat täyteen tehoainetta niin pitkäksi aikaa kuin mahdollista!`,
+      `On löytynyt uusi piriste, __pekkiini__, jota ei ole vielä ehditty kieltämään. Laki aineen kiellosta astuu valitettavasti voimaan jo _${data.duration} viikon kuluttua_, mutta tohtorinne pumppaa pelaajat täyteen tehoainetta niin pitkäksi aikaa kuin mahdollista!`
     ];
   },
 
   process: function* (data) {
     const team = yield* select(managersTeam(data.manager));
-    yield* call(addEffect, team.get("id"), ["strength"], data.amount, data.duration);
-  },
+    yield* call(
+      addEffect,
+      team.get("id"),
+      ["strength"],
+      data.amount,
+      data.duration
+    );
+  }
 };
 
 export default event;

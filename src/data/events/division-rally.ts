@@ -6,7 +6,7 @@ import {
   managerCompetesIn,
   managerFlag,
   managersTeamId,
-  managersDifficulty,
+  managersDifficulty
 } from "../selectors";
 import { setFlag, setExtra } from "../../sagas/manager";
 import difficultyLevels from "../../data/difficulty-levels";
@@ -37,7 +37,7 @@ const event: MHMEvent<DivisionRallyData> = {
     const { manager } = data;
 
     const competesInDivision = yield* select(
-      managerCompetesIn(manager, "division"),
+      managerCompetesIn(manager, "division")
     );
 
     if (!competesInDivision) {
@@ -52,14 +52,14 @@ const event: MHMEvent<DivisionRallyData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (_data) => {
     return [
-      `Olet onnistunut luomaan käsittämättömän yhteishengen, ja joukkue on valmis taistelemaan tiensä liigaan!!!`,
+      `Olet onnistunut luomaan käsittämättömän yhteishengen, ja joukkue on valmis taistelemaan tiensä liigaan!!!`
     ];
   },
 
@@ -76,7 +76,7 @@ const event: MHMEvent<DivisionRallyData> = {
     yield* call(
       setExtra,
       manager,
-      (difficultyLevels.getIn([difficulty, "rallyExtra"]) as any)("division"),
+      (difficultyLevels.getIn([difficulty, "rallyExtra"]) as any)("division")
     );
 
     yield* call(
@@ -86,10 +86,10 @@ const event: MHMEvent<DivisionRallyData> = {
       "rally",
       duration,
       Map({
-        rallyMorale: difficultyLevels.getIn([difficulty, "rallyMorale"]) as any,
-      }),
+        rallyMorale: difficultyLevels.getIn([difficulty, "rallyMorale"]) as any
+      })
     );
-  },
+  }
 };
 
 /*

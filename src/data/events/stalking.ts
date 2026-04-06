@@ -41,13 +41,13 @@ const event: MHMEvent<StalkingData> = {
       eventId,
       manager,
       stalker: stalker.get("name"),
-      resolved: true,
+      resolved: true
     });
   },
 
   render: (data) => {
     return [
-      `Manageri __${data.stalker}__ kyttää paikkaa joukkueessa. Mies tunnetaan tappavan raskaista harjoituksistaan ja pirullisuudestaan, joten pelko romahduttaa moraalin vaikkei jutussa olekaan perää!`,
+      `Manageri __${data.stalker}__ kyttää paikkaa joukkueessa. Mies tunnetaan tappavan raskaista harjoituksistaan ja pirullisuudestaan, joten pelko romahduttaa moraalin vaikkei jutussa olekaan perää!`
     ];
   },
 
@@ -56,7 +56,7 @@ const event: MHMEvent<StalkingData> = {
     const team = yield* select(managersTeamId(manager));
 
     yield* call(decrementMorale, team, 10000);
-  },
+  }
 };
 
 export default event;

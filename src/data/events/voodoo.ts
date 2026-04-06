@@ -28,14 +28,14 @@ const event: MHMEvent<VoodooData> = {
       eventId,
       manager,
       amount: 100000,
-      resolved: false,
+      resolved: false
     });
   },
 
   options: () => {
     return {
       agree: `Totta kai. Tervetuloa harjoituksiimme, hyvä herra, tässä rahat!`,
-      disagree: "En maksa. Kiitos tarjouksesta, ehkä joku toinen kerta!",
+      disagree: "En maksa. Kiitos tarjouksesta, ehkä joku toinen kerta!"
     } as any;
   },
 
@@ -50,7 +50,7 @@ const event: MHMEvent<VoodooData> = {
 
   render: (data) => {
     const lines = [
-      `Haitilta saapunut tumma mies lupaa tuplata joukkueesi voiman ${a(data.amount)} pekalla. Maksatko?`,
+      `Haitilta saapunut tumma mies lupaa tuplata joukkueesi voiman ${a(data.amount)} pekalla. Maksatko?`
     ];
 
     if (!data.resolved) return lines;
@@ -74,7 +74,7 @@ const event: MHMEvent<VoodooData> = {
     } else {
       yield* call(decrementMorale, team, 1);
     }
-  },
+  }
 };
 
 export default event;

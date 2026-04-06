@@ -31,19 +31,19 @@ const event: MHMEvent<RallialaData> = {
       eventId,
       manager,
       resolved: true,
-      amount: 70000,
+      amount: 70000
     });
   },
 
   render: (data) => {
     return [
-      `Lavakoomikko __Aape Ralliala__ julistaa kääntyneensä ${data.teamName}:n kannattajaksi ja lahjoittaa sen osoitukseksi joukkueelle ${a(data.amount)} pekkaa.`,
+      `Lavakoomikko __Aape Ralliala__ julistaa kääntyneensä ${data.teamName}:n kannattajaksi ja lahjoittaa sen osoitukseksi joukkueelle ${a(data.amount)} pekkaa.`
     ];
   },
 
   process: function* (data) {
     yield* call(incrementBalance, data.manager, data.amount);
-  },
+  }
 };
 
 export default event;

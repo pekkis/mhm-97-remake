@@ -34,14 +34,14 @@ const event: MHMEvent<PempersData> = {
       manager,
       resolved: true,
       amount: 55000,
-      moraleLost: 3,
+      moraleLost: 3
     });
     return;
   },
 
   render: (data) => {
     return [
-      `Mainostoimisto maksaa ${a(data.amount)} pekkaa joukkueen esiintymisestä vaippamainoksessa. Ihmiset nauravat, ja moraali laskee!`,
+      `Mainostoimisto maksaa ${a(data.amount)} pekkaa joukkueen esiintymisestä vaippamainoksessa. Ihmiset nauravat, ja moraali laskee!`
     ];
   },
 
@@ -51,7 +51,7 @@ const event: MHMEvent<PempersData> = {
 
     yield* call(incrementBalance, manager, data.amount);
     yield* call(decrementMorale, team, data.moraleLost);
-  },
+  }
 };
 
 export default event;

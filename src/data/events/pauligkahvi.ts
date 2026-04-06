@@ -32,14 +32,14 @@ const event: MHMEvent<PauligkahviData> = {
       manager,
       amount: 100000,
       resolved: false,
-      duration: 3,
+      duration: 3
     });
   },
 
   options: () =>
     ({
       agree: "Suostun.",
-      disagree: "En suostu.",
+      disagree: "En suostu."
     }) as any,
 
   resolve: function* (data, value) {
@@ -53,7 +53,7 @@ const event: MHMEvent<PauligkahviData> = {
 
   render: (data) => {
     const lines = [
-      `Superpakillesi, Pauli G. Kahville, ei pikkuraha enää riitä. Mies vaatii ${data.amount} pekan korotusta ja edustusautoa. Suostutko?`,
+      `Superpakillesi, Pauli G. Kahville, ei pikkuraha enää riitä. Mies vaatii ${data.amount} pekan korotusta ja edustusautoa. Suostutko?`
     ];
 
     if (!data.resolved) return lines;
@@ -80,7 +80,7 @@ const event: MHMEvent<PauligkahviData> = {
     } else {
       yield* call(addOpponentEffect, team, ["strength"], strength, duration);
     }
-  },
+  }
 };
 
 export default event;

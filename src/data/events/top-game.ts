@@ -34,14 +34,14 @@ const event: MHMEvent<TopGameData> = {
       eventId,
       manager,
       amount: 20000,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `__Maso TV:llä__ on sopimus liigan kanssa otteluiden näyttämisestä. Luonnollisesti huippuottelut kiinnostavat, ja joukkueesi äskeinen ottelu näkyikin valtakunnanverkossa. Liiga maksaa teille ${data.amount} pekkaa.`,
+      `__Maso TV:llä__ on sopimus liigan kanssa otteluiden näyttämisestä. Luonnollisesti huippuottelut kiinnostavat, ja joukkueesi äskeinen ottelu näkyikin valtakunnanverkossa. Liiga maksaa teille ${data.amount} pekkaa.`
     ];
   },
 
@@ -49,7 +49,7 @@ const event: MHMEvent<TopGameData> = {
     const manager = data.manager;
     const amount = data.amount;
     yield* call(incrementBalance, manager, amount);
-  },
+  }
 };
 
 export default event;

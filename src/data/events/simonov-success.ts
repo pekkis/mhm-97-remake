@@ -35,14 +35,14 @@ const event: MHMEvent<SimonovSuccessData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `Pelaajasi ovat edellä suunniteltua aikataulua. Vaikka "Juri Simonov"-strategian ansiosta  kuntohuippunne onkin ajoitettu play-offeihin, pelaavat "pojat" jo nyt kuin huomista ei olisi. Sinulla on hyvä syy odottaa tilanteen ainoastaan paranevan kohti kevättä!`,
+      `Pelaajasi ovat edellä suunniteltua aikataulua. Vaikka "Juri Simonov"-strategian ansiosta  kuntohuippunne onkin ajoitettu play-offeihin, pelaavat "pojat" jo nyt kuin huomista ei olisi. Sinulla on hyvä syy odottaa tilanteen ainoastaan paranevan kohti kevättä!`
     ];
   },
 
@@ -50,7 +50,7 @@ const event: MHMEvent<SimonovSuccessData> = {
     const manager = data.manager;
     const team = yield* select(managersTeamId(manager));
     yield* call(incrementReadiness, team, 6);
-  },
+  }
 };
 
 export default event;

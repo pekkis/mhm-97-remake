@@ -10,27 +10,30 @@ const eventId = "fortuneTeller";
 type Omen = "good" | "bad";
 type Competition = "phl" | "division";
 
-const prophecies: Record<Competition, Record<Omen, { prophecy: string; moraleChange: number }>> = {
+const prophecies: Record<
+  Competition,
+  Record<Omen, { prophecy: string; moraleChange: number }>
+> = {
   phl: {
     good: {
       prophecy: `Ennustajaeukko lupaa __kolmea__ peräkkäistä mestaruutta!`,
-      moraleChange: 5,
+      moraleChange: 5
     },
     bad: {
       prophecy: `Ennustajaeukko lupaa pudotusta __divisioonaan__.`,
-      moraleChange: -5,
-    },
+      moraleChange: -5
+    }
   },
   division: {
     good: {
       prophecy: `Ennustajaeukko lupaa __liiganousua__.`,
-      moraleChange: 5,
+      moraleChange: 5
     },
     bad: {
       prophecy: `Ennustajaeukko lupaa __vaikeita aikoja__.`,
-      moraleChange: -5,
-    },
-  },
+      moraleChange: -5
+    }
+  }
 };
 
 /*
@@ -65,7 +68,7 @@ const event: MHMEvent<FortuneTellerData> = {
       manager,
       competition,
       omen,
-      resolved: true,
+      resolved: true
     });
   },
 
@@ -79,9 +82,9 @@ const event: MHMEvent<FortuneTellerData> = {
     yield* call(
       incrementMorale,
       team,
-      prophecies[data.competition][data.omen].moraleChange,
+      prophecies[data.competition][data.omen].moraleChange
     );
-  },
+  }
 };
 
 export default event;

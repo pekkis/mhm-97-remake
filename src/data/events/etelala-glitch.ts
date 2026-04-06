@@ -30,14 +30,14 @@ const event: MHMEvent<EtelalaGlitchData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: () => {
     return [
-      `__Etelälän__ tietokoneeseen on iskenyt _virus_! Kaikki vakuutustiedot ovat kadonneet, ja siten bonukset nollautuvat!`,
+      `__Etelälän__ tietokoneeseen on iskenyt _virus_! Kaikki vakuutustiedot ovat kadonneet, ja siten bonukset nollautuvat!`
     ];
   },
 
@@ -45,11 +45,11 @@ const event: MHMEvent<EtelalaGlitchData> = {
     const manager = data.manager;
 
     const current = yield* select((state: any) =>
-      state.manager.getIn(["managers", manager, "insuranceExtra"]),
+      state.manager.getIn(["managers", manager, "insuranceExtra"])
     );
 
     yield* call(incrementInsuranceExtra, manager, 0 - current);
-  },
+  }
 };
 
 export default event;

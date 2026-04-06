@@ -5,7 +5,7 @@ import {
   teamCompetesIn,
   flag,
   managerHasEnoughMoney,
-  randomTeamFrom,
+  randomTeamFrom
 } from "../selectors";
 import { amount as a } from "../../services/format";
 import { incrementMorale, incrementStrength } from "../../sagas/team";
@@ -32,7 +32,7 @@ type JarkoData = {
 
 const texts = (data: JarkoData): string[] => {
   const lines = [
-    `NHL on ollut liian kova pala Jarko Mantuselle. Hän haluaisi palata kotimaahan, ja sinun joukkueeseesi. Myös __${data.otherTeamName}__ on kiinnostunut pelaajasta. Siirtosumma on pienehkö ${a(data.amount)}, ja pelaajan voima on ${data.strength}.`,
+    `NHL on ollut liian kova pala Jarko Mantuselle. Hän haluaisi palata kotimaahan, ja sinun joukkueeseesi. Myös __${data.otherTeamName}__ on kiinnostunut pelaajasta. Siirtosumma on pienehkö ${a(data.amount)}, ja pelaajan voima on ${data.strength}.`
   ];
 
   if (!data.resolved) return lines;
@@ -77,14 +77,14 @@ const event: MHMEvent<JarkoData> = {
       amount,
       strength,
       resolved: !enoughMoney,
-      agree: !enoughMoney ? false : undefined,
+      agree: !enoughMoney ? false : undefined
     });
   },
 
   options: () =>
     ({
       agree: "Ostan Mantusen joukkueeseeni",
-      disagree: "En osta Mantusta joukkueeseeni",
+      disagree: "En osta Mantusta joukkueeseeni"
     }) as any,
 
   resolve: function* (data, value) {
@@ -95,7 +95,7 @@ const event: MHMEvent<JarkoData> = {
 
     yield* put({
       type: "EVENT_RESOLVE",
-      payload: { id: resolved.id, event: resolved },
+      payload: { id: resolved.id, event: resolved }
     });
   },
 
@@ -120,7 +120,7 @@ const event: MHMEvent<JarkoData> = {
     }
 
     yield* call(setFlag, "jarko", true);
-  },
+  }
 };
 
 export default event;

@@ -3,7 +3,7 @@ import { produce } from "immer";
 import {
   managersTeamId,
   teamCompetesIn,
-  managerHasService,
+  managerHasService
 } from "../selectors";
 import { amount as a } from "../../services/format";
 import { addEvent } from "../../sagas/event";
@@ -25,7 +25,7 @@ type JaralahtiData = {
 
 const texts = (data: JaralahtiData): string[] => {
   const lines = [
-    `Miliisi soittaa kotiisi yöllä. Tähtipuolustajasi __Kale Jaralahti__ on juuri narahtanut kaupungin keskustassa auton ratista huumepöllyssä.`,
+    `Miliisi soittaa kotiisi yöllä. Tähtipuolustajasi __Kale Jaralahti__ on juuri narahtanut kaupungin keskustassa auton ratista huumepöllyssä.`
   ];
 
   if (!data.resolved) return lines;
@@ -39,7 +39,7 @@ const texts = (data: JaralahtiData): string[] => {
   }
 
   lines.push(
-    `Rahaa kuluu, mutta pelaaja on kiitollinen. Hän parantaa tasoansa (ja lupaa pyhästi parantaa tapansa)!`,
+    `Rahaa kuluu, mutta pelaaja on kiitollinen. Hän parantaa tasoansa (ja lupaa pyhästi parantaa tapansa)!`
   );
   return lines;
 };
@@ -54,20 +54,20 @@ const event: MHMEvent<JaralahtiData> = {
       eventId,
       manager,
       amount: 75000,
-      resolved: false,
+      resolved: false
     });
   },
 
   options: (data) => {
     return {
       support: `Lahjoitan miliisien virkistysrahastoon ${a(data.amount)} pekkaa.`,
-      nothing: "Lyön luurin korvaan ja sanoudun irti koko hommasta!",
+      nothing: "Lyön luurin korvaan ja sanoudun irti koko hommasta!"
     } as any;
   },
 
   resolve: function* (data, value) {
     const hasInsurance = yield* select(
-      managerHasService(data.manager, "insurance"),
+      managerHasService(data.manager, "insurance")
     );
 
     const resolved = produce(data, (draft) => {
@@ -78,7 +78,7 @@ const event: MHMEvent<JaralahtiData> = {
 
     yield* put({
       type: "EVENT_RESOLVE",
-      payload: { id: resolved.id, event: resolved },
+      payload: { id: resolved.id, event: resolved }
     });
   },
 
@@ -104,10 +104,10 @@ const event: MHMEvent<JaralahtiData> = {
       const skillGained = 4 * multiplier;
       yield* all([
         call(incrementStrength, team, skillGained),
-        call(decrementBalance, manager, data.amount),
+        call(decrementBalance, manager, data.amount)
       ]);
     }
-  },
+  }
 };
 
 export default event;

@@ -39,14 +39,14 @@ const event: MHMEvent<HaanperaMarriesData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `Pelaaja Aki Haanperän polttarit ovat seuraavana iltana. Koko joukkue on mukana ja kankkunen vaivaa seuraavan ottelun ajan!`,
+      `Pelaaja Aki Haanperän polttarit ovat seuraavana iltana. Koko joukkue on mukana ja kankkunen vaivaa seuraavan ottelun ajan!`
     ];
   },
 
@@ -59,11 +59,11 @@ const event: MHMEvent<HaanperaMarriesData> = {
       team.get("id"),
       ["strength"],
       -Math.round(team.get("strength") * 0.33),
-      1,
+      1
     );
     yield* call(incrementMorale, team.get("id"), 4);
     yield* call(setFlag, "haanperaMarried", true);
-  },
+  }
 };
 
 export default event;

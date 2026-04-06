@@ -5,7 +5,7 @@ import {
   managersDifficulty,
   managersTeam,
   managerHasService,
-  managersArena,
+  managersArena
 } from "../selectors";
 import { amount as a } from "../../services/format";
 import { decrementBalance, setArenaLevel } from "../../sagas/manager";
@@ -66,9 +66,7 @@ const event: MHMEvent<UltimateCrueltyData> = {
       return;
     }
 
-    const hasInsurance = yield* select(
-      managerHasService(manager, "insurance"),
-    );
+    const hasInsurance = yield* select(managerHasService(manager, "insurance"));
 
     const amount = 1500000;
 
@@ -77,7 +75,7 @@ const event: MHMEvent<UltimateCrueltyData> = {
       manager,
       hasInsurance,
       amount,
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -85,13 +83,13 @@ const event: MHMEvent<UltimateCrueltyData> = {
   render: (data) => {
     const t = [
       `Valtaisa hallisi sortui viime yönä! Huolimattomasta rakentamisesta johtunut onnettomuus hautasi alleen 5 ihmistä, ja syytteiltä välttyäksesi joudut maksamaan kipurahoja yhteensä ${a(
-        data.amount,
-      )} pekkaa. Joukkue joutuu siirtymään harjoitus-"areenalle".`,
+        data.amount
+      )} pekkaa. Joukkue joutuu siirtymään harjoitus-"areenalle".`
     ];
 
     if (data.hasInsurance) {
       t.push(
-        `Etelälän vakuutuskaan ei auta, sillä kyseessä on vakuutusyhtiön mielestä rakennusmääräysten törkeä rikkominen, josta vastuussa ovat heidän vakaan näkemyksensä mukaan yksinomaan rakennuttaja ja urakan tilaaja. Koko lasku päätyy joukkueelle.`,
+        `Etelälän vakuutuskaan ei auta, sillä kyseessä on vakuutusyhtiön mielestä rakennusmääräysten törkeä rikkominen, josta vastuussa ovat heidän vakaan näkemyksensä mukaan yksinomaan rakennuttaja ja urakan tilaaja. Koko lasku päätyy joukkueelle.`
       );
     }
 
@@ -104,7 +102,7 @@ const event: MHMEvent<UltimateCrueltyData> = {
 
     yield* call(decrementBalance, manager, amount);
     yield* call(setArenaLevel, manager, 2);
-  },
+  }
 };
 
 export default event;

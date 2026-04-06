@@ -32,7 +32,7 @@ const event: MHMEvent<WorkPermitsData> = {
       duration,
       team: team.get("id"),
       teamName: team.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -41,7 +41,7 @@ const event: MHMEvent<WorkPermitsData> = {
     return [
       `Liigasta:
 
-${data.teamName}:lla on ongelmia ulkolaisvahvistustensa, Haso Otchakin sekä Malex Atsijevskin, työlupien kanssa. Joukkue heikentyy merkittävästi ${data.duration} ottelun ajaksi kun kyseiset herrat eivät pelaa.`,
+${data.teamName}:lla on ongelmia ulkolaisvahvistustensa, Haso Otchakin sekä Malex Atsijevskin, työlupien kanssa. Joukkue heikentyy merkittävästi ${data.duration} ottelun ajaksi kun kyseiset herrat eivät pelaa.`
     ];
   },
 
@@ -50,7 +50,7 @@ ${data.teamName}:lla on ongelmia ulkolaisvahvistustensa, Haso Otchakin sekä Mal
     const duration = data.duration;
 
     yield* call(addEffect, team, ["strength"], -35, duration);
-  },
+  }
 };
 
 /*

@@ -48,7 +48,7 @@ const event: MHMEvent<AbcdData> = {
       team: team.get("id"),
       teamName: team.get("name"),
       managerName: random.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -57,7 +57,7 @@ const event: MHMEvent<AbcdData> = {
     return [
       `Liigasta:
 
-Managerivelho ${data.managerName} on saanut psyykattua ${data.teamName}:n käsittämättömään vireeseen! Hänen nk. "ABCD-ohjelmansa" puree!`,
+Managerivelho ${data.managerName} on saanut psyykattua ${data.teamName}:n käsittämättömään vireeseen! Hänen nk. "ABCD-ohjelmansa" puree!`
     ];
   },
 
@@ -72,9 +72,9 @@ Managerivelho ${data.managerName} on saanut psyykattua ${data.teamName}:n käsit
       team,
       ["strength"],
       Math.round(strength / 4),
-      duration,
+      duration
     );
-  },
+  }
 };
 
 export default event;

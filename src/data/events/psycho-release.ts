@@ -45,7 +45,7 @@ const event: MHMEvent<PsychoReleaseData> = {
     }
 
     const psychoManager = yield* select((state: any) =>
-      state.game.getIn(["managers", psycho]),
+      state.game.getIn(["managers", psycho])
     );
 
     const randomTeam = yield* select(randomTeamFrom(["division"]));
@@ -56,7 +56,7 @@ const event: MHMEvent<PsychoReleaseData> = {
       otherManager: psychoManager.get("name"),
       otherTeam: randomTeam.get("name"),
       letter: cinteger(0, 4),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -64,13 +64,13 @@ const event: MHMEvent<PsychoReleaseData> = {
   render: (data) => {
     return [
       `Eräänä iltana ovikello soi. Avaat oven, ja sen takana seisoo psykopaattimanageri __${data.otherManager}__!`,
-      `Mies on viimein vapautettu Tiukukosken mielisairaalasta, ja hän on saanut myöskin töitä divisioonasta. __${data.otherTeam}__ on palkannut hänet, ja mainostaa nyt itseään iskulauseella "hullun hyvä meininki".`,
+      `Mies on viimein vapautettu Tiukukosken mielisairaalasta, ja hän on saanut myöskin töitä divisioonasta. __${data.otherTeam}__ on palkannut hänet, ja mainostaa nyt itseään iskulauseella "hullun hyvä meininki".`
     ];
   },
 
   process: function* (_data) {
     yield* call(setFlag, "psycho", undefined);
-  },
+  }
 };
 
 export default event;

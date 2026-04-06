@@ -7,7 +7,7 @@ import {
   setInsuranceExtra,
   setBalance,
   setArenaLevel,
-  setService,
+  setService
 } from "../../sagas/manager";
 import { setMorale, setReadiness, setStrategy } from "../../sagas/team";
 import table from "../../services/league";
@@ -54,17 +54,16 @@ const event: MHMEvent<JobofferPHLData> = {
     const oldTeam = yield* select(managersTeamId(manager));
 
     const ehlTeams = yield* select((state: any) =>
-      state.game.getIn(["competitions", "ehl", "teams"]),
+      state.game.getIn(["competitions", "ehl", "teams"])
     );
     const offerer = yield* select(randomTeamFrom(["phl"], false, ehlTeams));
 
     const group = yield* select((state: any) =>
-      state.game.getIn(["competitions", "phl", "phases", 0, "groups", 0]),
+      state.game.getIn(["competitions", "phl", "phases", 0, "groups", 0])
     );
 
     const ranking =
-      table(group).findIndex((t: any) => t.get("id") === offerer.get("id")) +
-      1;
+      table(group).findIndex((t: any) => t.get("id") === offerer.get("id")) + 1;
 
     yield* call(addEvent, {
       eventId,
@@ -73,14 +72,14 @@ const event: MHMEvent<JobofferPHLData> = {
       offerer: offerer.get("id"),
       offererName: offerer.get("name"),
       ranking,
-      resolved: false,
+      resolved: false
     });
   },
 
   options: () => {
     return {
       agree: `Kyllä, ilman muuta!`,
-      disagree: "Ei, kiitos.",
+      disagree: "Ei, kiitos."
     } as any;
   },
 
@@ -105,7 +104,7 @@ const event: MHMEvent<JobofferPHLData> = {
 
   render: (data) => {
     const lines = [
-      `__${data.offererName}__ tarjoaa sinulle työpaikkaa. Joukkueen sijoitus liigassa: _${data.ranking}_. Otatko tarjouksen vastaan?`,
+      `__${data.offererName}__ tarjoaa sinulle työpaikkaa. Joukkueen sijoitus liigassa: _${data.ranking}_. Otatko tarjouksen vastaan?`
     ];
 
     if (!data.resolved) {
@@ -114,12 +113,10 @@ const event: MHMEvent<JobofferPHLData> = {
 
     if (data.agree) {
       lines.push(
-        `Suloinen haikeus valtaa mielesi kun pakkaat kamojasi, mutta ei pitkäksi aikaa. Maisemanvaihto tekee sinulle hyvää.`,
+        `Suloinen haikeus valtaa mielesi kun pakkaat kamojasi, mutta ei pitkäksi aikaa. Maisemanvaihto tekee sinulle hyvää.`
       );
     } else {
-      lines.push(
-        `Ei sitten. Tehtävään palkataan __${data.otherManager}__.`,
-      );
+      lines.push(`Ei sitten. Tehtävään palkataan __${data.otherManager}__.`);
     }
 
     return lines;
@@ -135,17 +132,17 @@ const event: MHMEvent<JobofferPHLData> = {
         call(hireManager, manager, offerer),
         call(setBalance, manager, 700000),
         ...["coach", "cheer", "insurance", "microphone"].map((s) =>
-          call(setService, manager, s, false),
+          call(setService, manager, s, false)
         ),
         call(setArenaLevel, manager, 3 + cinteger(0, 3)),
         call(setInsuranceExtra, manager, 0),
 
         call(setMorale, oldTeam, 0),
         call(setStrategy, oldTeam, 2),
-        call(setReadiness, oldTeam, 0),
+        call(setReadiness, oldTeam, 0)
       ]);
     }
-  },
+  }
 };
 
 export default event;

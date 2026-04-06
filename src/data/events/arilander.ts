@@ -28,14 +28,16 @@ const event: MHMEvent<ArilanderData> = {
 
     const moraleLoss = difficulty > 2 ? 16 : 10;
 
-    const randomTeam = yield* select(randomTeamFrom(["phl", "division"], false));
+    const randomTeam = yield* select(
+      randomTeamFrom(["phl", "division"], false)
+    );
 
     yield* call(addEvent, {
       eventId,
       manager,
       resolved: true,
       moraleLoss,
-      randomTeam: randomTeam.get("name"),
+      randomTeam: randomTeam.get("name")
     });
     return;
   },
@@ -44,7 +46,7 @@ const event: MHMEvent<ArilanderData> = {
     return [
       `__Sulo Arilander__ ${data.randomTeam}:sta väittää joutuneensa hyväksikäytetyksi juniorivuosinaan pelattuaan valmentamassasi joukkueessa, Jukureissa. Jotkut pelaajista alkavat hieman "vieroksua" sinua, ja päätäsi vaaditaan vadille!
 
-Saat kuitenkin pitää paikkasi, koska todisteita ei ole.`,
+Saat kuitenkin pitää paikkasi, koska todisteita ei ole.`
     ];
   },
 
@@ -55,7 +57,7 @@ Saat kuitenkin pitää paikkasi, koska todisteita ei ole.`,
     const team = yield* select(managersTeam(manager));
 
     yield* call(decrementMorale, team.get("id"), moraleLoss);
-  },
+  }
 };
 
 /*

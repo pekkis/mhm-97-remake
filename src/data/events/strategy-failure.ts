@@ -29,14 +29,14 @@ const event: MHMEvent<StrategyFailureData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `Pelaajasi väsyvät kovaa vauhtia! Heidän kuntopohjansa ei yksinkertaisesti ole kestänyt kiivasta ottelurytmiä.`,
+      `Pelaajasi väsyvät kovaa vauhtia! Heidän kuntopohjansa ei yksinkertaisesti ole kestänyt kiivasta ottelurytmiä.`
     ];
   },
 
@@ -44,7 +44,7 @@ const event: MHMEvent<StrategyFailureData> = {
     const manager = data.manager;
     const team = yield* select(managersTeamId(manager));
     yield* call(incrementReadiness, team, -3);
-  },
+  }
 };
 
 export default event;

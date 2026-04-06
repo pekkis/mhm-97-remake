@@ -28,7 +28,7 @@ const letters = [
   (data: PsychoMailData) =>
     `__${data.otherManager}__ lähettää sinulle Tiukukoskelta kirjeen, josta et ota mitään tolkkua.`,
   (data: PsychoMailData) =>
-    `__${data.otherManager}__ lähettää sinulle Tiukukoskelta kirjeen, jonka hänelle "ovat sanelleet Sami Sammakko, Toni Tiikeri ja Ossi Olifantti".`,
+    `__${data.otherManager}__ lähettää sinulle Tiukukoskelta kirjeen, jonka hänelle "ovat sanelleet Sami Sammakko, Toni Tiikeri ja Ossi Olifantti".`
 ];
 
 const eventId = "psychoMail";
@@ -54,7 +54,7 @@ const event: MHMEvent<PsychoMailData> = {
     }
 
     const psychoManager = yield* select((state: any) =>
-      state.game.getIn(["managers", psycho]),
+      state.game.getIn(["managers", psycho])
     );
 
     yield* call(addEvent, {
@@ -62,7 +62,7 @@ const event: MHMEvent<PsychoMailData> = {
       manager,
       otherManager: psychoManager.get("name"),
       letter: cinteger(0, 4),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -71,7 +71,7 @@ const event: MHMEvent<PsychoMailData> = {
     return [letters[data.letter](data)];
   },
 
-  process: function* (_data) {},
+  process: function* (_data) {}
 };
 
 export default event;

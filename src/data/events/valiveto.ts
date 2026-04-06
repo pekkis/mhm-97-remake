@@ -44,14 +44,14 @@ const event: MHMEvent<ValivetoData> = {
       eventId,
       manager,
       newArenaLevel,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (_data) => {
     return [
-      `Salaperäinen rahoitusyhtiö __Väliveto Inc.__ kustantaa hallinne laajennuksen!`,
+      `Salaperäinen rahoitusyhtiö __Väliveto Inc.__ kustantaa hallinne laajennuksen!`
     ];
   },
 
@@ -60,7 +60,7 @@ const event: MHMEvent<ValivetoData> = {
     const newArenaLevel = data.newArenaLevel;
 
     yield* call(setArenaLevel, manager, newArenaLevel);
-  },
+  }
 };
 
 export default event;

@@ -35,7 +35,7 @@ const event: MHMEvent<UndqvistData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -44,14 +44,14 @@ const event: MHMEvent<UndqvistData> = {
     return [
       `Pankki, jossa joukkueen tili (tai velka) on, __menee konkurssiin__! Kaikki pankissa uinuvat säästöt, velat ja sijoitukset ovat ikuisiksi ajoiksi mennyttä. Kansa vaatii rahojaan takaisin, mutta turhaan.
 
-Pankinjohtaja Sulf Undqvist valittelee tapahtunutta ja matkustaa toipumaan Gaymansaarten huvilalleen.`,
+Pankinjohtaja Sulf Undqvist valittelee tapahtunutta ja matkustaa toipumaan Gaymansaarten huvilalleen.`
     ];
   },
 
   process: function* (data) {
     const manager = data.manager;
     yield* call(setBalance, manager, 0);
-  },
+  }
 };
 
 export default event;

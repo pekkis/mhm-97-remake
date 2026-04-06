@@ -46,7 +46,7 @@ const event: MHMEvent<ScoreboardData> = {
       manager,
       otherManager: random.get("name"),
       amount: 250000,
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -55,7 +55,7 @@ const event: MHMEvent<ScoreboardData> = {
     return [
       `Hallisi tulostaulu on pudonnut keskellä yötä! Eräs pelaajasi löytää mustan kommandopipon pukuhuoneen roskiksesta, mutta tekijää ei saada kiinni.
 
-Manageri __${data.otherManager}__ soittaa ja valittelee tapahtunutta. Korjauskustannukset nousevat ${a(data.amount)} pekkaan!`,
+Manageri __${data.otherManager}__ soittaa ja valittelee tapahtunutta. Korjauskustannukset nousevat ${a(data.amount)} pekkaan!`
     ];
   },
 
@@ -64,7 +64,7 @@ Manageri __${data.otherManager}__ soittaa ja valittelee tapahtunutta. Korjauskus
     const amount = data.amount;
 
     yield* call(decrementBalance, manager, amount);
-  },
+  }
 };
 
 export default event;

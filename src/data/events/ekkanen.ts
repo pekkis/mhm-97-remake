@@ -5,7 +5,7 @@ import {
   managersTeamId,
   managersDifficulty,
   managersArena,
-  managersBalance,
+  managersBalance
 } from "../selectors";
 import { incrementStrength } from "../../sagas/team";
 import { setArenaLevel, incrementBalance } from "../../sagas/manager";
@@ -55,14 +55,14 @@ const event: MHMEvent<EkkanenData> = {
       expandArena,
       giveMoney,
       resolved: true,
-      duration: 6,
+      duration: 6
     });
     return;
   },
 
   render: (data) => {
     const t = [
-      `Tisa Ekkanen, loistava NHL-pelaaja, palaa kotimaahan monien vuosien jälkeen. Hän liittyy joukkueeseen ilmaiseksi!`,
+      `Tisa Ekkanen, loistava NHL-pelaaja, palaa kotimaahan monien vuosien jälkeen. Hän liittyy joukkueeseen ilmaiseksi!`
     ];
 
     if (data.expandArena) {
@@ -95,7 +95,7 @@ const event: MHMEvent<EkkanenData> = {
     if (data.giveMoney) {
       yield* call(incrementBalance, manager, amount);
     }
-  },
+  }
 };
 
 export default event;

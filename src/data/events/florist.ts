@@ -39,7 +39,7 @@ const event: MHMEvent<FloristData> = {
       manager,
       team: team.get("id"),
       teamName: team.get("name"),
-      resolved: true,
+      resolved: true
     });
     return;
   },
@@ -48,14 +48,14 @@ const event: MHMEvent<FloristData> = {
     return [
       `Liigasta:
 
-__${data.teamName}__ on kokenut suuren menetyksen! Heidän lupaava, nuori sentterinsä lopettaa jääkiekkouransa floristi-opintojen takia!`,
+__${data.teamName}__ on kokenut suuren menetyksen! Heidän lupaava, nuori sentterinsä lopettaa jääkiekkouransa floristi-opintojen takia!`
     ];
   },
 
   process: function* (data) {
     const team = data.team;
     yield* call(decrementStrength, team, 13);
-  },
+  }
 };
 
 export default event;

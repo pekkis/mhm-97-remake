@@ -36,14 +36,14 @@ const event: MHMEvent<PstudioData> = {
       eventId,
       manager,
       moraleLoss,
-      resolved: true,
+      resolved: true
     });
     return;
   },
 
   render: (data) => {
     return [
-      `__P-Studio__ tekee reportaasin joukkueenne verorästien takia. Juttu on valetta, mutta se laskee moraalia kun pelaajat pelkäävät palkanmaksun viivästymistä.`,
+      `__P-Studio__ tekee reportaasin joukkueenne verorästien takia. Juttu on valetta, mutta se laskee moraalia kun pelaajat pelkäävät palkanmaksun viivästymistä.`
     ];
   },
 
@@ -53,7 +53,7 @@ const event: MHMEvent<PstudioData> = {
     const team = yield* select(managersTeamId(manager));
 
     yield* call(decrementMorale, team, moraleLoss);
-  },
+  }
 };
 
 export default event;

@@ -26,14 +26,14 @@ const event: MHMEvent<KarijurriData> = {
       manager,
       strength: 15,
       resolved: true,
-      duration: 6,
+      duration: 6
     });
     return;
   },
 
   render: (data) => {
     return [
-      `NHL on lakossa ${data.duration} ottelun ajan, ja __Kari Jurri__ saapuu Denveristä, Coloradosta, joukkueeseesi pitämään kuntoaan yllä!`,
+      `NHL on lakossa ${data.duration} ottelun ajan, ja __Kari Jurri__ saapuu Denveristä, Coloradosta, joukkueeseesi pitämään kuntoaan yllä!`
     ];
   },
 
@@ -44,7 +44,7 @@ const event: MHMEvent<KarijurriData> = {
     const team = yield* select(managersTeam(manager));
 
     yield* call(addEffect, team.get("id"), ["strength"], strength, duration);
-  },
+  }
 };
 
 /*

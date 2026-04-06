@@ -33,14 +33,14 @@ const event: MHMEvent<PakibetteriData> = {
       manager,
       amount: 150000,
       resolved: false,
-      duration: 6,
+      duration: 6
     });
   },
 
   options: () =>
     ({
       agree: "Suostun.",
-      disagree: "En suostu.",
+      disagree: "En suostu."
     }) as any,
 
   resolve: function* (data, value) {
@@ -54,7 +54,7 @@ const event: MHMEvent<PakibetteriData> = {
 
   render: (data) => {
     const lines = [
-      `NHL-seura Florida Panthersin kykyjenetsijä ehdottaa: eestiläinen pakki Paki-Betteri Erg kiinnostaa heitä, mutta he haluavat ensin nähdä hänen taitonsa. Suostutko ottamaan Ergin joukkueeseen, kun Panthers maksaisi joukkueellenne ${data.duration} ottelun koeajasta ${a(data.amount)} pekkaa?`,
+      `NHL-seura Florida Panthersin kykyjenetsijä ehdottaa: eestiläinen pakki Paki-Betteri Erg kiinnostaa heitä, mutta he haluavat ensin nähdä hänen taitonsa. Suostutko ottamaan Ergin joukkueeseen, kun Panthers maksaisi joukkueellenne ${data.duration} ottelun koeajasta ${a(data.amount)} pekkaa?`
     ];
 
     if (!data.resolved) return lines;
@@ -63,7 +63,7 @@ const event: MHMEvent<PakibetteriData> = {
       lines.push(`Paki-Betteri ei liity joukkueeseen.`);
     } else {
       lines.push(
-        `Paki-Betteri liittyy joukkueeseen. Hänhän tuntuisi olevan oikein jykevä peruspuolustaja!`,
+        `Paki-Betteri liittyy joukkueeseen. Hänhän tuntuisi olevan oikein jykevä peruspuolustaja!`
       );
     }
 
@@ -81,7 +81,7 @@ const event: MHMEvent<PakibetteriData> = {
       yield* call(incrementBalance, manager, amount);
       yield* call(addOpponentEffect, team, ["strength"], strength, duration);
     }
-  },
+  }
 };
 
 export default event;
