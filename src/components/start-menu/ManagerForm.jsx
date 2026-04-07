@@ -66,25 +66,22 @@ const ManagerForm = (props) => {
                 <LabelDiv>Joukkue</LabelDiv>
 
                 <Select name="team" value={values.team} onChange={handleChange}>
-                  {competitions
-                    .map((c) => {
-                      return (
-                        <optgroup key={c.get("id")} label={c.get("name")}>
-                          {c
-                            .get("teams")
-                            .map((t) => teams[t])
-                            .sortBy((t) => t.name)
-                            .map((t) => {
-                              return (
-                                <option key={t.id} value={t.id}>
-                                  {t.name}
-                                </option>
-                              );
-                            })}
-                        </optgroup>
-                      );
-                    })
-                    .toList()}
+                  {Object.values(competitions).map((c) => {
+                    return (
+                      <optgroup key={c.id} label={c.name}>
+                        {c.teams
+                          .map((t) => teams[t])
+                          .toSorted((a, b) => a.name.localeCompare(b.name))
+                          .map((t) => {
+                            return (
+                              <option key={t.id} value={t.id}>
+                                {t.name}
+                              </option>
+                            );
+                          })}
+                      </optgroup>
+                    );
+                  })}
                 </Select>
               </Field>
 
