@@ -5,7 +5,7 @@ import { dismissNotification } from "../../../ducks/notification";
 export default connect(
   (state) => ({
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
-    notifications: state.notification.get("notifications")
+    notifications: state.notification.notifications
   }),
   { dismissNotification }
 )(Notifications);
