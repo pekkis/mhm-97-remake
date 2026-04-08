@@ -7,5 +7,5 @@ export default connect((state) => ({
   teams: state.game.teams,
   competitions: state.game.competitions,
   events: state.event.events,
-  news: state.news.get("news")
+  news: state.news.news
 }))(ManagerInfo);

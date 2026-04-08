@@ -6,7 +6,7 @@ export default connect((state) => ({
   managers: state.manager.get("managers"),
   teams: state.game.teams,
   events: state.event.events,
-  news: state.news.get("news"),
+  news: state.news.news,
   advanceEnabled: state.ui.advanceEnabled,
-  announcements: state.news.get("announcements")
+  announcements: state.news.announcements
 }))(News);

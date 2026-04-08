@@ -5,7 +5,6 @@ import ManagerInfo from "./containers/ManagerInfoContainer";
 import Header from "./containers/HeaderContainer";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./styled-system/Box";
-import { List } from "immutable";
 
 const News = (props) => {
   const { manager, resolveEvent, events, announcements } = props;
@@ -23,10 +22,9 @@ const News = (props) => {
           resolveEvent={resolveEvent}
         />
         <Announcements
-          announcements={announcements.get(
-            manager.get("id").toString(),
-            List()
-          )}
+          announcements={
+            announcements[manager.get("id").toString()] || []
+          }
         />
       </Box>
     </HeaderedPage>

@@ -11,7 +11,7 @@ export default connect(
     teams: state.game.teams,
     competitions: state.game.competitions,
     events: state.event.events,
-    news: state.news.get("news")
+    news: state.news.news
   }),
   { advance, resolveEvent, saveGame, quitToMainMenu }
 )(GamedayResults);

@@ -12,11 +12,11 @@ export default connect(
     teams: state.game.teams,
     competitions: state.game.competitions,
     events: state.event.events,
-    news: state.news.get("news"),
+    news: state.news.news,
     interestingCompetitions: interestingCompetitions(
       state.manager.get("active")
     )(state),
-    announcements: state.news.get("announcements")
+    announcements: state.news.announcements
   }),
   { advance, resolveEvent, saveGame, quitToMainMenu }
 )(EndOfSeason);

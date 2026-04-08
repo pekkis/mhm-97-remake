@@ -13,7 +13,7 @@ export default connect(
     managers: state.manager.get("managers"),
     teams: state.game.teams,
     events: state.event.events,
-    news: state.news.get("news"),
+    news: state.news.news,
     advanceEnabled: state.ui.advanceEnabled,
     prank: state.ui.prank,
     competitions: state.game.competitions
