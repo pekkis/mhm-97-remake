@@ -25,8 +25,8 @@ const Services = (props) => {
         <h2>Erikoistoimenpiteet</h2>
 
         <ServicesList>
-          {services
-            .map((service, key) => {
+          {Object.entries(services)
+            .map(([key, service]) => {
               const basePrice = basePrices[key];
               return (
                 <div key={key}>
@@ -39,19 +39,18 @@ const Services = (props) => {
                       }}
                     />
                     <label htmlFor={key}>
-                      <strong>{service.get("name")}</strong>
+                      <strong>{service.name}</strong>
                     </label>
                   </div>
 
                   <Markdown>
-                    {service.get("description")(
-                      service.get("price")(basePrice, manager)
+                    {service.description(
+                      service.price(basePrice, manager)
                     )}
                   </Markdown>
                 </div>
               );
-            })
-            .toList()}
+            })}
         </ServicesList>
       </Box>
     </HeaderedPage>

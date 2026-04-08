@@ -12,10 +12,7 @@ export default function* calculationsPhase() {
   const teams = yield select((state) => state.game.teams);
 
   for (const team of teams) {
-    const readinessIncrementer = strategies.getIn([
-      team.strategy,
-      "incrementReadiness"
-    ]);
+    const readinessIncrementer = strategies[team.strategy].incrementReadiness;
 
     const amountToIncrement = readinessIncrementer(turn);
 
@@ -37,11 +34,11 @@ export default function* calculationsPhase() {
   for (const [managerId, manager] of Object.entries(managers)) {
     const managersServices = Object.entries(manager.services)
       .filter(([, active]) => active)
-      .map(([k]) => [k, services.get(k)]);
+      .map(([k]) => [k, services[k]]);
 
     const serviceCosts = managersServices.reduce((r, [serviceId, service]) => {
       console.log(r, service);
-      return r + service.get("price")(basePrices[serviceId], manager);
+      return r + service.price(basePrices[serviceId], manager);
     }, 0);
 
     yield call(decrementBalance, managerId, serviceCosts);

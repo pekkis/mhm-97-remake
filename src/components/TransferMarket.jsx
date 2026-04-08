@@ -46,11 +46,11 @@ const TransferMarket = (props) => {
                         buyPlayer(manager.id, index);
                       }}
                       block
-                      disabled={balance < playerType.get("buy")}
+                      disabled={balance < playerType.buy}
                     >
-                      <div>{playerType.get("description")}</div>
+                      <div>{playerType.description}</div>
                       <div>
-                        <strong>{currency(playerType.get("buy"))}</strong>
+                        <strong>{currency(playerType.buy)}</strong>
                       </div>
                     </Button>
                   );
@@ -68,9 +68,9 @@ const TransferMarket = (props) => {
                       }}
                       block
                     >
-                      <div>{playerType.get("description")}</div>
+                      <div>{playerType.description}</div>
                       <div>
-                        <strong>{currency(playerType.get("sell"))}</strong>
+                        <strong>{currency(playerType.sell)}</strong>
                       </div>
                     </Button>
                   );

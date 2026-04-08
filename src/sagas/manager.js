@@ -184,10 +184,10 @@ export function* buyPlayer(action) {
     (state) => state.manager.managers[payload.manager]
   );
 
-  const playerType = playerTypes.get(payload.playerType);
-  yield call(decrementBalance, manager.id, playerType.get("buy"));
+  const playerType = playerTypes[payload.playerType];
+  yield call(decrementBalance, manager.id, playerType.buy);
 
-  const skillGain = playerType.get("skill")();
+  const skillGain = playerType.skill();
   yield call(incrementStrength, manager.team, skillGain);
 
   yield call(

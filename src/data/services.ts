@@ -1,8 +1,15 @@
-import { OrderedMap, Map } from "immutable";
 import { amount as a } from "../services/format";
+import type { Manager } from "../ducks/manager";
 
-const services = OrderedMap({
-  cheer: Map({
+export type ServiceDefinition = {
+  name: string;
+  description: (price: number) => string;
+  price: (basePrice: number, manager: Manager) => number;
+  effect: (competition: string, phase: number) => number;
+};
+
+const services: Record<string, ServiceDefinition> = {
+  cheer: {
     name: "Kannustusryhmä",
     description: (price) =>
       `Palkatut kannattajat kohottavat taistelutahtoa. Ryhmä matkustaa myös vierasotteluihin, ja kustantaa __${a(
@@ -18,8 +25,8 @@ const services = OrderedMap({
       }
       return 6;
     }
-  }),
-  microphone: Map({
+  },
+  microphone: {
     name: "Mikrofoni vastustajan vaihtoaitiossa",
     description: (price) =>
       `Salainen mikrofoni vastustajan aitiossa, suoraan valmentajan edessä, antaa yllättävän edun! Vakoilujärjestelmän ylläpito maksaa __${a(
@@ -40,9 +47,9 @@ const services = OrderedMap({
       }
       return 10;
     }
-  }),
+  },
 
-  coach: Map({
+  coach: {
     name: "Maalivahtivalmentaja",
     description: (price) =>
       `Entinen huippuveskari, Hari "Hilppa" Jalme, on ryhtynyt valmentajaksi! Hän piiskaa maalivahtinne huippukuntoon ainoastaan __${a(
@@ -55,9 +62,9 @@ const services = OrderedMap({
       }
       return 10;
     }
-  }),
+  },
 
-  insurance: Map({
+  insurance: {
     name: "Vakuutus",
     description: (price) =>
       `Vakuutusyhtiö Etelälän kokonaisvaltainen vakuutuspaketti maksaa __${a(
@@ -65,14 +72,10 @@ const services = OrderedMap({
       )}__ pekkaa / vuoro, ja antaa suojan vahinkotapauksien varalta. Paitsi silloin kun ketkut vakuutustarkastaja havaitsevat _vilppiä_!`,
     price: (basePrice, manager) =>
       basePrice +
-      (manager.getIn(["arena", "level"]) + 1) * 1000 +
-      manager.get("insuranceExtra"),
+      (manager.arena.level + 1) * 1000 +
+      manager.insuranceExtra,
     effect: () => 0
-  })
-});
+  }
+};
 
 export default services;
-
-/*
-IF veikko = 1 AND dotte = 0 THEN LOCATE 8, 1: PRINT "Vakuutusmaksusi: "; 1000 * hjalli + palo
-*/

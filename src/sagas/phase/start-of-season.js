@@ -33,7 +33,7 @@ function* selectStrategy() {
       type: "TEAM_SET_READINESS",
       payload: {
         team,
-        readiness: strategies.getIn([payload.strategy, "initialReadiness"])()
+        readiness: strategies[payload.strategy].initialReadiness()
       }
     })
   ]);

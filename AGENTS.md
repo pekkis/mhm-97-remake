@@ -31,7 +31,7 @@ Recent completed migrations:
 
 ---
 
-## Migration Status (as of 2026-04-06)
+## Migration Status (as of 2026-04-08)
 
 ### Completed de-immutable + TypeScript conversions
 
@@ -43,15 +43,16 @@ Recent completed migrations:
 - `src/data/difficulty-levels.ts` — plain `DifficultyLevel[]` array
 - `src/data/named-effects.ts` — plain `Record<string, NamedEffectFn>` (Immutable Map param removed)
 - `src/services/effects.ts` — fully typed with plain `Team` + `TeamEffect` (no more Immutable)
-- `src/services/round-robin.ts` — native arrays, 17 vitest tests
-- `src/services/tournament.ts` — typed, wraps `roundRobin()` in Immutable (band-aid until competitions de-immutable)
+- `src/data/managers.ts` — plain `ManagerDefinition[]` array
+- `src/data/calendar.ts` — typed `CalendarEntry[]` array with `Seed` type
 
 **Reducers (ducks):**
 
 - `src/ducks/prank.ts` — plain `{ pranks: PrankInstance[] }` + immer
 - `src/ducks/ui.ts` — plain `UiState` + immer + discriminated `UiAction` union
 - `src/ducks/event.ts` — immer `produce()`
-- `src/ducks/game.ts` — **root is plain `GameState`** + immer; `teams` is typed `Team[]`; `competitions` is typed `Record<string, Competition>`; `managers` still Immutable
+- `src/ducks/game.ts` — **root is plain `GameState`** + immer; `teams` is typed `Team[]`; `competitions` is typed `Record<string, Competition>`; `managers` is `ManagerDefinition[]`; `flags` is typed `GameFlags`
+- `src/ducks/manager.ts` — plain `ManagerState` + immer (`Manager` type with `ManagerArena`, `ManagerServices`)
 - `src/ducks/betting.ts` — plain `BettingState` + immer (`ChampionshipBet[]`, `Bet[]`)
 - `src/ducks/news.ts` — plain `NewsState` + immer (`string[]` news, `Record<string, string[]>` announcements)
 - `src/ducks/notification.ts` — plain `NotificationState` + immer (`Notification[]`, capped at 3)
@@ -68,11 +69,20 @@ Recent completed migrations:
 ### `GameState` current shape
 
 ```ts
+type GameFlags = {
+  jarko: boolean;
+  usa: boolean;
+  canada: boolean;
+  haanperaMarried: boolean;
+  mauto: boolean;
+  psycho: number | undefined; // NPC manager array index
+};
+
 type GameState = {
   turn: { season: number; round: number; phase: string | undefined }; // PLAIN
-  flags: Record<string, boolean>; // PLAIN
+  flags: GameFlags; // PLAIN — typed per-flag
   serviceBasePrices: Record<string, number>; // PLAIN
-  managers: any; // still Immutable
+  managers: ManagerDefinition[]; // PLAIN — typed array
   competitions: Record<string, Competition>; // PLAIN — typed with full hierarchy
   teams: Team[]; // PLAIN — typed array indexed by team id
   worldChampionshipResults: any; // still Immutable (List of Maps)
@@ -81,15 +91,12 @@ type GameState = {
 
 ### Still Immutable (known remaining)
 
-- `state.game.managers` — Immutable (shared with manager duck)
 - `state.game.worldChampionshipResults` — Immutable `List(Map(...))`
-- `state.manager` — full Immutable duck
 - `state.stats` — full Immutable duck
-- `src/data/events/*.ts` — event registry uses Immutable Map
-- `src/data/calendar.js` — Immutable List
+- `src/data/events.ts` — event registry uses Immutable Map
 - `src/data/services.js` — Immutable OrderedMap/Map
 - `src/data/transfer-market.js` — likely Immutable
-- `src/data/arenas.js`, `src/data/strategies.js` — likely Immutable
+- `src/data/arenas.ts`, `src/data/strategies.js` — likely Immutable
 
 ### Completed: `teams` de-immutable
 
@@ -167,6 +174,77 @@ Full type hierarchy: `GameResult`, `Pairing`, `TeamStat`, `MatchupStat`, `Matchu
 - **`odds()` returned Immutable Map, now returns plain array:** Consumer code changed from `.getIn([id, "odds"])` to `.find(t => t.id === id)?.odds`.
 - **Old `.js` files survive alongside `.ts`:** Vite prefers `.ts` but the dead `.js` files cause confusing grep results. Always delete old files after conversion.
 - **`crisis()` returned `Map({...})`:** Consumers used `.get("amount")`. Converted to return plain object, consumers use `.amount`.
+
+### Completed: `managers` de-immutable
+
+Converted both `state.game.managers` (NPC list) and `state.manager` (player manager duck) from Immutable to typed plain objects.
+
+**Types defined in `src/ducks/manager.ts`:**
+
+```ts
+export type ManagerArena = { level: number; name: string };
+export type ManagerServices = Record<string, boolean>;
+export type Manager = {
+  id: string;
+  name: string;
+  team?: number;
+  difficulty: number;
+  pranksExecuted: number;
+  services: ManagerServices;
+  balance: number;
+  arena: ManagerArena;
+  extra: number;
+  insuranceExtra: number;
+  flags: Record<string, boolean>;
+};
+export type ManagerState = {
+  active: string | undefined;
+  managers: Record<string, Manager>;
+};
+```
+
+**`GameFlags` typed in `src/ducks/game.ts`** — discriminated per-flag: `jarko`, `usa`, `canada`, `haanperaMarried`, `mauto` are `boolean`; `psycho` is `number | undefined` (NPC manager array index). Type-safe `flag()` selector generic over `keyof GameFlags`.
+
+**Scope:** ~25 containers, ~20 components, ~22 event files, ~12 saga files, 3 competition data files, selectors, game service.
+
+### Gotchas learned from managers migration
+
+- **`services.getIn([k, "effect"])` stays Immutable:** `data/services.js` hasn't been migrated yet. Manager's `.services` is plain but the services _definition_ data is still Immutable.
+- **Competition `gameBalance` callbacks receive manager:** `phl.ts`, `division.ts`, `ehl.ts` all had `manager.getIn(["arena", "level"])` and `manager.get("extra")` — easy to miss.
+- **`gameday.js` constructs game facts:** `homeManager.get("id")` / `awayManager.get("id")` in the result object — runtime error, not caught by typecheck.
+- **Rally events passed `Map({ rallyMorale: ... })` as effect extra:** Named effects then read `extra.rallyMorale` which returns `undefined` on an Immutable Map. Caused `RangeError: Expected max to be at most 9007199254740992` in game simulation. Fix: pass plain object.
+- **`Situation.jsx` wrapped manager in `List.of(manager)`:** Needed `{ [manager.id]: manager }` to match `Record<string, Manager>` shape.
+- **Redux DevTools serialize Immutable transparently:** You can't tell from DevTools whether a value is `Map({x: 1})` or `{x: 1}` — both display identically. This makes boundary bugs invisible in DevTools.
+- **`flag("psycho")` stores a number (NPC manager index), not boolean:** Required widening `GameFlags` from `Record<string, boolean>` to per-flag typed union.
+
+### Completed: `calendar` de-immutable
+
+Converted `src/data/calendar.js` from Immutable `List<Map>` to typed `CalendarEntry[]`.
+
+**Types defined in `src/data/calendar.ts`:**
+
+```ts
+type Seed = { competition: string; phase: number };
+export type CalendarEntry = {
+  phases: string[];
+  gamedays: string[];
+  seed: Seed[];
+  title?: string;
+  round: number;
+  transferMarket: boolean;
+  crisisMeeting: boolean;
+  createRandomEvent: boolean;
+  pranks: boolean;
+};
+```
+
+**Scope:** 4 sagas, 5 components (+ Calendar UI component with `when=` callbacks).
+
+### Gotchas learned from calendar migration
+
+- **`Calendar` component's `when` callback receives `(entry, fullCalendar, state)`:** `Current.jsx` accesses `c[turn.round + 1]` (next turn) in addition to the current entry.
+- **`seed.js` saga used `.getIn([round, "seed"], List())`:** Now `calendar[round].seed` with default `[]` in the type.
+- **75 entries verified:** Entry count matched between old Immutable chain-built list and new plain array.
 
 ### Pre-existing issues (not migration-related)
 

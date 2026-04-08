@@ -21,11 +21,11 @@ function* playGame(
   const home = teams[group.teams[pairing.home]];
   const away = teams[group.teams[pairing.away]];
 
-  const homeManager = yield select((state) =>
-    state.manager.managers[home.manager]
+  const homeManager = yield select(
+    (state) => state.manager.managers[home.manager]
   );
-  const awayManager = yield select((state) =>
-    state.manager.managers[away.manager]
+  const awayManager = yield select(
+    (state) => state.manager.managers[away.manager]
   );
 
   const game = {

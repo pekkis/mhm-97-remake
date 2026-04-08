@@ -78,16 +78,9 @@ const event: MHMEvent<DivisionRallyData> = {
       difficultyLevels[difficulty].rallyExtra("division")
     );
 
-    yield* call(
-      addEffect,
-      team,
-      ["morale"],
-      "rally",
-      duration,
-      {
-        rallyMorale: difficultyLevels[difficulty].rallyMorale
-      }
-    );
+    yield* call(addEffect, team, ["morale"], "rally", duration, {
+      rallyMorale: difficultyLevels[difficulty].rallyMorale
+    });
   }
 };
 

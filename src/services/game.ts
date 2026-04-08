@@ -81,12 +81,7 @@ export const simulate = (game: GameInput): GameResult => {
       const svc = manager.services;
       for (const [k, s] of Object.entries(svc)) {
         if (s) {
-          total += (
-            services.getIn([k, "effect"]) as (
-              competition: string,
-              phase: number
-            ) => number
-          )(competitionId, phaseId);
+          total += services[k].effect(competitionId, phaseId);
         }
       }
       managerEffectValues[key] = total;
