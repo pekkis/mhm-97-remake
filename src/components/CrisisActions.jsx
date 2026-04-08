@@ -14,8 +14,8 @@ import { getEffective } from "../services/effects";
 const TransferMarket = (props) => {
   const { manager, teams, competitions, crisisMeeting } = props;
 
-  const balance = manager.get("balance");
-  const team = getEffective(teams[manager.get("team")]);
+  const balance = manager.balance;
+  const team = getEffective(teams[manager.team]);
 
   const crisisInfo = crisis(team, competitions);
 
@@ -48,7 +48,7 @@ const TransferMarket = (props) => {
               balance < crisisInfo.amount || team.morale > CRISIS_MORALE_MAX
             }
             onClick={() => {
-              crisisMeeting(manager.get("id"));
+              crisisMeeting(manager.id);
             }}
           >
             Pidä kriisipalaveri

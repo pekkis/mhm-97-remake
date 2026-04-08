@@ -34,11 +34,11 @@ const Value = styled.div``;
 const ManagerInfo = (props) => {
   const { manager, teams, turn, details } = props;
 
-  const team = getEffective(teams[manager.get("team")]);
+  const team = getEffective(teams[manager.team]);
 
   return (
     <Box p={1} bg="bar">
-      <ManagerName>{manager.get("name")}</ManagerName>
+      <ManagerName>{manager.name}</ManagerName>
 
       {details && (
         <Details>
@@ -54,7 +54,7 @@ const ManagerInfo = (props) => {
 
           <Detail>
             <Title>Raha</Title>
-            <Value>{amount(manager.get("balance"))}</Value>
+            <Value>{amount(manager.balance)}</Value>
           </Detail>
 
           <Detail>

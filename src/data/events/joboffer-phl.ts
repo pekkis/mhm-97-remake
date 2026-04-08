@@ -87,7 +87,7 @@ const event: MHMEvent<JobofferPHLData> = {
 
     if (value !== "agree") {
       const otherManager = yield* select(randomManager());
-      otherManagerName = otherManager.get("name");
+      otherManagerName = otherManager.name;
     }
 
     const resolved = produce(data, (draft) => {

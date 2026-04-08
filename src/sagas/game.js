@@ -230,13 +230,13 @@ export function* seasonStart() {
     */
   }
 
-  const managers = yield select((state) => state.manager.get("managers"));
-  for (const [, manager] of managers) {
+  const managers = yield select((state) => state.manager.managers);
+  for (const [, manager] of Object.entries(managers)) {
     console.log("MANAGER", manager);
 
     // Skip the first season for salary payments.
     if (season > 0) {
-      const managerId = manager.get("id");
+      const managerId = manager.id;
       const team = yield select(managersTeam(managerId));
       const difficulty = yield select(managersDifficulty(managerId));
       const mainCompetition = yield select(managersMainCompetition(managerId));
@@ -260,10 +260,7 @@ export function* seasonStart() {
     }
 
     // Reset extra each season.
-    yield setExtra(
-      manager.get("id"),
-      difficultyLevels[manager.get("difficulty")].extra
-    );
+    yield setExtra(manager.id, difficultyLevels[manager.difficulty].extra);
   }
 
   yield put({

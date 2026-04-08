@@ -22,9 +22,7 @@ const News = (props) => {
           resolveEvent={resolveEvent}
         />
         <Announcements
-          announcements={
-            announcements[manager.get("id").toString()] || []
-          }
+          announcements={announcements[manager.id.toString()] || []}
         />
       </Box>
     </HeaderedPage>

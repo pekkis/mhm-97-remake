@@ -20,16 +20,16 @@ const phl: CompetitionDefinition = {
   },
 
   gameBalance: (phase, facts, manager) => {
-    const arenaLevel = manager.getIn(["arena", "level"]) + 1;
+    const arenaLevel = manager.arena.level + 1;
     if (facts.isLoss) {
-      return manager.get("extra");
+      return manager.extra;
     }
 
     if (facts.isDraw) {
-      return 5000 + 3000 * arenaLevel + manager.get("extra");
+      return 5000 + 3000 * arenaLevel + manager.extra;
     }
 
-    return 10000 + 3000 * arenaLevel + manager.get("extra");
+    return 10000 + 3000 * arenaLevel + manager.extra;
   },
 
   moraleBoost: (phase, facts, manager) => {

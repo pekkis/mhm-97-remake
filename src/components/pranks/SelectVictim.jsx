@@ -14,7 +14,7 @@ const SelectVictim = (props) => {
         </Button>
 
         {competition.teams
-          .filter((teamId) => teamId !== manager.get("team"))
+          .filter((teamId) => teamId !== manager.team)
           .map((teamId) => {
             return (
               <Button key={teamId} block onClick={() => selectVictim(teamId)}>

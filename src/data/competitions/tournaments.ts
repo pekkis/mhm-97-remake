@@ -41,9 +41,7 @@ const tournaments: CompetitionDefinition = {
         state.game.competitions.tournaments.phases[phase].groups[group]
     );
 
-    const managers: any = yield select((state: any) =>
-      state.manager.get("managers")
-    );
+    const managers: any = yield select((state: any) => state.manager.managers);
     const teams: any[] = yield select((state: any) => state.game.teams);
 
     for (const stat of tournament.stats as TeamStat[]) {
@@ -54,15 +52,15 @@ const tournaments: CompetitionDefinition = {
 
         if (team.manager !== undefined) {
           const award = tournamentList[group].award;
-          const manager = managers.get(team.manager);
+          const manager = managers[team.manager];
 
           yield all([
             call(
               addAnnouncement,
-              manager.get("id"),
+              manager.id,
               `Tilillenne on siirretty __${a(award)}__ pekkaa rahaa. Viiteviesti: joulutauon turnaus, osallistumismaksu, _${tournament.name}_.`
             ),
-            call(incrementBalance, manager.get("id"), award)
+            call(incrementBalance, manager.id, award)
           ]);
         }
       }
@@ -98,21 +96,19 @@ const tournaments: CompetitionDefinition = {
     function* (competitions: Record<string, Competition>) {
       const teams: Team[] = yield select(foreignTeams);
 
-      const managers: any = yield select((state: any) =>
-        state.manager.get("managers")
+      const managers: any = yield select(
+        (state: any) => state.manager.managers
       );
 
       const invitations: any = yield select((state: any) =>
-        state.invitation
-          .invitations
-          .filter((i: any) => i.participate)
+        state.invitation.invitations.filter((i: any) => i.participate)
       );
 
       // Build invited teams grouped by tournament index
       const invited: Map<number, number[]> = new Map();
       for (const inv of invitations) {
         const tournamentIdx = inv.tournament as number;
-        const teamId = managers.getIn([inv.manager, "team"]) as number;
+        const teamId = managers[inv.manager]?.team as number;
         if (!invited.has(tournamentIdx)) {
           invited.set(tournamentIdx, []);
         }

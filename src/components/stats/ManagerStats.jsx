@@ -14,7 +14,7 @@ const TeamStats = (props) => {
 
   const managersStories = stats
     .getIn(["seasons"])
-    .map((season) => season.getIn(["stories", manager.get("id")]));
+    .map((season) => season.getIn(["stories", manager.id]));
 
   return (
     <div>
@@ -40,7 +40,7 @@ const TeamStats = (props) => {
               .map((c) => competitions[c])
               .map((c) => {
                 const stat = stats.getIn(
-                  ["managers", manager.get("id"), "games", c.id, "0"],
+                  ["managers", manager.id, "games", c.id, "0"],
                   Map({
                     win: 0,
                     draw: 0,

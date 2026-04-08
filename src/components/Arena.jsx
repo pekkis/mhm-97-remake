@@ -22,11 +22,11 @@ const Arena = styled.div`
 const Arenas = (props) => {
   const { manager, teams, improveArena } = props;
 
-  const currentLevel = manager.getIn(["arena", "level"]);
+  const currentLevel = manager.arena.level;
 
   const nextLevel = arenas[currentLevel + 1];
 
-  const canDo = currentLevel < 9 && manager.get("balance") >= nextLevel.price;
+  const canDo = currentLevel < 9 && manager.balance >= nextLevel.price;
 
   return (
     <HeaderedPage>
@@ -57,7 +57,7 @@ const Arenas = (props) => {
               block
               disabled={!canDo}
               onClick={() => {
-                improveArena(manager.get("id"));
+                improveArena(manager.id);
               }}
             >
               <div>Paranna halliolosuhteitasi</div>

@@ -41,7 +41,7 @@ const event: MHMEvent<OneckyData> = {
       manager,
       team: team.id,
       teamName: team.name,
-      otherManager: random.get("name"),
+      otherManager: random.name,
       resolved: true
     });
     return;

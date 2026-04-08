@@ -49,11 +49,11 @@ const event: MHMEvent<ArenaBurnsData> = {
     }
 
     const currentArena = yield* select(managersArena(manager));
-    if (currentArena.get("level") <= 5) {
+    if (currentArena.level <= 5) {
       return;
     }
 
-    const newArenaLevel = currentArena.get("level") - 3;
+    const newArenaLevel = currentArena.level - 3;
 
     const hasInsurance = yield* select(managerHasService(manager, "insurance"));
     const amount = !hasInsurance ? 0 : arenas[newArenaLevel].price * 3;

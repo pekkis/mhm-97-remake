@@ -15,7 +15,7 @@ const TableRow = styled.tr`
 const Table = (props) => {
   const { managers, teams, division, isClone } = props;
   const colors = division.colors;
-  const managerTeams = managers.map((p) => p.get("team"));
+  const managerTeams = Object.values(managers).map((p) => p.team);
   const tbl = division.stats.map((entry) => ({
     ...entry,
     managerControlled: managerTeams.includes(entry.id)

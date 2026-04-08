@@ -93,12 +93,12 @@ export function* setSeasonStat(path, value) {
 }
 
 export function* createSeasonStories() {
-  const managers = yield select((state) => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.managers);
 
   const stats = yield select((state) => state.stats.get("currentSeason"));
 
-  for (const [managerId, manager] of managers) {
-    const teamId = manager.get("team");
+  for (const [managerId, manager] of Object.entries(managers)) {
+    const teamId = manager.team;
 
     const mainCompetition = yield select(managersMainCompetition(managerId));
 

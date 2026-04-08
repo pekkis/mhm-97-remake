@@ -6,8 +6,8 @@ import { betChampion } from "../betting";
 import { setActiveManager } from "../manager";
 
 function* selectStrategy() {
-  const managers = yield select((state) => state.manager.get("managers"));
-  yield call(setActiveManager, managers.first().get("id"));
+  const managers = yield select((state) => state.manager.managers);
+  yield call(setActiveManager, Object.values(managers)[0].id);
 
   yield putResolve({
     type: "GAME_SET_PHASE",
@@ -17,8 +17,8 @@ function* selectStrategy() {
   const action = yield take("MANAGER_SELECT_STRATEGY");
   const { payload } = action;
 
-  const team = yield select((state) =>
-    state.manager.getIn(["managers", payload.manager, "team"])
+  const team = yield select(
+    (state) => state.manager.managers[payload.manager]?.team
   );
 
   yield all([

@@ -111,7 +111,7 @@ Lukematon määrä fanituotteita ja muuta krääsää tuhoutuu. Lasku kohoaa ${a
       yield* call(
         incrementInsuranceExtra,
         manager,
-        40 * (currentArena.get("level") + 1)
+        40 * (currentArena.level + 1)
       );
     }
   }

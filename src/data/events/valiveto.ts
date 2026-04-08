@@ -34,11 +34,11 @@ const event: MHMEvent<ValivetoData> = {
     }
 
     const currentArena = yield* select(managersArena(manager));
-    if (currentArena.get("level") === 9) {
+    if (currentArena.level === 9) {
       return;
     }
 
-    const newArenaLevel = currentArena.get("level") + 1;
+    const newArenaLevel = currentArena.level + 1;
 
     yield* call(addEvent, {
       eventId,

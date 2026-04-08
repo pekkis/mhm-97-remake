@@ -67,9 +67,7 @@ function* ehlAwards() {
     (state: any) => state.game.competitions.ehl.phases[1].groups[0]
   );
 
-  const managers: any = yield select((state: any) =>
-    state.manager.get("managers")
-  );
+  const managers: any = yield select((state: any) => state.manager.managers);
   const teams: any = yield select((state: any) => state.game.teams);
 
   for (const [ranking, stat] of (
@@ -86,11 +84,11 @@ function* ehlAwards() {
 
       if (team.manager !== undefined) {
         const award = awards[ranking];
-        const manager = managers.get(team.manager);
+        const manager = managers[team.manager];
 
         yield all([
-          call(addAnnouncement, manager.get("id"), award.text(award.amount)),
-          call(incrementBalance, manager.get("id"), award.amount)
+          call(addAnnouncement, manager.id, award.text(award.amount)),
+          call(incrementBalance, manager.id, award.amount)
         ]);
       } else {
         yield call(incrementStrength, team.id, awards[ranking].strength);
@@ -145,7 +143,7 @@ const ehl: CompetitionDefinition = {
       return 0;
     }
 
-    const arenaLevel = manager.getIn(["arena", "level"]) + 1;
+    const arenaLevel = manager.arena.level + 1;
     return 100000 + 20000 * arenaLevel;
   },
 

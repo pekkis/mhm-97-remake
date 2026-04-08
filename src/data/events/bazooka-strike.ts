@@ -32,7 +32,7 @@ const event: MHMEvent<BazookaStrikeData> = {
       manager,
       victim,
       victimTeamName: victimTeam.name,
-      victimManager: victimManager.get("name"),
+      victimManager: victimManager.name,
       resolved: true
     });
   },

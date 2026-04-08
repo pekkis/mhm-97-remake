@@ -14,7 +14,7 @@ import Tab from "./ui/Tab";
 const TransferMarket = (props) => {
   const { manager, buyPlayer, sellPlayer } = props;
 
-  const balance = manager.get("balance");
+  const balance = manager.balance;
   const [tab, setTab] = useState(0);
 
   return (
@@ -43,7 +43,7 @@ const TransferMarket = (props) => {
                     <Button
                       key={index}
                       onClick={() => {
-                        buyPlayer(manager.get("id"), index);
+                        buyPlayer(manager.id, index);
                       }}
                       block
                       disabled={balance < playerType.get("buy")}
@@ -64,7 +64,7 @@ const TransferMarket = (props) => {
                     <Button
                       key={index}
                       onClick={() => {
-                        sellPlayer(manager.get("id"), index);
+                        sellPlayer(manager.id, index);
                       }}
                       block
                     >

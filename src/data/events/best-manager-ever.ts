@@ -33,7 +33,7 @@ const event: MHMEvent<BestManagerEverData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      otherManager: random.get("name"),
+      otherManager: random.name,
       resolved: true
     });
     return;

@@ -12,7 +12,7 @@ const CurrentEntry = styled.div`
 const Current = (props) => {
   const { invitations, manager, teams, className } = props;
 
-  const team = teams[manager.get("team")];
+  const team = teams[manager.team];
 
   return (
     <div className={className}>

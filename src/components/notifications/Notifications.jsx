@@ -7,15 +7,13 @@ const Notifications = (props) => {
 
   return (
     <div className={className}>
-      {notifications
-        .toReversed()
-        .map((n) => (
-          <Notification
-            key={n.id}
-            dismiss={dismissNotification}
-            notification={n}
-          />
-        ))}
+      {notifications.toReversed().map((n) => (
+        <Notification
+          key={n.id}
+          dismiss={dismissNotification}
+          notification={n}
+        />
+      ))}
     </div>
   );
 };

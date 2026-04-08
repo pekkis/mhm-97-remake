@@ -160,13 +160,16 @@ const getEventId = (predefined?: string): string | undefined => {
 export default function* eventCreationPhase() {
   yield call(setPhase, "event-creation");
 
-  const managers = yield select((state) => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.managers);
   const round = yield select((state) => state.game.turn.round);
 
   const calendarEntry = calendar.get(round);
 
   if (calendarEntry.get("createRandomEvent")) {
-    for (const [, manager] of managers) {
+    for (const [, manager] of Object.entries(managers) as [
+      string,
+      { id: string }
+    ][]) {
       const eventId = getEventId();
 
       if (!eventId) {
@@ -178,7 +181,7 @@ export default function* eventCreationPhase() {
         return;
       }
 
-      yield call(events.get(eventId).create, { manager: manager.get("id") });
+      yield call(events.get(eventId).create, { manager: manager.id });
     }
   }
 }

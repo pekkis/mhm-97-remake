@@ -3,7 +3,7 @@ import Stats from "../Stats";
 import type { RootState } from "../../config/redux";
 
 const mapStateToProps = (state: RootState) => ({
-  manager: state.manager.getIn(["managers", state.manager.get("active")]),
+  manager: state.manager.managers[state.manager.active!],
   teams: state.game.teams,
   competitions: state.game.competitions,
   stats: state.stats,

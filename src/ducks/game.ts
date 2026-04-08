@@ -2,6 +2,7 @@ import { produce } from "immer";
 
 import teamDefs from "../data/teams";
 import managers from "../data/managers";
+import type { ManagerDefinition } from "../data/managers";
 
 import competitionList from "../data/competitions";
 import { META_QUIT_TO_MAIN_MENU, META_GAME_LOAD_STATE } from "./meta";
@@ -37,11 +38,20 @@ export type Team = {
   manager?: string;
 };
 
+export type GameFlags = {
+  jarko: boolean;
+  usa: boolean;
+  canada: boolean;
+  haanperaMarried: boolean;
+  mauto: boolean;
+  psycho: number | undefined;
+};
+
 type GameState = {
   turn: { season: number; round: number; phase: string | undefined };
-  flags: Record<string, boolean>;
+  flags: GameFlags;
   serviceBasePrices: Record<string, number>;
-  managers: any;
+  managers: ManagerDefinition[];
   competitions: Record<string, Competition>;
   teams: Team[];
   worldChampionshipResults: any;
@@ -49,7 +59,14 @@ type GameState = {
 
 const defaultState: GameState = {
   turn: { season: 0, round: 0, phase: undefined },
-  flags: { jarko: false, usa: false, canada: false },
+  flags: {
+    jarko: false,
+    usa: false,
+    canada: false,
+    haanperaMarried: false,
+    mauto: false,
+    psycho: undefined
+  },
   serviceBasePrices: {
     insurance: 1000,
     coach: 3200,
@@ -293,7 +310,9 @@ export default function gameReducer(
 
     case "GAME_SET_FLAG":
       return produce(state, (draft) => {
-        draft.flags[payload.flag] = payload.value;
+        (draft.flags as Record<string, GameFlags[keyof GameFlags]>)[
+          payload.flag
+        ] = payload.value;
       });
 
     case "GAME_SET_SERVICE_BASE_PRICE":

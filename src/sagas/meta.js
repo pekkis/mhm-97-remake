@@ -57,11 +57,11 @@ function* mainMenu() {
 
 export function* gameSave(action) {
   const manager = yield select((state) =>
-    state.manager.getIn(["managers", state.manager.get("active")])
+    state.manager.managers[state.manager.active]
   );
   const state = yield select((state) => state);
   yield call(save, state);
-  yield call(addNotification, manager.get("id"), "Peli tallennettiin.");
+  yield call(addNotification, manager.id, "Peli tallennettiin.");
 }
 
 function* gameLoad(action) {

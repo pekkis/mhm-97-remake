@@ -56,7 +56,7 @@ const event: MHMEvent<ForeignLegionData> = {
 
     const duration = 1000;
     const random = yield* select(randomManager());
-    const random2 = yield* select(randomManager([random.get("id")]));
+    const random2 = yield* select(randomManager([random.id]));
 
     yield* call(addEvent, {
       eventId,
@@ -64,8 +64,8 @@ const event: MHMEvent<ForeignLegionData> = {
       duration,
       team: team.id,
       teamName: team.name,
-      managerName: random.get("name"),
-      managerName2: random2.get("name"),
+      managerName: random.name,
+      managerName2: random2.name,
       resolved: true
     });
     return;

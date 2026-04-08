@@ -29,7 +29,7 @@ const Invitations = (props) => {
 
               <Button
                 block
-                onClick={() => acceptInvitation(manager.get("id"), i.id)}
+                onClick={() => acceptInvitation(manager.id, i.id)}
                 disabled={i.participate}
               >
                 Hyväksy turnauskutsu

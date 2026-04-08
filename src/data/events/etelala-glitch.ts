@@ -45,7 +45,7 @@ const event: MHMEvent<EtelalaGlitchData> = {
     const manager = data.manager;
 
     const current = yield* select((state: any) =>
-      state.manager.getIn(["managers", manager, "insuranceExtra"])
+      state.manager.managers[manager]?.insuranceExtra
     );
 
     yield* call(incrementInsuranceExtra, manager, 0 - current);

@@ -27,15 +27,15 @@ const Services = (props) => {
         <ServicesList>
           {services
             .map((service, key) => {
-              const basePrice = basePrices.get(key);
+              const basePrice = basePrices[key];
               return (
                 <div key={key}>
                   <div>
                     <Toggle
                       id={key}
-                      checked={manager.getIn(["services", key])}
+                      checked={manager.services[key]}
                       onChange={() => {
-                        toggleService(manager.get("id"), key);
+                        toggleService(manager.id, key);
                       }}
                     />
                     <label htmlFor={key}>

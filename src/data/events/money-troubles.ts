@@ -41,7 +41,7 @@ const event: MHMEvent<MoneyTroublesData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      otherManager: random.get("name"),
+      otherManager: random.name,
       phlTeam: phlTeam.id,
       phlTeamName: phlTeam.name,
       divTeam: divTeam.id,

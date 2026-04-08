@@ -25,7 +25,7 @@ const event: MHMEvent<OtsohalliData> = {
 
     const arena = yield* select(managersArena(manager));
 
-    if (["Mauto Areena", "Otso-Halli"].includes(arena.get("name"))) {
+    if (["Mauto Areena", "Otso-Halli"].includes(arena.name)) {
       return;
     }
 

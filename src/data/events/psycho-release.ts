@@ -4,6 +4,7 @@ import { flag, randomTeamFrom } from "../selectors";
 import { cinteger } from "../../services/random";
 import { setFlag } from "../../sagas/game";
 import type { MHMEvent } from "../../types/base";
+import type { RootState } from "../../config/redux";
 
 /*
 sat85:
@@ -44,8 +45,8 @@ const event: MHMEvent<PsychoReleaseData> = {
       return;
     }
 
-    const psychoManager = yield* select((state: any) =>
-      state.game.managers.getIn([psycho])
+    const psychoManager = yield* select(
+      (state: RootState) => state.game.managers[psycho]
     );
 
     const randomTeam = yield* select(randomTeamFrom(["division"]));
@@ -53,7 +54,7 @@ const event: MHMEvent<PsychoReleaseData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      otherManager: psychoManager.get("name"),
+      otherManager: psychoManager.name,
       otherTeam: randomTeam.name,
       letter: cinteger(0, 4),
       resolved: true

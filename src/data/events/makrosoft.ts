@@ -40,15 +40,15 @@ const event: MHMEvent<MakrosoftData> = {
     const { manager } = data;
 
     const oldManager = yield* select(randomManager());
-    const newManager = yield* select(randomManager([oldManager.get("id")]));
+    const newManager = yield* select(randomManager([oldManager.id]));
 
     const team = yield* select(randomTeamFrom(["phl"]));
 
     yield* call(addEvent, {
       manager,
       eventId,
-      oldManager: oldManager.get("name"),
-      newManager: newManager.get("name"),
+      oldManager: oldManager.name,
+      newManager: newManager.name,
       team: team.id,
       teamName: team.name,
       strengthLoss: 20,

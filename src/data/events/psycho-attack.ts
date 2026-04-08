@@ -52,8 +52,8 @@ const event: MHMEvent<PsychoAttackData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      otherManagerId: random.get("id"),
-      otherManager: random.get("name"),
+      otherManagerId: random.id,
+      otherManager: random.name,
       resolved: true
     });
     return;

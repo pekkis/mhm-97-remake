@@ -44,16 +44,13 @@ const event: MHMEvent<EmbezzlementData> = {
 
     const managerObj = yield* select(managerObject(manager));
 
-    if (!managerObj || managerObj.get("balance") < 100000) {
+    if (!managerObj || managerObj.balance < 100000) {
       return;
     }
 
     const difficulty = yield* select(managersDifficulty(manager));
 
-    const amountEmbezzled = embezzledAmount(
-      managerObj.get("balance"),
-      difficulty
-    );
+    const amountEmbezzled = embezzledAmount(managerObj.balance, difficulty);
 
     const hasInsurance = yield* select(managerHasService(manager, "insurance"));
     const amountReimbursed = hasInsurance

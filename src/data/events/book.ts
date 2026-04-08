@@ -57,7 +57,7 @@ const event: MHMEvent<BookData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      managerName: m.get("name"),
+      managerName: m.name,
       book,
       resolved: true
     });

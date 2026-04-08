@@ -78,8 +78,8 @@ export const simulate = (game: GameInput): GameResult => {
       managerEffectValues[key] = 0;
     } else {
       let total = 0;
-      const svc = manager.get("services");
-      for (const [k, s] of svc.entries()) {
+      const svc = manager.services;
+      for (const [k, s] of Object.entries(svc)) {
         if (s) {
           total += (
             services.getIn([k, "effect"]) as (

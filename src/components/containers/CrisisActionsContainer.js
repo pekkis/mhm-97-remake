@@ -4,8 +4,8 @@ import { crisisMeeting } from "../../ducks/manager";
 export default connect(
   (state) => ({
     turn: state.game.turn,
-    manager: state.manager.getIn(["managers", state.manager.get("active")]),
-    managers: state.manager.get("managers"),
+    manager: state.manager.managers[state.manager.active],
+    managers: state.manager.managers,
     teams: state.game.teams,
     competitions: state.game.competitions,
     events: state.event.events,

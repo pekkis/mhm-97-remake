@@ -62,7 +62,7 @@ const event: MHMEvent<UltimateCrueltyData> = {
     }
 
     const arena = yield* select(managersArena(manager));
-    if (arena.get("level") !== 9) {
+    if (arena.level !== 9) {
       return;
     }
 

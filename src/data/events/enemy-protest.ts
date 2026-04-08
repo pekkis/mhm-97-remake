@@ -47,7 +47,7 @@ const event: MHMEvent<EnemyProtestData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      otherManagerName: otherManager.get("name"),
+      otherManagerName: otherManager.name,
       otherTeam: otherTeam.id,
       otherTeamName: otherTeam.name,
       penalty,

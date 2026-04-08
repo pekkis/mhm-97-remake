@@ -1,6 +1,9 @@
-import { List, Map } from "immutable";
+export type ManagerDefinition = {
+  id: number;
+  name: string;
+};
 
-const managers = List.of(
+const managers: ManagerDefinition[] = [
   "Marcó Harcimó",
   "Franco M. Berg",
   "Hannes DeAnsas",
@@ -17,11 +20,6 @@ const managers = List.of(
   "Juri Simonov",
   "Nykan Hågren",
   "Juri Simonov Jr."
-).map((name, id) => {
-  return Map({
-    name,
-    id
-  });
-});
+].map((name, id) => ({ id, name }));
 
 export default managers;

@@ -94,8 +94,8 @@ const event: MHMEvent<TaxEvasionData> = {
       manager,
       amount: 50000,
       resolved: false,
-      otherManager: otherManager.get("id"),
-      otherManagerName: otherManager.get("name"),
+      otherManager: otherManager.id,
+      otherManagerName: otherManager.name,
       team: team.id,
       teamName: team.name
     });
@@ -168,7 +168,7 @@ const event: MHMEvent<TaxEvasionData> = {
       yield* call(
         incrementInsuranceExtra,
         manager,
-        200 * (arena.get("level") + 1)
+        200 * (arena.level + 1)
       );
     }
   }

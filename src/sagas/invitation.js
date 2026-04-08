@@ -25,9 +25,9 @@ export function* acceptInvitation(managerId, id) {
 }
 
 export function* createInvitations() {
-  const managers = yield select((state) => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.managers);
 
-  for (const [managerId] of managers) {
+  for (const [managerId] of Object.entries(managers)) {
     for (
       let tournamentId = 0;
       tournamentId < tournamentList.length;

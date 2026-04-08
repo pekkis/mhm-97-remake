@@ -47,7 +47,7 @@ const event: MHMEvent<HabadoboData> = {
     const team = yield* select(randomTeamFrom(["phl"], false, []));
     const duration = cinteger(0, 6) + 6;
     const random = yield* select(randomManager());
-    const random2 = yield* select(randomManager([random.get("id")]));
+    const random2 = yield* select(randomManager([random.id]));
 
     yield* call(addEvent, {
       eventId,
@@ -55,8 +55,8 @@ const event: MHMEvent<HabadoboData> = {
       duration,
       team: team.id,
       teamName: team.name,
-      managerName: random.get("name"),
-      newManagerName: random2.get("name"),
+      managerName: random.name,
+      newManagerName: random2.name,
       resolved: true
     });
     return;

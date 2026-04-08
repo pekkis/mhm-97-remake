@@ -4,7 +4,7 @@ import { selectStrategy } from "../../ducks/manager";
 
 export default connect(
   (state) => ({
-    manager: state.manager.getIn(["managers", state.manager.get("active")])
+    manager: state.manager.managers[state.manager.active]
   }),
   { selectStrategy }
 )(SelectStrategy);

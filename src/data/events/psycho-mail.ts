@@ -3,6 +3,7 @@ import { addEvent } from "../../sagas/event";
 import { flag } from "../selectors";
 import { cinteger } from "../../services/random";
 import type { MHMEvent } from "../../types/base";
+import type { RootState } from "../../config/redux";
 
 /*
 sat84:
@@ -53,14 +54,14 @@ const event: MHMEvent<PsychoMailData> = {
       return;
     }
 
-    const psychoManager = yield* select((state: any) =>
-      state.game.managers.getIn([psycho])
+    const psychoManager = yield* select(
+      (state: RootState) => state.game.managers[psycho]
     );
 
     yield* call(addEvent, {
       eventId,
       manager,
-      otherManager: psychoManager.get("name"),
+      otherManager: psychoManager.name,
       letter: cinteger(0, 4),
       resolved: true
     });

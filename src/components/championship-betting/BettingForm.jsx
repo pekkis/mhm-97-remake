@@ -18,7 +18,7 @@ const BettingForm = (props) => {
       }}
       onSubmit={(values) => {
         betChampion(
-          manager.get("id"),
+          manager.id,
           parseInt(values.team, 10),
           parseInt(values.amount, 10),
           teamsAndOdds.find((t) => t.id === parseInt(values.team, 10))?.odds

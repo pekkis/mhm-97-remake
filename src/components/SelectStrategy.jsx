@@ -26,7 +26,7 @@ const SelectStrategy = (props) => {
               <Button
                 block
                 onClick={() => {
-                  selectStrategy(manager.get("id"), strategy.get("id"));
+                  selectStrategy(manager.id, strategy.get("id"));
                 }}
               >
                 Valitse strategia "{strategy.get("name")}"

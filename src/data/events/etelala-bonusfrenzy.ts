@@ -31,7 +31,7 @@ const event: MHMEvent<EtelalaBonusFrenzyData> = {
 
     const arena = yield* select(managersArena(manager));
 
-    const amount = -(30 * (arena.get("level") + 1));
+    const amount = -(30 * (arena.level + 1));
 
     const hasInsurance = yield* select(managerHasService(manager, "insurance"));
 

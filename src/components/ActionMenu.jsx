@@ -8,7 +8,7 @@ import { List } from "immutable";
 
 const ActionMenu = (props) => {
   const { manager, teams, closeMenu, saveGame, quitToMainMenu, turn } = props;
-  const team = getEffective(teams[manager.get("team")]);
+  const team = getEffective(teams[manager.team]);
 
   return (
     <div>

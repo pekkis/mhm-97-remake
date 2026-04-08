@@ -25,11 +25,11 @@ const Pranks = (props) => {
   const phl = competitions.phl;
   const division = competitions.division;
 
-  const difficultyLevel = difficultyLevels[manager.get("difficulty")];
+  const difficultyLevel = difficultyLevels[manager.difficulty];
 
-  const canDo = difficultyLevel.pranksPerSeason > manager.get("pranksExecuted");
+  const canDo = difficultyLevel.pranksPerSeason > manager.pranksExecuted;
 
-  const targetCompetition = phl.teams.includes(manager.get("team"))
+  const targetCompetition = phl.teams.includes(manager.team)
     ? phl
     : division;
 
@@ -48,7 +48,7 @@ const Pranks = (props) => {
 
           {!canDo && (
             <p>
-              Olet jo jäynäyttänyt {manager.get("pranksExecuted")} kertaa tällä
+              Olet jo jäynäyttänyt {manager.pranksExecuted} kertaa tällä
               kaudella. Nähdään ensi vuonna!
             </p>
           )}

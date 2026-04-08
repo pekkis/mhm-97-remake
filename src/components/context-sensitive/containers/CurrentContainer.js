@@ -7,15 +7,15 @@ import { saveGame, quitToMainMenu } from "../../../ducks/meta";
 export default connect(
   (state) => ({
     turn: state.game.turn,
-    manager: state.manager.getIn(["managers", state.manager.get("active")]),
-    managers: state.manager.get("managers"),
+    manager: state.manager.managers[state.manager.active],
+    managers: state.manager.managers,
     teams: state.game.teams,
     competitions: state.game.competitions,
     events: state.event.events,
     news: state.news.news,
-    invitations: state.invitation
-      .invitations
-      .filter((i) => i.manager === state.manager.get("active"))
+    invitations: state.invitation.invitations.filter(
+      (i) => i.manager === state.manager.active
+    )
   }),
   { advance, resolveEvent, saveGame, quitToMainMenu, closeMenu }
 )(Current);

@@ -35,7 +35,7 @@ const event: MHMEvent<ScoreboardData> = {
     const { manager } = data;
 
     const arena = yield* select(managersArena(manager));
-    if (arena.get("level") < 5) {
+    if (arena.level < 5) {
       return;
     }
 
@@ -44,7 +44,7 @@ const event: MHMEvent<ScoreboardData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      otherManager: random.get("name"),
+      otherManager: random.name,
       amount: 250000,
       resolved: true
     });

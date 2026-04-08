@@ -27,7 +27,7 @@ const event: MHMEvent<ConcertData> = {
       eventId,
       manager,
       resolved: true,
-      amount: 10000 + 20000 * (arena.get("level") + 1)
+      amount: 10000 + 20000 * (arena.level + 1)
     });
     return;
   },

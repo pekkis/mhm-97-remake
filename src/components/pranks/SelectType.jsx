@@ -14,7 +14,7 @@ const SelectType = (props) => {
 
           return (
             <Button
-              disabled={!enabled || price > manager.get("balance")}
+              disabled={!enabled || price > manager.balance}
               block
               key={key}
               onClick={() => {

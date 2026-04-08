@@ -24,11 +24,11 @@ import { BETTING_BET_REQUEST } from "../../ducks/betting";
 import { bet } from "../betting";
 
 export default function* actionPhase() {
-  const managers = yield select((state) => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.managers);
 
-  // console.log("HELLUREI?", managers.toJS());
+  // console.log("HELLUREI?", managers);
 
-  yield call(setActiveManager, managers.first().get("id"));
+  yield call(setActiveManager, Object.values(managers)[0].id);
 
   yield put({
     type: "GAME_SET_PHASE",

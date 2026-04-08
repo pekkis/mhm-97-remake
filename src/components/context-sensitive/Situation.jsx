@@ -2,7 +2,6 @@ import React from "react";
 import Table from "../league-table/Table";
 import ResponsiveTable from "../responsive-table/ResponsiveTable";
 import Matchups from "../playoffs/Matchups";
-import { List } from "immutable";
 import Games from "../gameday/Games";
 import Streaks from "../containers/StreaksContainer";
 
@@ -21,13 +20,13 @@ const Situation = (props) => {
             <div key={competition.id}>
               <h3>{competition.name}</h3>
 
-              <Streaks competition={key} team={manager.get("team")} />
+              <Streaks competition={key} team={manager.team} />
 
               {phase.groups
                 .filter(
                   (group) =>
                     phase.groups.length === 1 ||
-                    group.teams.includes(manager.get("team"))
+                    group.teams.includes(manager.team)
                 )
                 .map((group, i) => {
                   return (
@@ -39,7 +38,7 @@ const Situation = (props) => {
                           context={group}
                           round={group.round}
                           teams={teams}
-                          managers={List.of(manager)}
+                          managers={{ [manager.id]: manager }}
                         />
                       </div>
 
@@ -49,7 +48,7 @@ const Situation = (props) => {
                             <h4>Sarjataulukko</h4>
                             <ResponsiveTable>
                               <Table
-                                managers={List.of(manager)}
+                                managers={{ [manager.id]: manager }}
                                 teams={teams}
                                 division={group}
                               />
@@ -61,7 +60,7 @@ const Situation = (props) => {
                             <h4>Tilanne</h4>
                             <ResponsiveTable>
                               <Table
-                                managers={List.of(manager)}
+                                managers={{ [manager.id]: manager }}
                                 teams={teams}
                                 division={group}
                               />
@@ -73,7 +72,7 @@ const Situation = (props) => {
                           <div>
                             <h4>Tilanteet playoff-sarjoissa</h4>
                             <Matchups
-                              managers={List.of(manager)}
+                              managers={{ [manager.id]: manager }}
                               teams={teams}
                               group={group}
                             />

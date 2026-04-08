@@ -26,7 +26,7 @@ const ConfirmPrank = (props) => {
         <Button
           block
           onClick={() => {
-            execute(manager.get("id"), prank.type, prank.victim);
+            execute(manager.id, prank.type, prank.victim);
           }}
         >
           Varmista

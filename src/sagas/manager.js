@@ -24,7 +24,6 @@ import crisis from "../data/crisis";
 import difficultyLevels from "../data/difficulty-levels";
 import arenas from "../data/arenas";
 import { incrementStrength, decrementStrength } from "./team";
-import { Map } from "immutable";
 import r from "../services/random";
 import { addAnnouncement } from "./news";
 import { amount as a } from "../services/format";
@@ -33,26 +32,26 @@ export function* addManager(details) {
   const teamId = parseInt(details.team, 10);
   const mainCompetition = yield select(teamsMainCompetition(teamId));
 
-  const manager = Map({
+  const manager = {
     id: crypto.randomUUID(),
     name: details.name,
     difficulty: parseInt(details.difficulty, 10),
     pranksExecuted: 0,
-    services: Map({
+    services: {
       coach: false,
       insurance: false,
       microphone: false,
       cheer: false
-    }),
+    },
     balance: difficultyLevels[details.difficulty].startBalance,
-    arena: Map({
+    arena: {
       name: details.arena,
       level: mainCompetition === "phl" ? 3 : 0
-    }),
+    },
     extra: 0,
     insuranceExtra: 0,
-    flags: Map()
-  });
+    flags: {}
+  };
 
   yield putResolve({
     type: "MANAGER_ADD",
@@ -61,7 +60,7 @@ export function* addManager(details) {
     }
   });
 
-  yield call(hireManager, manager.get("id"), teamId);
+  yield call(hireManager, manager.id, teamId);
 }
 
 export function* setActiveManager(managerId) {
@@ -72,8 +71,8 @@ export function* setActiveManager(managerId) {
 }
 
 export function* hireManager(managerId, teamId) {
-  const managersCurrentTeam = yield select((state) =>
-    state.manager.getIn(["managers", managerId, "team"])
+  const managersCurrentTeam = yield select(
+    (state) => state.manager.managers[managerId]?.team
   );
 
   if (managersCurrentTeam) {
@@ -115,9 +114,7 @@ export function* renameArena(managerId, name) {
 }
 
 export function* incrementBalance(managerId, amount) {
-  const manager = yield select((state) =>
-    state.manager.getIn(["managers", managerId])
-  );
+  const manager = yield select((state) => state.manager.managers[managerId]);
   if (!manager) {
     throw new Error("INVALID MANAGER", managerId, amount);
   }
@@ -183,15 +180,15 @@ export function* buyPlayer(action) {
 
   const { payload } = action;
 
-  const manager = yield select((state) =>
-    state.manager.getIn(["managers", payload.manager])
+  const manager = yield select(
+    (state) => state.manager.managers[payload.manager]
   );
 
   const playerType = playerTypes.get(payload.playerType);
-  yield call(decrementBalance, manager.get("id"), playerType.get("buy"));
+  yield call(decrementBalance, manager.id, playerType.get("buy"));
 
   const skillGain = playerType.get("skill")();
-  yield call(incrementStrength, manager.get("team"), skillGain);
+  yield call(incrementStrength, manager.team, skillGain);
 
   yield call(
     addNotification,
@@ -216,7 +213,7 @@ export function* improveArena(action) {
   } = action;
 
   const currentArena = yield select(managersArena(manager));
-  const nextArenaLevel = currentArena.get("level") + 1;
+  const nextArenaLevel = currentArena.level + 1;
 
   const newArena = arenas[nextArenaLevel];
 
@@ -307,17 +304,15 @@ export function* toggleService(action) {
 }
 
 export function* afterGameday(competition, phase, groupId, round) {
-  const managers = yield select((state) => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.managers);
 
   const group = yield select(
     (state) =>
       state.game.competitions[competition].phases[phase].groups[groupId]
   );
 
-  for (const [managerId, manager] of managers) {
-    const managersIndex = group.teams.findIndex(
-      (t) => t === manager.get("team")
-    );
+  for (const [managerId, manager] of Object.entries(managers)) {
+    const managersIndex = group.teams.findIndex((t) => t === manager.team);
 
     if (managersIndex === -1) {
       continue;
@@ -354,14 +349,7 @@ export function* afterGameday(competition, phase, groupId, round) {
               )}__ pekan sakkoihin ja __${pointDeduction}__ pisteen menetykseen.`
             ),
             call(decrementBalance, managerId, amount),
-            call(
-              incurPenalty,
-              competition,
-              0,
-              0,
-              manager.get("team"),
-              pointDeduction
-            )
+            call(incurPenalty, competition, 0, 0, manager.team, pointDeduction)
           ]);
         }
         /*
@@ -371,7 +359,7 @@ export function* afterGameday(competition, phase, groupId, round) {
     }
 
     const facts = gameFacts(game, managersIndex);
-    const team = yield select(managersTeamId(manager.get("id")));
+    const team = yield select(managersTeamId(manager.id));
 
     const amount = competitionList[competition].gameBalance(
       phase,
@@ -409,7 +397,7 @@ export function* afterGameday(competition, phase, groupId, round) {
     }
 
     if (amount) {
-      yield call(incrementBalance, manager.get("id"), amount);
+      yield call(incrementBalance, manager.id, amount);
     }
   }
 

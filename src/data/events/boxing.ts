@@ -57,7 +57,7 @@ const event: MHMEvent<BoxingData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      otherManager: random.get("name"),
+      otherManager: random.name,
       resolved: false
     });
   },

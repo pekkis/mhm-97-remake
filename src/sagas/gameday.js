@@ -22,10 +22,10 @@ function* playGame(
   const away = teams[group.teams[pairing.away]];
 
   const homeManager = yield select((state) =>
-    state.manager.getIn(["managers", home.manager])
+    state.manager.managers[home.manager]
   );
   const awayManager = yield select((state) =>
-    state.manager.getIn(["managers", away.manager])
+    state.manager.managers[away.manager]
   );
 
   const game = {
@@ -45,11 +45,11 @@ function* playGame(
     result,
     {
       home: {
-        manager: homeManager && homeManager.get("id"),
+        manager: homeManager && homeManager.id,
         team: home.id
       },
       away: {
-        manager: awayManager && awayManager.get("id"),
+        manager: awayManager && awayManager.id,
         team: away.id
       }
     }

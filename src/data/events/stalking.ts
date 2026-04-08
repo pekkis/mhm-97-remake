@@ -40,7 +40,7 @@ const event: MHMEvent<StalkingData> = {
     yield* call(addEvent, {
       eventId,
       manager,
-      stalker: stalker.get("name"),
+      stalker: stalker.name,
       resolved: true
     });
   },

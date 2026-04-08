@@ -35,7 +35,7 @@ const BettingForm = (props) => {
           values["4"],
           values["5"]
         ];
-        bet(manager.get("id"), coupon, parseInt(values.amount, 10));
+        bet(manager.id, coupon, parseInt(values.amount, 10));
       }}
     >
       {({ values, setFieldValue, handleChange, handleSubmit }) => {

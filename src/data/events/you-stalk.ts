@@ -47,7 +47,7 @@ const event: MHMEvent<YouStalkData> = {
       duration,
       team: team.id,
       teamName: team.name,
-      managerName: random.get("name"),
+      managerName: random.name,
       resolved: true
     });
   },

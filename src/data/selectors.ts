@@ -1,19 +1,15 @@
 import { pipe } from "remeda";
 import r from "../services/random";
 import { victors } from "../services/playoffs";
-import { List, type Map } from "immutable";
+import { List } from "immutable";
 import type { RootState } from "../config/redux";
-import type { Team } from "../ducks/game";
+import type { GameFlags, Team } from "../ducks/game";
+import type { Manager } from "../ducks/manager";
 import type {
   Competition,
   PlayoffGroup,
   TeamStat
 } from "../types/competitions";
-
-/**
- * Immutable Map representing a manager in the manager state.
- */
-type ImmutableManager = Map<string, any>;
 
 type Selector<T> = (state: RootState) => T;
 
@@ -49,14 +45,16 @@ export const teamsManagerId =
     state.game.teams[team]?.manager;
 
 export const teamsManager =
-  (team: number): Selector<ImmutableManager | undefined> =>
-  (state) =>
-    state.manager.getIn(["managers", state.game.teams[team]?.manager]);
+  (team: number): Selector<Manager | undefined> =>
+  (state) => {
+    const managerId = state.game.teams[team]?.manager;
+    return managerId ? state.manager.managers[managerId] : undefined;
+  };
 
 export const managerObject =
-  (manager: string): Selector<ImmutableManager | undefined> =>
+  (manager: string): Selector<Manager | undefined> =>
   (state) =>
-    state.manager.getIn(["managers", manager]);
+    state.manager.managers[manager];
 
 export const managersMainCompetition =
   (manager: string): Selector<string> =>
@@ -75,12 +73,13 @@ export const teamsMainCompetition =
   };
 
 export const managerById =
-  (manager: string): Selector<ImmutableManager | undefined> =>
+  (manager: string): Selector<Manager | undefined> =>
   (state) =>
-    state.manager.getIn(["managers", manager]);
+    state.manager.managers[manager];
 
 export const managersCompetitions = (manager: string) => (state: RootState) => {
-  const team = state.manager.getIn(["managers", manager, "team"]);
+  const team = state.manager.managers[manager]?.team;
+  if (team === undefined) return {};
   return Object.fromEntries(
     Object.entries(state.game.competitions).filter(([, c]) =>
       c.teams.includes(team)
@@ -187,15 +186,13 @@ export const pekkalandianTeams = (state: RootState) =>
 export const managerHasService =
   (manager: string, service: string): Selector<boolean> =>
   (state) => {
-    return state.manager.getIn(["managers", manager, "services", service]);
+    return (state.manager.managers[manager]?.services as any)?.[service];
   };
 
 export const managerWhoControlsTeam =
-  (id: number): Selector<ImmutableManager | undefined> =>
+  (id: number): Selector<Manager | undefined> =>
   (state) => {
-    return state.manager
-      .get("managers")
-      .find((p: ImmutableManager) => p.get("team") === id);
+    return Object.values(state.manager.managers).find((p) => p.team === id);
   };
 
 export const competition = (id: string) => (state: RootState) =>
@@ -208,23 +205,24 @@ export const managerCompetesIn =
     return competitionId in competitions;
   };
 
-export const flag = (flag: string) => (state: RootState) => {
-  return state.game.flags[flag];
-};
+export const flag =
+  <K extends keyof GameFlags>(f: K) =>
+  (state: RootState): GameFlags[K] =>
+    state.game.flags[f];
 
 export const managerFlag =
   (manager: string, flag: string) => (state: RootState) =>
-    state.manager.getIn(["managers", manager, "flags", flag]);
+    state.manager.managers[manager]?.flags?.[flag];
 
 export const managersTeam =
   (manager: string): Selector<Team> =>
   (state) =>
-    state.game.teams[state.manager.getIn(["managers", manager, "team"])];
+    state.game.teams[state.manager.managers[manager]?.team!];
 
 export const managersBalance =
   (manager: string): Selector<number> =>
   (state) =>
-    state.manager.getIn(["managers", manager, "balance"]) as number;
+    state.manager.managers[manager]?.balance as number;
 
 export const managersTeamId =
   (manager: string): Selector<number> =>
@@ -235,7 +233,7 @@ export const managersTeamId =
 export const managersDifficulty =
   (manager: string): Selector<number> =>
   (state) =>
-    state.manager.getIn(["managers", manager, "difficulty"]) as number;
+    state.manager.managers[manager]?.difficulty as number;
 
 export const randomRankedTeam =
   (
@@ -245,10 +243,7 @@ export const randomRankedTeam =
     f: (t: Team) => boolean = () => true
   ): Selector<Team | false> =>
   (state) => {
-    const managerIds: string[] = [];
-    state.manager.get("managers").forEach((m: ImmutableManager) => {
-      managerIds.push(m.get("id"));
-    });
+    const managerIds = Object.keys(state.manager.managers);
 
     const groups =
       state.game.competitions[competitionId].phases[phaseId].groups;
@@ -283,10 +278,9 @@ export const randomTeamFrom =
   (state) => {
     console.log(excluded, "excommunicado");
 
-    const managersTeams: number[] = [];
-    state.manager.get("managers").forEach((p: ImmutableManager) => {
-      managersTeams.push(p.get("team"));
-    });
+    const managersTeams: number[] = Object.values(state.manager.managers)
+      .map((p) => p.team)
+      .filter((t): t is number => t !== undefined);
 
     const teams: Team[] = Object.entries(state.game.competitions)
       .filter(([id]) => competitionIds.includes(id))
@@ -320,30 +314,30 @@ export const interestingCompetitions =
   };
 
 export const randomManager =
-  (exclude: string[] = []): Selector<ImmutableManager> =>
-  (state) => {
+  (exclude: number[] = []) =>
+  (state: RootState) => {
     // Psycho event filter out.
     const psycho = flag("psycho")(state);
     const managers = state.game.managers
-      .filterNot((m: ImmutableManager) => m.get("id") === psycho)
-      .filterNot((m: ImmutableManager) => exclude.includes(m.get("id")));
+      .filter((m) => m.id !== psycho)
+      .filter((m) => !exclude.includes(m.id));
 
-    const random: ImmutableManager = r.pick(managers.toArray());
+    const random = r.pick(managers);
     return random;
   };
 
 export const managersArena = (manager: string) => (state: RootState) => {
-  return state.manager.getIn(["managers", manager, "arena"]);
+  return state.manager.managers[manager]?.arena;
 };
 
 export const managerHasEnoughMoney =
   (manager: string, neededAmount: number): Selector<boolean> =>
   (state) => {
-    const amount = state.manager.getIn(["managers", manager, "balance"]);
+    const amount = state.manager.managers[manager]?.balance;
     return neededAmount <= amount;
   };
 
 export const managerWithId =
-  (id: string): Selector<ImmutableManager | undefined> =>
+  (id: string): Selector<Manager | undefined> =>
   (state) =>
-    state.manager.getIn(["managers", id]);
+    state.manager.managers[id];

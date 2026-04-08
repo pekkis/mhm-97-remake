@@ -8,7 +8,7 @@ export default function* galaPhase() {
   yield call(setPhase, "gala");
 
   const teams = yield select((state) => state.game.teams);
-  const managers = yield select((state) => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.managers);
 
   const phlRegularSeason = yield select(
     (state) => state.game.competitions.phl.phases[0].groups[0]
@@ -52,14 +52,12 @@ export default function* galaPhase() {
   );
 
   const theManager = phlFinalists[phlFinalists.length - 1].manager
-    ? managers.get(phlFinalists[phlFinalists.length - 1].manager)
+    ? managers[phlFinalists[phlFinalists.length - 1].manager]
     : otherManager;
 
   yield call(
     addNews,
-    `Toinen loppuottelija on __${phlFinalists[phlFinalists.length - 1].name}__, jonka manageri _${theManager.get(
-      "name"
-    )}_ on piiskannut hyvään vauhtiin kuluvalla kaudella.`
+    `Toinen loppuottelija on __${phlFinalists[phlFinalists.length - 1].name}__, jonka manageri _${theManager.name}_ on piiskannut hyvään vauhtiin kuluvalla kaudella.`
   );
 
   yield call(

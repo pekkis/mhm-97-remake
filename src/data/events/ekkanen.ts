@@ -44,7 +44,7 @@ const event: MHMEvent<EkkanenData> = {
     const arena = yield* select(managersArena(manager));
     const balance = yield* select(managersBalance(manager));
 
-    const expandArena = difficulty < 4 && arena.get("level") < 5;
+    const expandArena = difficulty < 4 && arena.level < 5;
     const giveMoney = difficulty < 2 && balance < 500000;
 
     yield* call(addEvent, {
@@ -89,7 +89,7 @@ const event: MHMEvent<EkkanenData> = {
     yield* call(incrementStrength, team, strength);
     if (data.expandArena) {
       const arena = yield* select(managersArena(manager));
-      yield* call(setArenaLevel, manager, arena.get("level") + 1);
+      yield* call(setArenaLevel, manager, arena.level + 1);
     }
 
     if (data.giveMoney) {

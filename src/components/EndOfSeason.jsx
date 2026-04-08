@@ -5,7 +5,6 @@ import Header from "./containers/HeaderContainer";
 import HeaderedPage from "./ui/HeaderedPage";
 import Season from "./data/Season";
 import Announcements from "./events/Announcements";
-import { List } from "immutable";
 
 import Box from "./styled-system/Box";
 
@@ -22,10 +21,7 @@ const EndOfSeason = (props) => {
         </h2>
 
         <Announcements
-          announcements={announcements.get(
-            manager.get("id").toString(),
-            List()
-          )}
+          announcements={announcements[manager.id.toString()] || []}
         />
 
         <News manager={manager} news={news} />

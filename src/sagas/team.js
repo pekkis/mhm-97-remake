@@ -4,7 +4,7 @@ import difficultyLevels from "../data/difficulty-levels";
 import { calculateGroupStats } from "./stats";
 
 const getMoraleMinMax = (manager) => {
-  const difficulty = manager ? manager.get("difficulty") : 2;
+  const difficulty = manager ? manager.difficulty : 2;
 
   return {
     min: difficultyLevels[difficulty].moraleMin,

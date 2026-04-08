@@ -6,7 +6,7 @@ const Events = (props) => {
   const { events, manager, resolveEvent } = props;
 
   const managersEvents = Object.values(events).filter(
-    (e) => e.manager === manager.get("id")
+    (e) => e.manager === manager.id
   );
 
   return (

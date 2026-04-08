@@ -30,19 +30,18 @@ export default function* calculationsPhase() {
     }
   }
 
-  const managers = yield select((state) => state.manager.get("managers"));
+  const managers = yield select((state) => state.manager.managers);
 
   const basePrices = yield select((state) => state.game.serviceBasePrices);
 
-  for (const [managerId, manager] of managers.entries()) {
-    const managersServices = manager
-      .get("services")
-      .filter((s) => s)
-      .map((s, k) => services.get(k));
+  for (const [managerId, manager] of Object.entries(managers)) {
+    const managersServices = Object.entries(manager.services)
+      .filter(([, active]) => active)
+      .map(([k]) => [k, services.get(k)]);
 
-    const serviceCosts = managersServices.reduce((r, service, serviceId) => {
+    const serviceCosts = managersServices.reduce((r, [serviceId, service]) => {
       console.log(r, service);
-      return r + service.get("price")(basePrices.get(serviceId), manager);
+      return r + service.get("price")(basePrices[serviceId], manager);
     }, 0);
 
     yield call(decrementBalance, managerId, serviceCosts);
