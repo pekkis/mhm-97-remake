@@ -1,5 +1,4 @@
 import { call, select } from "typed-redux-saga";
-import { Map } from "immutable";
 import { addEvent } from "../../sagas/event";
 import { addEffect } from "../../sagas/team";
 import {
@@ -85,9 +84,9 @@ const event: MHMEvent<DivisionRallyData> = {
       ["morale"],
       "rally",
       duration,
-      Map({
+      {
         rallyMorale: difficultyLevels[difficulty].rallyMorale
-      })
+      }
     );
   }
 };
