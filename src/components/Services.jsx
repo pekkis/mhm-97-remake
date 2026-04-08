@@ -25,32 +25,29 @@ const Services = (props) => {
         <h2>Erikoistoimenpiteet</h2>
 
         <ServicesList>
-          {Object.entries(services)
-            .map(([key, service]) => {
-              const basePrice = basePrices[key];
-              return (
-                <div key={key}>
-                  <div>
-                    <Toggle
-                      id={key}
-                      checked={manager.services[key]}
-                      onChange={() => {
-                        toggleService(manager.id, key);
-                      }}
-                    />
-                    <label htmlFor={key}>
-                      <strong>{service.name}</strong>
-                    </label>
-                  </div>
-
-                  <Markdown>
-                    {service.description(
-                      service.price(basePrice, manager)
-                    )}
-                  </Markdown>
+          {Object.entries(services).map(([key, service]) => {
+            const basePrice = basePrices[key];
+            return (
+              <div key={key}>
+                <div>
+                  <Toggle
+                    id={key}
+                    checked={manager.services[key]}
+                    onChange={() => {
+                      toggleService(manager.id, key);
+                    }}
+                  />
+                  <label htmlFor={key}>
+                    <strong>{service.name}</strong>
+                  </label>
                 </div>
-              );
-            })}
+
+                <Markdown>
+                  {service.description(service.price(basePrice, manager))}
+                </Markdown>
+              </div>
+            );
+          })}
         </ServicesList>
       </Box>
     </HeaderedPage>

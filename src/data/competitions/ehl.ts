@@ -114,8 +114,8 @@ const ehl: CompetitionDefinition = {
     const turn: any = yield select((state: any) => state.game.turn);
     const season = turn.season;
 
-    const ehlTeams: number[] = yield select((state: any) =>
-      state.stats.seasons?.[season - 1]?.medalists ?? [2, 3, 5]
+    const ehlTeams: number[] = yield select(
+      (state: any) => state.stats.seasons?.[season - 1]?.medalists ?? [2, 3, 5]
     );
 
     const foreignTeamIds: number[] = yield select((state: any) =>

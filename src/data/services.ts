@@ -71,9 +71,7 @@ const services: Record<string, ServiceDefinition> = {
         price
       )}__ pekkaa / vuoro, ja antaa suojan vahinkotapauksien varalta. Paitsi silloin kun ketkut vakuutustarkastaja havaitsevat _vilppiä_!`,
     price: (basePrice, manager) =>
-      basePrice +
-      (manager.arena.level + 1) * 1000 +
-      manager.insuranceExtra,
+      basePrice + (manager.arena.level + 1) * 1000 + manager.insuranceExtra,
     effect: () => 0
   }
 };

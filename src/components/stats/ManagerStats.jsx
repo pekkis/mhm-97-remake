@@ -9,8 +9,9 @@ const TeamStats = (props) => {
 
   const [tab, setTab] = useState(0);
 
-  const managersStories = stats.seasons
-    .map((season) => season.stories?.[manager.id]);
+  const managersStories = stats.seasons.map(
+    (season) => season.stories?.[manager.id]
+  );
 
   return (
     <div>
@@ -35,7 +36,9 @@ const TeamStats = (props) => {
             {["phl", "division", "ehl"]
               .map((c) => competitions[c])
               .map((c) => {
-                const stat = stats.managers?.[manager.id]?.games?.[c.id]?.["0"] ?? {
+                const stat = stats.managers?.[manager.id]?.games?.[c.id]?.[
+                  "0"
+                ] ?? {
                   win: 0,
                   draw: 0,
                   loss: 0

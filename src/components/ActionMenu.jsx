@@ -1,10 +1,8 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import Calendar from "./ui/containers/CalendarContainer";
 import { getEffective } from "../services/effects";
 import { CRISIS_MORALE_MAX } from "../data/constants";
 import Button from "./form/Button";
-import { List } from "immutable";
 
 const ActionMenu = (props) => {
   const { manager, teams, closeMenu, saveGame, quitToMainMenu, turn } = props;
@@ -71,7 +69,7 @@ const ActionMenu = (props) => {
           <Calendar
             when={(e, c, s) => {
               return (
-                e.get("gamedays", List()).includes("phl") &&
+                e.gamedays.includes("phl") &&
                 s.game.competitions.phl.phase === 0
               );
             }}

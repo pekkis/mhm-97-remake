@@ -30,7 +30,10 @@ export type SeasonStats = {
 };
 
 export type StatsState = {
-  managers: Record<string, { games: Record<string, Record<string, GameRecord>> }>;
+  managers: Record<
+    string,
+    { games: Record<string, Record<string, GameRecord>> }
+  >;
   currentSeason: SeasonStats | undefined;
   seasons: SeasonStats[];
   streaks: {
@@ -128,10 +131,8 @@ export default function statsReducer(
         streak.win = facts.isWin ? streak.win + 1 : 0;
         streak.draw = facts.isDraw ? streak.draw + 1 : 0;
         streak.loss = facts.isLoss ? streak.loss + 1 : 0;
-        streak.noLoss =
-          facts.isWin || facts.isDraw ? streak.noLoss + 1 : 0;
-        streak.noWin =
-          facts.isLoss || facts.isDraw ? streak.noWin + 1 : 0;
+        streak.noLoss = facts.isWin || facts.isDraw ? streak.noLoss + 1 : 0;
+        streak.noWin = facts.isLoss || facts.isDraw ? streak.noWin + 1 : 0;
 
         // Update manager game stats
         if (manager) {

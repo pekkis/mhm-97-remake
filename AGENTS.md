@@ -255,9 +255,17 @@ Converted `state.stats` from deeply nested Immutable `Map(List(Map(...)))` to ty
 **Types defined in `src/ducks/stats.ts`:**
 
 ```ts
-export type Streak = { win: number; draw: number; loss: number; noLoss: number; noWin: number };
+export type Streak = {
+  win: number;
+  draw: number;
+  loss: number;
+  noLoss: number;
+  noWin: number;
+};
 export type GameRecord = { win: number; draw: number; loss: number };
-export type ManagerGameStats = { games: Record<string, Record<string, GameRecord>> };
+export type ManagerGameStats = {
+  games: Record<string, Record<string, GameRecord>>;
+};
 export type SeasonStats = {
   ehlChampion: number | undefined;
   presidentsTrophy: number | undefined;
@@ -273,7 +281,10 @@ export type StatsState = {
   currentSeason: SeasonStats | undefined;
   seasons: SeasonStats[];
   stories: Record<string, any>;
-  streaks: { team: Record<string, Record<string, Streak>>; manager: Record<string, any> };
+  streaks: {
+    team: Record<string, Record<string, Streak>>;
+    manager: Record<string, any>;
+  };
 };
 ```
 
