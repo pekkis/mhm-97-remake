@@ -27,18 +27,23 @@ export type BettingState = {
 
 const defaultState: BettingState = {
   championshipBets: [],
-  bets: [],
+  bets: []
 };
 
-export const betChampion = (manager: string, team: number, amount: number, odds: number) => {
+export const betChampion = (
+  manager: string,
+  team: number,
+  amount: number,
+  odds: number
+) => {
   return {
     type: BETTING_BET_CHAMPION_REQUEST,
     payload: {
       manager,
       team,
       amount,
-      odds,
-    },
+      odds
+    }
   };
 };
 
@@ -48,14 +53,14 @@ export const bet = (manager: string, coupon: string[], amount: number) => {
     payload: {
       manager,
       coupon,
-      amount,
-    },
+      amount
+    }
   };
 };
 
 export default function bettingReducer(
   state: BettingState = defaultState,
-  action: any,
+  action: any
 ): BettingState {
   const { type, payload } = action;
 

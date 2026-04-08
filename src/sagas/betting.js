@@ -23,7 +23,7 @@ export function* processChampionBets() {
       yield call(
         addAnnouncement,
         bet.manager,
-        `Voitit __${a(amount)}__ pekkaa mestariveikkauksessa. Hyvin veikattu!`,
+        `Voitit __${a(amount)}__ pekkaa mestariveikkauksessa. Hyvin veikattu!`
       );
     }
   }
@@ -31,7 +31,7 @@ export function* processChampionBets() {
 
 export function* bettingResults(round) {
   const pairings = yield select(
-    (state) => state.game.competitions.phl.phases[0].groups[0].schedule[round],
+    (state) => state.game.competitions.phl.phases[0].groups[0].schedule[round]
   );
 
   const facts = pairings.map((p) => resultFacts(p.result, "home"));
@@ -60,19 +60,19 @@ export function* bettingResults(round) {
           addAnnouncement,
           bet.manager,
           `Voitit kavioveikkauksessa __${a(
-            victoryAmount,
+            victoryAmount
           )}__ pekkaa. Rivissäsi oli __${correct}__ oikein. Panoksesi oli __${a(
-            bet.amount,
-          )}__ pekkaa.`,
-        ),
+            bet.amount
+          )}__ pekkaa.`
+        )
       ]);
     } else {
       yield call(
         addAnnouncement,
         bet.manager,
         `Et voittanut kavioveikkauksessa. Rivissäsi oli __${correct}__ oikein. Panoksesi oli __${a(
-          bet.amount,
-        )}__ pekkaa.`,
+          bet.amount
+        )}__ pekkaa.`
       );
     }
   }
@@ -84,17 +84,17 @@ export function* bet(manager, coupon, amount) {
     call(
       addNotification,
       manager,
-      "Kiikutat veikkauskuponkisi lähimmälle S-kioskille. Olkoon onni myötä!",
+      "Kiikutat veikkauskuponkisi lähimmälle S-kioskille. Olkoon onni myötä!"
     ),
     put({
       type: BETTING_BET,
       payload: {
         manager,
         coupon,
-        amount,
-      },
+        amount
+      }
     }),
-    call(decrementBalance, manager, amount),
+    call(decrementBalance, manager, amount)
   ]);
 }
 
@@ -103,7 +103,7 @@ export function* betChampion(manager, team, amount, odds) {
     call(
       addNotification,
       manager,
-      "Kiikutat mestarusveikkauskuponkisi S-kioskille. Olkoon onni myötä!",
+      "Kiikutat mestarusveikkauskuponkisi S-kioskille. Olkoon onni myötä!"
     ),
     put({
       type: BETTING_BET_CHAMPION,
@@ -111,9 +111,9 @@ export function* betChampion(manager, team, amount, odds) {
         manager,
         team,
         amount,
-        odds,
-      },
+        odds
+      }
     }),
-    call(decrementBalance, manager, amount),
+    call(decrementBalance, manager, amount)
   ]);
 }

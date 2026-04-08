@@ -22,7 +22,7 @@ const BettingForm = (props) => {
         3: "",
         4: "",
         5: "",
-        amount: 10000,
+        amount: 10000
       }}
       onSubmit={(values) => {
         console.log(values);
@@ -33,7 +33,7 @@ const BettingForm = (props) => {
           values["2"],
           values["3"],
           values["4"],
-          values["5"],
+          values["5"]
         ];
         bet(manager.get("id"), coupon, parseInt(values.amount, 10));
       }}
