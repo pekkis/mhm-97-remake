@@ -52,6 +52,10 @@ Recent completed migrations:
 - `src/ducks/ui.ts` — plain `UiState` + immer + discriminated `UiAction` union
 - `src/ducks/event.ts` — immer `produce()`
 - `src/ducks/game.ts` — **root is plain `GameState`** + immer; `teams` is typed `Team[]`; `competitions` is typed `Record<string, Competition>`; `managers` still Immutable
+- `src/ducks/betting.ts` — plain `BettingState` + immer (`ChampionshipBet[]`, `Bet[]`)
+- `src/ducks/news.ts` — plain `NewsState` + immer (`string[]` news, `Record<string, string[]>` announcements)
+- `src/ducks/notification.ts` — plain `NotificationState` + immer (`Notification[]`, capped at 3)
+- `src/ducks/invitation.ts` — plain `InvitationState` + immer (`Invitation[]`)
 - `src/ducks/country.ts` — already plain
 - `src/ducks/meta.ts` — typed
 
@@ -81,7 +85,6 @@ type GameState = {
 - `state.game.worldChampionshipResults` — Immutable `List(Map(...))`
 - `state.manager` — full Immutable duck
 - `state.stats` — full Immutable duck
-- `state.betting`, `state.news`, `state.notification`, `state.invitation` — Immutable ducks
 - `src/data/events/*.ts` — event registry uses Immutable Map
 - `src/data/calendar.js` — Immutable List
 - `src/data/services.js` — Immutable OrderedMap/Map
