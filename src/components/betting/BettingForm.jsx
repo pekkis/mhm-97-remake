@@ -4,7 +4,6 @@ import Slider from "rc-slider";
 import { amount as a } from "../../services/format";
 import Button from "../form/Button";
 import TeamName from "../team/Name";
-import { List } from "immutable";
 
 const BettingForm = (props) => {
   const { manager, competition, teams, bet } = props;
@@ -23,19 +22,19 @@ const BettingForm = (props) => {
         3: "",
         4: "",
         5: "",
-        amount: 10000
+        amount: 10000,
       }}
       onSubmit={(values) => {
         console.log(values);
 
-        const coupon = List.of(
+        const coupon = [
           values["0"],
           values["1"],
           values["2"],
           values["3"],
           values["4"],
-          values["5"]
-        );
+          values["5"],
+        ];
         bet(manager.get("id"), coupon, parseInt(values.amount, 10));
       }}
     >
@@ -99,7 +98,7 @@ const BettingForm = (props) => {
             </div>
 
             <Button
-              disabled={Seq(values).some((value) => value === "")}
+              disabled={Object.values(values).some((value) => value === "")}
               block
               type="submit"
             >
