@@ -2,7 +2,6 @@ import { call, all, take, put, select, putResolve } from "redux-saga/effects";
 import { seasonStart, promote, relegate, setPhase } from "../game";
 import { victors, eliminated } from "../../services/playoffs";
 import awards from "../../data/awards";
-import { List, Map } from "immutable";
 import { cinteger } from "../../services/random";
 import { setSeasonStat, createSeasonStories } from "../stats";
 import { processChampionBets } from "../betting";
@@ -63,9 +62,9 @@ function* worldChampionships() {
     )
     .reverse();
 
-  const entries = List(rawEntries.map((entry) => Map(entry)));
+  const entries = rawEntries;
 
-  console.log(entries.toJS(), "entries");
+  console.log(entries, "entries");
 
   yield put({
     type: "GAME_WORLD_CHAMPIONSHIP_RESULTS",
@@ -75,7 +74,7 @@ function* worldChampionships() {
   yield call(
     setSeasonStat,
     ["worldChampionships"],
-    entries.map((e) => e.get("id"))
+    entries.map((e) => e.id)
   );
 
   yield take("GAME_ADVANCE_REQUEST");

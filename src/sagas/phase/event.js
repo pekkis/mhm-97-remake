@@ -19,7 +19,7 @@ export default function* eventPhase() {
   );
 
   for (const event of autoresolveEvents) {
-    const eventObj = events.get(event.eventId);
+    const eventObj = events[event.eventId];
     yield eventObj.resolve(event);
   }
 

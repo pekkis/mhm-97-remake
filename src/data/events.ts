@@ -1,5 +1,3 @@
-import { Map } from "immutable";
-
 import pirka from "./events/pirka";
 import kasino from "./events/kasino";
 import mauto from "./events/mauto";
@@ -103,7 +101,7 @@ import protest from "./events/protest";
 import bazookaStrike from "./events/bazooka-strike";
 import sellNarcotics from "./events/sell-narcotics";
 
-const events = Map<string, any>({
+const events: Record<string, any> = {
   protest,
   sellNarcotics,
   bazookaStrike,
@@ -200,6 +198,6 @@ const events = Map<string, any>({
   strategySuccess,
   foreignLegion,
   incredibleFeeling
-});
+};
 
 export default events;

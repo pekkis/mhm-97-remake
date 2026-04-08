@@ -50,9 +50,6 @@ importers:
       immer:
         specifier: ^11.1.4
         version: 11.1.4
-      immutable:
-        specifier: ^5.1.5
-        version: 5.1.5
       luxon:
         specifier: ^3.7.2
         version: 3.7.2
@@ -128,9 +125,6 @@ importers:
       styled-system:
         specifier: ^5.1.5
         version: 5.1.5
-      transit-immutable-js:
-        specifier: github:pekkis/transit-immutable-js
-        version: https://codeload.github.com/pekkis/transit-immutable-js/tar.gz/8d00d6640e9f0ccadee8fa130b575ac40ab2a300(immutable@5.1.5)(transit-js@0.8.874)
       transit-js:
         specifier: ^0.8.874
         version: 0.8.874
@@ -2613,13 +2607,6 @@ packages:
   totalist@3.0.1:
     resolution: {integrity: sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==}
     engines: {node: '>=6'}
-
-  transit-immutable-js@https://codeload.github.com/pekkis/transit-immutable-js/tar.gz/8d00d6640e9f0ccadee8fa130b575ac40ab2a300:
-    resolution: {tarball: https://codeload.github.com/pekkis/transit-immutable-js/tar.gz/8d00d6640e9f0ccadee8fa130b575ac40ab2a300}
-    version: 0.7.0
-    peerDependencies:
-      immutable: ^4.0.0-rc.12
-      transit-js: ^0.8.861
 
   transit-js@0.8.874:
     resolution: {integrity: sha512-IDJJGKRzUbJHmN0P15HBBa05nbKor3r2MmG6aSt0UxXIlJZZKcddTk67/U7WyAeW9Hv/VYI02IqLzolsC4sbPA==}
@@ -5352,11 +5339,6 @@ snapshots:
   tinyrainbow@3.1.0: {}
 
   totalist@3.0.1: {}
-
-  transit-immutable-js@https://codeload.github.com/pekkis/transit-immutable-js/tar.gz/8d00d6640e9f0ccadee8fa130b575ac40ab2a300(immutable@5.1.5)(transit-js@0.8.874):
-    dependencies:
-      immutable: 5.1.5
-      transit-js: 0.8.874
 
   transit-js@0.8.874: {}
 

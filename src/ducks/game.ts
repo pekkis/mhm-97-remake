@@ -47,6 +47,14 @@ export type GameFlags = {
   psycho: number | undefined;
 };
 
+export type WorldChampionshipEntry = {
+  id: string;
+  name: string;
+  strength: number;
+  luck: number;
+  random: number;
+};
+
 type GameState = {
   turn: { season: number; round: number; phase: string | undefined };
   flags: GameFlags;
@@ -54,7 +62,7 @@ type GameState = {
   managers: ManagerDefinition[];
   competitions: Record<string, Competition>;
   teams: Team[];
-  worldChampionshipResults: any;
+  worldChampionshipResults: WorldChampionshipEntry[] | undefined;
 };
 
 const defaultState: GameState = {

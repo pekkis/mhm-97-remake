@@ -30,7 +30,7 @@ const pranks: Record<string, Prank> = {
     },
 
     execute: function* (prank) {
-      const protestEvent = events.get("protest");
+      const protestEvent = events["protest"];
       yield* call(protestEvent.create, prank);
     }
   },
@@ -47,7 +47,7 @@ const pranks: Record<string, Prank> = {
     },
 
     execute: function* (prank) {
-      const event = events.get("sellNarcotics");
+      const event = events["sellNarcotics"];
       yield* call(event.create, prank);
     }
   },
@@ -85,7 +85,7 @@ const pranks: Record<string, Prank> = {
     },
 
     execute: function* (prank) {
-      const event = events.get("bazookaStrike");
+      const event = events["bazookaStrike"];
       yield* call(event.create, prank);
     }
   }

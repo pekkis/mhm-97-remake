@@ -1,22 +1,37 @@
-import { Map } from "immutable";
+import { produce } from "immer";
 
 import { SEASON_START } from "./game";
 
 export const META_QUIT_TO_MAIN_MENU = "META_QUIT_TO_MAIN_MENU";
 export const META_GAME_LOAD_STATE = "META_GAME_LOAD_STATE";
 
-const defaultState = Map({
+export type MetaManager = {
+  name: string;
+  arena: string;
+  difficulty: string;
+  team: number;
+};
+
+export type MetaState = {
+  started: boolean;
+  loading: boolean;
+  saving: boolean;
+  starting: boolean;
+  manager: MetaManager;
+};
+
+const defaultState: MetaState = {
   started: false,
   loading: false,
   saving: false,
   starting: false,
-  manager: Map({
+  manager: {
     name: "Gaylord Lohiposki",
     arena: "MasoSports Areena",
     difficulty: "2",
     team: 12
-  })
-});
+  }
+};
 
 export interface MetaQuitToMainMenuAction {
   type: typeof META_QUIT_TO_MAIN_MENU;
@@ -44,22 +59,32 @@ export const loadGame = () => {
   };
 };
 
-export default function metaReducer(state = defaultState, action) {
-  const { type, payload } = action;
+export default function metaReducer(
+  state: MetaState = defaultState,
+  action: any
+): MetaState {
+  const { type } = action;
 
   switch (type) {
     case META_QUIT_TO_MAIN_MENU:
       return defaultState;
 
     case "SEASON_START_REQUEST":
-      return state.set("loading", true);
+      return produce(state, (draft) => {
+        draft.loading = true;
+      });
 
     case SEASON_START:
     case "META_GAME_LOADED":
-      return state.set("started", true).set("loading", false);
+      return produce(state, (draft) => {
+        draft.started = true;
+        draft.loading = false;
+      });
 
     case "META_GAME_START_REQUEST":
-      return state.set("starting", true);
+      return produce(state, (draft) => {
+        draft.starting = true;
+      });
 
     default:
       return state;

@@ -5,7 +5,7 @@ import events from "../data/events";
 export function* resolveEvent(action) {
   const { event, value } = action.payload;
 
-  const eventObj = events.get(event.eventId);
+  const eventObj = events[event.eventId];
 
   yield eventObj.resolve(event, value);
 }
@@ -33,7 +33,7 @@ export function* processEvents() {
   );
 
   for (const event of eventsToProcess) {
-    yield events.get(event.eventId).process(event);
+    yield events[event.eventId].process(event);
     yield put({
       type: "EVENT_SET_PROCESSED",
       payload: {

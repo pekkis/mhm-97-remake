@@ -14,7 +14,7 @@ const ManagerForm = (props) => {
   return (
     <div>
       <Formik
-        initialValues={manager.toJS()}
+        initialValues={manager}
         onSubmit={(values) => {
           advance(values);
         }}

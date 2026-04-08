@@ -7,9 +7,9 @@ import type { RootState } from "@/config/redux";
 
 export default connect(
   (state: RootState) => ({
-    started: state.meta.get("started"),
-    starting: state.meta.get("starting"),
-    manager: state.meta.get("manager"),
+    started: state.meta.started,
+    starting: state.meta.starting,
+    manager: state.meta.manager,
     teams: state.game.teams,
     competitions: pick(state.game.competitions, ["phl", "division"])
   }),

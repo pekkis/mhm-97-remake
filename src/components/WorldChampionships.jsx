@@ -22,22 +22,22 @@ const WorldChampionships = (props) => {
 
         <div>
           {results
-            .filter((e) => e.get("luck") > 0)
+            .filter((e) => e.luck > 0)
             .map((e) => {
               return (
-                <p key={e.get("id")}>
-                  <strong>{e.get("name")}</strong> pelasi koko turnauksen ajan
-                  todella suurella sydämellä!
+                <p key={e.id}>
+                  <strong>{e.name}</strong> pelasi koko turnauksen ajan todella
+                  suurella sydämellä!
                 </p>
               );
             })}
           {results
-            .filter((e) => e.get("luck") < 0)
+            .filter((e) => e.luck < 0)
             .map((e) => {
               return (
-                <p key={e.get("id")}>
-                  <strong>{e.get("name")}</strong> kärsi koko turnauksen ajan
-                  suurista ongelmista!
+                <p key={e.id}>
+                  <strong>{e.name}</strong> kärsi koko turnauksen ajan suurista
+                  ongelmista!
                 </p>
               );
             })}
@@ -45,7 +45,7 @@ const WorldChampionships = (props) => {
 
         <ol>
           {results.map((entry) => {
-            return <li key={entry.get("id")}>{entry.get("name")}</li>;
+            return <li key={entry.id}>{entry.name}</li>;
           })}
         </ol>
       </Box>

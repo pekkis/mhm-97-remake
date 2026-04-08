@@ -1,7 +1,6 @@
 import { addManager } from "./manager";
 import { gameLoop } from "./game";
 import { addNotification } from "./notification";
-import transit from "transit-immutable-js";
 
 import {
   all,
@@ -15,14 +14,16 @@ import {
 } from "redux-saga/effects";
 
 const save = (state) => {
-  const json = transit.toJSON(state);
+  const json = JSON.stringify(state);
   window.localStorage.setItem("mhm97", json);
 };
 
 const load = () => {
   const json = window.localStorage.getItem("mhm97");
-  const state = transit.fromJSON(json);
-  return state;
+  if (!json) {
+    return null;
+  }
+  return JSON.parse(json);
 };
 
 function* gameStart() {
@@ -56,8 +57,8 @@ function* mainMenu() {
 }
 
 export function* gameSave(action) {
-  const manager = yield select((state) =>
-    state.manager.managers[state.manager.active]
+  const manager = yield select(
+    (state) => state.manager.managers[state.manager.active]
   );
   const state = yield select((state) => state);
   yield call(save, state);

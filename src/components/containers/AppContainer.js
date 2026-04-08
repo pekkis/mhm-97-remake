@@ -4,7 +4,7 @@ import { startGame, loadGame } from "../../ducks/meta";
 
 export default connect(
   (state) => ({
-    started: state.meta.get("started")
+    started: state.meta.started
   }),
   { startGame, loadGame }
 )(App);

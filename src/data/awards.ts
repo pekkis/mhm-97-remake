@@ -10,42 +10,61 @@ import {
   teamWasPromoted
 } from "./selectors";
 import { victors, eliminated } from "../services/playoffs";
-import { List, Repeat } from "immutable";
 import r from "../services/random";
+import type { Team } from "../ducks/game";
 
-const playsInPHLOrWasPromoted = function* (teamId) {
-  const playsInPHL = yield select(teamCompetesIn(teamId, "phl"));
+type AwardData = {
+  id: number;
+  name: string;
+  amount: number;
+  strength: number;
+};
+
+type Award = {
+  news: (data: AwardData) => string;
+  data: (team: Team) => AwardData;
+};
+
+type RandomEvent = {
+  id: number;
+  (teamId: number): Generator;
+};
+
+const playsInPHLOrWasPromoted = function* (teamId: number) {
+  const playsInPHL: boolean = yield select(teamCompetesIn(teamId, "phl"));
   if (!playsInPHL) {
     return yield select(teamWasPromoted(teamId));
   }
 
-  const wasRelegated = yield select(teamWasRelegated(teamId));
+  const wasRelegated: boolean = yield select(teamWasRelegated(teamId));
   return !wasRelegated;
 };
 
-const playsInDivisionOrWasRelegated = function* (teamId) {
-  const playsInDivision = yield select(teamCompetesIn(teamId, "division"));
+const playsInDivisionOrWasRelegated = function* (teamId: number) {
+  const playsInDivision: boolean = yield select(
+    teamCompetesIn(teamId, "division")
+  );
   if (!playsInDivision) {
     return yield select(teamWasRelegated(teamId));
   }
 
-  const wasPromoted = yield select(teamWasPromoted(teamId));
+  const wasPromoted: boolean = yield select(teamWasPromoted(teamId));
   return !wasPromoted;
 };
 
 const createRandom = (
-  dieSize,
-  requiredThrow,
-  amountOfStrengthIncremented,
-  isEligible = function* (teamId) {
+  dieSize: number,
+  requiredThrow: number,
+  amountOfStrengthIncremented: (team: Team) => number,
+  isEligible: (teamId: number) => Generator = function* () {
     return true;
   },
-  news
+  news: (team: Team) => string
 ) => {
-  return function* (teamId) {
-    const team = yield select((state) => state.game.teams[teamId]);
+  return function* (teamId: number) {
+    const team: Team = yield select((state: any) => state.game.teams[teamId]);
 
-    const canDo = yield call(isEligible, teamId);
+    const canDo: boolean = yield call(isEligible, teamId);
 
     if (!canDo) {
       return;
@@ -71,18 +90,18 @@ const createRandom = (
   };
 };
 
-const randomEvents = List.of(
+const randomEvents: RandomEvent[] = [
   createRandom(
     12,
     2,
     () => -199,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength > 400;
     },
     (team) => {
@@ -93,13 +112,13 @@ const randomEvents = List.of(
     12,
     5,
     () => -70,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength > 300;
     },
     (team) => {
@@ -111,13 +130,13 @@ const randomEvents = List.of(
     12,
     6,
     () => -45,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength > 250;
     },
     (team) => {
@@ -129,13 +148,13 @@ const randomEvents = List.of(
     12,
     8,
     () => -15,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength > 210;
     },
     (team) => {
@@ -147,14 +166,19 @@ const randomEvents = List.of(
     1,
     1,
     () => -30,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
-      const rank = yield select(teamsPositionInRoundRobin(teamId, "phl", 0));
+      const strength: number = yield select(teamsStrength(teamId));
+      const rank: number | false = yield select(
+        teamsPositionInRoundRobin(teamId, "phl", 0)
+      );
+      if (rank === false) {
+        return false;
+      }
       return strength > 200 && rank > 8;
     },
     (team) => {
@@ -166,14 +190,16 @@ const randomEvents = List.of(
     1,
     1,
     () => 20,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
-      const rank = yield select(teamsPositionInRoundRobin(teamId, "phl", 0));
+      const strength: number = yield select(teamsStrength(teamId));
+      const rank: number | false = yield select(
+        teamsPositionInRoundRobin(teamId, "phl", 0)
+      );
       if (rank === false) {
         return;
       }
@@ -189,13 +215,13 @@ const randomEvents = List.of(
     12,
     5,
     () => 12,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength < 150;
     },
     (team) => {
@@ -207,13 +233,13 @@ const randomEvents = List.of(
     12,
     5,
     () => 23,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength < 135;
     },
     (team) => {
@@ -225,13 +251,13 @@ const randomEvents = List.of(
     22,
     16,
     () => 60,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength < 140;
     },
     (team) => {
@@ -243,8 +269,8 @@ const randomEvents = List.of(
     12,
     7,
     () => -10,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
@@ -259,8 +285,8 @@ const randomEvents = List.of(
     12,
     7,
     () => 7,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
@@ -274,8 +300,8 @@ const randomEvents = List.of(
     12,
     8,
     () => -r.integer(5, 20),
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
@@ -289,8 +315,8 @@ const randomEvents = List.of(
     12,
     8,
     () => -r.integer(5, 20),
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
@@ -304,8 +330,8 @@ const randomEvents = List.of(
     32,
     27,
     () => 55,
-    function* (teamId) {
-      const isEligible = yield call(playsInPHLOrWasPromoted, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
@@ -321,19 +347,19 @@ const randomEvents = List.of(
     12,
     5,
     () => -40,
-    function* (teamId) {
-      const playsInPHL = yield select(teamCompetesIn(teamId, "phl"));
+    function* (teamId: number) {
+      const playsInPHL: boolean = yield select(teamCompetesIn(teamId, "phl"));
 
       if (!playsInPHL) {
         return false;
       }
 
-      const wasRelegated = yield select(teamWasRelegated(teamId));
+      const wasRelegated: boolean = yield select(teamWasRelegated(teamId));
       if (!wasRelegated) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength > 160;
     },
     (team) => {
@@ -344,19 +370,19 @@ const randomEvents = List.of(
     12,
     7,
     () => -20,
-    function* (teamId) {
-      const playsInPHL = yield select(teamCompetesIn(teamId, "phl"));
+    function* (teamId: number) {
+      const playsInPHL: boolean = yield select(teamCompetesIn(teamId, "phl"));
 
       if (!playsInPHL) {
         return false;
       }
 
-      const wasRelegated = yield select(teamWasRelegated(teamId));
+      const wasRelegated: boolean = yield select(teamWasRelegated(teamId));
       if (!wasRelegated) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength > 130;
     },
     (team) => {
@@ -367,19 +393,21 @@ const randomEvents = List.of(
     1,
     1,
     () => -20,
-    function* (teamId) {
-      const playsInDivision = yield select(teamCompetesIn(teamId, "division"));
+    function* (teamId: number) {
+      const playsInDivision: boolean = yield select(
+        teamCompetesIn(teamId, "division")
+      );
 
       if (!playsInDivision) {
         return false;
       }
 
-      const wasPromoted = yield select(teamWasPromoted(teamId));
+      const wasPromoted: boolean = yield select(teamWasPromoted(teamId));
       if (wasPromoted) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength > 120;
     },
     (team) => {
@@ -390,19 +418,21 @@ const randomEvents = List.of(
     1,
     1,
     () => -40,
-    function* (teamId) {
-      const playsInDivision = yield select(teamCompetesIn(teamId, "division"));
+    function* (teamId: number) {
+      const playsInDivision: boolean = yield select(
+        teamCompetesIn(teamId, "division")
+      );
 
       if (!playsInDivision) {
         return false;
       }
 
-      const wasPromoted = yield select(teamWasPromoted(teamId));
+      const wasPromoted: boolean = yield select(teamWasPromoted(teamId));
       if (wasPromoted) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength > 140;
     },
     (team) => {
@@ -413,13 +443,16 @@ const randomEvents = List.of(
     12,
     8,
     () => 8,
-    function* (teamId) {
-      const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(
+        playsInDivisionOrWasRelegated,
+        teamId
+      );
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength < 82;
     },
     (team) => {
@@ -430,13 +463,16 @@ const randomEvents = List.of(
     12,
     7,
     () => 13,
-    function* (teamId) {
-      const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(
+        playsInDivisionOrWasRelegated,
+        teamId
+      );
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength < 72;
     },
     (team) => {
@@ -447,13 +483,16 @@ const randomEvents = List.of(
     12,
     7,
     () => 16,
-    function* (teamId) {
-      const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(
+        playsInDivisionOrWasRelegated,
+        teamId
+      );
       if (!isEligible) {
         return false;
       }
 
-      const strength = yield select(teamsStrength(teamId));
+      const strength: number = yield select(teamsStrength(teamId));
       return strength < 62;
     },
     (team) => {
@@ -464,8 +503,11 @@ const randomEvents = List.of(
     12,
     7,
     () => -15,
-    function* (teamId) {
-      const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(
+        playsInDivisionOrWasRelegated,
+        teamId
+      );
       if (!isEligible) {
         return false;
       }
@@ -480,8 +522,11 @@ const randomEvents = List.of(
     22,
     20,
     () => 45,
-    function* (teamId) {
-      const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(
+        playsInDivisionOrWasRelegated,
+        teamId
+      );
       if (!isEligible) {
         return false;
       }
@@ -496,8 +541,11 @@ const randomEvents = List.of(
     12,
     7,
     () => -8,
-    function* (teamId) {
-      const isEligible = yield call(playsInDivisionOrWasRelegated, teamId);
+    function* (teamId: number) {
+      const isEligible: boolean = yield call(
+        playsInDivisionOrWasRelegated,
+        teamId
+      );
       if (!isEligible) {
         return false;
       }
@@ -514,32 +562,25 @@ const randomEvents = List.of(
     (team) => {
       return 45 - team.strength;
     },
-    function* (teamId) {
-      const strength = yield select(teamsStrength(teamId));
+    function* (teamId: number) {
+      const strength: number = yield select(teamsStrength(teamId));
       return strength < 35;
     },
     (team) => {
       return `__${team.name}__ on jo luopumassa sarjapaikastaan, mutta uusi omistaja pelastaa joukkueen viime hetkellä!`;
     }
   )
-).map((r, i) => {
-  r.id = i;
-  return r;
+].map((fn, i) => {
+  const event = fn as RandomEvent;
+  event.id = i;
+  return event;
 });
 
-/*
-
-IF v(x) <= 35 THEN v(x) = 45: PRINT l(x); " on luopumassa sarjapaikasta kun uusi omistaja pelastaa joukkueen!"
-IF vd(x) <= 35 THEN vd(x) = 45: PRINT ld(x); " on luopumassa sarjapaikasta kun uusi omistaja pelastaa joukkueen!"
-
-IF 20 * RND > 10 THEN vd(x) = vd(x) - 15: PRINT "Liigajoukkueet v„rv„„v„t "; ld(x); ":n pelaajia!"
-IF 20 * RND > 18 THEN vd(x) = vd(x) + 45: PRINT ld(x); " kuluttaa todella paljon rahaa! Uusia pelaajia ostetaan roimasti!"
-IF 10 * RND > 5 THEN vd(x) = vd(x) - 8: PRINT ld(x); ":n veteraanipelaajia lopettaa uransa."
-
-
-*/
-
-const createAward = (amount, strength, news) => {
+const createAward = (
+  amount: number,
+  strength: number,
+  news: (data: AwardData) => string
+): Award => {
   return {
     news,
     data: (team) => ({
@@ -551,7 +592,11 @@ const createAward = (amount, strength, news) => {
   };
 };
 
-const medalAwards = List.of(
+const playoffBonusAward = createAward(100000, 2, (data) => {
+  return `__${data.name}__ saa playoff-bonuksen, ${data.amount} pekkaa!`;
+});
+
+const medalAwards: Award[] = [
   createAward(1500000, 29, (data) => {
     return `__${data.name}__ nettoaa mestaruudestaan ${data.amount} pekkaa!`;
   }),
@@ -564,9 +609,9 @@ const medalAwards = List.of(
   createAward(500000, 10, (data) => {
     return `__${data.name}__ nettoaa neljännestä sijastaan ${data.amount} pekkaa!`;
   })
-);
+];
 
-const roundRobinAwards = List.of(
+const roundRobinAwards: Award[] = [
   createAward(500000, 10, (data) => {
     return `__${data.name}__ saa runkosarjan voitosta ${data.amount} pekkaa!`;
   }),
@@ -579,20 +624,17 @@ const roundRobinAwards = List.of(
   createAward(200000, 4, (data) => {
     return `__${data.name}__ saa runkosarjan neljännestä sijasta ${data.amount} pekkaa!`;
   }),
+  playoffBonusAward,
+  playoffBonusAward,
+  playoffBonusAward,
+  playoffBonusAward
+];
 
-  Repeat(
-    createAward(100000, 2, (data) => {
-      return `__${data.name}__ saa playoff-bonuksen, ${data.amount} pekkaa!`;
-    }),
-    4
-  ).toList()
-).flatten(true);
-
-const yieldAwards = function* (awards, to) {
-  const teams = yield select((state) => state.game.teams);
+const yieldAwards = function* (awards: Award[], to: number[]) {
+  const teams: Team[] = yield select((state: any) => state.game.teams);
 
   for (const [i, teamId] of to.entries()) {
-    const award = awards.get(i);
+    const award = awards[i];
     const team = teams[teamId];
 
     const manager = yield select(managerWhoControlsTeam(teamId));
@@ -602,7 +644,7 @@ const yieldAwards = function* (awards, to) {
       yield putResolve({
         type: "MANAGER_INCREMENT_BALANCE",
         payload: {
-          manager: manager.get("id"),
+          manager: manager.id,
           amount: data.amount
         }
       });
@@ -631,21 +673,21 @@ const award = function* () {
   const winners = victors(finalPhase);
   const losers = eliminated(finalPhase);
 
-  const ranking = List.of(
+  const ranking = [
     winners[0],
     losers[0],
     winners[winners.length - 1],
     losers[losers.length - 1]
-  ).map((r) => r.id);
+  ].map((r) => r.id);
 
   yield call(yieldAwards, medalAwards, ranking);
 
   const tableEntries = phl.phases[0].groups[0].stats
     .slice(0, 8)
-    .map((t) => t.id);
+    .map((t: any) => t.id);
 
   yield call(yieldAwards, roundRobinAwards, tableEntries);
-  const teams = yield select(pekkalandianTeams);
+  const teams: Team[] = yield select(pekkalandianTeams);
 
   for (const [, team] of teams.entries()) {
     for (const randomEvent of randomEvents) {
@@ -655,50 +697,3 @@ const award = function* () {
 };
 
 export default award;
-
-/*
-
-IF v(x) > 400 AND 10 * RND > 1 THEN v(x) = v(x) - 199: PRINT l(x); " kaatuu sis„isiin riitoihin! Pelaajat k„velev„t ulos!"
-IF v(x) > 300 AND 10 * RND < 7 THEN v(x) = v(x) - 70: PRINT l(x); " hajoaa totaalisesti ulkomaiden rahaseuroihin!"
-IF v(x) > 250 AND 10 * RND > 5 THEN v(x) = v(x) - 45: PRINT l(x); " menett„„ useita pelaajiaan ulkomaille."
-IF v(x) > 210 AND 10 * RND < 4 THEN v(x) = v(x) - 15: PRINT l(x); " menett„„ joitakin pelaajiaan ulkomaille."
-IF v(x) > 200 AND 10 * RND < 8 AND s(x) > 8 AND s(x) < 12 THEN v(x) = v(x) - 30: PRINT l(x); " ei p„„ssyt play-offeihin ja myy pelaajiaan konkurssin uhatessa!"
-IF v(x) < 160 AND s(x) < 9 THEN v(x) = v(x) + 20: PRINT l(x); ":n nuori joukkue saa rutkasti kokemusta Play-offeista!"
-IF v(x) < 150 AND 10 * RND < 7 THEN v(x) = v(x) + 12: PRINT l(x); " saa uuden sponsorin joka ostaa joukkueelle uusia pelaajia!"
-IF v(x) < 135 AND 10 * RND < 7 THEN v(x) = v(x) + 23: PRINT l(x); " saa uuden, RIKKAAN sponsorin joka ostaa joukkueelle uusia pelaajia!"
-IF v(x) < 140 AND 20 * RND > 14 THEN v(x) = v(x) + 60: PRINT l(x); " l„htee tosissaan mukaan mestaruustaistoon rahan voimalla!"
-IF 10 * RND < 5 THEN v(x) = v(x) - 10: PRINT l(x); ":n veteraanipelaajia siirtyy el„kkeelle."
-IF 10 * RND > 5 THEN v(x) = v(x) + 7: PRINT l(x); ":n juniority” tuottaa lupaavan nuoren t„hden!"
-IF 10 * RND > 7 THEN v(x) = v(x) - (CINT(15 * RND) + 5): PRINT l(x); ":n pelaajia siirtyy rahan per„ss„ muualle!"
-IF 10 * RND > 7 THEN v(x) = v(x) - (CINT(15 * RND) + 5): PRINT l(x); " kokee menetyksen, pelaajia siirtyy pois!"
-IF 30 * RND > 26 THEN v(x) = v(x) + 55: PRINT l(x); " antaa rahan palaa kunnolla!"
-
-IF sd(x) = gagga AND vd(x) > 160 AND 10 * RND < 8 THEN vd(x) = vd(x) - 40: PRINT "Divisioonaan tippunut "; ld(x); " menett„„ rutkasti pelaajiansa liigaan."
-IF sd(x) = gagga AND vd(x) > 130 AND 10 * RND < 6 THEN vd(x) = vd(x) - 20: PRINT "Divisioonaan tippunut "; ld(x); " menett„„ pelaajiansa liigaan."
-
-IF vd(x) < 82 AND 10 * RND > 6 THEN vd(x) = vd(x) + 8: PRINT ld(x); " saa uuden sponsorin!"
-IF vd(x) < 72 AND 10 * RND > 5 THEN vd(x) = vd(x) + 13: PRINT ld(x); " saa uuden, hyv„n sponsorin!"
-IF vd(x) < 62 AND 10 * RND > 5 THEN vd(x) = vd(x) + 16: PRINT ld(x); " saa uuden, loistavan sponsorin!"
-
-
-
-IF lamp = l(x) THEN PRINT l(x); " nettoaa mestaruudestaan 1.500.000 pekkaa!": raha = raha + 1500000: edus1 = u
-IF lecond = l(x) THEN PRINT l(x); " nettoaa hopeastaan 1.000.000 pekkaa!": raha = raha + 1000000: edus2 = u
-IF lonssi = l(x) THEN PRINT l(x); " nettoaa pronssistaan 700.000 pekkaa!": raha = raha + 700000: edus3 = u
-IF leljas = l(x) THEN PRINT l(x); " nettoaa nelj„nnest„ sijastaan 500.000 pekkaa!": raha = raha + 500000
-IF s(x) = 1 THEN PRINT l(x); " saa runkosarjan voitosta 500.000 pekkaa!": raha = raha + 500000
-IF s(x) = 2 THEN PRINT l(x); " saa runkosarjan 2. sijastaan 400.000 pekkaa!": raha = raha + 400000
-IF s(x) = 3 THEN PRINT l(x); " saa runkosarjan 3. sijastaan 300.000 pekkaa!": raha = raha + 300000
-IF s(x) = 4 THEN PRINT l(x); " saa runkosarjan 4. sijastaan 200.000 pekkaa!": raha = raha + 200000
-IF s(x) > 4 AND s(x) < 9 THEN PRINT l(x); " saa playoff-bonuksen, 100.000 pekkaa.": raha = raha + 10000
-
-IF lamp = l(x) THEN PRINT l(x); " nettoaa mestaruudestaan 1.500.000 pekkaa!": v(x) = v(x) + 29: edus1 = x
-IF lecond = l(x) THEN PRINT l(x); " nettoaa hopeastaan 1.000.000 pekkaa!": v(x) = v(x) + 19: edus2 = x
-IF lonssi = l(x) THEN PRINT l(x); " nettoaa pronssistaan 700.000 pekkaa!": v(x) = v(x) + 12: edus3 = x
-IF leljas = l(x) THEN PRINT l(x); " nettoaa nelj„nnest„ sijastaan 500.000 pekkaa!": v(x) = v(x) + 10
-IF s(x) = 1 THEN PRINT l(x); " saa runkosarjan voitosta 500.000 pekkaa!": v(x) = v(x) + 10
-IF s(x) = 2 THEN PRINT l(x); " saa runkosarjan 2. sijastaan 400.000 pekkaa!": v(x) = v(x) + 7
-IF s(x) = 3 THEN PRINT l(x); " saa runkosarjan 3. sijastaan 300.000 pekkaa!": v(x) = v(x) + 6
-IF s(x) = 4 THEN PRINT l(x); " saa runkosarjan 4. sijastaan 200.000 pekkaa!": v(x) = v(x) + 4
-IF s(x) > 4 AND s(x) < 9 THEN PRINT l(x); " saa playoff-bonuksen, 100.000 pekkaa.": v(x) = v(x) + 2
-*/

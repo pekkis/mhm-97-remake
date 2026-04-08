@@ -78,7 +78,7 @@ export function* beforeGame(action) {
       return;
     }
 
-    const event = events.get("topGame");
+    const event = events["topGame"];
 
     for (const manager of humansInGame) {
       yield call(event.create, {

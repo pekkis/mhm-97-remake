@@ -12,14 +12,15 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 
 - Runtime / build tool: **Vite** (`pnpm dev`, `pnpm build`)
 - UI stack: React 19, React Router 7, styled-components 6
-- State stack: Redux 5 + redux-saga + Immutable.js
+- State stack: Redux 5 + redux-saga + immer (Immutable.js fully removed 2026-04-08)
 - Language mix: TypeScript + JavaScript + JSX (partial TS migration)
 - Lint/format stack: `oxlint` + `oxfmt` (ESLint/Prettier removed)
 - Styling stack: styled-components + styled-system + Emotion remnants
-- Persistence: localStorage with `transit-immutable-js`
+- Persistence: localStorage with `JSON.stringify`/`JSON.parse`
+- Randomness: single `random-js` instance in `src/services/random.ts`; supports deterministic seeding via `VITE_RANDOM_SEED` env var
 - Entry point: `src/client.tsx`
 - Root wiring: `src/Root.tsx`
-- Store wiring: `src/store.js`, `src/services/redux.ts`, `src/config/redux.ts`
+- Store wiring: `src/store.ts`, `src/services/redux.ts`, `src/config/redux.ts`
 
 Recent completed migrations:
 
@@ -49,6 +50,9 @@ Recent completed migrations:
 - `src/data/transfer-market.ts` — typed `PlayerType[]` array
 - `src/data/strategies.ts` — typed `Strategy[]` array
 - `src/data/crisis.ts` — typed crisis data (was already plain, types added)
+- `src/data/awards.ts` — typed award/random-event system (was `awards.js` with Immutable `List.of`)
+- `src/data/events.ts` — plain `Record<string, any>` event registry (was Immutable `Map`)
+- `src/services/random.ts` — typed, deterministic seed support via `VITE_RANDOM_SEED`
 
 **Reducers (ducks):**
 
@@ -63,12 +67,14 @@ Recent completed migrations:
 - `src/ducks/invitation.ts` — plain `InvitationState` + immer (`Invitation[]`)
 - `src/ducks/stats.ts` — plain `StatsState` + immer (`SeasonStats[]`, `Streak`, `GameRecord`, `ManagerGameStats`)
 - `src/ducks/country.ts` — already plain
-- `src/ducks/meta.ts` — typed
+- `src/ducks/meta.ts` — plain `MetaState` + immer (`MetaManager` form defaults)
 
 **Other:**
 
 - `src/store.ts`, `src/getSagas.ts` — typed
 - lodash fully removed from codebase + `package.json`
+- **Immutable.js + transit-immutable-js fully removed** from codebase + `package.json` (2026-04-08)
+- Save/load uses `JSON.stringify`/`JSON.parse` (no superjson needed — all state is plain)
 - `typed-redux-saga` in use for all converted saga files
 
 ### `GameState` current shape
@@ -90,15 +96,13 @@ type GameState = {
   managers: ManagerDefinition[]; // PLAIN — typed array
   competitions: Record<string, Competition>; // PLAIN — typed with full hierarchy
   teams: Team[]; // PLAIN — typed array indexed by team id
-  worldChampionshipResults: any; // still Immutable (List of Maps)
+  worldChampionshipResults: WorldChampionshipEntry[] | undefined; // PLAIN — typed array
 };
 ```
 
-### Still Immutable (known remaining)
+### Immutable.js: FULLY REMOVED
 
-- `state.game.worldChampionshipResults` — Immutable `List(Map(...))`
-- `src/data/events.ts` — event registry uses Immutable Map
-- `src/data/arenas.ts` — likely Immutable
+As of 2026-04-08, zero `immutable` imports remain in the codebase. The `immutable` and `transit-immutable-js` packages have been removed from `package.json`. All state is plain objects/arrays + immer.
 
 ### Completed: `teams` de-immutable
 
@@ -333,7 +337,7 @@ export type StatsState = {
 
 5. **No new legacy patterns**
    - Do not add new class components unless absolutely required.
-   - Do not add new Immutable-heavy APIs in fresh code; prefer typed plain objects for new modules.
+   - Do not reintroduce Immutable.js — it has been fully removed.
    - Prefer named exports; avoid default exports for new/edited modules unless interop absolutely requires it.
    - **Prefer non-mutating array methods:** use `toSorted()` over `[...arr].sort()` or `arr.sort()`, `toReversed()` over `reverse()`, `toSpliced()` over `splice()`, and `with()` over index assignment. Avoid in-place mutation even on freshly created arrays — consistency matters more than micro-optimization.
 
@@ -375,40 +379,23 @@ export type StatsState = {
 - Keep `react-markdown` usage aligned with v10+ API.
 - Audit other upgraded libs for silent breaks (notably routing, UI animation libs, and deprecated props).
 
-### P2 — TypeScript + Immutable → immer + native (unified migration)
+### P2 — TypeScript + Immutable → immer + native: ✅ COMPLETE
 
-**Rationale:** Immutable.js typing is fundamentally broken (nested Maps with functions require `as any` at boundaries). Rather than type Immutable then replace it, do both simultaneously. This yields:
+**Immutable.js fully removed 2026-04-08.** All reducers, data files, selectors, components, and sagas use plain objects/arrays + immer. `immutable` and `transit-immutable-js` removed from dependencies. Save/load uses `JSON.stringify`/`JSON.parse`.
 
-- Type safety immediately (immer types well, natives are simple)
-- Cleaner, more ergonomic code
-- Faster migration velocity (no waste on Immutable typing)
+### P2.5 — Continue TypeScript migration (remaining JS files)
 
-**Sequencing:**
-
-1. Pick a file (start with small services, then leaf reducers, work inward)
-2. Convert to TypeScript with native data structures + immer
-3. Test manually (user is regression suite for now)
-4. Move to next file
-5. Build formal regression suite if drift is detected
-
-**Specifics:**
-
-- Each file: replace Immutable.js Map/List with native objects/arrays, add immer for any mutations
+- Many sagas, components, and containers remain as `.js`/`.jsx`
+- Convert incrementally as files are touched
+- Use `typed-redux-saga` for saga TS conversions
 - Shared domain types in `src/types/` as they emerge
-- Keep a shared `RootState` seed in Redux setup (`src/config/redux.ts`) and consume it in containers/selectors instead of local `any` state types
-- Use `produce()` from immer instead of `.update()` / `.setIn()` chains
+- Keep a shared `RootState` seed in `src/config/redux.ts`
 
 ### P3 — State architecture evolution (controlled)
 
-- **Short term (concurrent with P2):** Stabilize existing Redux + Saga + Immutable flows via TS typing and regression suite.
-  - **⚠️ Immutable.js typing is broken:** Nested Maps with function properties require `as any` at boundaries. This defeats type safety and makes refactoring risky. Do not waste cycles perfecting Immutable types—accept pragmatic `as any` boundary casts and prioritize the immer migration.
-- **Mid term (after P2 regression suite passes):** Migrate to immer + native data structures + superjson:
-  - Start with leaf reducers (low dependency footprint)
-  - Work inward toward core state shape
-  - Use regression suite to verify save/load round-trips, phase sequencing, event generation remain identical
-  - Fork's version mismatch was the only custom logic; superjson handles standard serialization
-- **Long term:** Evaluate selective Redux + Saga → RTK/RTK Query slices, but only for new async flows, not core game logic.
-- **Very long term:** XState is the only realistic architectural upgrade for the game engine itself (phase/turn loop is a textbook state machine). But this is a full engine rewrite — only viable after the TS migration is complete and a regression suite exists. Do not attempt piecemeal.
+- **Short term:** Build regression test suite (deterministic seed support is ready via `VITE_RANDOM_SEED`).
+- **Mid term:** Evaluate selective Redux + Saga → RTK/RTK Query slices, but only for new async flows, not core game logic.
+- **Long term:** XState is the only realistic architectural upgrade for the game engine itself (phase/turn loop is a textbook state machine). But this is a full engine rewrite — only viable after the TS migration is complete and a regression suite exists. Do not attempt piecemeal.
 
 ### Saga TypeScript strategy
 
@@ -429,9 +416,9 @@ Do not use `typed-redux-saga/macro` — it requires a Babel transform and this p
 ## High-Risk Areas (Handle Carefully)
 
 - `src/sagas/**` phase sequencing and cancellation logic
-- `src/ducks/**` reducers using deep Immutable updates
-- event generation and calendar-dependent flows (`src/sagas/phase/**`, `src/data/calendar.js`, `src/data/events*`)
-- save/load serialization boundaries (`transit-immutable-js` in meta sagas)
+- `src/ducks/**` reducer state shapes (now plain objects + immer)
+- event generation and calendar-dependent flows (`src/sagas/phase/**`, `src/data/calendar.ts`, `src/data/events.ts`)
+- save/load serialization (`JSON.stringify`/`JSON.parse` in `src/sagas/meta.js`)
 
 When touching these areas:
 
@@ -492,10 +479,13 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 1. Update `README.md` to current install/run commands (`pnpm` + `vite`).
 2. Inventory and remove webpack-only dependencies/config that are now dead.
 3. Vitest is configured (`vitest.config.ts`, `@vitest/ui` installed, Jest fully removed); add scripts for lint/typecheck/test so modernization has consistent gates.
-   I4. Add a small regression suite around:
-   - game start/load/save
-   - one full turn phase progression
+4. Add a small regression suite around:
+   - game start/load/save (now plain JSON — easy to snapshot)
+   - one full turn phase progression (use `VITE_RANDOM_SEED` for determinism)
    - event creation sanity
+5. Playwright e2e tests using deterministic seed (`VITE_RANDOM_SEED=X pnpm dev`) — same seed + same clicks = same game.
+6. Continue TypeScript migration of remaining `.js`/`.jsx` files.
+7. Audit stale peer dependency warnings (react-pose, react-toggle, react-typography, react-helmet all have React 19 peer issues).
 
 ---
 
