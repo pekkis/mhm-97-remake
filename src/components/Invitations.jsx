@@ -20,7 +20,7 @@ const Invitations = (props) => {
         <h2>Turnauskutsut</h2>
 
         {invitations.map((i, index) => {
-          const t = tournamentList[i.get("tournament")];
+          const t = tournamentList[i.tournament];
           return (
             <div key={index}>
               <h3>{t.name}</h3>
@@ -29,8 +29,8 @@ const Invitations = (props) => {
 
               <Button
                 block
-                onClick={() => acceptInvitation(manager.get("id"), i.get("id"))}
-                disabled={i.get("participate")}
+                onClick={() => acceptInvitation(manager.get("id"), i.id)}
+                disabled={i.participate}
               >
                 Hyväksy turnauskutsu
               </Button>

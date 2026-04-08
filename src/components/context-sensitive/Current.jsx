@@ -16,7 +16,7 @@ const Current = (props) => {
 
   return (
     <div className={className}>
-      {invitations.filter((i) => !i.get("participate")).count() > 0 && (
+      {invitations.filter((i) => !i.participate).length > 0 && (
         <CurrentEntry>
           <FontAwesomeIcon icon={["fas", "exclamation-circle"]} />
           Pöydälläsi odottaa{" "}

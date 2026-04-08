@@ -104,15 +104,15 @@ const tournaments: CompetitionDefinition = {
 
       const invitations: any = yield select((state: any) =>
         state.invitation
-          .get("invitations")
-          .filter((i: any) => i.get("participate"))
+          .invitations
+          .filter((i: any) => i.participate)
       );
 
       // Build invited teams grouped by tournament index
       const invited: Map<number, number[]> = new Map();
-      for (const [, inv] of invitations.entries()) {
-        const tournamentIdx = inv.get("tournament") as number;
-        const teamId = managers.getIn([inv.get("manager"), "team"]) as number;
+      for (const inv of invitations) {
+        const tournamentIdx = inv.tournament as number;
+        const teamId = managers.getIn([inv.manager, "team"]) as number;
         if (!invited.has(tournamentIdx)) {
           invited.set(tournamentIdx, []);
         }

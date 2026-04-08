@@ -14,8 +14,8 @@ export default connect(
     events: state.event.events,
     news: state.news.news,
     invitations: state.invitation
-      .get("invitations")
-      .filter((i) => i.get("manager") === state.manager.get("active"))
+      .invitations
+      .filter((i) => i.manager === state.manager.get("active"))
   }),
   { advance, resolveEvent, saveGame, quitToMainMenu, closeMenu }
 )(Current);

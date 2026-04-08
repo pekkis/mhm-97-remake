@@ -5,8 +5,8 @@ export default connect(
   (state) => ({
     manager: state.manager.getIn(["managers", state.manager.get("active")]),
     invitations: state.invitation
-      .get("invitations")
-      .filter((i) => i.get("manager") === state.manager.get("active"))
+      .invitations
+      .filter((i) => i.manager === state.manager.get("active"))
   }),
   { acceptInvitation }
 )(Invitations);
