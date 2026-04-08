@@ -45,6 +45,10 @@ Recent completed migrations:
 - `src/services/effects.ts` — fully typed with plain `Team` + `TeamEffect` (no more Immutable)
 - `src/data/managers.ts` — plain `ManagerDefinition[]` array
 - `src/data/calendar.ts` — typed `CalendarEntry[]` array with `Seed` type
+- `src/data/services.ts` — typed `Record<string, ServiceDefinition>` with effect/price functions
+- `src/data/transfer-market.ts` — typed `PlayerType[]` array
+- `src/data/strategies.ts` — typed `Strategy[]` array
+- `src/data/crisis.ts` — typed crisis data (was already plain, types added)
 
 **Reducers (ducks):**
 
@@ -57,6 +61,7 @@ Recent completed migrations:
 - `src/ducks/news.ts` — plain `NewsState` + immer (`string[]` news, `Record<string, string[]>` announcements)
 - `src/ducks/notification.ts` — plain `NotificationState` + immer (`Notification[]`, capped at 3)
 - `src/ducks/invitation.ts` — plain `InvitationState` + immer (`Invitation[]`)
+- `src/ducks/stats.ts` — plain `StatsState` + immer (`SeasonStats[]`, `Streak`, `GameRecord`, `ManagerGameStats`)
 - `src/ducks/country.ts` — already plain
 - `src/ducks/meta.ts` — typed
 
@@ -92,11 +97,8 @@ type GameState = {
 ### Still Immutable (known remaining)
 
 - `state.game.worldChampionshipResults` — Immutable `List(Map(...))`
-- `state.stats` — full Immutable duck
 - `src/data/events.ts` — event registry uses Immutable Map
-- `src/data/services.js` — Immutable OrderedMap/Map
-- `src/data/transfer-market.js` — likely Immutable
-- `src/data/arenas.ts`, `src/data/strategies.js` — likely Immutable
+- `src/data/arenas.ts` — likely Immutable
 
 ### Completed: `teams` de-immutable
 
@@ -209,7 +211,7 @@ export type ManagerState = {
 
 ### Gotchas learned from managers migration
 
-- **`services.getIn([k, "effect"])` stays Immutable:** `data/services.js` hasn't been migrated yet. Manager's `.services` is plain but the services _definition_ data is still Immutable.
+- **`services.getIn([k, "effect"])` stays Immutable:** ~~`data/services.js` hasn't been migrated yet.~~ Now migrated to `data/services.ts`. Manager's `.services` is plain and service definitions are plain.
 - **Competition `gameBalance` callbacks receive manager:** `phl.ts`, `division.ts`, `ehl.ts` all had `manager.getIn(["arena", "level"])` and `manager.get("extra")` — easy to miss.
 - **`gameday.js` constructs game facts:** `homeManager.get("id")` / `awayManager.get("id")` in the result object — runtime error, not caught by typecheck.
 - **Rally events passed `Map({ rallyMorale: ... })` as effect extra:** Named effects then read `extra.rallyMorale` which returns `undefined` on an Immutable Map. Caused `RangeError: Expected max to be at most 9007199254740992` in game simulation. Fix: pass plain object.
@@ -245,6 +247,52 @@ export type CalendarEntry = {
 - **`Calendar` component's `when` callback receives `(entry, fullCalendar, state)`:** `Current.jsx` accesses `c[turn.round + 1]` (next turn) in addition to the current entry.
 - **`seed.js` saga used `.getIn([round, "seed"], List())`:** Now `calendar[round].seed` with default `[]` in the type.
 - **75 entries verified:** Entry count matched between old Immutable chain-built list and new plain array.
+
+### Completed: `stats` de-immutable
+
+Converted `state.stats` from deeply nested Immutable `Map(List(Map(...)))` to typed `StatsState` with immer.
+
+**Types defined in `src/ducks/stats.ts`:**
+
+```ts
+export type Streak = { win: number; draw: number; loss: number; noLoss: number; noWin: number };
+export type GameRecord = { win: number; draw: number; loss: number };
+export type ManagerGameStats = { games: Record<string, Record<string, GameRecord>> };
+export type SeasonStats = {
+  ehlChampion: number | undefined;
+  presidentsTrophy: number | undefined;
+  medalists: number[] | undefined;
+  worldChampionships: any[] | undefined;
+  promoted: number | undefined;
+  relegated: number | undefined;
+  stories: Record<string, any>;
+  managers: Record<string, any>;
+};
+export type StatsState = {
+  managers: Record<string, ManagerGameStats>;
+  currentSeason: SeasonStats | undefined;
+  seasons: SeasonStats[];
+  stories: Record<string, any>;
+  streaks: { team: Record<string, Record<string, Streak>>; manager: Record<string, any> };
+};
+```
+
+**Scope (~12 files):**
+
+- Reducer: `src/ducks/stats.ts` (5 cases: META_QUIT, META_LOAD, SEASON_START, SEASON_END, STATS_SET_SEASON_STAT, STATS_UPDATE_FROM_FACTS)
+- Sagas: `sagas/stats.js`, `sagas/betting.js`
+- Competition data: `data/competitions/ehl.ts`
+- Selectors: `data/selectors.ts`
+- Components: `stats/TeamStats.tsx`, `stats/ManagerStats.jsx`, `stats/Story.jsx`, `stats/Achievements.jsx`, `Streaks.jsx`
+- Containers: `containers/StreaksContainer.js`
+
+### Gotchas learned from stats migration
+
+- **`Achievements.jsx` had a bug in original Immutable code:** `medals` Map had duplicate key `0` (`[0, "kulta"], [1, "hopea"], [0, "pronssi"]`). Immutable's last-write-wins meant medal 0 was "pronssi" (wrong). Fixed to plain object with correct keys `{0: "kulta", 1: "hopea", 2: "pronssi"}`.
+- **`Streaks.jsx` Immutable `.filter().count().map().toList()` chain:** Converted to `Object.entries().filter().map()` — much simpler.
+- **`ManagerStats.jsx` used `stat.reduce((r, s) => r + s, 0)` to sum Immutable Map values:** Plain object equivalent is just `stat.win + stat.draw + stat.loss`.
+- **`ehl.ts` had `ehlTeams.toArray ? ehlTeams.toArray() : ehlTeams` guard:** This was a boundary workaround for Immutable→array conversion. Now unnecessary — removed.
+- **`.reverse()` → `.toReversed()` in components:** Used non-mutating array method per codebase convention.
 
 ### Pre-existing issues (not migration-related)
 

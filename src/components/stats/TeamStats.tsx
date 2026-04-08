@@ -30,21 +30,20 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
               </tr>
             </thead>
             <tbody>
-              {stats
-                .get("seasons")
+              {stats.seasons
                 .map((season: any, seasonIndex: number) => {
                   return (
-                    <tr key={season}>
+                    <tr key={seasonIndex}>
                       <Td className="fixed">
                         <Season index={seasonIndex} />
                       </Td>
-                      {season.get("medalists").map((m: string, k: number) => (
+                      {season.medalists?.map((m: string, k: number) => (
                         <td key={k}>{teams[m]?.name}</td>
                       ))}
                     </tr>
                   );
                 })
-                .reverse()}
+                .toReversed()}
             </tbody>
           </Table>
         </ResponsiveTable>
@@ -58,19 +57,18 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
             </tr>
           </thead>
           <tbody>
-            {stats
-              .get("seasons")
+            {stats.seasons
               .map((season: any, seasonIndex: number) => {
                 return (
-                  <tr key={season}>
+                  <tr key={seasonIndex}>
                     <td>
                       <Season index={seasonIndex} />
                     </td>
-                    <td>{teams[season.get("presidentsTrophy")]?.name}</td>
+                    <td>{teams[season.presidentsTrophy]?.name}</td>
                   </tr>
                 );
               })
-              .reverse()}
+              .toReversed()}
           </tbody>
         </table>
       </Tab>
@@ -84,20 +82,19 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
             </tr>
           </thead>
           <tbody>
-            {stats
-              .get("seasons")
+            {stats.seasons
               .map((season: any, seasonIndex: number) => {
                 return (
-                  <tr key={season}>
+                  <tr key={seasonIndex}>
                     <td>
                       <Season index={seasonIndex} />
                     </td>
-                    <td>{teams[season.get("promoted")]?.name ?? "-"}</td>
-                    <td>{teams[season.get("relegated")]?.name ?? "-"}</td>
+                    <td>{teams[season.promoted]?.name ?? "-"}</td>
+                    <td>{teams[season.relegated]?.name ?? "-"}</td>
                   </tr>
                 );
               })
-              .reverse()}
+              .toReversed()}
           </tbody>
         </table>
       </Tab>
@@ -110,19 +107,18 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
             </tr>
           </thead>
           <tbody>
-            {stats
-              .get("seasons")
+            {stats.seasons
               .map((season: any, seasonIndex: number) => {
                 return (
-                  <tr key={season}>
+                  <tr key={seasonIndex}>
                     <td>
                       <Season index={seasonIndex} />
                     </td>
-                    <td>{teams[season.get("ehlChampion")]?.name}</td>
+                    <td>{teams[season.ehlChampion]?.name}</td>
                   </tr>
                 );
               })
-              .reverse()}
+              .toReversed()}
           </tbody>
         </table>
       </Tab>
@@ -138,24 +134,22 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
               </tr>
             </thead>
             <tbody>
-              {stats
-                .get("seasons")
+              {stats.seasons
                 .map((season: any, seasonIndex: number) => {
                   return (
-                    <tr key={season}>
+                    <tr key={seasonIndex}>
                       <Td className="fixed">
                         <Season index={seasonIndex} />
                       </Td>
-                      {season
-                        .get("worldChampionships")
-                        .take(3)
+                      {season.worldChampionships
+                        ?.slice(0, 3)
                         .map((m: string, k: number) => (
                           <td key={k}>{countries?.[m]?.name}</td>
                         ))}
                     </tr>
                   );
                 })
-                .reverse()}
+                .toReversed()}
             </tbody>
           </Table>
         </ResponsiveTable>

@@ -1,7 +1,6 @@
 import { pipe } from "remeda";
 import r from "../services/random";
 import { victors } from "../services/playoffs";
-import { List } from "immutable";
 import type { RootState } from "../config/redux";
 import type { GameFlags, Team } from "../ducks/game";
 import type { Manager } from "../ducks/manager";
@@ -23,13 +22,8 @@ export const totalGamesPlayed =
     phase: number
   ): Selector<number | undefined> =>
   (state) => {
-    const stats = state.stats.getIn([
-      "managers",
-      manager,
-      "games",
-      competition,
-      phase
-    ]);
+    const stats =
+      state.stats.managers?.[manager]?.games?.[competition]?.[phase];
 
     if (!stats) {
       return 0;

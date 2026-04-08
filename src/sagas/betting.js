@@ -10,11 +10,11 @@ const victories = [false, false, false, 1, 2, 5, 10];
 
 export function* processChampionBets() {
   const bets = yield select((state) => state.betting.championshipBets);
-  const stats = yield select((state) => state.stats.get("currentSeason"));
+  const stats = yield select((state) => state.stats.currentSeason);
 
-  console.log("stats", stats.toJS());
+  console.log("stats", stats);
 
-  const champion = stats.getIn(["medalists", 0]);
+  const champion = stats.medalists[0];
 
   for (const bet of bets) {
     if (bet.team === champion) {

@@ -1,13 +1,12 @@
 import React from "react";
-import { Map, List } from "immutable";
 
-const medals = Map([
-  [0, "kulta"],
-  [1, "hopea"],
-  [0, "pronssi"]
-]);
+const medals = {
+  0: "kulta",
+  1: "hopea",
+  2: "pronssi"
+};
 
-const playoffRounds = Map({
+const playoffRounds = {
   phl: [
     [1, "neljännesfinaalit"],
     [2, "semifinaali"],
@@ -18,22 +17,19 @@ const playoffRounds = Map({
     [2, "semifinaali"],
     [3, "finaali"]
   ]
-});
+};
 
 const Achievements = (props) => {
   const { story } = props;
 
-  const achievements = List.of(
-    medals.get(story.get("medal")),
-    !medals.get(story.get("medal")) &&
-      playoffRounds.getIn([
-        story.get("mainCompetition"),
-        story.get("lastRound")
-      ]),
-    story.get("ehlChampion") && "euroopan mestaruus",
-    story.get("promoted") && "sarjanousu",
-    story.get("relegated") && "putoaminen"
-  ).filter((t) => t);
+  const achievements = [
+    medals[story.medal],
+    !medals[story.medal] &&
+      playoffRounds[story.mainCompetition]?.[story.lastRound]?.[1],
+    story.ehlChampion && "euroopan mestaruus",
+    story.promoted && "sarjanousu",
+    story.relegated && "putoaminen"
+  ].filter((t) => t);
 
   return <div>{achievements.join(", ")}</div>;
 };

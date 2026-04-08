@@ -1,4 +1,3 @@
-import { List } from "immutable";
 import { select } from "redux-saga/effects";
 import { managersMainCompetition, managersTeamId } from "./selectors";
 import { amount as a } from "../services/format";

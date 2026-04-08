@@ -2,7 +2,6 @@ import { select, putResolve, put, call, all, fork } from "redux-saga/effects";
 import {
   competition,
   managerWhoControlsTeam,
-  allTeams,
   pekkalandianTeams,
   teamCompetesIn,
   teamsStrength,
@@ -11,7 +10,7 @@ import {
   teamWasPromoted
 } from "./selectors";
 import { victors, eliminated } from "../services/playoffs";
-import { List, Map, Repeat } from "immutable";
+import { List, Repeat } from "immutable";
 import r from "../services/random";
 
 const playsInPHLOrWasPromoted = function* (teamId) {

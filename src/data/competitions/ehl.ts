@@ -1,4 +1,3 @@
-import { List } from "immutable";
 import { select, call, all } from "redux-saga/effects";
 import { scheduler as roundRobinScheduler } from "../../services/round-robin";
 import tournamentScheduler from "../../services/tournament";
@@ -115,17 +114,15 @@ const ehl: CompetitionDefinition = {
     const turn: any = yield select((state: any) => state.game.turn);
     const season = turn.season;
 
-    const ehlTeams: any = yield select((state: any) =>
-      state.stats.getIn(["seasons", season - 1, "medalists"], List.of(2, 3, 5))
+    const ehlTeams: number[] = yield select((state: any) =>
+      state.stats.seasons?.[season - 1]?.medalists ?? [2, 3, 5]
     );
 
     const foreignTeamIds: number[] = yield select((state: any) =>
       state.game.teams.slice(24, 24 + 17).map((t: any) => t.id)
     );
 
-    // ehlTeams is Immutable List from stats — convert to array
-    const ehlArr: number[] = ehlTeams.toArray ? ehlTeams.toArray() : ehlTeams;
-    const allTeams = [...ehlArr, ...foreignTeamIds].toSorted(
+    const allTeams = [...ehlTeams, ...foreignTeamIds].toSorted(
       () => r.real(1, 10000) - 5000
     );
 

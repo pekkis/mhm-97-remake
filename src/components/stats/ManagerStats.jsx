@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { List, Map } from "immutable";
 
 import Tabs from "../ui/Tabs";
 import Tab from "../ui/Tab";
@@ -8,13 +7,10 @@ import Story from "./Story";
 const TeamStats = (props) => {
   const { competitions, manager, stats, teams } = props;
 
-  console.log("stats", stats.toJS());
-
   const [tab, setTab] = useState(0);
 
-  const managersStories = stats
-    .getIn(["seasons"])
-    .map((season) => season.getIn(["stories", manager.id]));
+  const managersStories = stats.seasons
+    .map((season) => season.stories?.[manager.id]);
 
   return (
     <div>
@@ -32,21 +28,18 @@ const TeamStats = (props) => {
                 />
               );
             })
-            .reverse()}
+            .toReversed()}
         </Tab>
         <Tab title="Ura numeroina">
           <div>
             {["phl", "division", "ehl"]
               .map((c) => competitions[c])
               .map((c) => {
-                const stat = stats.getIn(
-                  ["managers", manager.id, "games", c.id, "0"],
-                  Map({
-                    win: 0,
-                    draw: 0,
-                    loss: 0
-                  })
-                );
+                const stat = stats.managers?.[manager.id]?.games?.[c.id]?.["0"] ?? {
+                  win: 0,
+                  draw: 0,
+                  loss: 0
+                };
 
                 return (
                   <div key={c.id}>
@@ -56,19 +49,19 @@ const TeamStats = (props) => {
                       <tbody>
                         <tr>
                           <th>Otteluita</th>
-                          <td>{stat.reduce((r, s) => r + s, 0)}</td>
+                          <td>{stat.win + stat.draw + stat.loss}</td>
                         </tr>
                         <tr>
                           <th>Voittoja</th>
-                          <td>{stat.get("win")}</td>
+                          <td>{stat.win}</td>
                         </tr>
                         <tr>
                           <th>Tasapelejä</th>
-                          <td>{stat.get("draw")}</td>
+                          <td>{stat.draw}</td>
                         </tr>
                         <tr>
                           <th>Tappioita</th>
-                          <td>{stat.get("loss")}</td>
+                          <td>{stat.loss}</td>
                         </tr>
                       </tbody>
                     </table>

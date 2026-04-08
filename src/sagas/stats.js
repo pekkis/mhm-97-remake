@@ -95,7 +95,7 @@ export function* setSeasonStat(path, value) {
 export function* createSeasonStories() {
   const managers = yield select((state) => state.manager.managers);
 
-  const stats = yield select((state) => state.stats.get("currentSeason"));
+  const stats = yield select((state) => state.stats.currentSeason);
 
   for (const [managerId, manager] of Object.entries(managers)) {
     const teamId = manager.team;
@@ -117,10 +117,10 @@ export function* createSeasonStories() {
       mainCompetition,
       mainCompetitionStat: stat,
       ranking,
-      promoted: teamId === stats.get("promoted"),
-      relegated: teamId === stats.get("relegated"),
-      medal: stats.get("medalists").findIndex((m) => m === teamId),
-      ehlChampion: stats.get("ehlChampionship") === teamId,
+      promoted: teamId === stats.promoted,
+      relegated: teamId === stats.relegated,
+      medal: stats.medalists.findIndex((m) => m === teamId),
+      ehlChampion: stats.ehlChampionship === teamId,
       lastPhase: competition.phases.findLastIndex((phase) =>
         phase.teams.includes(teamId)
       )

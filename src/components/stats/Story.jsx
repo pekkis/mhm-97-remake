@@ -9,7 +9,7 @@ import Box from "../styled-system/Box";
 const Story = (props) => {
   const { season, story, teams, competitions } = props;
 
-  const t = story.get("mainCompetitionStat");
+  const t = story.mainCompetitionStat;
   return (
     <Box my={1}>
       <h3>
@@ -34,16 +34,16 @@ const Story = (props) => {
           <tbody>
             <tr>
               <Td className="fixed">
-                {competitions[story.get("mainCompetition")].abbr}
+                {competitions[story.mainCompetition].abbr}
               </Td>
-              <Td className="fixed">{story.get("ranking") + 1}</Td>
-              <Td className="fixed">{teams[t.get("id")]?.name}</Td>
-              <Td>{t.get("gamesPlayed")}</Td>
-              <td>{t.get("wins")}</td>
-              <td>{t.get("draws")}</td>
-              <td>{t.get("losses")}</td>
-              <td>{t.get("points")}</td>
-              <td>{t.get("goalsFor") - t.get("goalsAgainst")}</td>
+              <Td className="fixed">{story.ranking + 1}</Td>
+              <Td className="fixed">{teams[t.id]?.name}</Td>
+              <Td>{t.gamesPlayed}</Td>
+              <td>{t.wins}</td>
+              <td>{t.draws}</td>
+              <td>{t.losses}</td>
+              <td>{t.points}</td>
+              <td>{t.goalsFor - t.goalsAgainst}</td>
             </tr>
           </tbody>
         </Table>
