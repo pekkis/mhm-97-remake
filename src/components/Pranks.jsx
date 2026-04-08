@@ -41,7 +41,7 @@ const Pranks = (props) => {
 
       <Box p={1}>
         <Calendar
-          when={(c) => c.get("pranks")}
+          when={(c) => c.pranks}
           fallback={<p>Jäynät on tältä kaudelta jäynäytetty.</p>}
         >
           <h2>Jäynät</h2>

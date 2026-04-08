@@ -29,7 +29,7 @@ const TransferMarket = (props) => {
         <h2>Kriisipalaveri</h2>
 
         <Calendar
-          when={(c) => c.get("crisisMeeting")}
+          when={(c) => c.crisisMeeting}
           fallback={
             <p>
               Tässä vaiheessa kautta on auttamatta liian myöhäistä

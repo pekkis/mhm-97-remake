@@ -21,7 +21,7 @@ const ActionMenu = (props) => {
           </li>
 
           {team.morale <= CRISIS_MORALE_MAX && (
-            <Calendar when={(c) => c.get("crisisMeeting")}>
+            <Calendar when={(c) => c.crisisMeeting}>
               <li>
                 <Link onClick={() => closeMenu()} to="/kriisipalaveri">
                   Kriisipalaveri
@@ -29,7 +29,7 @@ const ActionMenu = (props) => {
               </li>
             </Calendar>
           )}
-          <Calendar when={(c) => c.get("transferMarket")}>
+          <Calendar when={(c) => c.transferMarket}>
             <li>
               <Link onClick={() => closeMenu()} to="/pelaajamarkkinat">
                 Pelaajamarkkinat
@@ -54,7 +54,7 @@ const ActionMenu = (props) => {
             </Link>
           </li>
 
-          <Calendar when={(c) => c.get("pranks")}>
+          <Calendar when={(c) => c.pranks}>
             <li>
               <Link onClick={() => closeMenu()} to="/jaynat">
                 Jäynät

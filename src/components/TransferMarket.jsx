@@ -27,7 +27,7 @@ const TransferMarket = (props) => {
         <h2>Pelaajamarkkinat</h2>
 
         <Calendar
-          when={(c) => c.get("transferMarket")}
+          when={(c) => c.transferMarket}
           fallback={
             <p>
               Valitettavasti siirtoaika on umpeutunut. Tervetuloa takaisin ensi

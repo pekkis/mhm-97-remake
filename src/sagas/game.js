@@ -97,9 +97,9 @@ export function* gameLoop() {
   do {
     const turn = yield select((state) => state.game.turn);
 
-    const roundData = calendar.get(turn.round);
+    const roundData = calendar[turn.round];
 
-    const phases = roundData.get("phases");
+    const phases = roundData.phases;
 
     // console.log(roundData.toJS(), "round data");
 

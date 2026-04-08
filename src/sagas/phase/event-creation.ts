@@ -163,9 +163,9 @@ export default function* eventCreationPhase() {
   const managers = yield select((state) => state.manager.managers);
   const round = yield select((state) => state.game.turn.round);
 
-  const calendarEntry = calendar.get(round);
+  const calendarEntry = calendar[round];
 
-  if (calendarEntry.get("createRandomEvent")) {
+  if (calendarEntry.createRandomEvent) {
     for (const [, manager] of Object.entries(managers) as [
       string,
       { id: string }

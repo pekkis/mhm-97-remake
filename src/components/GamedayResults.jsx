@@ -1,7 +1,6 @@
 import React from "react";
 
 import calendar from "../data/calendar";
-import { List } from "immutable";
 import Table from "./league-table/Table";
 import Header from "./containers/HeaderContainer";
 import HeaderedPage from "./ui/HeaderedPage";
@@ -11,11 +10,11 @@ import Box from "./styled-system/Box";
 const GamedayResults = (props) => {
   const { turn, managers, teams, competitions } = props;
 
-  const calendarEntry = calendar.get(turn.round);
+  const calendarEntry = calendar[turn.round];
 
-  const currentCompetitions = calendarEntry
-    .get("gamedays", List())
-    .map((c) => competitions[c]);
+  const currentCompetitions = calendarEntry.gamedays.map(
+    (c) => competitions[c]
+  );
 
   return (
     <HeaderedPage>

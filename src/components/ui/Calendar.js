@@ -3,7 +3,7 @@ import calendar from "../../data/calendar";
 const Calendar = (props) => {
   const { turn, when, children, fallback, state } = props;
 
-  const entry = calendar.get(turn.round);
+  const entry = calendar[turn.round];
 
   if (when(entry, calendar, state)) {
     return children;

@@ -1,15 +1,14 @@
 import React from "react";
 import calendar from "../../data/calendar";
-import { List } from "immutable";
 
 const Forward = (props) => {
   const { turn, competitions } = props;
 
-  const calendarEntry = calendar.get(turn.round);
+  const calendarEntry = calendar[turn.round];
 
-  const gamedays = calendarEntry.get("gamedays", List());
+  const gamedays = calendarEntry.gamedays;
 
-  if (gamedays.count() > 0) {
+  if (gamedays.length > 0) {
     return (
       <div>
         Pelipäivä (
@@ -22,8 +21,8 @@ const Forward = (props) => {
     );
   }
 
-  if (calendarEntry.get("title")) {
-    return <div>{calendarEntry.get("title")}</div>;
+  if (calendarEntry.title) {
+    return <div>{calendarEntry.title}</div>;
   }
 
   return <div>Eteenpäin!</div>;

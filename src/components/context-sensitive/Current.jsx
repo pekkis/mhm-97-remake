@@ -26,8 +26,8 @@ const Current = (props) => {
 
       <Calendar
         when={(turn, c) => {
-          const nextTurn = c.get(turn.round + 1);
-          return turn.transferMarket && !nextTurn.get("transferMarket");
+          const nextTurn = c[turn.round + 1];
+          return turn.transferMarket && !nextTurn.transferMarket;
         }}
       >
         <CurrentEntry>
@@ -38,7 +38,7 @@ const Current = (props) => {
         </CurrentEntry>
       </Calendar>
 
-      <Calendar when={(e) => e.get("crisisMeeting") && team.morale <= -3}>
+      <Calendar when={(e) => e.crisisMeeting && team.morale <= -3}>
         <CurrentEntry>
           <FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Joukkueen
           moraali on huono. <Link to="/kriisipalaveri">Kriisipalaveri</Link>{" "}
