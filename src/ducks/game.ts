@@ -6,7 +6,7 @@ import type { ManagerDefinition } from "../data/managers";
 
 import competitionList from "../data/competitions";
 import { META_QUIT_TO_MAIN_MENU, META_GAME_LOAD_STATE } from "./meta";
-import type { Competition } from "../types/competitions";
+import type { Competition, CompetitionId } from "../types/competitions";
 
 export const GAME_START = "GAME_START";
 export const GAME_ADVANCE_REQUEST = "GAME_ADVANCE_REQUEST";
@@ -60,7 +60,7 @@ type GameState = {
   flags: GameFlags;
   serviceBasePrices: Record<string, number>;
   managers: ManagerDefinition[];
-  competitions: Record<string, Competition>;
+  competitions: Record<CompetitionId, Competition>;
   teams: Team[];
   worldChampionshipResults: WorldChampionshipEntry[] | undefined;
 };
@@ -84,7 +84,7 @@ const defaultState: GameState = {
   managers,
   competitions: Object.fromEntries(
     Object.entries(competitionList).map(([key, def]) => [key, { ...def.data }])
-  ),
+  ) as Record<CompetitionId, Competition>,
   teams: teamDefs.map((t) => ({
     id: t.id,
     name: t.name,

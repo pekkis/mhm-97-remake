@@ -98,6 +98,8 @@ export type Phase = {
 
 // --- Competition (in state.game.competitions) ---
 
+export type CompetitionId = "phl" | "division" | "ehl" | "tournaments";
+
 export type Competition = {
   id: string;
   abbr: string;
@@ -140,7 +142,7 @@ export type CompetitionDefinition = {
   moraleBoost: (phase: number, facts: GameFacts, manager: any) => number;
   readinessBoost: (phase: number, facts: GameFacts, manager: any) => number;
   seed: Array<
-    | ((competitions: Record<string, Competition>) => Phase)
+    | ((competitions: Record<CompetitionId, Competition>) => Phase)
     | ((...args: any[]) => Generator<any, any, any>)
   >;
   start?: (...args: any[]) => Generator<any, any, any>;

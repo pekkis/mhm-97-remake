@@ -2,9 +2,12 @@ import ehl from "./competitions/ehl";
 import phl from "./competitions/phl";
 import division from "./competitions/division";
 import tournaments from "./competitions/tournaments";
-import type { CompetitionDefinition } from "../types/competitions";
+import type {
+  CompetitionDefinition,
+  CompetitionId
+} from "../types/competitions";
 
-const competitionEntries: [string, CompetitionDefinition][] = [
+const competitionEntries: [CompetitionId, CompetitionDefinition][] = [
   ["phl", phl],
   ["division", division],
   ["ehl", ehl],
@@ -16,7 +19,7 @@ const sorted = competitionEntries.toSorted(
   (a, b) => a[1].data.weight - b[1].data.weight
 );
 
-const competitions: Record<string, CompetitionDefinition> =
-  Object.fromEntries(sorted);
+const competitions: Record<CompetitionId, CompetitionDefinition> =
+  Object.fromEntries(sorted) as Record<CompetitionId, CompetitionDefinition>;
 
 export default competitions;

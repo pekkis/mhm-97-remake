@@ -1,4 +1,5 @@
 import { connect } from "react-redux";
+import type { RootState } from "@/config/redux";
 import Pranks from "../Pranks";
 import {
   orderPrank,
@@ -7,9 +8,9 @@ import {
   cancelPrank
 } from "../../ducks/prank";
 export default connect(
-  (state) => ({
+  (state: RootState) => ({
     turn: state.game.turn,
-    manager: state.manager.managers[state.manager.active],
+    manager: state.manager.managers[state.manager.active!],
     managers: state.manager.managers,
     teams: state.game.teams,
     events: state.event.events,

@@ -1,17 +1,23 @@
 import { connect } from "react-redux";
-import GamedayResults from "../GamedayResults";
+import type { RootState } from "@/config/redux";
+import EndOfSeason from "../EndOfSeason";
 import { advance } from "../../ducks/game";
 import { resolveEvent } from "../../ducks/event";
 import { saveGame, quitToMainMenu } from "../../ducks/meta";
+import { interestingCompetitions } from "../../data/selectors";
 export default connect(
-  (state) => ({
+  (state: RootState) => ({
     turn: state.game.turn,
-    manager: state.manager.managers[state.manager.active],
+    manager: state.manager.managers[state.manager.active!],
     managers: state.manager.managers,
     teams: state.game.teams,
     competitions: state.game.competitions,
     events: state.event.events,
-    news: state.news.news
+    news: state.news.news,
+    interestingCompetitions: interestingCompetitions(state.manager.active!)(
+      state
+    ),
+    announcements: state.news.announcements
   }),
   { advance, resolveEvent, saveGame, quitToMainMenu }
-)(GamedayResults);
+)(EndOfSeason);

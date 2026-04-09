@@ -1,12 +1,13 @@
 import { connect } from "react-redux";
-import LeagueTables from "../LeagueTables";
+import type { RootState } from "@/config/redux";
+import GamedayResults from "../GamedayResults";
 import { advance } from "../../ducks/game";
 import { resolveEvent } from "../../ducks/event";
 import { saveGame, quitToMainMenu } from "../../ducks/meta";
 export default connect(
-  (state) => ({
+  (state: RootState) => ({
     turn: state.game.turn,
-    manager: state.manager.managers[state.manager.active],
+    manager: state.manager.managers[state.manager.active!],
     managers: state.manager.managers,
     teams: state.game.teams,
     competitions: state.game.competitions,
@@ -14,4 +15,4 @@ export default connect(
     news: state.news.news
   }),
   { advance, resolveEvent, saveGame, quitToMainMenu }
-)(LeagueTables);
+)(GamedayResults);

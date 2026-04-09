@@ -1,11 +1,12 @@
 import { connect } from "react-redux";
+import type { RootState } from "@/config/redux";
 import Betting from "../Betting";
 import { bet } from "../../ducks/betting";
 
 export default connect(
-  (state) => ({
+  (state: RootState) => ({
     turn: state.game.turn,
-    manager: state.manager.managers[state.manager.active],
+    manager: state.manager.managers[state.manager.active!],
     teams: state.game.teams,
     competition: state.game.competitions.phl
   }),
