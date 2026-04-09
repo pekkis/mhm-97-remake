@@ -389,6 +389,7 @@ export type StatsState = {
 - Convert incrementally as files are touched
 - Use `typed-redux-saga` for saga TS conversions
 - Shared domain types in `src/types/` as they emerge
+- **Check for existing types before defining new ones** — types like `GameFacts`, `Competition`, `Team` etc. already exist in ducks/types files. Grep before creating duplicates.
 - Keep a shared `RootState` seed in `src/config/redux.ts`
 
 ### P3 — State architecture evolution (controlled)

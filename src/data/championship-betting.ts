@@ -3,7 +3,16 @@ IF v(x) >= yttre - 100 THEN ker(x) = 460: GOTO esukki
 IF v(x) <= yttre - 100 THEN ker(x) = 1000: GOTO esukki
 */
 
-const getOdds = (strength, average) => {
+import type { Team } from "../ducks/game";
+import type { Competition } from "../types/competitions";
+
+type OddsEntry = {
+  id: number;
+  name: string;
+  odds: number;
+};
+
+const getOdds = (strength: number, average: number): number => {
   switch (true) {
     case strength - average >= 100:
       return 1.1;
@@ -51,7 +60,7 @@ const getOdds = (strength, average) => {
   }
 };
 
-const odds = (competition, teams) => {
+const odds = (competition: Competition, teams: Team[]): OddsEntry[] => {
   const average =
     competition.teams.map((t) => teams[t]).reduce((r, t) => r + t.strength, 0) /
     competition.teams.length;

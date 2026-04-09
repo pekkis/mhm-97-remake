@@ -35,6 +35,9 @@ importers:
       '@types/react-redux':
         specifier: ^7.1.34
         version: 7.1.34
+      '@types/typography':
+        specifier: ^0.16.9
+        version: 0.16.9
       axios:
         specifier: ^1.14.0
         version: 1.14.0
@@ -1301,6 +1304,9 @@ packages:
 
   '@types/stylis@4.2.7':
     resolution: {integrity: sha512-VgDNokpBoKF+wrdvhAAfS55OMQpL6QRglwTwNC3kIgBrzZxA4WsFj+2eLfEA/uMUDzBcEhYmjSbwQakn/i3ajA==}
+
+  '@types/typography@0.16.9':
+    resolution: {integrity: sha512-2y8NwOn0uFVe1+48TS9Be1h8dF72tkN+hkO4U3PJswxBL492X/0E0QAJMphvZ6VOrdQLVq/e0RtL9jFrSt/LxQ==}
 
   '@types/unist@2.0.11':
     resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
@@ -3758,6 +3764,8 @@ snapshots:
       csstype: 3.2.3
 
   '@types/stylis@4.2.7': {}
+
+  '@types/typography@0.16.9': {}
 
   '@types/unist@2.0.11': {}
 

@@ -1,15 +1,13 @@
 import { createRoot } from "react-dom/client";
 import Root from "./Root";
 
-import { getInitialState } from "./config/state";
-
 import createStore from "./store";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faSpinner,
   faBars,
-  faExclamationCircle
+  faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./style.pcss";
@@ -25,9 +23,7 @@ Sentry.init({
 
 library.add(faSpinner, faBars, faExclamationCircle);
 
-const initialState = getInitialState();
-
-const store = createStore(initialState);
+const store = createStore();
 
 // Just a small DRY abstraction here.
 function render(Component: typeof Root, rootElement: HTMLElement) {
