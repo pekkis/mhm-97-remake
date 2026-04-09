@@ -2,10 +2,16 @@ import * as reducers from "../ducks";
 import createSagaMiddleware from "redux-saga";
 import type { SagaMiddleware } from "redux-saga";
 import type { Middleware, Reducer, StoreEnhancer } from "redux";
+import { useSelector, useDispatch } from "react-redux";
 
 export type RootState = {
   [K in keyof typeof reducers]: ReturnType<(typeof reducers)[K]>;
 };
+
+export type AppDispatch = (...args: any[]) => any;
+
+export const useAppSelector = useSelector.withTypes<RootState>();
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 
 const sagaMiddleware = createSagaMiddleware();
 

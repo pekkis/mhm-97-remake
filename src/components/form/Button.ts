@@ -1,6 +1,14 @@
 import styled, { css } from "styled-components";
 
-const Button = styled.button`
+type ButtonProps = {
+  secondary?: boolean;
+  terse?: boolean;
+  block?: boolean;
+};
+
+const Button = styled.button.withConfig({
+  shouldForwardProp: (prop) => !["secondary", "terse", "block"].includes(prop)
+})<ButtonProps>`
   border: 1px solid rgb(99, 99, 99);
   border-radius: 5px;
   padding: 1em 1.5em;

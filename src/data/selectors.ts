@@ -73,7 +73,7 @@ export const managerById =
 
 export const managersCompetitions = (manager: string) => (state: RootState) => {
   const team = state.manager.managers[manager]?.team;
-  if (team === undefined) return {};
+  if (team === undefined) {return {};}
   return Object.fromEntries(
     Object.entries(state.game.competitions).filter(([, c]) =>
       c.teams.includes(team)

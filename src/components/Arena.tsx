@@ -1,4 +1,3 @@
-import React from "react";
 import Header from "./containers/HeaderContainer";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./containers/ManagerInfoContainer";
@@ -8,19 +7,24 @@ import arenas from "../data/arenas";
 import styled, { css } from "styled-components";
 import { currency } from "../services/format";
 import Box from "./styled-system/Box";
+import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { improveArena } from "../ducks/manager";
 
 const ArenaHierarchy = styled.div``;
 
-const Arena = styled.div`
+const ArenaRow = styled.div<{ $current?: boolean }>`
   ${(props) =>
-    props.current &&
+    props.$current &&
     css`
       font-weight: bold;
     `}
 `;
 
-const Arenas = (props) => {
-  const { manager, teams, improveArena } = props;
+const Arenas = () => {
+  const manager = useAppSelector(
+    (state) => state.manager.managers[state.manager.active!],
+  );
+  const dispatch = useAppDispatch();
 
   const currentLevel = manager.arena.level;
 
@@ -43,9 +47,9 @@ const Arenas = (props) => {
           {arenas
             .map((arena, level) => {
               return (
-                <Arena current={level === currentLevel} key={arena.id}>
+                <ArenaRow $current={level === currentLevel} key={arena.id}>
                   {arena.name}
-                </Arena>
+                </ArenaRow>
               );
             })
             .toReversed()}
@@ -56,9 +60,7 @@ const Arenas = (props) => {
             <Button
               block
               disabled={!canDo}
-              onClick={() => {
-                improveArena(manager.id);
-              }}
+              onClick={() => dispatch(improveArena(manager.id))}
             >
               <div>Paranna halliolosuhteitasi</div>
               <div>{currency(nextLevel.price)}</div>

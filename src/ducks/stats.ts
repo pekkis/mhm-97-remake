@@ -105,7 +105,7 @@ export default function statsReducer(
       const path: string[] = payload.path;
       const value = payload.value;
       return produce(state, (draft) => {
-        if (!draft.currentSeason) return;
+        if (!draft.currentSeason) {return;}
         let target: any = draft.currentSeason;
         for (let i = 0; i < path.length - 1; i++) {
           if (target[path[i]] === undefined) {

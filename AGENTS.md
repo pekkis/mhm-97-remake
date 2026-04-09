@@ -398,6 +398,16 @@ export type StatsState = {
 - **Mid term:** Evaluate selective Redux + Saga → RTK/RTK Query slices, but only for new async flows, not core game logic.
 - **Long term:** XState is the only realistic architectural upgrade for the game engine itself (phase/turn loop is a textbook state machine). But this is a full engine rewrite — only viable after the TS migration is complete and a regression suite exists. Do not attempt piecemeal.
 
+### P4 — Styling: styled-components/Emotion/styled-system → Vanilla Extract
+
+- Current stack: styled-components 6 + styled-system 5 + Emotion remnants
+- Target: **Vanilla Extract** — zero runtime, TypeScript-native `.css.ts` files, first-class Vite support
+- **Sprinkles** replaces styled-system's `space`/`color`/`width` utility props with typed, static equivalents
+- Eliminates the `DefaultTheme` declaration merging pain (e.g. the pre-existing `Root.tsx` errors)
+- Migration path: one component at a time, can piggyback on the hooks/TS conversion pass
+- **Do not start until the hooks/TS migration (P2.5) is substantially complete** — one concern at a time
+- Interim: use `shouldForwardProp` on typed styled-components to prevent custom props leaking to the DOM (see `Button.ts` pattern)
+
 ### Saga TypeScript strategy
 
 `typed-redux-saga` is installed. When migrating saga files to TypeScript, use the typed wrappers instead of bare `redux-saga/effects`. This gives proper return type inference for `yield call()` without any architectural change.

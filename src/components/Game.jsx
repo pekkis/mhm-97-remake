@@ -12,7 +12,7 @@ import News from "./containers/NewsContainer";
 import Gameday from "./containers/GamedayContainer";
 import GamedayResults from "./containers/GamedayResultsContainer";
 import CrisisActions from "./containers/CrisisActionsContainer";
-import Arena from "./containers/ArenaContainer";
+import Arena from "./Arena";
 import Services from "./containers/ServicesContainer";
 import Pranks from "./containers/PranksContainer";
 import Notifications from "./notifications/containers/NotificationsContainer";
