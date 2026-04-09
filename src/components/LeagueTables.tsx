@@ -1,0 +1,47 @@
+import Table from "./league-table/Table";
+import Header from "./Header";
+import HeaderedPage from "./ui/HeaderedPage";
+import Box from "./styled-system/Box";
+import { useAppSelector } from "@/config/redux";
+
+const LeagueTables = () => {
+  const managers = useAppSelector((state) => state.manager.managers);
+  const teams = useAppSelector((state) => state.game.teams);
+  const competitions = useAppSelector((state) => state.game.competitions);
+
+  return (
+    <HeaderedPage>
+      <Header back />
+      <Box p={1}>
+        <h2>Sarjataulukot</h2>
+
+        {Object.values(competitions)
+          .filter((c) => c.phase >= 0)
+          .map((c) => {
+            const phase = c.phases[0];
+            const groups = phase.groups;
+
+            return (
+              <div key={c.id}>
+                <h3>{c.name}</h3>
+                {groups.map((group, i) => {
+                  return (
+                    <div key={i}>
+                      <h4>{group.name}</h4>
+                      <Table
+                        division={group}
+                        managers={managers}
+                        teams={teams}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+      </Box>
+    </HeaderedPage>
+  );
+};
+
+export default LeagueTables;

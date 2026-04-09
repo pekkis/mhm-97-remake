@@ -341,7 +341,12 @@ export type StatsState = {
    - Prefer named exports; avoid default exports for new/edited modules unless interop absolutely requires it.
    - **Prefer non-mutating array methods:** use `toSorted()` over `[...arr].sort()` or `arr.sort()`, `toReversed()` over `reverse()`, `toSpliced()` over `splice()`, and `with()` over index assignment. Avoid in-place mutation even on freshly created arrays — consistency matters more than micro-optimization.
 
-6. **Type safety must trend upward**
+6. **Page/leaf component boundary**
+   - **Page components** (route-level screens that assemble a view) may use `useAppSelector`/`useAppDispatch` and talk to the Redux store directly.
+   - **Leaf components** (render UI, handle interaction) must stay store-agnostic: data in via props, user intent out via callback props. No `useAppSelector`, no `useAppDispatch`, no action creator imports.
+   - This is the same presentational/container split from the `connect()` era, now enforced by discipline instead of file boundaries. Hooks make coupling frictionless — stay vigilant.
+
+7. **Type safety must trend upward**
    - New/edited modules should be TypeScript where feasible.
    - Add lightweight types around action payloads/selectors touched by a change.
    - Prefer `type` aliases by default; use `interface` only when declaration merging/extension semantics are explicitly needed.

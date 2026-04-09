@@ -1,4 +1,4 @@
-import App from "./components/containers/AppContainer";
+import App from "./components/App";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import typography from "./services/typography";

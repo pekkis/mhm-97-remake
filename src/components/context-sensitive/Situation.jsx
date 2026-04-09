@@ -3,10 +3,12 @@ import Table from "../league-table/Table";
 import ResponsiveTable from "../responsive-table/ResponsiveTable";
 import Matchups from "../playoffs/Matchups";
 import Games from "../gameday/Games";
-import Streaks from "../containers/StreaksContainer";
+import Streaks from "../Streaks";
 
 const Situation = (props) => {
   const { competitions, interesting, teams, manager } = props;
+
+  console.log(props, "proppo");
 
   return (
     <div>
