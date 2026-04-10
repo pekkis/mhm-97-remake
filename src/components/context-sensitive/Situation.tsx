@@ -1,15 +1,26 @@
-import React from "react";
+import type { FC } from "react";
 import Table from "../league-table/Table";
 import ResponsiveTable from "../responsive-table/ResponsiveTable";
 import Matchups from "../playoffs/Matchups";
 import Games from "../gameday/Games";
 import Streaks from "../Streaks";
+import type { Team } from "../../ducks/game";
+import type { Manager } from "../../ducks/manager";
+import type { Competition, PlayoffGroup } from "../../types/competitions";
 
-const Situation = (props) => {
-  const { competitions, interesting, teams, manager } = props;
+type SituationProps = {
+  competitions: Record<string, Competition>;
+  interesting: string[];
+  teams: Team[];
+  manager: Manager;
+};
 
-  console.log(props, "proppo");
-
+const Situation: FC<SituationProps> = ({
+  competitions,
+  interesting,
+  teams,
+  manager,
+}) => {
   return (
     <div>
       {interesting
@@ -22,13 +33,13 @@ const Situation = (props) => {
             <div key={competition.id}>
               <h3>{competition.name}</h3>
 
-              <Streaks competition={key} team={manager.team} />
+              <Streaks competition={competition.id} team={manager.team!} />
 
               {phase.groups
                 .filter(
                   (group) =>
                     phase.groups.length === 1 ||
-                    group.teams.includes(manager.team)
+                    group.teams.includes(manager.team!),
                 )
                 .map((group, i) => {
                   return (
@@ -76,7 +87,7 @@ const Situation = (props) => {
                             <Matchups
                               managers={{ [manager.id]: manager }}
                               teams={teams}
-                              group={group}
+                              group={group as PlayoffGroup}
                             />
                           </div>
                         )}

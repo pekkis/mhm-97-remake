@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ReactElement } from "react";
 import styled from "styled-components";
 
 const TableScroller = styled.div`
@@ -63,13 +63,13 @@ const TableWrapper = styled.div`
   overflow: auto;
 `;
 
-const ResponsiveTable = (props) => {
-  const { children } = props;
+type ResponsiveTableProps = {
+  children: ReactElement<{ isClone?: boolean }>;
+};
 
-  const clone = React.cloneElement(children, { isClone: true });
+const ResponsiveTable = ({ children }: ResponsiveTableProps) => {
+  const clone = React.cloneElement(children, { isClone: true } as any);
 
-  // console.log("clone", clone);
-  // const cteams = competition.get("teams").map(tid => teams[tid]);
   return (
     <TableScroller>
       <TableWrapper>{children}</TableWrapper>

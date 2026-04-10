@@ -1,11 +1,24 @@
-import React from "react";
+import type { FC } from "react";
 import Button from "../form/Button";
 import ButtonContainer from "../ui/ButtonContainer";
 import pranks from "../../data/pranks";
 import { currency as c } from "../../services/format";
+import type { Manager } from "../../ducks/manager";
 
-const SelectType = (props) => {
-  const { manager, selectType, competition, enabled } = props;
+type SelectTypeProps = {
+  manager: Manager;
+  selectType: (type: string) => void;
+  competition: string;
+  enabled: boolean;
+  cancel?: (id: string) => void;
+};
+
+const SelectType: FC<SelectTypeProps> = ({
+  manager,
+  selectType,
+  competition,
+  enabled,
+}) => {
   return (
     <div>
       <ButtonContainer>

@@ -1,9 +1,11 @@
-import React from "react";
+import type { FC } from "react";
 import Markdown from "react-markdown";
 
-const Events = (props) => {
-  const { announcements } = props;
+type AnnouncementsProps = {
+  announcements: string[];
+};
 
+const Announcements: FC<AnnouncementsProps> = ({ announcements }) => {
   return (
     <div>
       <h2>Ilmoitukset</h2>
@@ -19,4 +21,4 @@ const Events = (props) => {
   );
 };
 
-export default Events;
+export default Announcements;

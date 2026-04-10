@@ -1,0 +1,47 @@
+import type { FC } from "react";
+import styled from "styled-components";
+import Game from "./Game";
+import Box from "../styled-system/Box";
+import type { Team } from "../../ducks/game";
+import type { Manager } from "../../ducks/manager";
+import type { Group } from "../../types/competitions";
+
+type ResultsProps = {
+  className?: string;
+  teams: Team[];
+  context: Group;
+  round: number;
+  managers: Record<string, Manager>;
+};
+
+const Results: FC<ResultsProps> = ({
+  className,
+  teams,
+  context,
+  round,
+  managers,
+}) => {
+  const pairings = (context.schedule[round] ?? []).filter((p) => {
+    return p.result;
+  });
+
+  return (
+    <Box my={1}>
+      {pairings.map((pairing, i) => {
+        return (
+          <Game
+            key={i}
+            context={context}
+            pairing={pairing}
+            managers={managers}
+            teams={teams}
+          />
+        );
+      })}
+    </Box>
+  );
+};
+
+export default styled(Results)`
+  max-width: 30em;
+`;

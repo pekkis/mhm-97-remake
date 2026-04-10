@@ -1,14 +1,26 @@
-import React from "react";
+import type { FC } from "react";
 import ButtonContainer from "../ui/ButtonContainer";
 import Button from "../form/Button";
 import pranks from "../../data/pranks";
+import type { Team } from "../../ducks/game";
+import type { Manager } from "../../ducks/manager";
 
-const ConfirmPrank = (props) => {
-  const { cancel, manager, teams, prank, execute } = props;
+type ConfirmPrankProps = {
+  cancel: (...args: any[]) => void;
+  manager: Manager;
+  teams: Team[];
+  prank: { type?: string; victim?: string };
+  execute: (managerId: string, type: string, victim: string) => void;
+};
 
-  const prankInfo = pranks[prank.type];
-
-  console.log(prankInfo, "pinfo");
+const ConfirmPrank: FC<ConfirmPrankProps> = ({
+  cancel,
+  manager,
+  teams,
+  prank,
+  execute,
+}) => {
+  const prankInfo = pranks[prank.type!];
 
   return (
     <div>
@@ -19,14 +31,14 @@ const ConfirmPrank = (props) => {
 
       <p>
         <strong>Uhri: </strong>
-        {teams[prank.victim]?.name}
+        {teams[Number(prank.victim)]?.name}
       </p>
 
       <ButtonContainer>
         <Button
           block
           onClick={() => {
-            execute(manager.id, prank.type, prank.victim);
+            execute(manager.id, prank.type!, prank.victim!);
           }}
         >
           Varmista

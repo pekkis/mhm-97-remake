@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-const Label = styled.div`
+const LabelDiv = styled.div`
   display: block;
   font-weight: bold;
 `;
 
-export default Label;
+export default LabelDiv;

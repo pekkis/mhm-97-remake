@@ -1,16 +1,29 @@
-import React, { useState } from "react";
-
+import { useState, type FC } from "react";
 import Tabs from "../ui/Tabs";
 import Tab from "../ui/Tab";
 import Story from "./Story";
+import type { Team } from "../../ducks/game";
+import type { Manager } from "../../ducks/manager";
+import type { StatsState } from "../../ducks/stats";
+import type { Competition } from "../../types/competitions";
 
-const TeamStats = (props) => {
-  const { competitions, manager, stats, teams } = props;
+type ManagerStatsProps = {
+  competitions: Record<string, Competition>;
+  manager: Manager;
+  stats: StatsState;
+  teams: Team[];
+};
 
+const ManagerStats: FC<ManagerStatsProps> = ({
+  competitions,
+  manager,
+  stats,
+  teams,
+}) => {
   const [tab, setTab] = useState(0);
 
   const managersStories = stats.seasons.map(
-    (season) => season.stories?.[manager.id]
+    (season) => season.stories?.[manager.id],
   );
 
   return (
@@ -33,7 +46,7 @@ const TeamStats = (props) => {
         </Tab>
         <Tab title="Ura numeroina">
           <div>
-            {["phl", "division", "ehl"]
+            {(["phl", "division", "ehl"] as const)
               .map((c) => competitions[c])
               .map((c) => {
                 const stat = stats.managers?.[manager.id]?.games?.[c.id]?.[
@@ -41,7 +54,7 @@ const TeamStats = (props) => {
                 ] ?? {
                   win: 0,
                   draw: 0,
-                  loss: 0
+                  loss: 0,
                 };
 
                 return (
@@ -78,4 +91,4 @@ const TeamStats = (props) => {
   );
 };
 
-export default TeamStats;
+export default ManagerStats;

@@ -1,24 +1,37 @@
-import React from "react";
+import type { FC } from "react";
 import styled from "styled-components";
 import RTable from "../responsive-table/Table";
 import Td from "../responsive-table/Td";
+import type { Team } from "../../ducks/game";
+import type { Manager } from "../../ducks/manager";
+import type { Group, TeamStat } from "../../types/competitions";
 
-const TableRow = styled.tr`
+type TableRowProps = {
+  $dark?: boolean;
+};
+
+const TableRow = styled.tr<TableRowProps>`
   background-color: rgb(255, 255, 255);
   ${(props) =>
-    props.dark &&
+    props.$dark &&
     `
     background-color: rgb(238, 238, 238)
   `}
 `;
 
-const Table = (props) => {
-  const { managers, teams, division, isClone } = props;
-  const colors = division.colors;
+type TableProps = {
+  managers: Record<string, Manager>;
+  teams: Team[];
+  division: Group;
+  isClone?: boolean;
+};
+
+const Table: FC<TableProps> = ({ managers, teams, division, isClone }) => {
+  const colors = "colors" in division ? (division.colors as string[]) : [];
   const managerTeams = Object.values(managers).map((p) => p.team);
-  const tbl = division.stats.map((entry) => ({
+  const tbl = (division.stats as TeamStat[]).map((entry) => ({
     ...entry,
-    managerControlled: managerTeams.includes(entry.id)
+    managerControlled: managerTeams.includes(entry.id),
   }));
 
   return (
@@ -39,7 +52,7 @@ const Table = (props) => {
       <tbody>
         {tbl.map((t, i) => {
           return (
-            <TableRow key={t.id} dark={colors?.[i] === "d"}>
+            <TableRow key={t.id} $dark={colors?.[i] === "d"}>
               <td className="fixed">
                 {t.managerControlled ? (
                   <strong>{teams[t.id]?.name}</strong>

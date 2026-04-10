@@ -1,4 +1,4 @@
-import React from "react";
+import type { FC } from "react";
 import { Formik } from "formik";
 import Button from "../form/Button";
 import Input from "../form/Input";
@@ -7,10 +7,23 @@ import Label from "../form/Label";
 import LabelDiv from "../form/LabelDiv";
 import Field from "../form/Field";
 import difficultyLevels from "../../data/difficulty-levels";
+import type { Team } from "../../ducks/game";
+import type { MetaManager } from "../../ducks/meta";
+import type { Competition } from "../../types/competitions";
 
-const ManagerForm = (props) => {
-  const { manager, advance, competitions, teams } = props;
+type ManagerFormProps = {
+  manager: MetaManager;
+  advance: (values: MetaManager) => void;
+  competitions: Record<string, Competition>;
+  teams: Team[];
+};
 
+const ManagerForm: FC<ManagerFormProps> = ({
+  manager,
+  advance,
+  competitions,
+  teams,
+}) => {
   return (
     <div>
       <Formik

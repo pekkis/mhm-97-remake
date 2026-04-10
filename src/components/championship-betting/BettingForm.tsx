@@ -1,27 +1,45 @@
-import React from "react";
+import type { FC } from "react";
 import { Formik } from "formik";
 import Slider from "rc-slider";
 import { amount as a } from "../../services/format";
 import odds from "../../data/championship-betting";
 import Button from "../form/Button";
+import type { Team } from "../../ducks/game";
+import type { Manager } from "../../ducks/manager";
+import type { Competition } from "../../types/competitions";
 
-const BettingForm = (props) => {
-  const { manager, competition, teams, betChampion } = props;
+type ChampionshipBettingFormProps = {
+  manager: Manager;
+  competition: Competition;
+  teams: Team[];
+  betChampion: (
+    managerId: string,
+    teamId: number,
+    amount: number,
+    odds: number,
+  ) => void;
+};
 
+const BettingForm: FC<ChampionshipBettingFormProps> = ({
+  manager,
+  competition,
+  teams,
+  betChampion,
+}) => {
   const teamsAndOdds = odds(competition, teams);
 
   return (
     <Formik
       initialValues={{
         team: "",
-        amount: 10000
+        amount: 10000,
       }}
       onSubmit={(values) => {
         betChampion(
           manager.id,
           parseInt(values.team, 10),
-          parseInt(values.amount, 10),
-          teamsAndOdds.find((t) => t.id === parseInt(values.team, 10))?.odds
+          parseInt(String(values.amount), 10),
+          teamsAndOdds.find((t) => t.id === parseInt(values.team, 10))!.odds,
         );
       }}
     >

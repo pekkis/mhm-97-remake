@@ -1,11 +1,16 @@
-import React from "react";
+import type { FC } from "react";
+import type { Team } from "../../ducks/game";
+import type { Manager } from "../../ducks/manager";
+import type { PlayoffGroup, MatchupStat } from "../../types/competitions";
 
-const Matchups = (props) => {
-  const { managers, teams, group } = props;
+type MatchupsProps = {
+  managers: Record<string, Manager>;
+  teams: Team[];
+  group: PlayoffGroup;
+};
 
-  console.log(group, "group");
-
-  const matches = group.stats;
+const Matchups: FC<MatchupsProps> = ({ teams, group }) => {
+  const matches = group.stats as MatchupStat[];
 
   return (
     <table>

@@ -1,12 +1,16 @@
+import type { FC } from "react";
 import styled from "styled-components";
 import TeamName from "../team/Name";
+import type { Team } from "../../ducks/game";
+import type { Manager } from "../../ducks/manager";
+import type { Group, Pairing } from "../../types/competitions";
 
 const Row = styled.div`
   display: flex;
   flex-basis: 100%;
 `;
 
-const Team = styled.div`
+const TeamDiv = styled.div`
   width: 50%;
   overflow: hidden;
 `;
@@ -23,23 +27,29 @@ const Result = styled.div`
 
 const Score = styled.div``;
 
-const Game = (props) => {
-  const { context, pairing, teams, managers } = props;
+type GameProps = {
+  context: Group;
+  pairing: Pairing;
+  teams: Team[];
+  managers: Record<string, Manager>;
+};
+
+const Game: FC<GameProps> = ({ context, pairing, teams, managers }) => {
   return (
     <Row>
-      <Team>
+      <TeamDiv>
         <TeamName
           managers={managers}
           team={teams[context.teams[pairing.home]]}
         />
-      </Team>
+      </TeamDiv>
       <Separator>-</Separator>
-      <Team>
+      <TeamDiv>
         <TeamName
           managers={managers}
           team={teams[context.teams[pairing.away]]}
         />
-      </Team>
+      </TeamDiv>
       <Result>
         {pairing.result && (
           <>

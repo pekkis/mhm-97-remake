@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ReactElement } from "react";
 import styled from "styled-components";
 import Tab from "./Tab";
 
@@ -24,10 +24,15 @@ const TabContent = styled.div`
   padding: 0;
 `;
 
-const Tabs = (props) => {
-  const { className, children, selected, onSelect } = props;
+type TabsProps = {
+  className?: string;
+  children: ReactElement[];
+  selected: number;
+  onSelect: (index: number) => void;
+};
 
-  const childrenArray = React.Children.toArray(children);
+const Tabs = ({ className, children, selected, onSelect }: TabsProps) => {
+  const childrenArray = React.Children.toArray(children) as ReactElement<any>[];
 
   return (
     <div className={className}>
@@ -35,12 +40,12 @@ const Tabs = (props) => {
         {childrenArray.map((child, key) =>
           React.cloneElement(child, {
             isSelected: key === selected,
-            onSelect: () => onSelect(key)
-          })
+            onSelect: () => onSelect(key),
+          } as any),
         )}
       </TabsList>
 
-      <TabContent>{childrenArray[selected].props.children}</TabContent>
+      <TabContent>{(childrenArray[selected].props as any).children}</TabContent>
     </div>
   );
 };

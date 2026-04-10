@@ -1,13 +1,19 @@
-import React from "react";
-
+import type { FC } from "react";
 import competitionTypes from "../../services/competition-type";
-
 import Game from "./Game";
 import Box from "../styled-system/Box";
+import type { Team } from "../../ducks/game";
+import type { Manager } from "../../ducks/manager";
+import type { Group } from "../../types/competitions";
 
-const Games = (props) => {
-  const { className, teams, context, round, managers } = props;
+type GamesProps = {
+  teams: Team[];
+  context: Group;
+  round: number;
+  managers: Record<string, Manager>;
+};
 
+const Games: FC<GamesProps> = ({ teams, context, round, managers }) => {
   const playMatch = competitionTypes[context.type].playMatch;
   const pairings = (context.schedule[round] ?? []).filter((p, i) => {
     return playMatch(context, round, i);

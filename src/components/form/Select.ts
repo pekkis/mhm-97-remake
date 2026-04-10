@@ -1,6 +1,12 @@
 import styled from "styled-components";
 
-const Input = styled.input`
+type SelectProps = {
+  block?: boolean;
+};
+
+const Select = styled.select.withConfig({
+  shouldForwardProp: (prop) => !["block"].includes(prop),
+})<SelectProps>`
   border: 1px solid rgb(99, 99, 99);
   border-radius: 5px;
   padding: 0.5em;
@@ -17,4 +23,4 @@ const Input = styled.input`
   `}
 `;
 
-export default Input;
+export default Select;

@@ -1,14 +1,21 @@
-import React from "react";
+import type { FC } from "react";
 import Season from "../data/Season";
 import Achievements from "./Achievements";
 import ResponsiveTable from "../responsive-table/ResponsiveTable";
 import Table from "../responsive-table/Table";
 import Td from "../responsive-table/Td";
 import Box from "../styled-system/Box";
+import type { Team } from "../../ducks/game";
+import type { Competition } from "../../types/competitions";
 
-const Story = (props) => {
-  const { season, story, teams, competitions } = props;
+type StoryProps = {
+  season: number;
+  story: any;
+  teams: Team[];
+  competitions: Record<string, Competition>;
+};
 
+const Story: FC<StoryProps> = ({ season, story, teams, competitions }) => {
   const t = story.mainCompetitionStat;
   return (
     <Box my={1}>

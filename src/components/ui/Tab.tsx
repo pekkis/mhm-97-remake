@@ -1,13 +1,20 @@
-import React from "react";
+import type { FC } from "react";
 import styled, { css } from "styled-components";
 
-const Tab = (props) => {
-  const { title, className, onSelect } = props;
+type TabProps = {
+  title: string;
+  className?: string;
+  onSelect?: () => void;
+  isSelected?: boolean;
+  children?: React.ReactNode;
+};
+
+const Tab: FC<TabProps> = ({ title, className, onSelect }) => {
   return (
     <li
       className={className}
       onClick={() => {
-        onSelect();
+        onSelect?.();
       }}
     >
       {title}

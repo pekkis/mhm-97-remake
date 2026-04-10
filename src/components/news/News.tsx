@@ -1,10 +1,12 @@
-import React from "react";
+import type { FC } from "react";
 import Markdown from "react-markdown";
-import eventList from "../../data/events";
 
-const News = (props) => {
-  const { news } = props;
+type NewsProps = {
+  news: string[];
+  manager?: unknown;
+};
 
+const News: FC<NewsProps> = ({ news }) => {
   return (
     <div>
       {news.map((n, i) => {
