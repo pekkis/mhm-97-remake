@@ -5,6 +5,7 @@ import r from "../../services/random";
 import { addEvent } from "../../sagas/event";
 import { incurPenalty } from "../../sagas/team";
 import type { MHMEvent } from "../../types/base";
+import type { RootState } from "../../config/redux";
 
 const eventId = "protest";
 
@@ -43,7 +44,7 @@ const event: MHMEvent<ProtestData> = {
     const perpetratorTeam = yield* select(managersTeam(data.manager));
 
     const victimTeam = yield* select(
-      (state: any) => state.game.teams[data.victim]
+      (state: RootState) => state.game.teams[data.victim]
     );
 
     const resolved = produce(data, (draft) => {
@@ -88,19 +89,21 @@ const event: MHMEvent<ProtestData> = {
 
     const penalizedTeam = success ? data.victim : data.perpetrator!;
 
-    const competitions = yield* select((state: any) => state.game.competitions);
+    const competitions = yield* select(
+      (state: RootState) => state.game.competitions
+    );
 
-    const competition = competitions
-      .filterNot((c: any) => c.get("id") === "ehl")
-      .find((c: any) => c.get("teams").includes(penalizedTeam));
+    const [competitionId, competition] = Object.entries(competitions)
+      .filter(([id]) => id !== "ehl")
+      .find(([, c]) => c.teams.includes(penalizedTeam))!;
 
-    const groupId = competition
-      .getIn(["phases", 0, "groups"])
-      .findIndex((g: any) => g.get("teams").includes(penalizedTeam));
+    const groupId = competition.phases[0].groups.findIndex((g) =>
+      g.teams.includes(penalizedTeam)
+    );
 
     yield* call(
       incurPenalty,
-      competition.get("id"),
+      competitionId,
       0,
       groupId,
       penalizedTeam,

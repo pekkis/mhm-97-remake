@@ -3,7 +3,7 @@ import { META_QUIT_TO_MAIN_MENU } from "./meta";
 
 type PrankSelection = {
   type: string | undefined;
-  victim: string | undefined;
+  victim: number | undefined;
 };
 
 type Tabs = {
@@ -58,7 +58,7 @@ type UiAction =
   | { type: "PRANK_CANCEL" }
   | { type: "PRANK_ORDER" }
   | { type: "PRANK_SELECT_TYPE"; payload: string }
-  | { type: "PRANK_SELECT_VICTIM"; payload: string };
+  | { type: "PRANK_SELECT_VICTIM"; payload: number };
 
 export default function uiReducer(
   state: UiState = defaultState,

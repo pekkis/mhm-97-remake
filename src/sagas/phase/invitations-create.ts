@@ -1,6 +1,6 @@
-import { call } from "redux-saga/effects";
+import { call } from "typed-redux-saga";
 import { createInvitations } from "../invitation";
 
 export default function* invitationsCreatePhase() {
-  yield call(createInvitations);
+  yield* call(createInvitations);
 }

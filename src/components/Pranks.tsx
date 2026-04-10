@@ -71,7 +71,7 @@ const Pranks = () => {
               prank={prank}
               competition={targetCompetition}
               teams={teams}
-              selectVictim={(id: string) => dispatch(selectPrankVictim(id))}
+              selectVictim={(id: number) => dispatch(selectPrankVictim(id))}
               cancel={(id: string) => dispatch(cancelPrank(id))}
             />
           )}
@@ -80,7 +80,7 @@ const Pranks = () => {
             <ConfirmPrank
               manager={manager}
               prank={prank}
-              execute={(m: string, t: string, v: string) =>
+              execute={(m: string, t: string, v: number) =>
                 dispatch(orderPrank(m, t, v))
               }
               teams={teams}

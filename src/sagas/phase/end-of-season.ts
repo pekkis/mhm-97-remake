@@ -1,4 +1,4 @@
-import { call, all, take, put, select, putResolve } from "redux-saga/effects";
+import { call, all, take, put, select, putResolve } from "typed-redux-saga";
 import { seasonStart, promote, relegate, setPhase } from "../game";
 import { victors, eliminated } from "../../services/playoffs";
 import awards from "../../data/awards";
@@ -7,6 +7,12 @@ import { setSeasonStat, createSeasonStories } from "../stats";
 import { processChampionBets } from "../betting";
 import { competition, allTeams } from "../../data/selectors";
 import { setStrength, type Country } from "../../ducks/country";
+import type { RootState } from "../../config/redux";
+import type {
+  Competition,
+  PlayoffGroup,
+  TeamStat
+} from "../../types/competitions";
 
 const getLuck = () => {
   const isLucky = cinteger(1, 10);
@@ -23,8 +29,8 @@ const getLuck = () => {
 };
 
 function* definePekkalandiaStrength() {
-  const phl = yield select(competition("phl"));
-  const teams = yield select(allTeams);
+  const phl = yield* select(competition("phl"));
+  const teams = yield* select(allTeams);
 
   const avg = phl.teams
     .map((t: number) => teams[t].strength)
@@ -34,15 +40,15 @@ function* definePekkalandiaStrength() {
 
   console.log("strength", strength);
 
-  yield putResolve(setStrength("FI", strength));
+  yield* putResolve(setStrength("FI", strength));
 }
 
 function* worldChampionships() {
-  yield call(setPhase, "world-championships");
-  yield call(definePekkalandiaStrength);
+  yield* call(setPhase, "world-championships");
+  yield* call(definePekkalandiaStrength);
 
-  const countries: Record<string, Country> = yield select(
-    (state) => state.country.countries
+  const countries: Record<string, Country> = yield* select(
+    (state: RootState) => state.country.countries
   );
 
   const rawEntries = Object.values(countries)
@@ -66,42 +72,48 @@ function* worldChampionships() {
 
   console.log(entries, "entries");
 
-  yield put({
-    type: "GAME_WORLD_CHAMPIONSHIP_RESULTS",
+  yield* put({
+    type: "GAME_WORLD_CHAMPIONSHIP_RESULTS" as const,
     payload: entries
   });
 
-  yield call(
+  yield* call(
     setSeasonStat,
     ["worldChampionships"],
     entries.map((e) => e.id)
   );
 
-  yield take("GAME_ADVANCE_REQUEST");
+  yield* take("GAME_ADVANCE_REQUEST");
 }
 
 export default function* endOfSeasonPhase() {
-  yield call(worldChampionships);
+  yield* call(worldChampionships);
 
-  yield call(setPhase, "end-of-season");
+  yield* call(setPhase, "end-of-season");
 
-  yield call(awards);
+  yield* call(awards);
 
-  yield call(setPhase, "end-of-season");
+  yield* call(setPhase, "end-of-season");
 
-  const division = yield select((state) => state.game.competitions.division);
+  const division: Competition = yield* select(
+    (state: RootState) => state.game.competitions.division
+  );
 
-  const phl = yield select((state) => state.game.competitions.phl);
+  const phl: Competition = yield* select(
+    (state: RootState) => state.game.competitions.phl
+  );
 
-  const divisionVictor = victors(division.phases[3].groups[0])[0].id;
+  const divisionVictor = victors(
+    division.phases[3].groups[0] as PlayoffGroup
+  )[0].id;
 
-  const presidentsTrophy = phl.phases[0].groups[0].stats[0].id;
-  yield call(setSeasonStat, ["presidentsTrophy"], presidentsTrophy);
+  const presidentsTrophy = (phl.phases[0].groups[0].stats[0] as TeamStat).id;
+  yield* call(setSeasonStat, ["presidentsTrophy"], presidentsTrophy);
 
-  const phlStats = phl.phases[0].groups[0].stats;
+  const phlStats = phl.phases[0].groups[0].stats as TeamStat[];
   const phlLoser = phlStats[phlStats.length - 1].id;
 
-  const phlFinals = phl.phases[3].groups[0];
+  const phlFinals = phl.phases[3].groups[0] as PlayoffGroup;
   const phlVictors = victors(phlFinals);
   const phlLosers = eliminated(phlFinals);
 
@@ -111,26 +123,29 @@ export default function* endOfSeasonPhase() {
     phlVictors[phlVictors.length - 1]
   ].map((e) => e.id);
 
-  yield call(setSeasonStat, ["medalists"], medalists);
+  yield* call(setSeasonStat, ["medalists"], medalists);
 
   if (divisionVictor !== phlLoser) {
-    yield call(setSeasonStat, ["relegated"], phlLoser);
-    yield call(setSeasonStat, ["promoted"], divisionVictor);
+    yield* call(setSeasonStat, ["relegated"], phlLoser);
+    yield* call(setSeasonStat, ["promoted"], divisionVictor);
   }
 
-  yield call(processChampionBets);
+  yield* call(processChampionBets);
 
-  yield call(createSeasonStories);
+  yield* call(createSeasonStories);
 
-  yield take("GAME_ADVANCE_REQUEST");
+  yield* take("GAME_ADVANCE_REQUEST");
 
-  yield put({
-    type: "SEASON_END"
+  yield* put({
+    type: "SEASON_END" as const
   });
 
   if (divisionVictor !== phlLoser) {
-    yield all([promote("division", divisionVictor), relegate("phl", phlLoser)]);
+    yield* all([
+      promote("division", divisionVictor),
+      relegate("phl", phlLoser)
+    ]);
   }
 
-  yield call(seasonStart);
+  yield* call(seasonStart);
 }

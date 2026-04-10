@@ -8,7 +8,7 @@ import type { Competition } from "../../types/competitions";
 type SelectVictimProps = {
   competition: Competition;
   manager: Manager;
-  selectVictim: (teamId: string) => void;
+  selectVictim: (teamId: number) => void;
   teams: Team[];
   cancel: (...args: any[]) => void;
   prank?: unknown;
@@ -33,7 +33,7 @@ const SelectVictim: FC<SelectVictimProps> = ({
           .filter((teamId) => teamId !== manager.team)
           .map((teamId) => {
             return (
-              <Button key={teamId} block onClick={() => selectVictim(String(teamId))}>
+              <Button key={teamId} block onClick={() => selectVictim(teamId)}>
                 {teams[teamId].name}
               </Button>
             );

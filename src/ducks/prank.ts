@@ -20,12 +20,12 @@ export const selectPrankType = (id: string) => ({
   payload: id
 });
 
-export const selectPrankVictim = (id: string) => ({
+export const selectPrankVictim = (id: number) => ({
   type: "PRANK_SELECT_VICTIM" as const,
   payload: id
 });
 
-export const orderPrank = (manager: string, type: string, victim: string) => ({
+export const orderPrank = (manager: string, type: string, victim: number) => ({
   type: "PRANK_ORDER" as const,
   payload: { manager, type, victim }
 });

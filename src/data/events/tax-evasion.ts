@@ -165,11 +165,7 @@ const event: MHMEvent<TaxEvasionData> = {
       yield* call(decrementBalance, manager, data.fine2!);
 
       const arena = yield* select(managersArena(manager));
-      yield* call(
-        incrementInsuranceExtra,
-        manager,
-        200 * (arena.level + 1)
-      );
+      yield* call(incrementInsuranceExtra, manager, 200 * (arena.level + 1));
     }
   }
 };

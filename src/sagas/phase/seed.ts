@@ -1,16 +1,17 @@
-import { select, put, call } from "redux-saga/effects";
+import { select, put, call } from "typed-redux-saga";
 import calendar from "../../data/calendar";
 import { seedCompetition } from "../game";
+import type { RootState } from "../../config/redux";
 
 export default function* seedPhase() {
   console.log("SEED PHASE");
 
-  yield put({
-    type: "GAME_SET_PHASE",
+  yield* put({
+    type: "GAME_SET_PHASE" as const,
     payload: "seed"
   });
 
-  const round = yield select((state) => state.game.turn.round);
+  const round = yield* select((state: RootState) => state.game.turn.round);
   const seeds = calendar[round].seed;
 
   console.log("SEEDS", seeds);
@@ -22,6 +23,6 @@ export default function* seedPhase() {
   for (const seed of seeds) {
     const competitionId = seed.competition;
     const phaseId = seed.phase;
-    yield call(seedCompetition, competitionId, phaseId);
+    yield* call(seedCompetition, competitionId, phaseId);
   }
 }

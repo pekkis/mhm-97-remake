@@ -5,7 +5,7 @@ import events from "../data/events";
 
 export type PrankInstance = {
   manager: string;
-  victim: string;
+  victim: number;
   type: string;
 };
 
@@ -69,7 +69,7 @@ const pranks: Record<string, Prank> = {
     },
 
     execute: function* (prank) {
-      yield addEffect(Number(prank.victim), ["strength"], -10000, 1);
+      yield addEffect(prank.victim, ["strength"], -10000, 1);
     }
   },
   bazookaStrike: {

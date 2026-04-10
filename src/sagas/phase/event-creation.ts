@@ -1,8 +1,10 @@
-import { select, call, put } from "redux-saga/effects";
+import { select, call } from "typed-redux-saga";
 import events from "../../data/events";
 import { cinteger } from "../../services/random";
 import calendar from "../../data/calendar";
 import { setPhase } from "../game";
+import type { RootState } from "../../config/redux";
+import type { Manager } from "../../ducks/manager";
 
 const eventsMap: Record<number, string> = {
   1: "jaralahti",
@@ -153,18 +155,15 @@ const getEventId = (predefined?: string): string | undefined => {
 };
 
 export default function* eventCreationPhase() {
-  yield call(setPhase, "event-creation");
+  yield* call(setPhase, "event-creation");
 
-  const managers = yield select((state) => state.manager.managers);
-  const round = yield select((state) => state.game.turn.round);
+  const managers = yield* select((state: RootState) => state.manager.managers);
+  const round = yield* select((state: RootState) => state.game.turn.round);
 
   const calendarEntry = calendar[round];
 
   if (calendarEntry.createRandomEvent) {
-    for (const [, manager] of Object.entries(managers) as [
-      string,
-      { id: string }
-    ][]) {
+    for (const [, manager] of Object.entries(managers)) {
       const eventId = getEventId();
 
       if (!eventId) {
@@ -176,7 +175,7 @@ export default function* eventCreationPhase() {
         return;
       }
 
-      yield call(events[eventId].create, { manager: manager.id });
+      yield* call(events[eventId].create, { manager: manager.id });
     }
   }
 }

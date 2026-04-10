@@ -9,8 +9,8 @@ type ConfirmPrankProps = {
   cancel: (...args: any[]) => void;
   manager: Manager;
   teams: Team[];
-  prank: { type?: string; victim?: string };
-  execute: (managerId: string, type: string, victim: string) => void;
+  prank: { type?: string; victim?: number };
+  execute: (managerId: string, type: string, victim: number) => void;
 };
 
 const ConfirmPrank: FC<ConfirmPrankProps> = ({
@@ -31,7 +31,7 @@ const ConfirmPrank: FC<ConfirmPrankProps> = ({
 
       <p>
         <strong>Uhri: </strong>
-        {teams[Number(prank.victim)]?.name}
+        {teams[prank.victim!]?.name}
       </p>
 
       <ButtonContainer>

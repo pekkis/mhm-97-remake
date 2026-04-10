@@ -2,30 +2,41 @@ import competitionData from "../data/competitions";
 import gameService from "../services/game";
 import competitionTypes from "../services/competition-type";
 
-import { call, put, putResolve, select, take } from "redux-saga/effects";
+import { call, put, putResolve, select, take } from "typed-redux-saga";
 import { groupEnd } from "./game";
 import { calculateGroupStats } from "./stats";
 import { afterGameday } from "./manager";
 import { bettingResults } from "./betting";
+import type { RootState } from "../config/redux";
+import type {
+  Competition,
+  CompetitionId,
+  GameResult,
+  GamedayParams,
+  Group,
+  Pairing
+} from "../types/competitions";
+import type { Manager } from "../ducks/manager";
+import type { Team } from "../ducks/game";
 
 function* playGame(
-  group,
-  pairing,
-  gameParams,
-  overtime,
-  competitionId,
-  phaseId
+  group: Group,
+  pairing: Pairing,
+  gameParams: GamedayParams,
+  overtime: (result: GameResult) => boolean,
+  competitionId: string,
+  phaseId: string
 ) {
-  const teams = yield select((state) => state.game.teams);
+  const teams = yield* select((state: RootState) => state.game.teams);
 
   const home = teams[group.teams[pairing.home]];
   const away = teams[group.teams[pairing.away]];
 
-  const homeManager = yield select(
-    (state) => state.manager.managers[home.manager]
+  const homeManager = yield* select(
+    (state: RootState) => state.manager.managers[home.manager!]
   );
-  const awayManager = yield select(
-    (state) => state.manager.managers[away.manager]
+  const awayManager = yield* select(
+    (state: RootState) => state.manager.managers[away.manager!]
   );
 
   const game = {
@@ -39,7 +50,7 @@ function* playGame(
     competitionId
   };
 
-  const result = yield call(gameService.simulate, game);
+  const result: GameResult = yield* call(gameService.simulate, game as any);
 
   return [
     result,
@@ -53,19 +64,24 @@ function* playGame(
         team: away.id
       }
     }
-  ];
+  ] as const;
 }
 
-function* completeGameday(competition, phase, group, round) {
-  yield call(calculateGroupStats, competition, phase, group);
-  yield call(afterGameday, competition, phase, group, round);
+function* completeGameday(
+  competition: CompetitionId,
+  phase: number,
+  group: number,
+  round: number
+) {
+  yield* call(calculateGroupStats, competition, phase, group);
+  yield* call(afterGameday, competition, phase, group, round);
 
   if (competition === "phl" && phase === 0 && group === 0) {
-    yield call(bettingResults, round);
+    yield* call(bettingResults, round);
   }
 
-  yield putResolve({
-    type: "GAME_GAMEDAY_COMPLETE",
+  yield* putResolve({
+    type: "GAME_GAMEDAY_COMPLETE" as const,
     payload: {
       competition,
       phase,
@@ -75,8 +91,10 @@ function* completeGameday(competition, phase, group, round) {
   });
 }
 
-export function* gameday(payload) {
-  const competition = yield select((state) => state.game.competitions[payload]);
+export function* gameday(payload: string) {
+  const competition: Competition = yield* select(
+    (state: RootState) => state.game.competitions[payload]
+  );
 
   const phase = competition.phases[competition.phase];
 
@@ -98,8 +116,8 @@ export function* gameday(payload) {
         groupIndex
       );
 
-      const round = yield select(
-        (state) =>
+      const round: number = yield* select(
+        (state: RootState) =>
           state.game.competitions[payload].phases[competition.phase].groups[
             groupIndex
           ].round
@@ -109,8 +127,8 @@ export function* gameday(payload) {
         if (playMatch(group, round, x)) {
           const pairing = pairings[x];
 
-          yield put({
-            type: "GAME_GAME_BEGIN",
+          yield* put({
+            type: "GAME_GAME_BEGIN" as const,
             payload: {
               competition: competition.id,
               phase: competition.phase,
@@ -120,7 +138,7 @@ export function* gameday(payload) {
             }
           });
 
-          const [result, meta] = yield call(
+          const [result, meta] = yield* call(
             playGame,
             group,
             pairing,
@@ -130,8 +148,8 @@ export function* gameday(payload) {
             phase.type
           );
 
-          yield put({
-            type: "GAME_GAME_RESULT",
+          yield* put({
+            type: "GAME_GAME_RESULT" as const,
             payload: {
               competition: competition.id,
               phase: competition.phase,
@@ -144,7 +162,8 @@ export function* gameday(payload) {
           });
         }
       }
-      yield completeGameday(
+      yield* call(
+        completeGameday,
         competition.id,
         competition.phase,
         groupIndex,
@@ -154,26 +173,26 @@ export function* gameday(payload) {
 
     if (phase.type === "tournament") {
       if (roundNumber < rounds) {
-        yield put({
-          type: "GAME_SET_PHASE",
+        yield* put({
+          type: "GAME_SET_PHASE" as const,
           payload: "results"
         });
 
-        yield take("GAME_ADVANCE_REQUEST");
+        yield* take("GAME_ADVANCE_REQUEST");
 
-        yield put({
-          type: "GAME_SET_PHASE",
+        yield* put({
+          type: "GAME_SET_PHASE" as const,
           payload: "gameday"
         });
 
-        yield take("GAME_ADVANCE_REQUEST");
+        yield* take("GAME_ADVANCE_REQUEST");
       }
     }
   }
 
   for (const [groupIndex] of phase.groups.entries()) {
-    const theGroup = yield select(
-      (state) =>
+    const theGroup = yield* select(
+      (state: RootState) =>
         state.game.competitions[payload].phases[competition.phase].groups[
           groupIndex
         ]
@@ -181,7 +200,7 @@ export function* gameday(payload) {
 
     const isItOver = theGroup.schedule.length === theGroup.round;
     if (isItOver) {
-      yield call(groupEnd, payload, competition.phase, groupIndex);
+      yield* call(groupEnd, payload, competition.phase, groupIndex);
     }
   }
 }

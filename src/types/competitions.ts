@@ -101,7 +101,7 @@ export type Phase = {
 export type CompetitionId = "phl" | "division" | "ehl" | "tournaments";
 
 export type Competition = {
-  id: string;
+  id: CompetitionId;
   abbr: string;
   name: string;
   weight: number;
