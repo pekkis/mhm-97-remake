@@ -1,4 +1,4 @@
-import React, { type ReactElement } from "react";
+import { Children, cloneElement, type ReactElement } from "react";
 import styled from "styled-components";
 import Tab from "./Tab";
 
@@ -32,13 +32,13 @@ type TabsProps = {
 };
 
 const Tabs = ({ className, children, selected, onSelect }: TabsProps) => {
-  const childrenArray = React.Children.toArray(children) as ReactElement<any>[];
+  const childrenArray = Children.toArray(children) as ReactElement<any>[];
 
   return (
     <div className={className}>
       <TabsList>
         {childrenArray.map((child, key) =>
-          React.cloneElement(child, {
+          cloneElement(child, {
             isSelected: key === selected,
             onSelect: () => onSelect(key),
           } as any),

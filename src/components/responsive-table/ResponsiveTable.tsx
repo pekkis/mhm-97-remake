@@ -1,4 +1,4 @@
-import React, { type ReactElement } from "react";
+import { cloneElement, type ReactElement } from "react";
 import styled from "styled-components";
 
 const TableScroller = styled.div`
@@ -68,7 +68,7 @@ type ResponsiveTableProps = {
 };
 
 const ResponsiveTable = ({ children }: ResponsiveTableProps) => {
-  const clone = React.cloneElement(children, { isClone: true } as any);
+  const clone = cloneElement(children, { isClone: true } as any);
 
   return (
     <TableScroller>
