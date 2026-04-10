@@ -36,8 +36,8 @@ type JobofferPHLData = {
   id: string;
   eventId: typeof eventId;
   manager: string;
-  oldTeam: string;
-  offerer: string;
+  oldTeam: number;
+  offerer: number;
   offererName: string;
   ranking: number;
   resolved: boolean;

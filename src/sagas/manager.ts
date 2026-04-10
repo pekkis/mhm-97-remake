@@ -1,0 +1,414 @@
+import {
+  select,
+  put,
+  putResolve,
+  call,
+  all,
+  takeEvery
+} from "typed-redux-saga";
+import { gameFacts } from "../services/game";
+import competitionList from "../data/competitions";
+import playerTypes from "../data/transfer-market";
+import {
+  managersTeam,
+  managersTeamId,
+  managersDifficulty,
+  managerCompetesIn,
+  managersArena,
+  managerHasService,
+  teamsMainCompetition
+} from "../data/selectors";
+import { incrementMorale, incrementReadiness, incurPenalty } from "./team";
+import { addNotification } from "./notification";
+import crisis from "../data/crisis";
+import difficultyLevels from "../data/difficulty-levels";
+import arenas from "../data/arenas";
+import { incrementStrength, decrementStrength } from "./team";
+import r from "../services/random";
+import { addAnnouncement } from "./news";
+import { amount as a } from "../services/format";
+import type { RootState } from "../config/redux";
+import type { CompetitionId } from "../types/competitions";
+
+type AddManagerDetails = {
+  name: string;
+  team: string;
+  difficulty: string;
+  arena: string;
+};
+
+export function* addManager(details: AddManagerDetails) {
+  const teamId = parseInt(details.team, 10);
+  const mainCompetition = yield* select(teamsMainCompetition(teamId));
+
+  const manager = {
+    id: crypto.randomUUID(),
+    name: details.name,
+    difficulty: parseInt(details.difficulty, 10),
+    pranksExecuted: 0,
+    services: {
+      coach: false,
+      insurance: false,
+      microphone: false,
+      cheer: false
+    },
+    balance: difficultyLevels[parseInt(details.difficulty, 10)].startBalance,
+    arena: {
+      name: details.arena,
+      level: mainCompetition === "phl" ? 3 : 0
+    },
+    extra: 0,
+    insuranceExtra: 0,
+    flags: {}
+  };
+
+  yield* putResolve({
+    type: "MANAGER_ADD" as const,
+    payload: {
+      manager
+    }
+  });
+
+  yield* call(hireManager, manager.id, teamId);
+}
+
+export function* setActiveManager(managerId: string) {
+  yield* putResolve({
+    type: "MANAGER_SET_ACTIVE" as const,
+    payload: managerId
+  });
+}
+
+export function* hireManager(managerId: string, teamId: number) {
+  const managersCurrentTeam = yield* select(
+    (state: RootState) => state.manager.managers[managerId]?.team
+  );
+
+  if (managersCurrentTeam) {
+    yield* putResolve({
+      type: "TEAM_REMOVE_MANAGER" as const,
+      payload: {
+        team: managersCurrentTeam
+      }
+    });
+  }
+
+  yield* putResolve({
+    type: "TEAM_ADD_MANAGER" as const,
+    payload: {
+      team: teamId,
+      manager: managerId
+    }
+  });
+}
+
+export function* setBalance(managerId: string, amount: number) {
+  return yield* put({
+    type: "MANAGER_SET_BALANCE" as const,
+    payload: {
+      manager: managerId,
+      amount
+    }
+  });
+}
+
+export function* renameArena(managerId: string, name: string) {
+  return yield* put({
+    type: "MANAGER_RENAME_ARENA" as const,
+    payload: {
+      manager: managerId,
+      name
+    }
+  });
+}
+
+export function* incrementBalance(managerId: string, amount: number) {
+  const manager = yield* select(
+    (state: RootState) => state.manager.managers[managerId]
+  );
+  if (!manager) {
+    throw new Error(`INVALID MANAGER ${managerId} ${amount}`);
+  }
+
+  return yield* put({
+    type: "MANAGER_INCREMENT_BALANCE" as const,
+    payload: {
+      manager: managerId,
+      amount
+    }
+  });
+}
+
+export function* decrementBalance(managerId: string, amount: number) {
+  return yield* call(incrementBalance, managerId, -amount);
+}
+
+export function* setExtra(manager: string, extra: number) {
+  yield* put({
+    type: "MANAGER_SET_EXTRA" as const,
+    payload: {
+      manager,
+      extra
+    }
+  });
+}
+
+export function* setFlag(manager: string, flag: string, value: boolean) {
+  yield* put({
+    type: "MANAGER_SET_FLAG" as const,
+    payload: {
+      manager,
+      flag,
+      value
+    }
+  });
+}
+
+export function* crisisMeeting(action: { payload: { manager: string } }) {
+  const { payload } = action;
+
+  const difficulty = yield* select(managersDifficulty(payload.manager));
+  const team = yield* select(managersTeam(payload.manager));
+  const competitions = yield* select(
+    (state: RootState) => state.game.competitions
+  );
+
+  const moraleBoost = difficultyLevels[difficulty].moraleBoost;
+
+  const crisisInfo = crisis(team, competitions);
+
+  const moraleGain = crisisInfo.moraleGain + moraleBoost;
+
+  yield* call(decrementBalance, payload.manager, crisisInfo.amount);
+  yield* call(incrementMorale, team.id, moraleGain);
+
+  yield* call(
+    addNotification,
+    payload.manager,
+    `Psykologi valaa yhdessä managerin kanssa uskoa pelaajien mieliin. Moraali paranee (+${moraleGain}), ja joukkue keskittyy tuleviin haasteisiin uudella innolla!`
+  );
+}
+
+export function* buyPlayer(action: {
+  payload: { manager: string; playerType: number };
+}) {
+  console.log("buy manager", action);
+
+  const { payload } = action;
+
+  const manager = yield* select(
+    (state: RootState) => state.manager.managers[payload.manager]
+  );
+
+  const playerType = playerTypes[payload.playerType];
+  yield* call(decrementBalance, manager.id, playerType.buy);
+
+  const skillGain = playerType.skill();
+  yield* call(incrementStrength, manager.team!, skillGain);
+
+  yield* call(
+    addNotification,
+    payload.manager,
+    `Ostamasi pelaaja tuo ${skillGain} lisää voimaa joukkueeseen!`
+  );
+}
+
+export function* setArenaLevel(manager: string, level: number) {
+  yield* put({
+    type: "MANAGER_SET_ARENA_LEVEL" as const,
+    payload: {
+      manager,
+      level: Math.max(0, Math.min(9, level))
+    }
+  });
+}
+
+export function* improveArena(action: { payload: { manager: string } }) {
+  const {
+    payload: { manager }
+  } = action;
+
+  const currentArena = yield* select(managersArena(manager));
+  const nextArenaLevel = currentArena!.level + 1;
+
+  const newArena = arenas[nextArenaLevel];
+
+  yield* call(decrementBalance, manager, newArena.price);
+
+  yield* call(setArenaLevel, manager, newArena.id);
+
+  yield* call(
+    addNotification,
+    manager,
+    `Työmiehet käyttävät vallankumoukselllisia kvanttityövälineitä, ja rakennusurakka valmistuu alta aikayksikön!`
+  );
+}
+
+export function* sellPlayer(action: {
+  payload: { manager: string; playerType: number };
+}) {
+  const {
+    payload: { manager: managerId, playerType }
+  } = action;
+
+  console.log(managerId, playerType, "fihdh");
+
+  const competesInPhl = yield* select(managerCompetesIn(managerId, "phl"));
+
+  const minStrength = competesInPhl ? 130 : 50;
+
+  const team = yield* select(managersTeam(managerId));
+
+  if (team.strength <= minStrength) {
+    return yield* call(
+      addNotification,
+      managerId,
+      "Johtokunnan mielestä pelaajien myynti ei ole ratkaisu tämänhetkisiin ongelmiimme. Myyntilupa evätty.",
+      "error"
+    );
+  }
+
+  const playerDefinition = playerTypes[playerType];
+  yield* call(incrementBalance, managerId, playerDefinition.sell);
+
+  const skillGain = playerDefinition.skill();
+  yield* call(decrementStrength, team.id, skillGain);
+
+  yield* call(
+    addNotification,
+    managerId,
+    `Myymäsi pelaaja vie ${skillGain} voimaa mukanaan!`
+  );
+}
+
+export function* setInsuranceExtra(manager: string, value: number) {
+  yield* put({
+    type: "MANAGER_SET_INSURANCE_EXTRA" as const,
+    payload: {
+      manager,
+      value
+    }
+  });
+}
+
+export function* incrementInsuranceExtra(manager: string, amount: number) {
+  yield* put({
+    type: "MANAGER_INCREMENT_INSURANCE_EXTRA" as const,
+    payload: {
+      manager,
+      amount
+    }
+  });
+}
+
+export function* setService(manager: string, service: string, value: boolean) {
+  yield* put({
+    type: "MANAGER_SET_SERVICE" as const,
+    payload: {
+      manager,
+      service,
+      value
+    }
+  });
+}
+
+export function* toggleService(action: {
+  payload: { manager: string; service: string };
+}) {
+  const {
+    payload: { manager, service }
+  } = action;
+
+  const currentService = yield* select(managerHasService(manager, service));
+
+  yield* call(setService, manager, service, !currentService);
+}
+
+export function* afterGameday(
+  competition: CompetitionId,
+  phase: number,
+  groupId: number,
+  round: number
+) {
+  const managers = yield* select((state: RootState) => state.manager.managers);
+
+  const group = yield* select(
+    (state: RootState) =>
+      state.game.competitions[competition].phases[phase].groups[groupId]
+  );
+
+  for (const [managerId, manager] of Object.entries(managers)) {
+    const managersIndex = group.teams.findIndex((t) => t === manager.team);
+
+    if (managersIndex === -1) {
+      continue;
+    }
+
+    const game = group.schedule[round].find((pairing) => {
+      return pairing.home === managersIndex || pairing.away === managersIndex;
+    });
+
+    if (!game) {
+      continue;
+    }
+
+    if (!game.result) {
+      return;
+    }
+
+    const hasMicrophone = yield* select(
+      managerHasService(managerId, "microphone")
+    );
+
+    if (hasMicrophone) {
+      if (["phl", "division"].includes(competition) && phase === 0) {
+        const caught = r.bool(0.06);
+        if (caught) {
+          const amount = 50000;
+          const pointDeduction = -4;
+          yield* all([
+            call(
+              addAnnouncement,
+              managerId,
+              `"Salainen" mikrofonisi vastustajan vaihtoaitiossa on paljastunut. Teidät tuomitaan __${a(
+                amount
+              )}__ pekan sakkoihin ja __${pointDeduction}__ pisteen menetykseen.`
+            ),
+            call(decrementBalance, managerId, amount),
+            call(incurPenalty, competition, 0, 0, manager.team!, pointDeduction)
+          ]);
+        }
+      }
+    }
+
+    const facts = gameFacts(game, managersIndex);
+    const team = yield* select(managersTeamId(manager.id));
+
+    const competitionDef = competitionList[competition];
+
+    const amount = competitionDef.gameBalance(phase, facts, manager);
+
+    const moraleBoost = competitionDef.moraleBoost(phase, facts, manager);
+
+    const readinessBoost = competitionDef.readinessBoost(phase, facts, manager);
+
+    if (readinessBoost) {
+      yield* call(incrementReadiness, team, readinessBoost);
+    }
+
+    if (moraleBoost) {
+      yield* call(incrementMorale, team, moraleBoost);
+    }
+
+    if (amount) {
+      yield* call(incrementBalance, manager.id, amount);
+    }
+  }
+}
+
+export function* watchTransferMarket() {
+  yield* all([
+    takeEvery("MANAGER_BUY_PLAYER" as any, buyPlayer),
+    takeEvery("MANAGER_SELL_PLAYER" as any, sellPlayer)
+  ]);
+}

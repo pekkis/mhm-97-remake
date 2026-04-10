@@ -28,8 +28,8 @@ type JobofferDivisionData = {
   id: string;
   eventId: typeof eventId;
   manager: string;
-  oldTeam: string;
-  offerer: string;
+  oldTeam: number;
+  offerer: number;
   offererName: string;
   resolved: boolean;
   agree?: boolean;
