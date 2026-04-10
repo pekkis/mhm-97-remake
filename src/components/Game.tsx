@@ -14,7 +14,7 @@ import CrisisActions from "./CrisisActions";
 import Arena from "./Arena";
 import Services from "./Services";
 import Pranks from "./Pranks";
-import Notifications from "./notifications/containers/NotificationsContainer";
+import Notifications from "./notifications/Notifications";
 import ModalMenu from "./ModalMenu";
 import ChampionshipBetting from "./ChampionshipBetting";
 import Betting from "./Betting";

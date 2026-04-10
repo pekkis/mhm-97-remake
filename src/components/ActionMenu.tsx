@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Calendar from "./ui/containers/CalendarContainer";
+import Calendar from "./ui/Calendar";
 import { getEffective } from "../services/effects";
 import { CRISIS_MORALE_MAX } from "../data/constants";
 import Button from "./form/Button";

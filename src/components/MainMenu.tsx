@@ -3,8 +3,8 @@ import Situation from "./context-sensitive/Situation";
 import ManagerInfo from "./ManagerInfo";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
-import Forward from "./context-sensitive/containers/ForwardContainer";
-import Current from "./context-sensitive/containers/CurrentContainer";
+import Forward from "./context-sensitive/Forward";
+import Current from "./context-sensitive/Current";
 
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";

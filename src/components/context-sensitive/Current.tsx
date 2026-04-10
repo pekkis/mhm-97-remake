@@ -1,18 +1,30 @@
-import React from "react";
 import { Link } from "react-router-dom";
-import Calendar from "../ui/containers/CalendarContainer";
+import Calendar from "../ui/Calendar";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAppSelector } from "@/config/redux";
 
 const CurrentEntry = styled.div`
   padding: 0.5em;
   border: 1px dotted rgb(225, 225, 225);
 `;
 
-const Current = (props) => {
-  const { invitations, manager, teams, className } = props;
+type CurrentProps = {
+  className?: string;
+};
 
-  const team = teams[manager.team];
+const Current = ({ className }: CurrentProps) => {
+  const manager = useAppSelector(
+    (state) => state.manager.managers[state.manager.active!],
+  );
+  const teams = useAppSelector((state) => state.game.teams);
+  const invitations = useAppSelector((state) =>
+    state.invitation.invitations.filter(
+      (i) => i.manager === state.manager.active,
+    ),
+  );
+
+  const team = teams[manager.team!];
 
   return (
     <div className={className}>
@@ -25,9 +37,9 @@ const Current = (props) => {
       )}
 
       <Calendar
-        when={(turn, c) => {
-          const nextTurn = c[turn.round + 1];
-          return turn.transferMarket && !nextTurn.transferMarket;
+        when={(entry, c) => {
+          const nextTurn = c[entry.round + 1];
+          return entry.transferMarket && !nextTurn.transferMarket;
         }}
       >
         <CurrentEntry>

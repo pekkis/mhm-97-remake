@@ -4,7 +4,7 @@ import Button from "./form/Button";
 import ButtonContainer from "./ui/ButtonContainer";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
-import Calendar from "./ui/containers/CalendarContainer";
+import Calendar from "./ui/Calendar";
 import { currency } from "../services/format";
 import ManagerInfo from "./ManagerInfo";
 import Box from "./styled-system/Box";

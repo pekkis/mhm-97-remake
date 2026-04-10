@@ -1,8 +1,9 @@
-import React from "react";
 import calendar from "../../data/calendar";
+import { useAppSelector } from "@/config/redux";
 
-const Forward = (props) => {
-  const { turn, competitions } = props;
+const Forward = () => {
+  const turn = useAppSelector((state) => state.game.turn);
+  const competitions = useAppSelector((state) => state.game.competitions);
 
   const calendarEntry = calendar[turn.round];
 

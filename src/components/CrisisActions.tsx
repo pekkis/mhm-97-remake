@@ -3,7 +3,7 @@ import Button from "./form/Button";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
-import Calendar from "./ui/containers/CalendarContainer";
+import Calendar from "./ui/Calendar";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { crisisMeeting } from "../ducks/manager";

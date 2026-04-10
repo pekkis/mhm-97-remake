@@ -6,7 +6,7 @@ import SelectVictim from "./pranks/SelectVictim";
 import SelectType from "./pranks/SelectType";
 import ConfirmPrank from "./pranks/ConfirmPrank";
 import Box from "./styled-system/Box";
-import Calendar from "./ui/containers/CalendarContainer";
+import Calendar from "./ui/Calendar";
 
 import difficultyLevels from "../data/difficulty-levels";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
