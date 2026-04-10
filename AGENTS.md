@@ -13,7 +13,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - Runtime / build tool: **Vite** (`pnpm dev`, `pnpm build`)
 - UI stack: React 19, React Router 7, styled-components 6
 - State stack: Redux 5 + redux-saga + immer (Immutable.js fully removed 2026-04-08)
-- Language mix: TypeScript + JavaScript + JSX (partial TS migration)
+- Language: **TypeScript only** — zero `.js`/`.jsx` in `src/` as of 2026-04-10
 - Lint/format stack: `oxlint` + `oxfmt` (ESLint/Prettier removed)
 - Styling stack: styled-components + styled-system + Emotion remnants
 - Persistence: localStorage with `JSON.stringify`/`JSON.parse`
@@ -24,15 +24,21 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 
 Recent completed migrations:
 
-- JSX-bearing component files were renamed from `.js` to `.jsx`
+- JSX-bearing component files were renamed from `.js` to `.jsx`, then all to `.tsx`
 - `react-markdown` deprecated `source` prop migrated to children syntax
-- `src/components/Game.jsx` routing updated to modern `<Routes>/<Route element={...}>`
+- `src/components/Game.tsx` routing updated to modern `<Routes>/<Route element={...}>`
 - Added `@` path alias support in Vite + TypeScript config (`@` => `src`) for incremental import migration
 - TypeScript checker profile optimized for migration speed: TS/TSX-only include + incremental cache (`.tsbuildinfo`); unused checks handled by `oxlint`
+- **Full TypeScript migration complete (2026-04-10):** zero `.js`/`.jsx` files in `src/`
+- All sagas use `typed-redux-saga` with `yield*` pattern
+- All components converted from class → FC with hooks
+- All `connect()` containers eliminated — hooks-only Redux access
+- `tsconfig.json` simplified for TypeScript 6 (removed 7 redundant options)
+- `.browserslistrc` deleted (Vite 8 doesn't use it)
 
 ---
 
-## Migration Status (as of 2026-04-08)
+## Migration Status (as of 2026-04-10)
 
 ### Completed de-immutable + TypeScript conversions
 
@@ -75,7 +81,7 @@ Recent completed migrations:
 - lodash fully removed from codebase + `package.json`
 - **Immutable.js + transit-immutable-js fully removed** from codebase + `package.json` (2026-04-08)
 - Save/load uses `JSON.stringify`/`JSON.parse` (no superjson needed — all state is plain)
-- `typed-redux-saga` in use for all converted saga files
+- `typed-redux-saga` in use for **all** saga files (full conversion 2026-04-10)
 
 ### `GameState` current shape
 
@@ -314,6 +320,27 @@ export type StatsState = {
 - `Root.tsx` has 2 TS errors about `DefaultTheme.colors` — styled-components theme typing gap
 - CSS `:global` pseudo-class warnings from lightningcss (legacy `.pcss` file)
 
+### Completed: Full saga TypeScript migration (2026-04-10)
+
+Converted all 13 saga files + 13 phase files from `redux-saga/effects` to `typed-redux-saga` with full TypeScript typing.
+
+**Saga files converted:** `betting.ts`, `notification.ts`, `news.ts`, `manager.ts`, `event.ts`, `meta.ts`, `invitation.ts`, `stats.ts`, `team.ts`, `prank.ts`, `gameday.ts`, `game.ts`
+
+**Phase files converted:** `action.ts`, `event.ts`, `event-creation.ts`, `seed.ts`, `news.ts`, `prank.ts`, `calculations.ts`, `gala.ts`, `start-of-season.ts`, `end-of-season.ts`, `invitations-process.ts`, `invitations-create.ts`, `gameday.ts`
+
+### Gotchas learned from saga migration
+
+- **`typed-redux-saga` + `takeEvery` with string patterns:** No clean overload for raw action type strings. Requires `as any` cast: `takeEvery("ACTION_TYPE" as any, handler)`. Resolves naturally with RTK `createSlice` action creators.
+- **`race()` result typing:** `race({ bet: take(X), advance: take(Y) })` returns `{ bet: Action | undefined, advance: Action | undefined }` — `Action` has no `.payload`. Cast to `any` at access site or type the action explicitly.
+- **`yield*` vs `yield`:** Every `redux-saga/effects` call must become `yield*` with `typed-redux-saga`. Missing the `*` compiles but gives `any` return types — the whole point of the migration is lost.
+- **`arena.get("level")` — Immutable ghost in `game.js`:** Survived the Immutable removal, would crash at runtime when insurance was active. Found and fixed during TS conversion to `arena!.level`.
+- **`ehlChampionship` vs `ehlChampion` — property name mismatch:** Caught by typing `stats.ts`. `setSeasonStat(["ehlChampionship"], ...)` wrote to wrong key. Real bug, not just a type error.
+- **Team id `string` vs `number` pipeline:** HTML form values are strings, which propagated through event data files as `string` team ids. Fixed 8+ event files + the full prank `victim` pipeline (6 files) to use `number` consistently.
+- **`protest.ts` had live Immutable ghosts:** `.filterNot()`, `.get()`, `.getIn()` in the `process` function would crash at runtime. Fixed to plain `Object.entries()`/property access.
+- **`Error` constructor only takes one string arg:** `new Error("msg", extraArg1, extraArg2)` silently drops extra args. Fixed to template literal.
+- **Inline saga functions in `takeEvery`/`all`:** `action.ts` uses inline `function*` inside `takeEvery(CONSTANT, function* (action) {...})` — these need `action: any` typing since typed-redux-saga can't infer the payload shape from string constants.
+- **`Generator` return types matter for `yield* call()`:** `tournaments.ts` `isInvited` needed `Generator<any, boolean, any>` (second type param is return type) for callers to get `boolean` instead of `any`.
+
 ---
 
 ## Non-Negotiables for Agents
@@ -371,7 +398,7 @@ export type StatsState = {
 ### P0 — Toolchain and runtime stability
 
 - Keep dev/build working with Vite and Node 24 (`.nvmrc` => `v24`).
-- Keep TypeScript config migration-friendly during mixed JS/TS phase; avoid `verbatimModuleSyntax` until import hygiene is consistently type-only across the codebase.
+- TypeScript config is simplified for TS 6; `verbatimModuleSyntax` is enabled and `allowJs` can now be removed if desired.
 - Remove dead webpack-era leftovers after confirming unused:
   - webpack-related dependencies
   - legacy core-js upgrade plugin wiring (`src/config/corejs-upgrade.js`)
@@ -388,20 +415,26 @@ export type StatsState = {
 
 **Immutable.js fully removed 2026-04-08.** All reducers, data files, selectors, components, and sagas use plain objects/arrays + immer. `immutable` and `transit-immutable-js` removed from dependencies. Save/load uses `JSON.stringify`/`JSON.parse`.
 
-### P2.5 — Continue TypeScript migration (remaining JS files)
+### P2.5 — TypeScript migration: ✅ COMPLETE
 
-- Many sagas, components, and containers remain as `.js`/`.jsx`
-- Convert incrementally as files are touched
-- Use `typed-redux-saga` for saga TS conversions
-- Shared domain types in `src/types/` as they emerge
-- **Check for existing types before defining new ones** — types like `GameFacts`, `Competition`, `Team` etc. already exist in ducks/types files. Grep before creating duplicates.
-- Keep a shared `RootState` seed in `src/config/redux.ts`
+**As of 2026-04-10, zero `.js`/`.jsx` files remain in `src/`.** Full conversion timeline:
+- **2026-04-08:** Immutable.js fully removed, all ducks/data files converted
+- **2026-04-09:** All 33 components converted to `.tsx`, all containers eliminated (`connect()` → hooks), all page components hookified
+- **2026-04-10:** All sagas converted to TypeScript with `typed-redux-saga`, `tsconfig.json` simplified for TS 6, `.browserslistrc` removed
+
+Key conventions established during migration:
+- `typed-redux-saga` with `yield*` (not bare `yield`) for all saga effects
+- `RootState` from `src/config/redux.ts` in all `select()` calls
+- `as const` on action type strings in `put()` calls
+- `as any` cast on `takeEvery` string pattern args (typed-redux-saga limitation until RTK action creators)
+- `TeamStat`/`PlayoffGroup` casts needed when accessing `Group` union stats
+- Shared domain types in `src/types/` (competitions, base events)
 
 ### P3 — State architecture evolution (controlled)
 
 - **Short term:** Build regression test suite (deterministic seed support is ready via `VITE_RANDOM_SEED`).
 - **Mid term:** Evaluate selective Redux + Saga → RTK/RTK Query slices, but only for new async flows, not core game logic.
-- **Long term:** XState is the only realistic architectural upgrade for the game engine itself (phase/turn loop is a textbook state machine). But this is a full engine rewrite — only viable after the TS migration is complete and a regression suite exists. Do not attempt piecemeal.
+- **Long term:** XState is the only realistic architectural upgrade for the game engine itself (phase/turn loop is a textbook state machine). But this is a full engine rewrite — only viable after a regression suite exists. TS migration prerequisite is now met. Do not attempt piecemeal.
 
 ### P4 — Styling: styled-components/Emotion/styled-system → Vanilla Extract
 
@@ -409,20 +442,18 @@ export type StatsState = {
 - Target: **Vanilla Extract** — zero runtime, TypeScript-native `.css.ts` files, first-class Vite support
 - **Sprinkles** replaces styled-system's `space`/`color`/`width` utility props with typed, static equivalents
 - Eliminates the `DefaultTheme` declaration merging pain (e.g. the pre-existing `Root.tsx` errors)
-- Migration path: one component at a time, can piggyback on the hooks/TS conversion pass
-- **Do not start until the hooks/TS migration (P2.5) is substantially complete** — one concern at a time
+- Migration path: one component at a time
+- **P2.5 is complete** — styling migration is now unblocked
 - Interim: use `shouldForwardProp` on typed styled-components to prevent custom props leaking to the DOM (see `Button.ts` pattern)
 
 ### Saga TypeScript strategy
 
-`typed-redux-saga` is installed. When migrating saga files to TypeScript, use the typed wrappers instead of bare `redux-saga/effects`. This gives proper return type inference for `yield call()` without any architectural change.
+`typed-redux-saga` is installed. All saga files use the typed wrappers instead of bare `redux-saga/effects`. This gives proper return type inference for `yield call()` without any architectural change.
 
 ```ts
-// Instead of:
-import { call, put, take } from "redux-saga/effects";
-
-// Use:
+// All saga files use:
 import { call, put, take } from "typed-redux-saga";
+// with yield* instead of yield
 ```
 
 Do not use `typed-redux-saga/macro` — it requires a Babel transform and this project uses Vite (no Babel).
@@ -434,7 +465,7 @@ Do not use `typed-redux-saga/macro` — it requires a Babel transform and this p
 - `src/sagas/**` phase sequencing and cancellation logic
 - `src/ducks/**` reducer state shapes (now plain objects + immer)
 - event generation and calendar-dependent flows (`src/sagas/phase/**`, `src/data/calendar.ts`, `src/data/events.ts`)
-- save/load serialization (`JSON.stringify`/`JSON.parse` in `src/sagas/meta.js`)
+- save/load serialization (`JSON.stringify`/`JSON.parse` in `src/sagas/meta.ts`)
 
 When touching these areas:
 
@@ -500,8 +531,12 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
    - one full turn phase progression (use `VITE_RANDOM_SEED` for determinism)
    - event creation sanity
 5. Playwright e2e tests using deterministic seed (`VITE_RANDOM_SEED=X pnpm dev`) — same seed + same clicks = same game.
-6. Continue TypeScript migration of remaining `.js`/`.jsx` files.
+6. ~~Continue TypeScript migration of remaining `.js`/`.jsx` files.~~ ✅ Done.
 7. Audit stale peer dependency warnings (react-pose, react-toggle, react-typography, react-helmet all have React 19 peer issues).
+8. Tighten `tsconfig.json`: remove `allowJs` (no JS left), consider enabling `noImplicitAny` incrementally.
+9. Clean up `any` casts introduced during saga migration (`takeEvery` string patterns, `race` result payloads) — these become unnecessary once action creators exist.
+10. Fix the `Root.tsx` `DefaultTheme` typing gap (precursor to P4 Vanilla Extract migration).
+11. Remove `@redux-saga/delay-p` from dependencies (sole consumer was `notification.js`, now uses `typed-redux-saga`'s `delay`).
 
 ---
 

@@ -25,9 +25,7 @@ import { bet } from "../betting";
 import type { RootState } from "../../config/redux";
 
 export default function* actionPhase() {
-  const managers = yield* select(
-    (state: RootState) => state.manager.managers
-  );
+  const managers = yield* select((state: RootState) => state.manager.managers);
 
   yield* call(setActiveManager, Object.values(managers)[0].id);
 

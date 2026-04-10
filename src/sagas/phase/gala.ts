@@ -4,7 +4,11 @@ import { setPhase } from "../game";
 import { addNews } from "../news";
 import { randomManager } from "../../data/selectors";
 import type { RootState } from "../../config/redux";
-import type { Competition, TeamStat, PlayoffGroup } from "../../types/competitions";
+import type {
+  Competition,
+  TeamStat,
+  PlayoffGroup
+} from "../../types/competitions";
 import type { Team } from "../../ducks/game";
 import type { Manager } from "../../ducks/manager";
 
@@ -12,9 +16,7 @@ export default function* galaPhase() {
   yield* call(setPhase, "gala");
 
   const teams = yield* select((state: RootState) => state.game.teams);
-  const managers = yield* select(
-    (state: RootState) => state.manager.managers
-  );
+  const managers = yield* select((state: RootState) => state.manager.managers);
 
   const phlRegularSeason = yield* select(
     (state: RootState) => state.game.competitions.phl.phases[0].groups[0]
@@ -25,7 +27,11 @@ export default function* galaPhase() {
   );
 
   const phlLast =
-    teams[(phlRegularSeason.stats as TeamStat[])[(phlRegularSeason.stats as TeamStat[]).length - 1].id];
+    teams[
+      (phlRegularSeason.stats as TeamStat[])[
+        (phlRegularSeason.stats as TeamStat[]).length - 1
+      ].id
+    ];
 
   const phlFinalists = phlFinals.teams.slice(0, 2).map((t) => teams[t]);
 

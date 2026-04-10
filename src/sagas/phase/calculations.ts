@@ -30,9 +30,7 @@ export default function* calculationsPhase() {
     }
   }
 
-  const managers = yield* select(
-    (state: RootState) => state.manager.managers
-  );
+  const managers = yield* select((state: RootState) => state.manager.managers);
 
   const basePrices = yield* select(
     (state: RootState) => state.game.serviceBasePrices
@@ -43,13 +41,10 @@ export default function* calculationsPhase() {
       .filter(([, active]) => active)
       .map(([k]) => [k, services[k]] as const);
 
-    const serviceCosts = managersServices.reduce(
-      (r, [serviceId, service]) => {
-        console.log(r, service);
-        return r + service.price(basePrices[serviceId], manager);
-      },
-      0
-    );
+    const serviceCosts = managersServices.reduce((r, [serviceId, service]) => {
+      console.log(r, service);
+      return r + service.price(basePrices[serviceId], manager);
+    }, 0);
 
     yield* call(decrementBalance, managerId, serviceCosts);
   }

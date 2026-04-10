@@ -7,9 +7,7 @@ import { setActiveManager } from "../manager";
 import type { RootState } from "../../config/redux";
 
 function* selectStrategy() {
-  const managers = yield* select(
-    (state: RootState) => state.manager.managers
-  );
+  const managers = yield* select((state: RootState) => state.manager.managers);
   yield* call(setActiveManager, Object.values(managers)[0].id);
 
   yield* putResolve({

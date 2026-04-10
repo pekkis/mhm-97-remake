@@ -11,7 +11,7 @@ import {
   select,
   takeEvery,
   fork
-} from "redux-saga/effects";
+} from "typed-redux-saga";
 
 import actionPhase from "./phase/action";
 import eventCreationPhase from "./phase/event-creation";
@@ -41,21 +41,28 @@ import {
   managersArena
 } from "../data/selectors";
 import events from "../data/events";
+import type { RootState } from "../config/redux";
+import type {
+  Competition,
+  CompetitionDefinition,
+  Group,
+  TeamStat
+} from "../types/competitions";
 
 export const GAME_ADVANCE_REQUEST = "GAME_ADVANCE_REQUEST";
 
-export function* beforeGame(action) {
+export function* beforeGame(action: any) {
   const {
     payload: { competition, phase, group, round, pairing }
   } = action;
 
   if (competition === "phl" && phase === 0 && group === 0 && round >= 5) {
-    const g = yield select(
-      (state) =>
+    const g: Group = yield* select(
+      (state: RootState) =>
         state.game.competitions[competition].phases[phase].groups[group]
     );
 
-    const teams = yield select((state) => state.game.teams);
+    const teams = yield* select((state: RootState) => state.game.teams);
 
     const p = g.schedule[round][pairing];
 
@@ -65,13 +72,15 @@ export function* beforeGame(action) {
 
     const humansInGame = t
       .filter((t) => t.manager !== undefined)
-      .map((t) => t.manager);
+      .map((t) => t.manager!);
 
     if (humansInGame.length === 0) {
       return;
     }
 
-    const interestingTeams = g.stats.slice(0, 5).map((s) => s.id);
+    const interestingTeams = (g.stats as TeamStat[])
+      .slice(0, 5)
+      .map((s) => s.id);
 
     const gameIsInteresting = t.every((t) => interestingTeams.includes(t.id));
     if (!gameIsInteresting) {
@@ -81,7 +90,7 @@ export function* beforeGame(action) {
     const event = events["topGame"];
 
     for (const manager of humansInGame) {
-      yield call(event.create, {
+      yield* call(event.create, {
         manager
       });
     }
@@ -91,101 +100,96 @@ export function* beforeGame(action) {
 }
 
 export function* gameLoop() {
-  yield takeEvery("GAME_GAME_BEGIN", beforeGame);
-  yield fork(stats);
+  yield* takeEvery("GAME_GAME_BEGIN" as any, beforeGame);
+  yield* fork(stats);
 
   do {
-    const turn = yield select((state) => state.game.turn);
+    const turn = yield* select((state: RootState) => state.game.turn);
 
     const roundData = calendar[turn.round];
 
     const phases = roundData.phases;
 
-    // console.log(roundData.toJS(), "round data");
-
-    // don't do any calculations for "hidden" turns
     if (phases.includes("action")) {
-      yield call(actionPhase);
+      yield* call(actionPhase);
     }
 
-    // don't do any calculations for "hidden" turns
     if (phases.includes("prank")) {
-      yield call(prankPhase);
+      yield* call(prankPhase);
     }
 
     if (phases.includes("gameday")) {
-      yield call(gamedayPhase);
+      yield* call(gamedayPhase);
     }
 
-    // TODO: maybe create calculatores phase
     if (phases.includes("calculations")) {
-      yield call(calculationsPhase);
+      yield* call(calculationsPhase);
     }
 
     if (phases.includes("eventCreation")) {
-      yield call(eventCreationPhase);
+      yield* call(eventCreationPhase);
     }
 
     if (phases.includes("event")) {
-      yield call(eventPhase);
+      yield* call(eventPhase);
     }
 
     if (phases.includes("news")) {
-      yield call(newsPhase);
+      yield* call(newsPhase);
     }
 
     if (phases.includes("invitations-create")) {
-      yield call(invitationsCreatePhase);
+      yield* call(invitationsCreatePhase);
     }
 
     if (phases.includes("invitations-process")) {
-      yield call(invitationsProcessPhase);
+      yield* call(invitationsProcessPhase);
     }
 
     if (phases.includes("startOfSeason")) {
-      yield call(startOfSeasonPhase);
+      yield* call(startOfSeasonPhase);
     }
 
     if (phases.includes("seed")) {
-      yield call(seedPhase);
+      yield* call(seedPhase);
     }
 
     if (phases.includes("gala")) {
-      yield call(galaPhase);
+      yield* call(galaPhase);
     }
 
     if (phases.includes("endOfSeason")) {
-      yield call(endOfSeasonPhase);
+      yield* call(endOfSeasonPhase);
     }
 
-    yield putResolve({ type: "GAME_CLEAR_EXPIRED" });
+    yield* putResolve({ type: "GAME_CLEAR_EXPIRED" as const });
 
-    yield call(nextTurn);
+    yield* call(nextTurn);
   } while (true);
 }
 
-function* competitionStart(competitionId) {
+function* competitionStart(competitionId: string) {
   const competitionStarter = competitionData[competitionId].start;
   if (competitionStarter) {
-    yield call(competitionStarter);
+    yield* call(competitionStarter);
   }
-  yield put({
-    type: "COMPETITION_START",
+  yield* put({
+    type: "COMPETITION_START" as const,
     payload: {
       competition: competitionId
     }
   });
 }
 
-export function* groupEnd(competition, phase, group) {
+export function* groupEnd(competition: string, phase: number, group: number) {
   const groupEnder = competitionData[competition].groupEnd;
 
   if (groupEnder) {
-    yield call(groupEnder, phase, group);
+    yield* call(groupEnder, phase, group);
   }
 
-  yield put({
-    type: "GAME_GROUP_END",
+  yield* put({
+    type: "GAME_GROUP_END" as const,
     payload: {
       competition,
       phase,
@@ -195,10 +199,10 @@ export function* groupEnd(competition, phase, group) {
 }
 
 export function* seasonStart() {
-  const turn = yield select((state) => state.game.turn);
+  const turn = yield* select((state: RootState) => state.game.turn);
   const season = turn.season;
 
-  const teams = yield select(allTeams);
+  const teams = yield* select(allTeams);
 
   // Re-strength European teams.
   const reStrengths = teams.slice(24).map((t) => {
@@ -207,87 +211,74 @@ export function* seasonStart() {
       strength: teamData[t.id].strength()
     };
   });
-  yield put({
-    type: "TEAM_SET_STRENGTHS",
+  yield* put({
+    type: "TEAM_SET_STRENGTHS" as const,
     payload: reStrengths
   });
 
   // Start all competitions.
-  for (const [key, competitionObj] of Object.entries(competitionData)) {
-    yield competitionStart(key);
-    // const competitions = yield select(state => state.game.competitions);
-
-    /*
-    const seed = competitionObj.getIn(["seed", 0])(competitions);
-    yield putResolve({
-      type: "COMPETITION_SEED",
-      payload: {
-        competition: key,
-        phase: 0,
-        seed
-      }
-    });
-    */
+  for (const [key] of Object.entries(competitionData)) {
+    yield* call(competitionStart, key);
   }
 
-  const managers = yield select((state) => state.manager.managers);
+  const managers = yield* select((state: RootState) => state.manager.managers);
   for (const [, manager] of Object.entries(managers)) {
     console.log("MANAGER", manager);
 
     // Skip the first season for salary payments.
     if (season > 0) {
       const managerId = manager.id;
-      const team = yield select(managersTeam(managerId));
-      const difficulty = yield select(managersDifficulty(managerId));
-      const mainCompetition = yield select(managersMainCompetition(managerId));
+      const team = yield* select(managersTeam(managerId));
+      const difficulty = yield* select(managersDifficulty(managerId));
+      const mainCompetition = yield* select(managersMainCompetition(managerId));
       const salaryPerStrength =
         difficultyLevels[difficulty].salary(mainCompetition);
       const totalSalary = salaryPerStrength * team.strength;
-      yield call(decrementBalance, managerId, totalSalary);
+      yield* call(decrementBalance, managerId, totalSalary);
 
-      const hasInsurance = yield select(
+      const hasInsurance = yield* select(
         managerHasService(managerId, "insurance")
       );
 
       if (hasInsurance) {
-        const arena = yield select(managersArena(managerId));
-        yield call(
-          incrementInsuranceExtra,
-          managerId,
-          -50 * arena.get("level")
-        );
+        const arena = yield* select(managersArena(managerId));
+        yield* call(incrementInsuranceExtra, managerId, -50 * arena!.level);
       }
     }
 
     // Reset extra each season.
-    yield setExtra(manager.id, difficultyLevels[manager.difficulty].extra);
+    yield* call(
+      setExtra,
+      manager.id,
+      difficultyLevels[manager.difficulty].extra
+    );
   }
 
-  yield put({
+  yield* put({
     type: SEASON_START
   });
 }
 
-export function* promote(competition, team) {
+export function* promote(competition: string, team: number) {
   const promoteTo = competitionData[competition].promoteTo;
-  yield all([
+  yield* all([
     call(removeTeamFromCompetition, competition, team),
-    call(addTeamToCompetition, promoteTo, team)
+    call(addTeamToCompetition, promoteTo as string, team)
   ]);
 }
 
-export function* relegate(competition, team) {
+export function* relegate(competition: string, team: number) {
   const relegateTo = competitionData[competition].relegateTo;
 
-  yield all([
+  yield* all([
     call(removeTeamFromCompetition, competition, team),
-    call(addTeamToCompetition, relegateTo, team)
+    call(addTeamToCompetition, relegateTo as string, team)
   ]);
 }
 
-export function* setFlag(flag, value) {
-  yield put({
-    type: "GAME_SET_FLAG",
+export function* setFlag(flag: string, value: unknown) {
+  yield* put({
+    type: "GAME_SET_FLAG" as const,
     payload: {
       flag,
       value
@@ -295,13 +286,13 @@ export function* setFlag(flag, value) {
   });
 }
 
-export function* incrementServiceBasePrice(service, amount) {
-  const currentAmount = yield select(
-    (state) => state.game.serviceBasePrices[service]
+export function* incrementServiceBasePrice(service: string, amount: number) {
+  const currentAmount = yield* select(
+    (state: RootState) => state.game.serviceBasePrices[service]
   );
 
-  yield put({
-    type: "GAME_SET_SERVICE_BASE_PRICE",
+  yield* put({
+    type: "GAME_SET_SERVICE_BASE_PRICE" as const,
     payload: {
       service,
       amount: currentAmount + amount
@@ -310,28 +301,30 @@ export function* incrementServiceBasePrice(service, amount) {
 }
 
 function* nextTurn() {
-  yield put({ type: "NEWS_ANNOUNCEMENTS_CLEAR" });
-  yield put({ type: "EVENT_CLEAR_EVENTS" });
-  yield put({ type: "GAME_NEXT_TURN" });
+  yield* put({ type: "NEWS_ANNOUNCEMENTS_CLEAR" as const });
+  yield* put({ type: "EVENT_CLEAR_EVENTS" as const });
+  yield* put({ type: "GAME_NEXT_TURN" as const });
 }
 
-export function* setPhase(phase) {
-  yield put({
-    type: "GAME_SET_PHASE",
+export function* setPhase(phase: string) {
+  yield* put({
+    type: "GAME_SET_PHASE" as const,
     payload: phase
   });
 }
 
-export function* seedCompetition(competitionId, phase) {
-  const competitions = yield select((state) => state.game.competitions);
+export function* seedCompetition(competitionId: string, phase: number) {
+  const competitions = yield* select(
+    (state: RootState) => state.game.competitions
+  );
   const competitionObj = competitionData[competitionId];
 
   const seeder = competitionObj.seed[phase];
 
-  const seed = yield call(seeder, competitions);
+  const seed = yield* call(seeder, competitions);
 
-  yield putResolve({
-    type: "COMPETITION_SEED",
+  yield* putResolve({
+    type: "COMPETITION_SEED" as const,
     payload: {
       competition: competitionId,
       phase,
@@ -340,9 +333,9 @@ export function* seedCompetition(competitionId, phase) {
   });
 }
 
-export function* removeTeamFromCompetition(competition, team) {
-  yield putResolve({
-    type: "COMPETITION_REMOVE_TEAM",
+export function* removeTeamFromCompetition(competition: string, team: number) {
+  yield* putResolve({
+    type: "COMPETITION_REMOVE_TEAM" as const,
     payload: {
       competition,
       team
@@ -350,9 +343,9 @@ export function* removeTeamFromCompetition(competition, team) {
   });
 }
 
-export function* addTeamToCompetition(competition, team) {
-  yield putResolve({
-    type: "COMPETITION_ADD_TEAM",
+export function* addTeamToCompetition(competition: string, team: number) {
+  yield* putResolve({
+    type: "COMPETITION_ADD_TEAM" as const,
     payload: {
       competition,
       team
@@ -360,9 +353,9 @@ export function* addTeamToCompetition(competition, team) {
   });
 }
 
-export function* setCompetitionTeams(competition, teams) {
-  yield putResolve({
-    type: "COMPETITION_SET_TEAMS",
+export function* setCompetitionTeams(competition: string, teams: number[]) {
+  yield* putResolve({
+    type: "COMPETITION_SET_TEAMS" as const,
     payload: {
       competition,
       teams
