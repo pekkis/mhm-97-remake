@@ -3,7 +3,7 @@ import Button from "./form/Button";
 import Box from "./styled-system/Box";
 import ManagerForm from "./start-menu/ManagerForm";
 import styled from "styled-components";
-import title from "../assets/title.png";
+import title from "./start-menu/title.png";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { startGame, loadGame } from "../ducks/meta";
 import { advance } from "../ducks/game";

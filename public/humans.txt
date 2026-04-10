@@ -3,7 +3,11 @@
 
 # TEAM
 
-  Mikko Forsström (Pekkis) -- everything
+  Mikko Forsström (Pekkis)
+
+  Github Copilot
+
+  Claude Opus
 
 # THANKS
 
