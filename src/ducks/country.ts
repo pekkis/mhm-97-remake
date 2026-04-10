@@ -1,7 +1,6 @@
 import { countries as countryList } from "../data/countries";
 import { produce } from "immer";
-import { META_QUIT_TO_MAIN_MENU } from "./meta";
-import type { MetaQuitToMainMenuAction } from "./meta";
+import { META_QUIT_TO_MAIN_MENU, quitToMainMenu } from "./meta";
 import type { Reducer } from "redux";
 
 export type Country = {
@@ -70,7 +69,7 @@ export const setStrength = (
 
 type CountryActions =
   | CountryAlterStrengthAction
-  | MetaQuitToMainMenuAction
+  | ReturnType<typeof quitToMainMenu>
   | CountrySetStrengthAction;
 
 const countryReducer: Reducer<CountryState, CountryActions> = (

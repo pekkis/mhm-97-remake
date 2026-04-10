@@ -14,7 +14,6 @@
     "noEmit": true,
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo",
-    "allowJs": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "types": ["vite/client"]

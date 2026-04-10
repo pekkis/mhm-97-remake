@@ -418,11 +418,13 @@ Converted all 13 saga files + 13 phase files from `redux-saga/effects` to `typed
 ### P2.5 — TypeScript migration: ✅ COMPLETE
 
 **As of 2026-04-10, zero `.js`/`.jsx` files remain in `src/`.** Full conversion timeline:
+
 - **2026-04-08:** Immutable.js fully removed, all ducks/data files converted
 - **2026-04-09:** All 33 components converted to `.tsx`, all containers eliminated (`connect()` → hooks), all page components hookified
 - **2026-04-10:** All sagas converted to TypeScript with `typed-redux-saga`, `tsconfig.json` simplified for TS 6, `.browserslistrc` removed
 
 Key conventions established during migration:
+
 - `typed-redux-saga` with `yield*` (not bare `yield`) for all saga effects
 - `RootState` from `src/config/redux.ts` in all `select()` calls
 - `as const` on action type strings in `put()` calls

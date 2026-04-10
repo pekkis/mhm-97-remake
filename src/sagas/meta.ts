@@ -1,6 +1,14 @@
 import { addManager } from "./manager";
 import { gameLoop } from "./game";
 import { addNotification } from "./notification";
+import {
+  quitToMainMenu,
+  loadGame,
+  startGame,
+  gameLoadState,
+  gameLoaded,
+  gameStart as gameStartAction
+} from "../ducks/meta";
 
 import {
   all,
@@ -33,16 +41,14 @@ function* gameStart() {
 
   yield* call(addManager, (action as any).payload);
 
-  yield* putResolve({
-    type: "GAME_START" as const
-  });
+  yield* putResolve(gameStartAction());
 }
 
 function* mainMenu() {
   do {
     const { load } = yield* race({
-      load: take("META_GAME_LOAD_REQUEST"),
-      start: take("META_GAME_START_REQUEST")
+      load: take(loadGame),
+      start: take(startGame)
     });
 
     if (load) {
@@ -53,7 +59,7 @@ function* mainMenu() {
 
     const task: Task = yield* fork(gameLoop);
 
-    yield* take("META_QUIT_TO_MAIN_MENU");
+    yield* take(quitToMainMenu);
     yield* cancel(task);
   } while (true);
 }
@@ -69,14 +75,9 @@ export function* gameSave() {
 
 function* gameLoad() {
   const state = yield* call(load);
-  yield* putResolve({
-    type: "META_GAME_LOAD_STATE" as const,
-    payload: state
-  });
+  yield* putResolve(gameLoadState(state));
 
-  yield* putResolve({
-    type: "META_GAME_LOADED" as const
-  });
+  yield* putResolve(gameLoaded());
 }
 
 export default function* metaSagas() {
