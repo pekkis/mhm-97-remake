@@ -20,8 +20,8 @@ type JarkoData = {
   id: string;
   eventId: typeof eventId;
   manager: string;
-  team: string;
-  otherTeam: string;
+  team: number;
+  otherTeam: number;
   otherTeamName: string;
   enoughMoney: boolean;
   amount: number;

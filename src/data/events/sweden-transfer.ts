@@ -18,7 +18,7 @@ type SwedenTransferData = {
   eventId: typeof eventId;
   manager: string;
   resolved: true;
-  team: string;
+  team: number;
   amount: number;
   hasInsurance: boolean;
   moraleBoost: number;

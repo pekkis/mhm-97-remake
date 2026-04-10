@@ -1,23 +1,23 @@
-import { putResolve } from "redux-saga/effects";
+import { putResolve, call, select, put } from "typed-redux-saga";
 import tournamentList from "../data/tournaments";
-import { call, select, put } from "redux-saga/effects";
 
 import { INVITATION_ADD, INVITATION_ACCEPT } from "../ducks/invitation";
 import { addNotification } from "./notification";
 import { managersTeamId } from "../data/selectors";
 import { addTeamToCompetition } from "./game";
+import type { RootState } from "../config/redux";
 
-export function* acceptInvitation(managerId, id) {
-  const team = yield select(managersTeamId(managerId));
+export function* acceptInvitation(managerId: string, id: string) {
+  const team = yield* select(managersTeamId(managerId));
 
-  yield putResolve({
+  yield* putResolve({
     type: INVITATION_ACCEPT,
     payload: { manager: managerId, id }
   });
 
-  yield call(addTeamToCompetition, "tournaments", team);
+  yield* call(addTeamToCompetition, "tournaments", team);
 
-  yield call(
+  yield* call(
     addNotification,
     managerId,
     "Hyväksyit turnauskutsun. Sihteerisi vastasi kaikkiin muihin potentiaalisiin turnauskutsuihin kieltävästi."
@@ -25,7 +25,7 @@ export function* acceptInvitation(managerId, id) {
 }
 
 export function* createInvitations() {
-  const managers = yield select((state) => state.manager.managers);
+  const managers = yield* select((state: RootState) => state.manager.managers);
 
   for (const [managerId] of Object.entries(managers)) {
     for (
@@ -34,9 +34,9 @@ export function* createInvitations() {
       tournamentId++
     ) {
       const tournament = tournamentList[tournamentId];
-      const isInvited = yield call(tournament.isInvited, managerId);
+      const isInvited = yield* call(tournament.isInvited, managerId);
       if (isInvited) {
-        yield put({
+        yield* put({
           type: INVITATION_ADD,
           payload: {
             manager: managerId,

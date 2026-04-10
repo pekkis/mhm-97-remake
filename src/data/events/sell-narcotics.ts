@@ -14,7 +14,7 @@ type SellNarcoticsData = {
   id: string;
   eventId: typeof eventId;
   manager: string;
-  victim: string;
+  victim: number;
   resolved: boolean;
   autoResolve: true;
   skillLost?: number;

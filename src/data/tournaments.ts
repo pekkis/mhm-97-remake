@@ -1,32 +1,36 @@
-import { select } from "redux-saga/effects";
+import { select } from "typed-redux-saga";
 import { managersMainCompetition, managersTeamId } from "./selectors";
 import { amount as a } from "../services/format";
 import type { Team } from "../ducks/game";
+import type { RootState } from "../config/redux";
+import type { CompetitionId, TeamStat } from "../types/competitions";
 
 type Tournament = {
   name: string;
   award: number;
   description: (amount: number) => string;
-  isInvited: (manager: string) => Generator;
+  isInvited: (manager: string) => Generator<any, boolean, any>;
   filter: (t: Team) => boolean;
 };
 
-const invitationCreator = (competitionId: string, maxRanking: number) => {
+const invitationCreator = (
+  competitionId: CompetitionId,
+  maxRanking: number
+) => {
   return function* (manager: string) {
-    const mainCompetition: string = yield select(
-      managersMainCompetition(manager)
-    );
-    const teamId: number = yield select(managersTeamId(manager));
+    const mainCompetition = yield* select(managersMainCompetition(manager));
+    const teamId = yield* select(managersTeamId(manager));
     if (mainCompetition !== competitionId) {
       return false;
     }
 
-    const stats: any = yield select(
-      (state: any) =>
-        state.game.competitions[mainCompetition].phases[0].groups[0].stats
+    const stats = yield* select(
+      (state: RootState) =>
+        state.game.competitions[mainCompetition].phases[0].groups[0]
+          .stats as TeamStat[]
     );
 
-    const ranking = stats.findIndex((stat: any) => stat.id === teamId);
+    const ranking = stats.findIndex((stat) => stat.id === teamId);
     return ranking <= maxRanking;
   };
 };

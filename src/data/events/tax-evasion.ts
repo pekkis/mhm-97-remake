@@ -26,7 +26,7 @@ type TaxEvasionData = {
   resolved: boolean;
   otherManager: string;
   otherManagerName: string;
-  team: string;
+  team: number;
   teamName: string;
   agree?: boolean;
   fine?: number;

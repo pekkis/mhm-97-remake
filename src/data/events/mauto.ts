@@ -25,7 +25,7 @@ type MautoData = {
   amount: number;
   changeOfMind?: boolean;
   agree?: boolean;
-  team?: string;
+  team?: number;
   teamName?: string;
 };
 

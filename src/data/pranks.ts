@@ -69,7 +69,7 @@ const pranks: Record<string, Prank> = {
     },
 
     execute: function* (prank) {
-      yield addEffect(prank.victim, ["strength"], -10000, 1);
+      yield addEffect(Number(prank.victim), ["strength"], -10000, 1);
     }
   },
   bazookaStrike: {
