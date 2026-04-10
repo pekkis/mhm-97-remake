@@ -1,26 +1,31 @@
-import { put, all, call, select } from "redux-saga/effects";
+import { put, all, call, select } from "typed-redux-saga";
 import { BETTING_BET_CHAMPION, BETTING_BET } from "../ducks/betting";
+import type { SeasonStats } from "../ducks/stats";
+import type { RootState } from "../config/redux";
+import type { Pairing } from "../types/competitions";
 import { decrementBalance, incrementBalance } from "./manager";
 import { addAnnouncement } from "./news";
 import { amount as a } from "../services/format";
 import { addNotification } from "./notification";
 import { resultFacts } from "../services/game";
 
-const victories = [false, false, false, 1, 2, 5, 10];
+const victories = [false, false, false, 1, 2, 5, 10] as const;
 
 export function* processChampionBets() {
-  const bets = yield select((state) => state.betting.championshipBets);
-  const stats = yield select((state) => state.stats.currentSeason);
+  const bets = yield* select((state: RootState) => state.betting.championshipBets);
+  const stats = yield* select(
+    (state: RootState) => state.stats.currentSeason as SeasonStats
+  );
 
   console.log("stats", stats);
 
-  const champion = stats.medalists[0];
+  const champion = stats.medalists![0];
 
   for (const bet of bets) {
     if (bet.team === champion) {
       const amount = Math.round(bet.amount * bet.odds);
-      yield call(incrementBalance, bet.manager, amount);
-      yield call(
+      yield* call(incrementBalance, bet.manager, amount);
+      yield* call(
         addAnnouncement,
         bet.manager,
         `Voitit __${a(amount)}__ pekkaa mestariveikkauksessa. Hyvin veikattu!`
@@ -29,12 +34,13 @@ export function* processChampionBets() {
   }
 }
 
-export function* bettingResults(round) {
-  const pairings = yield select(
-    (state) => state.game.competitions.phl.phases[0].groups[0].schedule[round]
+export function* bettingResults(round: number) {
+  const pairings: Pairing[] = yield* select(
+    (state: RootState) =>
+      state.game.competitions.phl.phases[0].groups[0].schedule[round]
   );
 
-  const facts = pairings.map((p) => resultFacts(p.result, "home"));
+  const facts = pairings.map((p) => resultFacts(p.result!, "home"));
   const correctCoupon = facts.map((f) => {
     if (f.isWin) {
       return "1";
@@ -46,7 +52,7 @@ export function* bettingResults(round) {
 
   console.log("CORRETTI", correctCoupon);
 
-  const bets = yield select((state) => state.betting.bets);
+  const bets = yield* select((state: RootState) => state.betting.bets);
 
   for (const bet of bets) {
     const correct = bet.coupon.filter((c, i) => c === correctCoupon[i]).length;
@@ -54,7 +60,7 @@ export function* bettingResults(round) {
     const victory = victories[correct];
     if (victory) {
       const victoryAmount = Math.round(victory * bet.amount);
-      yield all([
+      yield* all([
         call(incrementBalance, bet.manager, victoryAmount),
         call(
           addAnnouncement,
@@ -67,7 +73,7 @@ export function* bettingResults(round) {
         )
       ]);
     } else {
-      yield call(
+      yield* call(
         addAnnouncement,
         bet.manager,
         `Et voittanut kavioveikkauksessa. Rivissäsi oli __${correct}__ oikein. Panoksesi oli __${a(
@@ -78,9 +84,9 @@ export function* bettingResults(round) {
   }
 }
 
-export function* bet(manager, coupon, amount) {
+export function* bet(manager: string, coupon: string[], amount: number) {
   console.log("BETTING", manager, coupon, amount);
-  yield all([
+  yield* all([
     call(
       addNotification,
       manager,
@@ -98,8 +104,13 @@ export function* bet(manager, coupon, amount) {
   ]);
 }
 
-export function* betChampion(manager, team, amount, odds) {
-  yield all([
+export function* betChampion(
+  manager: string,
+  team: number,
+  amount: number,
+  odds: number
+) {
+  yield* all([
     call(
       addNotification,
       manager,
