@@ -1,6 +1,5 @@
 .tsbuildinfo
-yarn-error.log
 node_modules/
 .env
 dist/
-dist-server/
+

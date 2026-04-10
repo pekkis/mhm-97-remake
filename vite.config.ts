@@ -20,7 +20,7 @@ export default defineConfig({
     postcss: {
       plugins: [
         postcssImport(),
-        postcssPresetEnv(),
+        postcssPresetEnv({ browsers: "defaults" }),
         postcssAdvancedVariables(),
         postcssNested()
       ]

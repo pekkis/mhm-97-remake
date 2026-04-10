@@ -1,28 +1,22 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
     "moduleResolution": "Bundler",
     "paths": {
       "@/*": ["./src/*"]
     },
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "lib": ["ESNext", "DOM"],
     "jsx": "react-jsx",
-    "strict": true,
     "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
-    "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "noEmit": true,
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo",
-    "isolatedModules": true,
     "allowJs": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
     "types": ["vite/client"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"]

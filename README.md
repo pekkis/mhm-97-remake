@@ -14,4 +14,4 @@ A remake of MHM 97, my first hockey manager simulation from ~1996-1997.
 
 ## Type check
 
-- Run TypeScript checks: `pnpm exec tsc --noEmit`
+- Run TypeScript checks: `pnpm run typecheck`
