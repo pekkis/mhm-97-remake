@@ -23,8 +23,7 @@ import {
   all,
   call,
   put,
-  putResolve,
-  select,
+    select,
   takeEvery,
   fork
 } from "typed-redux-saga";
@@ -178,7 +177,7 @@ export function* gameLoop() {
       yield* call(endOfSeasonPhase);
     }
 
-    yield* putResolve(clearExpired());
+    yield* put(clearExpired());
 
     yield* call(nextTurn);
   } while (true);
@@ -324,7 +323,7 @@ export function* seedCompetition(competitionId: string, phase: number) {
 
   const seed = yield* call(seeder, competitions);
 
-  yield* putResolve(
+  yield* put(
     competitionSeed({
       competition: competitionId,
       phase,
@@ -334,7 +333,7 @@ export function* seedCompetition(competitionId: string, phase: number) {
 }
 
 export function* removeTeamFromCompetition(competition: string, team: number) {
-  yield* putResolve(
+  yield* put(
     competitionRemoveTeam({
       competition,
       team
@@ -343,7 +342,7 @@ export function* removeTeamFromCompetition(competition: string, team: number) {
 }
 
 export function* addTeamToCompetition(competition: string, team: number) {
-  yield* putResolve(
+  yield* put(
     competitionAddTeam({
       competition,
       team
@@ -352,7 +351,7 @@ export function* addTeamToCompetition(competition: string, team: number) {
 }
 
 export function* setCompetitionTeams(competition: string, teams: number[]) {
-  yield* putResolve(
+  yield* put(
     competitionSetTeams({
       competition,
       teams

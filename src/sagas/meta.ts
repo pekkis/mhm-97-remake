@@ -13,8 +13,8 @@ import {
 import {
   all,
   call,
+  put,
   race,
-  putResolve,
   select,
   take,
   fork,
@@ -41,7 +41,7 @@ function* gameStart() {
 
   yield* call(addManager, (action as any).payload);
 
-  yield* putResolve(gameStartAction());
+  yield* put(gameStartAction());
 }
 
 function* mainMenu() {
@@ -75,9 +75,9 @@ export function* gameSave() {
 
 function* gameLoad() {
   const state = yield* call(load);
-  yield* putResolve(gameLoadState(state));
+  yield* put(gameLoadState(state));
 
-  yield* putResolve(gameLoaded());
+  yield* put(gameLoaded());
 }
 
 export default function* metaSagas() {

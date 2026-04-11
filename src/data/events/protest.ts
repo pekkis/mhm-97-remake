@@ -1,4 +1,4 @@
-import { select, putResolve, call } from "typed-redux-saga";
+import { select, put, call } from "typed-redux-saga";
 import { produce } from "immer";
 import { managersTeam } from "../selectors";
 import r from "../../services/random";
@@ -56,7 +56,7 @@ const event: MHMEvent<ProtestData> = {
       draft.penalty = -3;
     });
 
-    yield* putResolve({
+    yield* put({
       type: "EVENT_RESOLVE",
       payload: {
         id: resolved.id,

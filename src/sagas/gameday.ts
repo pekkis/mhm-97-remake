@@ -2,7 +2,7 @@ import competitionData from "../data/competitions";
 import gameService from "../services/game";
 import competitionTypes from "../services/competition-type";
 
-import { call, put, putResolve, select, take } from "typed-redux-saga";
+import { call, put, select, take } from "typed-redux-saga";
 import { groupEnd } from "./game";
 import { calculateGroupStats } from "./stats";
 import { afterGameday } from "./manager";
@@ -84,7 +84,7 @@ function* completeGameday(
     yield* call(bettingResults, round);
   }
 
-  yield* putResolve(
+  yield* put(
     gamedayComplete({
       competition,
       phase,

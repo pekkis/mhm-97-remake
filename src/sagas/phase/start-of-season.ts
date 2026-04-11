@@ -1,4 +1,4 @@
-import { take, putResolve, select, call, all, race } from "typed-redux-saga";
+import { take, put, select, call, all, race } from "typed-redux-saga";
 import { seasonStart } from "../game";
 import strategies from "../../data/strategies";
 import { BETTING_BET_CHAMPION_REQUEST } from "../../ducks/betting";
@@ -15,7 +15,7 @@ function* selectStrategy() {
   const managers = yield* select((state: RootState) => state.manager.managers);
   yield* call(setActiveManager, Object.values(managers)[0].id);
 
-  yield* putResolve(setGamePhase("select-strategy"));
+  yield* put(setGamePhase("select-strategy"));
 
   const action: any = yield* take("MANAGER_SELECT_STRATEGY");
   const { payload } = action;
@@ -26,13 +26,13 @@ function* selectStrategy() {
   );
 
   yield* all([
-    putResolve(
+    put(
       teamSetStrategy({
         team: team!,
         strategy: payload.strategy
       })
     ),
-    putResolve(
+    put(
       teamSetReadiness({
         team: team!,
         readiness: strategies[payload.strategy].initialReadiness()
@@ -42,7 +42,7 @@ function* selectStrategy() {
 }
 
 function* championshipBetting() {
-  yield* putResolve(setGamePhase("championship-betting"));
+  yield* put(setGamePhase("championship-betting"));
 
   const { bet } = yield* race({
     bet: take(BETTING_BET_CHAMPION_REQUEST),

@@ -1,4 +1,4 @@
-import { call, all, take, put, select, putResolve } from "typed-redux-saga";
+import { call, all, take, put, select } from "typed-redux-saga";
 import { seasonStart, promote, relegate, setPhase } from "../game";
 import { victors, eliminated } from "../../services/playoffs";
 import awards from "../../data/awards";
@@ -41,7 +41,7 @@ function* definePekkalandiaStrength() {
 
   console.log("strength", strength);
 
-  yield* putResolve(setStrength("FI", strength));
+  yield* put(setStrength("FI", strength));
 }
 
 function* worldChampionships() {

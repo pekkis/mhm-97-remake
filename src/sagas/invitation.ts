@@ -1,4 +1,4 @@
-import { putResolve, call, select, put } from "typed-redux-saga";
+import { call, select, put } from "typed-redux-saga";
 import tournamentList from "../data/tournaments";
 
 import { INVITATION_ADD, INVITATION_ACCEPT } from "../ducks/invitation";
@@ -10,7 +10,7 @@ import type { RootState } from "../config/redux";
 export function* acceptInvitation(managerId: string, id: string) {
   const team = yield* select(managersTeamId(managerId));
 
-  yield* putResolve({
+  yield* put({
     type: INVITATION_ACCEPT,
     payload: { manager: managerId, id }
   });

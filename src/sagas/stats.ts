@@ -1,8 +1,7 @@
 import {
   all,
   select,
-  putResolve,
-  call,
+    call,
   put,
   takeEvery
 } from "typed-redux-saga";
@@ -50,7 +49,7 @@ function* groupStats(competitionId: string, phaseId: number, groupId: number) {
 
   const stats = yield* call(competitionTypes[group.type].stats, group);
 
-  yield* putResolve(
+  yield* put(
     competitionUpdateStats({
       competition: competitionId,
       phase: phaseId,

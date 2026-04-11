@@ -1,4 +1,4 @@
-import { put, call, select, putResolve } from "typed-redux-saga";
+import { put, call, select } from "typed-redux-saga";
 import { teamsManager } from "../data/selectors";
 import difficultyLevels from "../data/difficulty-levels";
 import { calculateGroupStats } from "./stats";
@@ -31,7 +31,7 @@ export function* incurPenalty(
   team: number,
   penalty: number
 ) {
-  yield* putResolve(
+  yield* put(
     teamIncurPenalty({
       competition,
       phase,

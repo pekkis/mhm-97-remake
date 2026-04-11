@@ -1,8 +1,7 @@
 import {
   select,
   put,
-  putResolve,
-  call,
+    call,
   all,
   takeEvery
 } from "typed-redux-saga";
@@ -63,7 +62,7 @@ export function* addManager(details: AddManagerDetails) {
     flags: {}
   };
 
-  yield* putResolve({
+  yield* put({
     type: "MANAGER_ADD" as const,
     payload: {
       manager
@@ -74,7 +73,7 @@ export function* addManager(details: AddManagerDetails) {
 }
 
 export function* setActiveManager(managerId: string) {
-  yield* putResolve({
+  yield* put({
     type: "MANAGER_SET_ACTIVE" as const,
     payload: managerId
   });
@@ -86,14 +85,14 @@ export function* hireManager(managerId: string, teamId: number) {
   );
 
   if (managersCurrentTeam) {
-    yield* putResolve(
+    yield* put(
       teamRemoveManager({
         team: managersCurrentTeam
       })
     );
   }
 
-  yield* putResolve(
+  yield* put(
     teamAddManager({
       team: teamId,
       manager: managerId

@@ -1,4 +1,4 @@
-import { put, putResolve, select, call } from "typed-redux-saga";
+import { put, select, call } from "typed-redux-saga";
 
 import strategies from "../../data/strategies";
 import services from "../../data/services";
@@ -50,5 +50,5 @@ export default function* calculationsPhase() {
   }
 
   // TODO: MOVE DIS?
-  yield* putResolve(decrementDurations());
+  yield* put(decrementDurations());
 }

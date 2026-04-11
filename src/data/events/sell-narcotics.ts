@@ -1,4 +1,4 @@
-import { select, putResolve, call } from "typed-redux-saga";
+import { select, put, call } from "typed-redux-saga";
 import { produce } from "immer";
 import { teamCompetesIn } from "../selectors";
 import r, { cinteger } from "../../services/random";
@@ -73,7 +73,7 @@ const event: MHMEvent<SellNarcoticsData> = {
       draft.resolved = true;
     });
 
-    yield* putResolve({
+    yield* put({
       type: "EVENT_RESOLVE",
       payload: {
         id: resolved.id,
