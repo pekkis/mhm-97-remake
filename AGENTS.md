@@ -12,7 +12,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 
 - Runtime / build tool: **Vite 8** (`pnpm dev`, `pnpm build`)
 - UI stack: React 19, React Router 7
-- State stack: Redux 5 + **RTK `createAction`** + redux-saga + immer (Immutable.js fully removed 2026-04-08)
+- State stack: Redux 5 + **RTK `createReducer`** + redux-saga + XState 5 (Immutable.js fully removed 2026-04-08)
 - Language: **TypeScript only** — zero `.js`/`.jsx` in `src/` as of 2026-04-10
 - Lint/format stack: `oxlint` + `oxfmt` (ESLint/Prettier removed)
 - Styling stack: **Vanilla Extract** (zero-runtime CSS-in-TS) + **sprinkles** for utility props
@@ -39,8 +39,13 @@ Recent completed migrations (2026-04-11):
 - **formik removed:** replaced with `react-hook-form` + `zod` + `@hookform/resolvers`
 - **roundrobin removed:** dead code (own implementation in `src/services/round-robin.ts`)
 - RTK `createAction` for all 12 ducks complete — zero hand-rolled action creators remain
+- RTK `createReducer` for all 12 ducks complete — zero `switch/case` reducers, zero `action: any`, zero manual `produce()` calls
+- All exported string action constants eliminated — action creators used everywhere (sagas, components, cross-duck refs)
 - `putResolve` fully eliminated (36 sites → `put`)
 - `Root.tsx` simplified: no more `ThemeProvider`, `TypographyStyle`, or `createGlobalStyle`
+- **XState 5 introduced** for UI wizard flows — prank selection machine is first implementation
+- **`advanceEnabled` derived from state** — replaced stored boolean with selector (`phase !== "event" || allEventsResolved`)
+- **`MetaManager` form defaults moved to local component state** (`ManagerForm.tsx`)
 - Zero TypeScript errors maintained throughout all migrations
 
 ---
@@ -69,18 +74,18 @@ Recent completed migrations (2026-04-11):
 
 **Reducers (ducks):**
 
-- `src/ducks/prank.ts` — plain `{ pranks: PrankInstance[] }` + immer
-- `src/ducks/ui.ts` — plain `UiState` + immer + discriminated `UiAction` union
-- `src/ducks/event.ts` — immer `produce()`
-- `src/ducks/game.ts` — **root is plain `GameState`** + immer; `teams` is typed `Team[]`; `competitions` is typed `Record<string, Competition>`; `managers` is `ManagerDefinition[]`; `flags` is typed `GameFlags`
-- `src/ducks/manager.ts` — plain `ManagerState` + immer (`Manager` type with `ManagerArena`, `ManagerServices`)
-- `src/ducks/betting.ts` — plain `BettingState` + immer (`ChampionshipBet[]`, `Bet[]`)
-- `src/ducks/news.ts` — plain `NewsState` + immer (`string[]` news, `Record<string, string[]>` announcements)
-- `src/ducks/notification.ts` — plain `NotificationState` + immer (`Notification[]`, capped at 3)
-- `src/ducks/invitation.ts` — plain `InvitationState` + immer (`Invitation[]`)
-- `src/ducks/stats.ts` — plain `StatsState` + immer (`SeasonStats[]`, `Streak`, `GameRecord`, `ManagerGameStats`)
-- `src/ducks/country.ts` — already plain
-- `src/ducks/meta.ts` — plain `MetaState` + immer (`MetaManager` form defaults)
+- `src/ducks/prank.ts` — plain `{ pranks: PrankInstance[] }` + RTK `createReducer`
+- `src/ducks/ui.ts` — plain `UiState` (`{ menu: boolean }`) + RTK `createReducer`; `advanceEnabled` removed (derived from `game.turn.phase` + `event.events` via selector in `data/selectors.ts`)
+- `src/ducks/event.ts` — RTK `createReducer`
+- `src/ducks/game.ts` — **root is plain `GameState`** + RTK `createReducer`; `teams` is typed `Team[]`; `competitions` is typed `Record<string, Competition>`; `managers` is `ManagerDefinition[]`; `flags` is typed `GameFlags`
+- `src/ducks/manager.ts` — plain `ManagerState` + RTK `createReducer` (`Manager` type with `ManagerArena`, `ManagerServices`)
+- `src/ducks/betting.ts` — plain `BettingState` + RTK `createReducer` (`ChampionshipBet[]`, `Bet[]`)
+- `src/ducks/news.ts` — plain `NewsState` + RTK `createReducer` (`string[]` news, `Record<string, string[]>` announcements)
+- `src/ducks/notification.ts` — plain `NotificationState` + RTK `createReducer` (`Notification[]`, capped at 3)
+- `src/ducks/invitation.ts` — plain `InvitationState` + RTK `createReducer` (`Invitation[]`)
+- `src/ducks/stats.ts` — plain `StatsState` + RTK `createReducer` (`SeasonStats[]`, `Streak`, `GameRecord`, `ManagerGameStats`)
+- `src/ducks/country.ts` — RTK `createReducer`
+- `src/ducks/meta.ts` — plain `MetaState` (`{ started, loading, saving, starting }`) + RTK `createReducer`; `MetaManager` form defaults moved to `ManagerForm.tsx`
 
 **Other:**
 
@@ -394,9 +399,9 @@ Converted all action creators from hand-rolled `{ type: "...", payload }` functi
 - `country.ts` — 2 creators: `alterStrength`, `setStrength`
 - `event.ts` — 5 creators: `addEventAction`, `resolveEventAction`, `clearEvents`, `setEventProcessed`, `requestResolveEvent`
 - `invitation.ts` — 3 creators: `addInvitation`, `acceptInvitationAction`, `requestAcceptInvitation`
-- `prank.ts` — 6 creators: `cancelPrank`, `selectPrankType`, `selectPrankVictim`, `orderPrank`, `addPrank`, `dismissPrank`
+- `prank.ts` — 3 creators: `orderPrank`, `addPrank`, `dismissPrank` (3 prank-selection creators removed — moved to XState machine)
 - `notification.ts` — 2 creators: `addNotification`, `dismissNotification`
-- `ui.ts` — 5 creators: `disableAdvance`, `enableAdvance`, `selectTab`, `toggleMenu`, `closeMenu`
+- `ui.ts` — 2 creators: `toggleMenu`, `closeMenu` (`disableAdvance`/`enableAdvance` removed — derived; `selectTab` removed — dead code)
 - `stats.ts` — 2 creators: `updateFromFacts`, `setSeasonStat`
 - `manager.ts` — 18 creators: 12 state-changing (`managerAdd`, `managerSetActive`, `managerSetBalance`, etc.) + 6 request/saga-intercepted (`managerToggleService`, `managerBuyPlayer`, `managerSelectStrategy`, `managerImproveArena`, `managerSellPlayer`, `managerCrisisMeeting`)
 
@@ -414,13 +419,12 @@ Converted all action creators from hand-rolled `{ type: "...", payload }` functi
 - `awards.ts` refactored from `redux-saga/effects` to `typed-redux-saga` with `yield*`
 - Zero raw `type: "..."` in put() calls remain in saga files
 - Only 1 string-pattern `takeEvery` remains: `"META_GAME_SAVE_REQUEST"` in `phase/action.ts` (can use `saveGame` creator from `meta.ts`)
-
 ### Remaining `as any` inventory (32 sites)
 
 Categorized for future cleanup:
 
 1. **Event data `options()` return casts (17 files):** `} as any;` on event `options`/`resolve` returns. Root cause: `MHMEvent.options` returns `Record<string, string>` but event files return object literals with specific keys. Fix: widen return type or use `satisfies`.
-2. **Reducer `action: any` (11 remaining ducks):** Every reducer except `meta` has `action: any` parameter. Fix: `createReducer` migration eliminates this entirely.
+2. ~~**Reducer `action: any` (11 remaining ducks):**~~ ✅ Fixed — `createReducer` migration eliminates this entirely.
 3. ~~**Manager services cast (2 sites):**~~ Fixed — `managerHasService` selector now takes `keyof ManagerServices`.
 4. **Saga boundary casts (4 sites):** `sagas/meta.ts`, `sagas/phase/start-of-season.ts`, `sagas/gameday.ts`, `phase/action.ts`. Fix: type the action payloads properly once all creators exist.
 
@@ -496,12 +500,17 @@ Converted all 13 saga files + 13 phase files from `redux-saga/effects` to `typed
    - Prefer named exports; avoid default exports for new/edited modules unless interop absolutely requires it.
    - **Prefer non-mutating array methods:** use `toSorted()` over `[...arr].sort()` or `arr.sort()`, `toReversed()` over `reverse()`, `toSpliced()` over `splice()`, and `with()` over index assignment. Avoid in-place mutation even on freshly created arrays — consistency matters more than micro-optimization.
 
-6. **Page/leaf component boundary**
+6. **Two state homes: Redux or `useState` — nothing in between**
+   - State lives in Redux (global, cross-component) or `useState` (local, component-scoped). Period.
+   - Do not introduce React Context as a state management layer. Context is for dependency injection (themes, i18n providers), not for shuttling mutable state around the tree.
+   - Do not kill a Redux slice just because it's small today — the `ui` duck will grow as new game features land.
+
+7. **Page/leaf component boundary**
    - **Page components** (route-level screens that assemble a view) may use `useAppSelector`/`useAppDispatch` and talk to the Redux store directly.
    - **Leaf components** (render UI, handle interaction) must stay store-agnostic: data in via props, user intent out via callback props. No `useAppSelector`, no `useAppDispatch`, no action creator imports.
    - This is the same presentational/container split from the `connect()` era, now enforced by discipline instead of file boundaries. Hooks make coupling frictionless — stay vigilant.
 
-7. **Type safety must trend upward**
+8. **Type safety must trend upward**
    - New/edited modules should be TypeScript where feasible.
    - Add lightweight types around action payloads/selectors touched by a change.
    - Prefer `type` aliases by default; use `interface` only when declaration merging/extension semantics are explicitly needed.
@@ -564,29 +573,57 @@ Key conventions established during migration:
 **As of 2026-04-11, all 12 ducks have RTK `createAction` creators.** Zero hand-rolled action creators remain. `putResolve` fully eliminated.
 
 Next natural step: `createReducer` conversion (replaces switch/case + eliminates `action: any` + automatic immer). Pilot completed on `meta.ts` — see strategy below.
+### P2.8 — RTK `createReducer` migration: ✅ COMPLETE
 
-### P2.8 — RTK `createReducer` migration (in progress)
+**As of 2026-04-11, all 12 ducks converted** from `switch/case` + manual `produce()` to RTK `createReducer` with builder API.
 
-**Strategy:** Convert reducers from `switch/case` + manual `produce()` to RTK `createReducer` with builder API.
-
-**Why `createReducer` over `createSlice`:** `createSlice` auto-prefixes action types (e.g. `meta/quitToMainMenu` instead of `"META_QUIT_TO_MAIN_MENU"`). Since cross-duck action constants are referenced by string in 8+ reducer files, `createSlice` would cascade changes across the codebase. `createReducer` gives the same builder API and automatic immer without changing any action type strings.
-
-**Pilot: `meta.ts` (2026-04-11):**
-
-- `switch/case` + `produce()` → `createReducer(defaultState, (builder) => { ... })`
-- `addCase(actionCreator, handler)` for single-action cases
+**What it gave us:**
+- `addCase(actionCreator, handler)` for single-action cases — fully typed payloads
 - `addMatcher(predicate, handler)` for multi-action cases (e.g. `SEASON_START` and `gameLoaded` both set `{ started: true, loading: false }`)
-- `immer` import removed — RTK bundles it, `createReducer` wraps handlers automatically
-- `action: any` parameter eliminated — each `addCase` gets properly typed action
-- Found and removed dead `SEASON_START_REQUEST` case — nothing dispatched it
+- `immer` import removed from all ducks — RTK bundles it, `createReducer` wraps handlers automatically
+- `action: any` parameter eliminated from all 12 ducks
+- All exported string action constants eliminated — action creators used in `addCase`, sagas, components, and cross-duck refs
+- Dead reducer cases discovered and removed (e.g. `SEASON_START_REQUEST` in meta)
 
-**Migration order (suggested):** Start with simple ducks (country, notification, news) → medium (invitation, prank, betting, ui, stats, event) → complex (manager, game).
+**Why `createReducer` over `createSlice`:** `createSlice` auto-prefixes action types (e.g. `meta/quitToMainMenu` instead of `"META_QUIT_TO_MAIN_MENU"`). Since cross-duck action constants are referenced in 8+ reducer files, `createSlice` would cascade changes across the codebase. `createReducer` gives the same builder API and automatic immer without changing any action type strings.
+
+**Circular dependency gotcha:** `game.ts` ↔ `meta.ts` cycle caused `Cannot access 'nextTurn' before initialization`. Root cause: `game.ts` imports from `meta.ts`, `meta.ts` imported `seasonStart` from `game.ts`. Fix: `meta.ts` uses `action.type === "SEASON_START"` string literal in its matcher instead of importing the creator.
+
+### P2.9 — XState for UI wizard flows (started)
+
+**XState 5 + @xstate/react installed.** First machine: prank selection wizard.
+
+**`src/machines/prankSelection.ts`:**
+- States: `idle` → `typeSelected` → `victimSelected`
+- Events: `SELECT_TYPE`, `SELECT_VICTIM`, `ORDER`, `CANCEL`
+- Context: `{ type: string | undefined, victim: number | undefined }`
+- Uses `setup()` API for full TypeScript inference
+
+**Wired into `Pranks.tsx`** via `useMachine()` — replaced `useAppSelector(state.ui.prank)` + Redux dispatches with `[state, send]`. `dispatch(orderPrank(...))` still used for the Redux saga trigger.
+
+**Boundary pattern:** XState owns UI wizard state (ephemeral, component-scoped). Redux owns persistent game state (pranks queue, team effects). The machine doesn't talk to Redux — the component bridges them.
+
+**XState v5 context narrowing:** v5 doesn't auto-narrow context per state. Pragmatic pattern: `!` assertions at the `state.matches()` boundary in the component. Per-state exported types were tried and reverted as over-engineering for small machines.
+
+### P2.95 — Derived state: `advanceEnabled` (complete)
+
+**Replaced stored `advanceEnabled` boolean** in `ui.ts` with a derived selector in `data/selectors.ts`:
+
+```ts
+export const advanceEnabled = (state: RootState) =>
+  state.game.turn.phase !== "event" ||
+  !Object.values(state.event.events).some((e) => !e.resolved);
+```
+
+**Key insight:** The phase check is critical — events can be unresolved during creation phases (earlier in the turn) but should only block advance during the `"event"` phase when the player actually resolves them.
+
+**Removed:** `disableAdvance`/`enableAdvance` actions from `ui.ts`, dispatches from `sagas/phase/event.ts`, dead read from `News.tsx`. The `ui` duck now only holds `{ menu: boolean }`.
 
 ### P3 — State architecture evolution (controlled)
 
 - **Short term:** Build regression test suite (deterministic seed support is ready via `VITE_RANDOM_SEED`).
-- **Mid term:** Evaluate selective Redux + Saga → RTK/RTK Query slices, but only for new async flows, not core game logic.
-- **Long term:** XState is the only realistic architectural upgrade for the game engine itself (phase/turn loop is a textbook state machine). But this is a full engine rewrite — only viable after a regression suite exists. TS migration prerequisite is now met. Do not attempt piecemeal.
+- **Mid term:** Evaluate selective Redux + Saga → RTK/RTK Query slices, but only for new async flows, not core game logic. Continue XState adoption for UI wizard flows (betting, invitations, etc.) where ephemeral multi-step state doesn't belong in Redux.
+- **Long term:** XState for the game engine itself (phase/turn loop is a textbook state machine). But this is a full engine rewrite — only viable after a regression suite exists. TS migration prerequisite is now met. Do not attempt piecemeal.
 
 ### P4 — Styling: ✅ COMPLETE
 
@@ -699,7 +736,6 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. Type the `MHMEvent.options` return to eliminate 17 event `as any` casts — `satisfies` or widen `Record<string, string>` to accept literal keys.
 14. Evaluate `createSlice` migration for simpler ducks (country, notification, news) as a pilot before tackling game/manager.
-
 ---
 
 ## Decision Heuristics

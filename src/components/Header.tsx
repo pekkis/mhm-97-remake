@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { advance } from "../ducks/game";
 import { toggleMenu } from "../ducks/ui";
+import { advanceEnabled as advanceEnabledSelector } from "../data/selectors";
 
 type HeaderProps = {
   back?: boolean;
@@ -17,7 +18,7 @@ const Header = ({
   menu = false,
   forward = "Eteenpäin!"
 }: HeaderProps) => {
-  const advanceEnabled = useAppSelector((state) => state.ui.advanceEnabled);
+  const advanceEnabled = useAppSelector(advanceEnabledSelector);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

@@ -11,6 +11,10 @@ import type {
 
 type Selector<T> = (state: RootState) => T;
 
+export const advanceEnabled = (state: RootState) =>
+  state.game.turn.phase !== "event" ||
+  !Object.values(state.event.events).some((e) => !e.resolved);
+
 export const foreignTeams = (state: RootState) =>
   state.game.teams.filter((t) => !t.domestic);
 

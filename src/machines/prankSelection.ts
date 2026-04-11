@@ -1,6 +1,6 @@
 import { setup, assign } from "xstate";
 
-export type PrankSelectionContext = {
+type PrankSelectionContext = {
   type: string | undefined;
   victim: number | undefined;
 };

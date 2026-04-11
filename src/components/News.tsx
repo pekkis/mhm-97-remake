@@ -14,7 +14,6 @@ const News = () => {
   );
   const events = useAppSelector((state) => state.event.events);
   const announcements = useAppSelector((state) => state.news.announcements);
-  const advanceEnabled = useAppSelector((state) => state.ui.advanceEnabled);
 
   return (
     <HeaderedPage>
