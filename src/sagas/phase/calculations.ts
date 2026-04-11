@@ -3,6 +3,7 @@ import { put, putResolve, select, call } from "typed-redux-saga";
 import strategies from "../../data/strategies";
 import services from "../../data/services";
 import { decrementBalance } from "../manager";
+import { teamIncrementReadiness, decrementDurations } from "../../ducks/game";
 import type { RootState } from "../../config/redux";
 import type { Manager } from "../../ducks/manager";
 import type { Team } from "../../ducks/game";
@@ -20,13 +21,12 @@ export default function* calculationsPhase() {
     const amountToIncrement = readinessIncrementer(turn);
 
     if (amountToIncrement !== 0) {
-      yield* put({
-        type: "TEAM_INCREMENT_READINESS" as const,
-        payload: {
+      yield* put(
+        teamIncrementReadiness({
           team: team.id,
           amount: amountToIncrement
-        }
-      });
+        })
+      );
     }
   }
 
@@ -50,5 +50,5 @@ export default function* calculationsPhase() {
   }
 
   // TODO: MOVE DIS?
-  yield* putResolve({ type: "GAME_DECREMENT_DURATIONS" as const });
+  yield* putResolve(decrementDurations());
 }

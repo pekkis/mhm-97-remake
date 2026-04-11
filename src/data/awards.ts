@@ -1,4 +1,4 @@
-import { select, putResolve, put, call, all, fork } from "redux-saga/effects";
+import { select, call, all } from "typed-redux-saga";
 import {
   competition,
   managerWhoControlsTeam,
@@ -11,6 +11,9 @@ import {
 } from "./selectors";
 import { victors, eliminated } from "../services/playoffs";
 import r from "../services/random";
+import { incrementStrength } from "../sagas/team";
+import { incrementBalance } from "../sagas/manager";
+import { addNews } from "../sagas/news";
 import type { Team } from "../ducks/game";
 
 type AwardData = {
@@ -31,24 +34,22 @@ type RandomEvent = {
 };
 
 const playsInPHLOrWasPromoted = function* (teamId: number) {
-  const playsInPHL: boolean = yield select(teamCompetesIn(teamId, "phl"));
+  const playsInPHL = yield* select(teamCompetesIn(teamId, "phl"));
   if (!playsInPHL) {
-    return yield select(teamWasPromoted(teamId));
+    return yield* select(teamWasPromoted(teamId));
   }
 
-  const wasRelegated: boolean = yield select(teamWasRelegated(teamId));
+  const wasRelegated = yield* select(teamWasRelegated(teamId));
   return !wasRelegated;
 };
 
 const playsInDivisionOrWasRelegated = function* (teamId: number) {
-  const playsInDivision: boolean = yield select(
-    teamCompetesIn(teamId, "division")
-  );
+  const playsInDivision = yield* select(teamCompetesIn(teamId, "division"));
   if (!playsInDivision) {
-    return yield select(teamWasRelegated(teamId));
+    return yield* select(teamWasRelegated(teamId));
   }
 
-  const wasPromoted: boolean = yield select(teamWasPromoted(teamId));
+  const wasPromoted = yield* select(teamWasPromoted(teamId));
   return !wasPromoted;
 };
 
@@ -62,9 +63,9 @@ const createRandom = (
   news: (team: Team) => string
 ) => {
   return function* (teamId: number) {
-    const team: Team = yield select((state: any) => state.game.teams[teamId]);
+    const team: Team = yield* select((state: any) => state.game.teams[teamId]);
 
-    const canDo: boolean = yield call(isEligible, teamId);
+    const canDo = yield* call(isEligible, teamId);
 
     if (!canDo) {
       return;
@@ -74,19 +75,8 @@ const createRandom = (
     if (rand < requiredThrow) {
       return;
     }
-    yield all([
-      putResolve({
-        type: "TEAM_INCREMENT_STRENGTH",
-        payload: {
-          team: team.id,
-          amount: amountOfStrengthIncremented(team)
-        }
-      }),
-      putResolve({
-        type: "NEWS_ADD",
-        payload: news(team)
-      })
-    ]);
+    yield* call(incrementStrength, team.id, amountOfStrengthIncremented(team));
+    yield* call(addNews, news(team));
   };
 };
 
@@ -96,12 +86,12 @@ const randomEvents: RandomEvent[] = [
     2,
     () => -199,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength > 400;
     },
     (team) => {
@@ -113,12 +103,12 @@ const randomEvents: RandomEvent[] = [
     5,
     () => -70,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength > 300;
     },
     (team) => {
@@ -131,12 +121,12 @@ const randomEvents: RandomEvent[] = [
     6,
     () => -45,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength > 250;
     },
     (team) => {
@@ -149,12 +139,12 @@ const randomEvents: RandomEvent[] = [
     8,
     () => -15,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength > 210;
     },
     (team) => {
@@ -167,15 +157,13 @@ const randomEvents: RandomEvent[] = [
     1,
     () => -30,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
-      const rank: number | false = yield select(
-        teamsPositionInRoundRobin(teamId, "phl", 0)
-      );
+      const strength = yield* select(teamsStrength(teamId));
+      const rank = yield* select(teamsPositionInRoundRobin(teamId, "phl", 0));
       if (rank === false) {
         return false;
       }
@@ -191,15 +179,13 @@ const randomEvents: RandomEvent[] = [
     1,
     () => 20,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
-      const rank: number | false = yield select(
-        teamsPositionInRoundRobin(teamId, "phl", 0)
-      );
+      const strength = yield* select(teamsStrength(teamId));
+      const rank = yield* select(teamsPositionInRoundRobin(teamId, "phl", 0));
       if (rank === false) {
         return;
       }
@@ -216,12 +202,12 @@ const randomEvents: RandomEvent[] = [
     5,
     () => 12,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength < 150;
     },
     (team) => {
@@ -234,12 +220,12 @@ const randomEvents: RandomEvent[] = [
     5,
     () => 23,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength < 135;
     },
     (team) => {
@@ -252,12 +238,12 @@ const randomEvents: RandomEvent[] = [
     16,
     () => 60,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength < 140;
     },
     (team) => {
@@ -270,7 +256,7 @@ const randomEvents: RandomEvent[] = [
     7,
     () => -10,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
@@ -286,7 +272,7 @@ const randomEvents: RandomEvent[] = [
     7,
     () => 7,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
@@ -301,7 +287,7 @@ const randomEvents: RandomEvent[] = [
     8,
     () => -r.integer(5, 20),
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
@@ -316,7 +302,7 @@ const randomEvents: RandomEvent[] = [
     8,
     () => -r.integer(5, 20),
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
@@ -331,7 +317,7 @@ const randomEvents: RandomEvent[] = [
     27,
     () => 55,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(playsInPHLOrWasPromoted, teamId);
+      const isEligible = yield* call(playsInPHLOrWasPromoted, teamId);
       if (!isEligible) {
         return false;
       }
@@ -348,18 +334,18 @@ const randomEvents: RandomEvent[] = [
     5,
     () => -40,
     function* (teamId: number) {
-      const playsInPHL: boolean = yield select(teamCompetesIn(teamId, "phl"));
+      const playsInPHL = yield* select(teamCompetesIn(teamId, "phl"));
 
       if (!playsInPHL) {
         return false;
       }
 
-      const wasRelegated: boolean = yield select(teamWasRelegated(teamId));
+      const wasRelegated = yield* select(teamWasRelegated(teamId));
       if (!wasRelegated) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength > 160;
     },
     (team) => {
@@ -371,18 +357,18 @@ const randomEvents: RandomEvent[] = [
     7,
     () => -20,
     function* (teamId: number) {
-      const playsInPHL: boolean = yield select(teamCompetesIn(teamId, "phl"));
+      const playsInPHL = yield* select(teamCompetesIn(teamId, "phl"));
 
       if (!playsInPHL) {
         return false;
       }
 
-      const wasRelegated: boolean = yield select(teamWasRelegated(teamId));
+      const wasRelegated = yield* select(teamWasRelegated(teamId));
       if (!wasRelegated) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength > 130;
     },
     (team) => {
@@ -394,20 +380,18 @@ const randomEvents: RandomEvent[] = [
     1,
     () => -20,
     function* (teamId: number) {
-      const playsInDivision: boolean = yield select(
-        teamCompetesIn(teamId, "division")
-      );
+      const playsInDivision = yield* select(teamCompetesIn(teamId, "division"));
 
       if (!playsInDivision) {
         return false;
       }
 
-      const wasPromoted: boolean = yield select(teamWasPromoted(teamId));
+      const wasPromoted = yield* select(teamWasPromoted(teamId));
       if (wasPromoted) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength > 120;
     },
     (team) => {
@@ -419,20 +403,18 @@ const randomEvents: RandomEvent[] = [
     1,
     () => -40,
     function* (teamId: number) {
-      const playsInDivision: boolean = yield select(
-        teamCompetesIn(teamId, "division")
-      );
+      const playsInDivision = yield* select(teamCompetesIn(teamId, "division"));
 
       if (!playsInDivision) {
         return false;
       }
 
-      const wasPromoted: boolean = yield select(teamWasPromoted(teamId));
+      const wasPromoted = yield* select(teamWasPromoted(teamId));
       if (wasPromoted) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength > 140;
     },
     (team) => {
@@ -444,15 +426,12 @@ const randomEvents: RandomEvent[] = [
     8,
     () => 8,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(
-        playsInDivisionOrWasRelegated,
-        teamId
-      );
+      const isEligible = yield* call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength < 82;
     },
     (team) => {
@@ -464,15 +443,12 @@ const randomEvents: RandomEvent[] = [
     7,
     () => 13,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(
-        playsInDivisionOrWasRelegated,
-        teamId
-      );
+      const isEligible = yield* call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength < 72;
     },
     (team) => {
@@ -484,15 +460,12 @@ const randomEvents: RandomEvent[] = [
     7,
     () => 16,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(
-        playsInDivisionOrWasRelegated,
-        teamId
-      );
+      const isEligible = yield* call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
       }
 
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength < 62;
     },
     (team) => {
@@ -504,10 +477,7 @@ const randomEvents: RandomEvent[] = [
     7,
     () => -15,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(
-        playsInDivisionOrWasRelegated,
-        teamId
-      );
+      const isEligible = yield* call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
       }
@@ -523,10 +493,7 @@ const randomEvents: RandomEvent[] = [
     20,
     () => 45,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(
-        playsInDivisionOrWasRelegated,
-        teamId
-      );
+      const isEligible = yield* call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
       }
@@ -542,10 +509,7 @@ const randomEvents: RandomEvent[] = [
     7,
     () => -8,
     function* (teamId: number) {
-      const isEligible: boolean = yield call(
-        playsInDivisionOrWasRelegated,
-        teamId
-      );
+      const isEligible = yield* call(playsInDivisionOrWasRelegated, teamId);
       if (!isEligible) {
         return false;
       }
@@ -563,7 +527,7 @@ const randomEvents: RandomEvent[] = [
       return 45 - team.strength;
     },
     function* (teamId: number) {
-      const strength: number = yield select(teamsStrength(teamId));
+      const strength = yield* select(teamsStrength(teamId));
       return strength < 35;
     },
     (team) => {
@@ -631,42 +595,27 @@ const roundRobinAwards: Award[] = [
 ];
 
 const yieldAwards = function* (awards: Award[], to: number[]) {
-  const teams: Team[] = yield select((state: any) => state.game.teams);
+  const teams: Team[] = yield* select((state: any) => state.game.teams);
 
   for (const [i, teamId] of to.entries()) {
     const award = awards[i];
     const team = teams[teamId];
 
-    const manager = yield select(managerWhoControlsTeam(teamId));
+    const manager = yield* select(managerWhoControlsTeam(teamId));
     const data = award.data(team);
 
     if (manager) {
-      yield putResolve({
-        type: "MANAGER_INCREMENT_BALANCE",
-        payload: {
-          manager: manager.id,
-          amount: data.amount
-        }
-      });
+      yield* call(incrementBalance, manager.id, data.amount);
     } else {
-      yield putResolve({
-        type: "TEAM_INCREMENT_STRENGTH",
-        payload: {
-          team: data.id,
-          amount: data.strength
-        }
-      });
+      yield* call(incrementStrength, data.id, data.strength);
     }
 
-    yield putResolve({
-      type: "NEWS_ADD",
-      payload: award.news(data)
-    });
+    yield* call(addNews, award.news(data));
   }
 };
 
 const award = function* () {
-  const phl = yield select(competition("phl"));
+  const phl = yield* select(competition("phl"));
 
   const finalPhase = phl.phases[3].groups[0];
 
@@ -680,18 +629,18 @@ const award = function* () {
     losers[losers.length - 1]
   ].map((r) => r.id);
 
-  yield call(yieldAwards, medalAwards, ranking);
+  yield* call(yieldAwards, medalAwards, ranking);
 
   const tableEntries = phl.phases[0].groups[0].stats
     .slice(0, 8)
     .map((t: any) => t.id);
 
-  yield call(yieldAwards, roundRobinAwards, tableEntries);
-  const teams: Team[] = yield select(pekkalandianTeams);
+  yield* call(yieldAwards, roundRobinAwards, tableEntries);
+  const teams: Team[] = yield* select(pekkalandianTeams);
 
   for (const [, team] of teams.entries()) {
     for (const randomEvent of randomEvents) {
-      yield call(randomEvent, team.id);
+      yield* call(randomEvent, team.id);
     }
   }
 };

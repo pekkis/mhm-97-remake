@@ -1,4 +1,5 @@
 import { produce } from "immer";
+import { createAction } from "@reduxjs/toolkit";
 
 import teamDefs from "../data/teams";
 import managers from "../data/managers";
@@ -8,6 +9,7 @@ import competitionList from "../data/competitions";
 import { META_QUIT_TO_MAIN_MENU, META_GAME_LOAD_STATE } from "./meta";
 import type { Competition, CompetitionId } from "../types/competitions";
 
+// String constants kept for cross-duck reducer imports
 export const GAME_START = "GAME_START";
 export const GAME_ADVANCE_REQUEST = "GAME_ADVANCE_REQUEST";
 export const GAME_ADVANCE = "GAME_ADVANCE";
@@ -17,6 +19,137 @@ export const GAME_NEXT_TURN = "GAME_NEXT_TURN";
 
 export const SEASON_START = "SEASON_START";
 export const SEASON_END = "SEASON_END";
+
+// --- Action creators ---
+
+// Game lifecycle
+export const advance = createAction<any>(GAME_ADVANCE_REQUEST);
+export const clearExpired = createAction(GAME_CLEAR_EXPIRED);
+export const decrementDurations = createAction(GAME_DECREMENT_DURATIONS);
+export const nextTurn = createAction(GAME_NEXT_TURN);
+export const seasonEnd = createAction(SEASON_END);
+
+// Game state
+export const setGamePhase = createAction<string>("GAME_SET_PHASE");
+export const setGameFlag = createAction<{
+  flag: string;
+  value: unknown;
+}>("GAME_SET_FLAG");
+export const setServiceBasePrice = createAction<{
+  service: string;
+  amount: number;
+}>("GAME_SET_SERVICE_BASE_PRICE");
+export const setWorldChampionshipResults = createAction<
+  WorldChampionshipEntry[]
+>("GAME_WORLD_CHAMPIONSHIP_RESULTS");
+
+// Gameday
+export const gameBegin = createAction<{
+  competition: string;
+  phase: number;
+  group: number;
+  round: number;
+  pairing: number;
+}>("GAME_GAME_BEGIN");
+export const gameResult = createAction<any>("GAME_GAME_RESULT");
+export const gamedayComplete = createAction<{
+  competition: string;
+  phase: number;
+  group: number;
+  round: number;
+}>("GAME_GAMEDAY_COMPLETE");
+export const gameGroupEnd = createAction<{
+  competition: string;
+  phase: number;
+  group: number;
+}>("GAME_GROUP_END");
+
+// Competition
+export const competitionRemoveTeam = createAction<{
+  competition: string;
+  team: number;
+}>("COMPETITION_REMOVE_TEAM");
+export const competitionAddTeam = createAction<{
+  competition: string;
+  team: number;
+}>("COMPETITION_ADD_TEAM");
+export const competitionUpdateStats = createAction<any>(
+  "COMPETITION_UPDATE_STATS"
+);
+export const competitionSetTeams = createAction<{
+  competition: string;
+  teams: number[];
+}>("COMPETITION_SET_TEAMS");
+export const competitionStart = createAction<{
+  competition: string;
+}>("COMPETITION_START");
+export const competitionSeed = createAction<any>("COMPETITION_SEED");
+
+// Team
+export const teamIncrementMorale = createAction<{
+  team: number;
+  amount: number;
+  min: number;
+  max: number;
+}>("TEAM_INCREMENT_MORALE");
+export const teamSetMorale = createAction<{
+  team: number;
+  morale: number;
+  min: number;
+  max: number;
+}>("TEAM_SET_MORALE");
+export const teamSetStrategy = createAction<{
+  team: number;
+  strategy: number;
+}>("TEAM_SET_STRATEGY");
+export const teamSetReadiness = createAction<{
+  team: number;
+  readiness: number;
+}>("TEAM_SET_READINESS");
+export const teamIncurPenalty = createAction<{
+  competition: string;
+  phase: number;
+  group: number;
+  team: number;
+  penalty: number;
+}>("TEAM_INCUR_PENALTY");
+export const teamIncrementReadiness = createAction<{
+  team: number;
+  amount: number;
+}>("TEAM_INCREMENT_READINESS");
+export const teamIncrementStrength = createAction<{
+  team: number;
+  amount: number;
+}>("TEAM_INCREMENT_STRENGTH");
+export const teamSetStrength = createAction<{
+  team: number;
+  amount: number;
+}>("TEAM_SET_STRENGTH");
+export const teamSetStrengths =
+  createAction<{ id: number; strength: number }[]>("TEAM_SET_STRENGTHS");
+export const teamDecrementStrength = createAction<{
+  team: number;
+  amount: number;
+}>("TEAM_DECREMENT_STRENGTH");
+export const teamRename = createAction<{
+  team: number;
+  name: string;
+}>("TEAM_RENAME");
+export const teamAddEffect = createAction<{
+  team: number;
+  effect: TeamEffect;
+}>("TEAM_ADD_EFFECT");
+export const teamAddOpponentEffect = createAction<{
+  team: number;
+  effect: TeamEffect;
+}>("TEAM_ADD_OPPONENT_EFFECT");
+export const teamRemoveManager = createAction<{
+  team: number;
+}>("TEAM_REMOVE_MANAGER");
+export const teamAddManager = createAction<{
+  team: number;
+  manager: string;
+}>("TEAM_ADD_MANAGER");
 
 export type TeamEffect = {
   parameter: string[];
@@ -97,13 +230,6 @@ const defaultState: GameState = {
     opponentEffects: []
   })),
   worldChampionshipResults: undefined
-};
-
-export const advance = (payload: any) => {
-  return {
-    type: GAME_ADVANCE_REQUEST,
-    payload
-  };
 };
 
 export default function gameReducer(

@@ -22,6 +22,7 @@ import { acceptInvitation } from "../invitation";
 import { INVITATION_ACCEPT_REQUEST } from "../../ducks/invitation";
 import { BETTING_BET_REQUEST } from "../../ducks/betting";
 import { bet } from "../betting";
+import { setGamePhase } from "../../ducks/game";
 import type { RootState } from "../../config/redux";
 
 export default function* actionPhase() {
@@ -29,10 +30,7 @@ export default function* actionPhase() {
 
   yield* call(setActiveManager, Object.values(managers)[0].id);
 
-  yield* put({
-    type: "GAME_SET_PHASE" as const,
-    payload: "action"
-  });
+  yield* put(setGamePhase("action"));
 
   const tasks = yield* all([
     fork(watchTransferMarket),

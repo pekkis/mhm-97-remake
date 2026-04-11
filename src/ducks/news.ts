@@ -1,9 +1,17 @@
 import { produce } from "immer";
+import { createAction } from "@reduxjs/toolkit";
 import { GAME_NEXT_TURN } from "./game";
 
 export const NEWS_ANNOUNCEMENT_ADD = "NEWS_ANNOUNCEMENT_ADD";
 export const NEWS_ANNOUNCEMENTS_CLEAR = "NEWS_ANNOUNCEMENTS_CLEAR";
 export const NEWS_ADD = "NEWS_ADD";
+
+export const addAnnouncement = createAction<{
+  manager: string;
+  announcement: string;
+}>(NEWS_ANNOUNCEMENT_ADD);
+export const clearAnnouncements = createAction(NEWS_ANNOUNCEMENTS_CLEAR);
+export const addNews = createAction<string>(NEWS_ADD);
 
 export type NewsState = {
   news: string[];

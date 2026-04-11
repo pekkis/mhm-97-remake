@@ -11,19 +11,24 @@ import { resultFacts } from "../services/game";
 
 import { STATS_UPDATE_FROM_FACTS, STATS_SET_SEASON_STAT } from "../ducks/stats";
 import { managersMainCompetition } from "../data/selectors";
+import {
+  competitionSeed,
+  gameResult,
+  competitionUpdateStats
+} from "../ducks/game";
 import type { RootState } from "../config/redux";
 import type { Phase } from "../types/competitions";
 
 export function* stats() {
   yield* all([
-    takeEvery("COMPETITION_SEED" as any, calculatePhaseStats),
-    takeEvery("GAME_GAME_RESULT" as any, gameResult)
+    takeEvery(competitionSeed, calculatePhaseStats),
+    takeEvery(gameResult, gameResultHandler)
   ]);
 }
 
-export function* calculatePhaseStats(action: {
-  payload: { competition: string; phase: number };
-}) {
+export function* calculatePhaseStats(
+  action: ReturnType<typeof competitionSeed>
+) {
   const { payload } = action;
   const phase: Phase = yield* select(
     (state: RootState) =>
@@ -45,15 +50,14 @@ function* groupStats(competitionId: string, phaseId: number, groupId: number) {
 
   const stats = yield* call(competitionTypes[group.type].stats, group);
 
-  yield* putResolve({
-    type: "COMPETITION_UPDATE_STATS" as const,
-    payload: {
+  yield* putResolve(
+    competitionUpdateStats({
       competition: competitionId,
       phase: phaseId,
       group: groupId,
       stats
-    }
-  });
+    })
+  );
 }
 
 export function* calculateGroupStats(
@@ -64,14 +68,7 @@ export function* calculateGroupStats(
   yield* call(groupStats, competition, phase, group);
 }
 
-function* gameResult(action: {
-  payload: {
-    competition: string;
-    phase: number;
-    meta: Record<string, { team: number; manager?: string }>;
-    result: { home: number; away: number; overtime: boolean };
-  };
-}) {
+function* gameResultHandler(action: ReturnType<typeof gameResult>) {
   const {
     payload: { competition, phase, meta, result }
   } = action;

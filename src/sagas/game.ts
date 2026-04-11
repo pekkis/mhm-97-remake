@@ -1,5 +1,21 @@
 import competitionData from "../data/competitions";
-import { SEASON_START } from "../ducks/game";
+import {
+  SEASON_START,
+  gameBegin,
+  clearExpired,
+  competitionStart as competitionStartAction,
+  gameGroupEnd,
+  teamSetStrengths,
+  setGameFlag,
+  setServiceBasePrice,
+  setGamePhase,
+  competitionSeed,
+  competitionRemoveTeam,
+  competitionAddTeam,
+  competitionSetTeams,
+  nextTurn as nextTurnAction
+} from "../ducks/game";
+import { clearAnnouncements } from "../ducks/news";
 
 import teamData from "../data/teams";
 
@@ -51,7 +67,7 @@ import type {
 
 export const GAME_ADVANCE_REQUEST = "GAME_ADVANCE_REQUEST";
 
-export function* beforeGame(action: any) {
+export function* beforeGame(action: ReturnType<typeof gameBegin>) {
   const {
     payload: { competition, phase, group, round, pairing }
   } = action;
@@ -100,7 +116,7 @@ export function* beforeGame(action: any) {
 }
 
 export function* gameLoop() {
-  yield* takeEvery("GAME_GAME_BEGIN" as any, beforeGame);
+  yield* takeEvery(gameBegin, beforeGame);
   yield* fork(stats);
 
   do {
@@ -162,7 +178,7 @@ export function* gameLoop() {
       yield* call(endOfSeasonPhase);
     }
 
-    yield* putResolve({ type: "GAME_CLEAR_EXPIRED" as const });
+    yield* putResolve(clearExpired());
 
     yield* call(nextTurn);
   } while (true);
@@ -173,12 +189,11 @@ function* competitionStart(competitionId: string) {
   if (competitionStarter) {
     yield* call(competitionStarter);
   }
-  yield* put({
-    type: "COMPETITION_START" as const,
-    payload: {
+  yield* put(
+    competitionStartAction({
       competition: competitionId
-    }
-  });
+    })
+  );
 }
 
 export function* groupEnd(competition: string, phase: number, group: number) {
@@ -188,14 +203,13 @@ export function* groupEnd(competition: string, phase: number, group: number) {
     yield* call(groupEnder, phase, group);
   }
 
-  yield* put({
-    type: "GAME_GROUP_END" as const,
-    payload: {
+  yield* put(
+    gameGroupEnd({
       competition,
       phase,
       group
-    }
-  });
+    })
+  );
 }
 
 export function* seasonStart() {
@@ -211,10 +225,7 @@ export function* seasonStart() {
       strength: teamData[t.id].strength()
     };
   });
-  yield* put({
-    type: "TEAM_SET_STRENGTHS" as const,
-    payload: reStrengths
-  });
+  yield* put(teamSetStrengths(reStrengths));
 
   // Start all competitions.
   for (const [key] of Object.entries(competitionData)) {
@@ -277,13 +288,7 @@ export function* relegate(competition: string, team: number) {
 }
 
 export function* setFlag(flag: string, value: unknown) {
-  yield* put({
-    type: "GAME_SET_FLAG" as const,
-    payload: {
-      flag,
-      value
-    }
-  });
+  yield* put(setGameFlag({ flag, value }));
 }
 
 export function* incrementServiceBasePrice(service: string, amount: number) {
@@ -291,26 +296,22 @@ export function* incrementServiceBasePrice(service: string, amount: number) {
     (state: RootState) => state.game.serviceBasePrices[service]
   );
 
-  yield* put({
-    type: "GAME_SET_SERVICE_BASE_PRICE" as const,
-    payload: {
+  yield* put(
+    setServiceBasePrice({
       service,
       amount: currentAmount + amount
-    }
-  });
+    })
+  );
 }
 
 function* nextTurn() {
-  yield* put({ type: "NEWS_ANNOUNCEMENTS_CLEAR" as const });
+  yield* put(clearAnnouncements());
   yield* put({ type: "EVENT_CLEAR_EVENTS" as const });
-  yield* put({ type: "GAME_NEXT_TURN" as const });
+  yield* put(nextTurnAction());
 }
 
 export function* setPhase(phase: string) {
-  yield* put({
-    type: "GAME_SET_PHASE" as const,
-    payload: phase
-  });
+  yield* put(setGamePhase(phase));
 }
 
 export function* seedCompetition(competitionId: string, phase: number) {
@@ -323,42 +324,38 @@ export function* seedCompetition(competitionId: string, phase: number) {
 
   const seed = yield* call(seeder, competitions);
 
-  yield* putResolve({
-    type: "COMPETITION_SEED" as const,
-    payload: {
+  yield* putResolve(
+    competitionSeed({
       competition: competitionId,
       phase,
       seed
-    }
-  });
+    })
+  );
 }
 
 export function* removeTeamFromCompetition(competition: string, team: number) {
-  yield* putResolve({
-    type: "COMPETITION_REMOVE_TEAM" as const,
-    payload: {
+  yield* putResolve(
+    competitionRemoveTeam({
       competition,
       team
-    }
-  });
+    })
+  );
 }
 
 export function* addTeamToCompetition(competition: string, team: number) {
-  yield* putResolve({
-    type: "COMPETITION_ADD_TEAM" as const,
-    payload: {
+  yield* putResolve(
+    competitionAddTeam({
       competition,
       team
-    }
-  });
+    })
+  );
 }
 
 export function* setCompetitionTeams(competition: string, teams: number[]) {
-  yield* putResolve({
-    type: "COMPETITION_SET_TEAMS" as const,
-    payload: {
+  yield* putResolve(
+    competitionSetTeams({
       competition,
       teams
-    }
-  });
+    })
+  );
 }

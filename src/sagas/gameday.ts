@@ -7,6 +7,12 @@ import { groupEnd } from "./game";
 import { calculateGroupStats } from "./stats";
 import { afterGameday } from "./manager";
 import { bettingResults } from "./betting";
+import {
+  gameBegin,
+  gameResult as gameResultAction,
+  gamedayComplete,
+  setGamePhase
+} from "../ducks/game";
 import type { RootState } from "../config/redux";
 import type {
   Competition,
@@ -16,8 +22,6 @@ import type {
   Group,
   Pairing
 } from "../types/competitions";
-import type { Manager } from "../ducks/manager";
-import type { Team } from "../ducks/game";
 
 function* playGame(
   group: Group,
@@ -80,15 +84,14 @@ function* completeGameday(
     yield* call(bettingResults, round);
   }
 
-  yield* putResolve({
-    type: "GAME_GAMEDAY_COMPLETE" as const,
-    payload: {
+  yield* putResolve(
+    gamedayComplete({
       competition,
       phase,
       group,
       round
-    }
-  });
+    })
+  );
 }
 
 export function* gameday(payload: string) {
@@ -127,16 +130,15 @@ export function* gameday(payload: string) {
         if (playMatch(group, round, x)) {
           const pairing = pairings[x];
 
-          yield* put({
-            type: "GAME_GAME_BEGIN" as const,
-            payload: {
+          yield* put(
+            gameBegin({
               competition: competition.id,
               phase: competition.phase,
               group: groupIndex,
               round,
               pairing: x
-            }
-          });
+            })
+          );
 
           const [result, meta] = yield* call(
             playGame,
@@ -148,9 +150,8 @@ export function* gameday(payload: string) {
             phase.type
           );
 
-          yield* put({
-            type: "GAME_GAME_RESULT" as const,
-            payload: {
+          yield* put(
+            gameResultAction({
               competition: competition.id,
               phase: competition.phase,
               group: groupIndex,
@@ -158,8 +159,8 @@ export function* gameday(payload: string) {
               result: result,
               pairing: x,
               meta
-            }
-          });
+            })
+          );
         }
       }
       yield* call(
@@ -173,17 +174,11 @@ export function* gameday(payload: string) {
 
     if (phase.type === "tournament") {
       if (roundNumber < rounds) {
-        yield* put({
-          type: "GAME_SET_PHASE" as const,
-          payload: "results"
-        });
+        yield* put(setGamePhase("results"));
 
         yield* take("GAME_ADVANCE_REQUEST");
 
-        yield* put({
-          type: "GAME_SET_PHASE" as const,
-          payload: "gameday"
-        });
+        yield* put(setGamePhase("gameday"));
 
         yield* take("GAME_ADVANCE_REQUEST");
       }

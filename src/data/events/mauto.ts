@@ -12,6 +12,7 @@ import { addEvent } from "../../sagas/event";
 import { incrementBalance } from "../../sagas/manager";
 import { incrementStrength } from "../../sagas/team";
 import { setFlag } from "../../sagas/game";
+import { teamRename } from "../../ducks/game";
 import type { MHMEvent } from "../../types/base";
 
 const eventId = "mauto";
@@ -129,13 +130,12 @@ const event: MHMEvent<MautoData> = {
   process: function* (data) {
     yield* call(setFlag, "mauto", true);
 
-    yield* put({
-      type: "TEAM_RENAME",
-      payload: {
-        team: data.team,
+    yield* put(
+      teamRename({
+        team: data.team!,
         name: data.newName
-      }
-    });
+      })
+    );
 
     if (!data.agree || data.changeOfMind) {
       yield* call(incrementStrength, data.team!, 40);

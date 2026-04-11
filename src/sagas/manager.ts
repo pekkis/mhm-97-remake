@@ -27,6 +27,7 @@ import { incrementStrength, decrementStrength } from "./team";
 import r from "../services/random";
 import { addAnnouncement } from "./news";
 import { amount as a } from "../services/format";
+import { teamRemoveManager, teamAddManager } from "../ducks/game";
 import type { RootState } from "../config/redux";
 import type { CompetitionId } from "../types/competitions";
 
@@ -85,21 +86,19 @@ export function* hireManager(managerId: string, teamId: number) {
   );
 
   if (managersCurrentTeam) {
-    yield* putResolve({
-      type: "TEAM_REMOVE_MANAGER" as const,
-      payload: {
+    yield* putResolve(
+      teamRemoveManager({
         team: managersCurrentTeam
-      }
-    });
+      })
+    );
   }
 
-  yield* putResolve({
-    type: "TEAM_ADD_MANAGER" as const,
-    payload: {
+  yield* putResolve(
+    teamAddManager({
       team: teamId,
       manager: managerId
-    }
-  });
+    })
+  );
 }
 
 export function* setBalance(managerId: string, amount: number) {

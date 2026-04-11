@@ -1,14 +1,12 @@
 import { select, call, put, take, takeEvery, cancel } from "typed-redux-saga";
 import events from "../../data/events";
 import { resolveEvent, processEvents } from "../event";
+import { setGamePhase } from "../../ducks/game";
 import type { RootState } from "../../config/redux";
 import type { StoredEvent } from "../../ducks/event";
 
 export default function* eventPhase() {
-  yield* put({
-    type: "GAME_SET_PHASE" as const,
-    payload: "event"
-  });
+  yield* put(setGamePhase("event"));
 
   yield* put({
     type: "UI_DISABLE_ADVANCE" as const

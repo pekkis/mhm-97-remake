@@ -7,6 +7,7 @@ import { setSeasonStat, createSeasonStories } from "../stats";
 import { processChampionBets } from "../betting";
 import { competition, allTeams } from "../../data/selectors";
 import { setStrength, type Country } from "../../ducks/country";
+import { setWorldChampionshipResults, seasonEnd } from "../../ducks/game";
 import type { RootState } from "../../config/redux";
 import type {
   Competition,
@@ -55,7 +56,7 @@ function* worldChampionships() {
     .map((c) => ({
       id: c.iso,
       name: c.name,
-      strength: c.strength,
+      strength: c.strength ?? 0,
       luck: getLuck(),
       random: cinteger(0, 20) - cinteger(0, 10)
     }))
@@ -72,10 +73,7 @@ function* worldChampionships() {
 
   console.log(entries, "entries");
 
-  yield* put({
-    type: "GAME_WORLD_CHAMPIONSHIP_RESULTS" as const,
-    payload: entries
-  });
+  yield* put(setWorldChampionshipResults(entries));
 
   yield* call(
     setSeasonStat,
@@ -136,9 +134,7 @@ export default function* endOfSeasonPhase() {
 
   yield* take("GAME_ADVANCE_REQUEST");
 
-  yield* put({
-    type: "SEASON_END" as const
-  });
+  yield* put(seasonEnd());
 
   if (divisionVictor !== phlLoser) {
     yield* all([

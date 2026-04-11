@@ -3,6 +3,17 @@ import { teamsManager } from "../data/selectors";
 import difficultyLevels from "../data/difficulty-levels";
 import { calculateGroupStats } from "./stats";
 import type { Manager } from "../ducks/manager";
+import {
+  teamIncurPenalty,
+  teamSetStrategy,
+  teamSetMorale,
+  teamIncrementMorale,
+  teamSetReadiness,
+  teamIncrementReadiness,
+  teamAddEffect,
+  teamAddOpponentEffect,
+  teamIncrementStrength
+} from "../ducks/game";
 
 const getMoraleMinMax = (manager: Manager | undefined) => {
   const difficulty = manager ? manager.difficulty : 2;
@@ -20,42 +31,27 @@ export function* incurPenalty(
   team: number,
   penalty: number
 ) {
-  yield* putResolve({
-    type: "TEAM_INCUR_PENALTY" as const,
-    payload: {
+  yield* putResolve(
+    teamIncurPenalty({
       competition,
       phase,
       group,
       team,
       penalty
-    }
-  });
+    })
+  );
   yield* call(calculateGroupStats, competition, phase, group);
 }
 
 export function* setStrategy(teamId: number, strategy: number) {
-  return yield* put({
-    type: "TEAM_SET_STRATEGY" as const,
-    payload: {
-      team: teamId,
-      strategy
-    }
-  });
+  return yield* put(teamSetStrategy({ team: teamId, strategy }));
 }
 
 export function* setMorale(teamId: number, morale: number) {
   const manager = yield* select(teamsManager(teamId));
   const { min, max } = getMoraleMinMax(manager);
 
-  return yield* put({
-    type: "TEAM_SET_MORALE" as const,
-    payload: {
-      team: teamId,
-      morale,
-      min,
-      max
-    }
-  });
+  return yield* put(teamSetMorale({ team: teamId, morale, min, max }));
 }
 
 export function* incrementMorale(teamId: number, amount: number) {
@@ -63,35 +59,22 @@ export function* incrementMorale(teamId: number, amount: number) {
 
   const { min, max } = getMoraleMinMax(manager);
 
-  return yield* put({
-    type: "TEAM_INCREMENT_MORALE" as const,
-    payload: {
+  return yield* put(
+    teamIncrementMorale({
       team: teamId,
       amount,
       min,
       max
-    }
-  });
+    })
+  );
 }
 
 export function* setReadiness(teamId: number, readiness: number) {
-  return yield* put({
-    type: "TEAM_SET_READINESS" as const,
-    payload: {
-      team: teamId,
-      readiness
-    }
-  });
+  return yield* put(teamSetReadiness({ team: teamId, readiness }));
 }
 
 export function* incrementReadiness(teamId: number, amount: number) {
-  return yield* put({
-    type: "TEAM_INCREMENT_READINESS" as const,
-    payload: {
-      team: teamId,
-      amount
-    }
-  });
+  return yield* put(teamIncrementReadiness({ team: teamId, amount }));
 }
 
 export function* addEffect(
@@ -101,9 +84,8 @@ export function* addEffect(
   duration: number,
   extra?: Record<string, unknown>
 ) {
-  yield* put({
-    type: "TEAM_ADD_EFFECT" as const,
-    payload: {
+  yield* put(
+    teamAddEffect({
       team,
       effect: {
         amount,
@@ -111,8 +93,8 @@ export function* addEffect(
         parameter,
         extra
       }
-    }
-  });
+    })
+  );
 }
 
 export function* addOpponentEffect(
@@ -121,17 +103,16 @@ export function* addOpponentEffect(
   amount: number | string,
   duration: number
 ) {
-  yield* put({
-    type: "TEAM_ADD_OPPONENT_EFFECT" as const,
-    payload: {
+  yield* put(
+    teamAddOpponentEffect({
       team,
       effect: {
         amount,
         duration,
         parameter
       }
-    }
-  });
+    })
+  );
 }
 
 export function* decrementReadiness(team: number, amount: number) {
@@ -139,13 +120,7 @@ export function* decrementReadiness(team: number, amount: number) {
 }
 
 export function* incrementStrength(teamId: number, amount: number) {
-  return yield* put({
-    type: "TEAM_INCREMENT_STRENGTH" as const,
-    payload: {
-      team: teamId,
-      amount
-    }
-  });
+  return yield* put(teamIncrementStrength({ team: teamId, amount }));
 }
 
 export function* decrementStrength(team: number, amount: number) {

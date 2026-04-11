@@ -4,16 +4,18 @@ import strategies from "../../data/strategies";
 import { BETTING_BET_CHAMPION_REQUEST } from "../../ducks/betting";
 import { betChampion } from "../betting";
 import { setActiveManager } from "../manager";
+import {
+  setGamePhase,
+  teamSetStrategy,
+  teamSetReadiness
+} from "../../ducks/game";
 import type { RootState } from "../../config/redux";
 
 function* selectStrategy() {
   const managers = yield* select((state: RootState) => state.manager.managers);
   yield* call(setActiveManager, Object.values(managers)[0].id);
 
-  yield* putResolve({
-    type: "GAME_SET_PHASE" as const,
-    payload: "select-strategy"
-  });
+  yield* putResolve(setGamePhase("select-strategy"));
 
   const action: any = yield* take("MANAGER_SELECT_STRATEGY");
   const { payload } = action;
@@ -24,28 +26,23 @@ function* selectStrategy() {
   );
 
   yield* all([
-    putResolve({
-      type: "TEAM_SET_STRATEGY" as const,
-      payload: {
-        team,
+    putResolve(
+      teamSetStrategy({
+        team: team!,
         strategy: payload.strategy
-      }
-    }),
-    putResolve({
-      type: "TEAM_SET_READINESS" as const,
-      payload: {
-        team,
+      })
+    ),
+    putResolve(
+      teamSetReadiness({
+        team: team!,
         readiness: strategies[payload.strategy].initialReadiness()
-      }
-    })
+      })
+    )
   ]);
 }
 
 function* championshipBetting() {
-  yield* putResolve({
-    type: "GAME_SET_PHASE" as const,
-    payload: "championship-betting"
-  });
+  yield* putResolve(setGamePhase("championship-betting"));
 
   const { bet } = yield* race({
     bet: take(BETTING_BET_CHAMPION_REQUEST),
