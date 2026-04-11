@@ -8,7 +8,7 @@ import {
 import competitionTypes from "../services/competition-type";
 import { resultFacts } from "../services/game";
 
-import { STATS_UPDATE_FROM_FACTS, STATS_SET_SEASON_STAT } from "../ducks/stats";
+import { updateFromFacts, setSeasonStat as setSeasonStatAction } from "../ducks/stats";
 import { managersMainCompetition } from "../data/selectors";
 import {
   competitionSeed,
@@ -77,29 +77,27 @@ function* gameResultHandler(action: ReturnType<typeof gameResult>) {
     const manager = meta[which].manager;
     const facts = resultFacts(result, which);
 
-    return put({
-      type: STATS_UPDATE_FROM_FACTS,
-      payload: {
+    return put(
+      updateFromFacts({
         team: team.toString(),
         competition,
         phase: phase.toString(),
         manager,
         facts
-      }
-    });
+      })
+    );
   });
 
   yield* all(streaksToUpdate);
 }
 
 export function* setSeasonStat(path: string[], value: unknown) {
-  yield* put({
-    type: STATS_SET_SEASON_STAT,
-    payload: {
+  yield* put(
+    setSeasonStatAction({
       path,
       value
-    }
-  });
+    })
+  );
 }
 
 export function* createSeasonStories() {

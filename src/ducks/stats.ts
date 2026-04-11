@@ -1,9 +1,23 @@
 import { produce } from "immer";
+import { createAction } from "@reduxjs/toolkit";
 import { META_QUIT_TO_MAIN_MENU, META_GAME_LOAD_STATE } from "./meta";
 import { SEASON_START, SEASON_END } from "./game";
 
 export const STATS_UPDATE_FROM_FACTS = "STATS_UPDATE_FROM_FACTS";
 export const STATS_SET_SEASON_STAT = "STATS_SET_SEASON_STAT";
+
+export const updateFromFacts = createAction<{
+  team: string;
+  competition: string;
+  phase: string;
+  manager: string | undefined;
+  facts: { isWin: boolean; isDraw: boolean; isLoss: boolean };
+}>(STATS_UPDATE_FROM_FACTS);
+
+export const setSeasonStat = createAction<{
+  path: string[];
+  value: unknown;
+}>(STATS_SET_SEASON_STAT);
 
 export type Streak = {
   win: number;
