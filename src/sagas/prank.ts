@@ -4,6 +4,7 @@ import prankTypes from "../data/pranks";
 import type { PrankInstance } from "../data/pranks";
 import { managerCompetesIn } from "../data/selectors";
 import { decrementBalance } from "../sagas/manager";
+import { addPrank } from "../ducks/prank";
 
 export function* orderPrank(action: {
   payload: { manager: string; victim: number; type: string };
@@ -21,10 +22,7 @@ export function* orderPrank(action: {
 
   yield* call(decrementBalance, manager, prankPrice);
 
-  yield* put({
-    type: "PRANK_ADD" as const,
-    payload: prank
-  });
+  yield* put(addPrank(prank));
 
   const prankOrderer = prankTypes[prank.type].order;
 

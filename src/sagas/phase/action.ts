@@ -16,7 +16,8 @@ import {
   toggleService,
   setActiveManager
 } from "../manager";
-import { orderPrank } from "../prank";
+import { orderPrank as orderPrankAction } from "../../ducks/prank";
+import { orderPrank as orderPrankSaga } from "../prank";
 import { acceptInvitation } from "../invitation";
 
 import { requestAcceptInvitation } from "../../ducks/invitation";
@@ -38,11 +39,13 @@ export default function* actionPhase() {
     takeEvery("MANAGER_IMPROVE_ARENA" as any, improveArena),
     takeEvery("META_GAME_SAVE_REQUEST" as any, gameSave),
     takeEvery("MANAGER_TOGGLE_SERVICE" as any, toggleService),
-    takeEvery("PRANK_ORDER" as any, orderPrank),
-    takeEvery(requestAcceptInvitation, function* (action: any) {
+    takeEvery(orderPrankAction, function* (action) {
+      yield* call(orderPrankSaga, action);
+    }),
+    takeEvery(requestAcceptInvitation, function* (action) {
       yield* call(acceptInvitation, action.payload.manager, action.payload.id);
     }),
-    takeEvery(requestBet, function* (action: any) {
+    takeEvery(requestBet, function* (action) {
       const {
         payload: { manager, coupon, amount }
       } = action;

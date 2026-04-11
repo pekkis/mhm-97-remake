@@ -81,7 +81,7 @@ const Pranks = () => {
               manager={manager}
               prank={prank}
               execute={(m: string, t: string, v: number) =>
-                dispatch(orderPrank(m, t, v))
+                dispatch(orderPrank({ manager: m, type: t, victim: v }))
               }
               teams={teams}
               cancel={(id: string) => dispatch(cancelPrank(id))}
