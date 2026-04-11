@@ -3,32 +3,7 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import typography from "./services/typography";
 import { TypographyStyle } from "react-typography";
-import { createGlobalStyle } from "styled-components";
-
-import { ThemeProvider } from "styled-components";
-import theme from "./themes/white";
-
-const GlobalStyle = createGlobalStyle`
-
-  html {
-    background-color: ${() => 'rgb(255 255 255)'};
-    color: ${() => 'rgb(0 0 0 )'}
-  }
-
-  body {
-    padding: 0;
-  }
-
-  form {
-    margin: 0;
-    padding: 0;
-  }
-
-  p {
-    margin: 1em 0;
-  }
-
-`;
+import "./styles/global.css";
 
 const Root = (props) => {
   const { store } = props;
@@ -38,12 +13,7 @@ const Root = (props) => {
       {/*<GoogleFont typography={typography} />*/}
       <Provider store={store}>
         <BrowserRouter>
-          <ThemeProvider theme={theme}>
-            <>
-              <GlobalStyle />
-              <App />
-            </>
-          </ThemeProvider>
+          <App />
         </BrowserRouter>
       </Provider>
     </>

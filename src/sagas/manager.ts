@@ -158,8 +158,6 @@ export function* crisisMeeting(action: { payload: { manager: string } }) {
 }
 
 export function* buyPlayer(action: ReturnType<typeof managerBuyPlayer>) {
-  console.log("buy manager", action);
-
   const { payload } = action;
 
   const manager = yield* select(

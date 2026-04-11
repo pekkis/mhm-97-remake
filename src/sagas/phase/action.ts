@@ -9,6 +9,7 @@ import {
   select
 } from "typed-redux-saga";
 import { gameSave } from "../meta";
+import { saveGame } from "../../ducks/meta";
 import {
   watchTransferMarket,
   crisisMeeting,
@@ -38,26 +39,32 @@ export default function* actionPhase() {
 
   yield* put(setGamePhase("action"));
 
-  const tasks = yield* all([
-    fork(watchTransferMarket),
-    takeEvery(managerCrisisMeeting, crisisMeeting),
-    takeEvery(managerImproveArena, improveArena),
-    takeEvery("META_GAME_SAVE_REQUEST" as any, gameSave),
-    takeEvery(managerToggleService, toggleService),
-    takeEvery(orderPrankAction, function* (action) {
-      yield* call(orderPrankSaga, action);
-    }),
-    takeEvery(requestAcceptInvitation, function* (action) {
-      yield* call(acceptInvitation, action.payload.manager, action.payload.id);
-    }),
-    takeEvery(requestBet, function* (action) {
-      const {
-        payload: { manager, coupon, amount }
-      } = action;
-      yield* call(bet, manager, coupon, amount);
-    })
-  ]);
+  const task = yield* fork(function* () {
+    yield* all([
+      fork(watchTransferMarket),
+      takeEvery(managerCrisisMeeting, crisisMeeting),
+      takeEvery(managerImproveArena, improveArena),
+      takeEvery(saveGame, gameSave),
+      takeEvery(managerToggleService, toggleService),
+      takeEvery(orderPrankAction, function* (action) {
+        yield* call(orderPrankSaga, action);
+      }),
+      takeEvery(requestAcceptInvitation, function* (action) {
+        yield* call(
+          acceptInvitation,
+          action.payload.manager,
+          action.payload.id
+        );
+      }),
+      takeEvery(requestBet, function* (action) {
+        const {
+          payload: { manager, coupon, amount }
+        } = action;
+        yield* call(bet, manager, coupon, amount);
+      })
+    ]);
+  });
 
   yield* take("GAME_ADVANCE_REQUEST");
-  yield* cancel(tasks);
+  yield* cancel(task);
 }
