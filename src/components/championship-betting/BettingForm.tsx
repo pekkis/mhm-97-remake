@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { Formik } from "formik";
+import { useForm, Controller } from "react-hook-form";
 import Slider from "../form/Slider";
 import { amount as a } from "../../services/format";
 import odds from "../../data/championship-betting";
@@ -7,6 +7,11 @@ import Button from "../form/Button";
 import type { Team } from "../../ducks/game";
 import type { Manager } from "../../ducks/manager";
 import type { Competition } from "../../types/competitions";
+
+type ChampionshipBettingFormValues = {
+  team: string;
+  amount: number;
+};
 
 type ChampionshipBettingFormProps = {
   manager: Manager;
@@ -28,65 +33,67 @@ const BettingForm: FC<ChampionshipBettingFormProps> = ({
 }) => {
   const teamsAndOdds = odds(competition, teams);
 
+  const { register, handleSubmit, control, watch } = useForm<ChampionshipBettingFormValues>({
+    defaultValues: {
+      team: "",
+      amount: 10000,
+    },
+  });
+
+  const values = watch();
+
+  const onSubmit = (data: ChampionshipBettingFormValues) => {
+    const teamId = parseInt(data.team, 10);
+    betChampion(
+      manager.id,
+      teamId,
+      data.amount,
+      teamsAndOdds.find((t) => t.id === teamId)!.odds,
+    );
+  };
+
   return (
-    <Formik
-      initialValues={{
-        team: "",
-        amount: 10000,
-      }}
-      onSubmit={(values) => {
-        betChampion(
-          manager.id,
-          parseInt(values.team, 10),
-          parseInt(String(values.amount), 10),
-          teamsAndOdds.find((t) => t.id === parseInt(values.team, 10))!.odds,
-        );
-      }}
-    >
-      {({ values, setFieldValue, handleChange, handleSubmit }) => {
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <h3>Valitse ehdokkaasi</h3>
+
+      {teamsAndOdds.map((team) => {
         return (
-          <form onSubmit={handleSubmit}>
-            <h3>Valitse ehdokkaasi</h3>
-
-            {teamsAndOdds.map((team) => {
-              return (
-                <div key={team.id}>
-                  <label>
-                    <input
-                      name="team"
-                      type="radio"
-                      value={team.id.toString()}
-                      checked={values.team === team.id.toString()}
-                      onChange={handleChange}
-                    />
-                    {team.name} ({team.odds})
-                  </label>
-                </div>
-              );
-            })}
-
-            <h3>Valitse panos</h3>
-
-            <div>
-              <Slider
-                min={10000}
-                max={1000000}
-                step={10000}
-                value={values.amount}
-                onChange={(value) => {
-                  void setFieldValue("amount", value);
-                }}
+          <div key={team.id}>
+            <label>
+              <input
+                type="radio"
+                value={team.id.toString()}
+                {...register("team", { required: true })}
               />
-              <strong>{a(values.amount)}</strong> pekkaa
-            </div>
-
-            <Button disabled={values.team === ""} block type="submit">
-              Veikkaa mestaria
-            </Button>
-          </form>
+              {team.name} ({team.odds})
+            </label>
+          </div>
         );
-      }}
-    </Formik>
+      })}
+
+      <h3>Valitse panos</h3>
+
+      <div>
+        <Controller
+          name="amount"
+          control={control}
+          render={({ field }) => (
+            <Slider
+              min={10000}
+              max={1000000}
+              step={10000}
+              value={field.value}
+              onChange={field.onChange}
+            />
+          )}
+        />
+        <strong>{a(values.amount)}</strong> pekkaa
+      </div>
+
+      <Button disabled={values.team === ""} block type="submit">
+        Veikkaa mestaria
+      </Button>
+    </form>
   );
 };
 

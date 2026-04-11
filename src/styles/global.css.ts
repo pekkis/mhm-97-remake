@@ -7,23 +7,23 @@ globalStyle("html", {
   color: vars.color.black,
   fontSize: "16px",
   lineHeight: 1.45,
-  fontFamily: "'Maven Pro', sans-serif",
+  fontFamily: "'Maven Pro', sans-serif"
 });
 
 globalStyle("h1", {
-  fontSize: "2.25rem",
+  fontSize: "2.25rem"
 });
 
 globalStyle("h2", {
-  fontSize: "1.5rem",
+  fontSize: "1.5rem"
 });
 
 globalStyle("h3", {
-  fontSize: "1rem",
+  fontSize: "1rem"
 });
 
 globalStyle("h1, h2, h3, h4, h5, h6", {
-  lineHeight: 1.1,
+  lineHeight: 1.1
 });
 
 globalStyle("body", {
@@ -41,9 +41,9 @@ globalStyle("p", {
 
 const spin = keyframes({
   "0%": { transform: "rotate(0deg)" },
-  "100%": { transform: "rotate(360deg)" },
+  "100%": { transform: "rotate(360deg)" }
 });
 
 globalStyle(".spin", {
-  animation: `${spin} 1s linear infinite`,
+  animation: `${spin} 1s linear infinite`
 });
