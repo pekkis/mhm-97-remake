@@ -3,6 +3,7 @@ import calendar from "../../data/calendar";
 import { seedCompetition } from "../game";
 import { setGamePhase } from "../../ducks/game";
 import type { RootState } from "../../config/redux";
+import type { CompetitionId } from "@/types/competitions";
 
 export default function* seedPhase() {
   console.log("SEED PHASE");
@@ -12,8 +13,6 @@ export default function* seedPhase() {
   const round = yield* select((state: RootState) => state.game.turn.round);
   const seeds = calendar[round].seed;
 
-  console.log("SEEDS", seeds);
-
   if (seeds.length === 0) {
     return;
   }
@@ -21,6 +20,6 @@ export default function* seedPhase() {
   for (const seed of seeds) {
     const competitionId = seed.competition;
     const phaseId = seed.phase;
-    yield* call(seedCompetition, competitionId, phaseId);
+    yield* call(seedCompetition, competitionId as CompetitionId, phaseId);
   }
 }

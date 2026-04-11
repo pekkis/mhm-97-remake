@@ -8,24 +8,35 @@ import LabelDiv from "../form/LabelDiv";
 import Field from "../form/Field";
 import difficultyLevels from "../../data/difficulty-levels";
 import type { Team } from "../../ducks/game";
-import type { MetaManager } from "../../ducks/meta";
 import type { Competition } from "../../types/competitions";
 
+export type ManagerFormValues = {
+  name: string;
+  arena: string;
+  difficulty: string;
+  team: number;
+};
+
+const defaultValues: ManagerFormValues = {
+  name: "Gaylord Lohiposki",
+  arena: "MasoSports Areena",
+  difficulty: "2",
+  team: 12
+};
+
 type ManagerFormProps = {
-  manager: MetaManager;
-  advance: (values: MetaManager) => void;
+  advance: (values: ManagerFormValues) => void;
   competitions: Record<string, Competition>;
   teams: Team[];
 };
 
 const ManagerForm: FC<ManagerFormProps> = ({
-  manager,
   advance,
   competitions,
   teams
 }) => {
-  const { register, handleSubmit } = useForm<MetaManager>({
-    defaultValues: manager
+  const { register, handleSubmit } = useForm<ManagerFormValues>({
+    defaultValues
   });
 
   return (

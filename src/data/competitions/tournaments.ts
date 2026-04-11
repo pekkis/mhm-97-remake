@@ -1,22 +1,20 @@
-import { select, call, all } from "typed-redux-saga";
-import tournamentScheduler from "../../services/tournament";
-import r from "../../services/random";
-import { foreignTeams } from "../selectors";
-
-import tournamentList from "../tournaments";
-import { setCompetitionTeams } from "../../sagas/game";
-import { incrementReadiness } from "../../sagas/team";
-import { addAnnouncement } from "../../sagas/news";
-import { incrementBalance } from "../../sagas/manager";
-import { amount as a } from "../../services/format";
+import type { Team } from "@/ducks/game";
 import type {
   Competition,
   CompetitionDefinition,
-  TeamStat,
   TournamentGroup
 } from "../../types/competitions";
-import type { Team } from "../../ducks/game";
-import type { RootState } from "../../config/redux";
+import tournamentScheduler from "@/services/tournament";
+import type { Manager } from "@/ducks/manager";
+import type { Invitation } from "@/ducks/invitation";
+import tournamentList from "@/data/tournaments";
+import random from "@/services/random";
+
+export type TournamentSeedContext = {
+  teams: Team[];
+  managers: Record<string, Manager>;
+  invitations: Invitation[];
+};
 
 const tournaments: CompetitionDefinition = {
   data: {
@@ -32,43 +30,13 @@ const tournaments: CompetitionDefinition = {
   relegateTo: false,
   promoteTo: false,
 
-  start: function* () {
-    yield call(setCompetitionTeams, "tournaments", []);
-  },
+  /*
 
-  groupEnd: function* (phase, group) {
-    const tournament = yield* select(
-      (state: RootState) =>
-        state.game.competitions.tournaments.phases[phase].groups[group]
-    );
+  */
 
-    const managers = yield* select(
-      (state: RootState) => state.manager.managers
-    );
-    const teams = yield* select((state: RootState) => state.game.teams);
+  /*
 
-    for (const stat of tournament.stats as TeamStat[]) {
-      const team = teams[stat.id];
-
-      if (team.domestic) {
-        yield* call(incrementReadiness, team.id, -2);
-
-        if (team.manager !== undefined) {
-          const award = tournamentList[group].award;
-          const manager = managers[team.manager];
-
-          yield* all([
-            call(
-              addAnnouncement,
-              manager.id,
-              `Tilillenne on siirretty __${a(award)}__ pekkaa rahaa. Viiteviesti: joulutauon turnaus, osallistumismaksu, _${tournament.name}_.`
-            ),
-            call(incrementBalance, manager.id, award)
-          ]);
-        }
-      }
-    }
-  },
+  */
 
   gameBalance: (phase, facts, manager) => {
     return 0;
@@ -96,16 +64,11 @@ const tournaments: CompetitionDefinition = {
   },
 
   seed: [
-    function* (competitions: Record<string, Competition>) {
-      const teams = yield* select(foreignTeams);
-
-      const managers = yield* select(
-        (state: RootState) => state.manager.managers
-      );
-
-      const invitations = yield* select((state: RootState) =>
-        state.invitation.invitations.filter((i) => i.participate)
-      );
+    (
+      competitions: Record<string, Competition>,
+      context: TournamentSeedContext
+    ) => {
+      const { teams, invitations, managers } = context;
 
       // Build invited teams grouped by tournament index
       const invited: Map<number, number[]> = new Map();
@@ -127,7 +90,7 @@ const tournaments: CompetitionDefinition = {
 
         const eligible = remainingTeams
           .filter(tournament.filter)
-          .sort(() => r.real(1, 1000) - 500)
+          .sort(() => random.real(1, 1000) - 500)
           .slice(0, 6 - invitedTeamIds.length)
           .map((t) => t.id);
 
@@ -149,8 +112,6 @@ const tournaments: CompetitionDefinition = {
           (t) => !participants.includes(t.id)
         );
       }
-
-      yield* call(setCompetitionTeams, "tournaments", allParticipantIds);
 
       return {
         name: "jouluturnaukset",

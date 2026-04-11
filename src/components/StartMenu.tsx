@@ -14,7 +14,6 @@ const StartMenu = () => {
   const competitions = useAppSelector((state) =>
     pick(state.game.competitions, ["phl", "division"])
   );
-  const manager = useAppSelector((state) => state.meta.manager);
   const starting = useAppSelector((state) => state.meta.starting);
   const dispatch = useAppDispatch();
 
@@ -87,7 +86,6 @@ const StartMenu = () => {
               <ManagerForm
                 teams={teams}
                 competitions={competitions}
-                manager={manager}
                 advance={(payload: any) => dispatch(advance(payload))}
               />
             </Box>

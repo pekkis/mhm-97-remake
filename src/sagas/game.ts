@@ -51,7 +51,9 @@ import {
 } from "../data/selectors";
 import events from "../data/events";
 import type { RootState } from "../config/redux";
-import type { Group, TeamStat } from "../types/competitions";
+import type { CompetitionId, Group, TeamStat } from "../types/competitions";
+import { competitionSagas } from "@/data/competition-sagas";
+import { entries } from "remeda";
 
 export function* beforeGame(action: ReturnType<typeof gameBegin>) {
   const {
@@ -174,8 +176,8 @@ export function* gameLoop() {
   } while (true);
 }
 
-function* competitionStart(competitionId: string) {
-  const competitionStarter = competitionData[competitionId].start;
+function* competitionStart(competitionId: CompetitionId) {
+  const competitionStarter = competitionSagas[competitionId].start;
   if (competitionStarter) {
     yield* call(competitionStarter);
   }
@@ -186,8 +188,12 @@ function* competitionStart(competitionId: string) {
   );
 }
 
-export function* groupEnd(competition: string, phase: number, group: number) {
-  const groupEnder = competitionData[competition].groupEnd;
+export function* groupEnd(
+  competition: CompetitionId,
+  phase: number,
+  group: number
+) {
+  const groupEnder = competitionSagas[competition].groupEnd;
 
   if (groupEnder) {
     yield* call(groupEnder, phase, group);
@@ -218,7 +224,7 @@ export function* seasonStart() {
   yield* put(teamSetStrengths(reStrengths));
 
   // Start all competitions.
-  for (const [key] of Object.entries(competitionData)) {
+  for (const [key] of entries(competitionData)) {
     yield* call(competitionStart, key);
   }
 
@@ -302,15 +308,24 @@ export function* setPhase(phase: string) {
   yield* put(setGamePhase(phase));
 }
 
-export function* seedCompetition(competitionId: string, phase: number) {
+export function* seedCompetition(competitionId: CompetitionId, phase: number) {
   const competitions = yield* select(
     (state: RootState) => state.game.competitions
   );
   const competitionObj = competitionData[competitionId];
 
+  const empty = () => [() => {}, undefined] as const;
+
+  const contextSagaGetter =
+    competitionSagas[competitionId]?.seedContext?.[phase] || empty;
+
+  const [callback, context] = yield* call(contextSagaGetter);
+
   const seeder = competitionObj.seed[phase];
 
-  const seed = yield* call(seeder, competitions);
+  const seed = yield* call(seeder, competitions, context);
+
+  yield* call(callback, seed);
 
   yield* put(
     competitionSeed({

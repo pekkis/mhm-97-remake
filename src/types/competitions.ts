@@ -1,3 +1,4 @@
+import type { CallEffect } from "redux-saga/effects";
 import type { Team } from "../ducks/game";
 
 // --- Game result ---
@@ -142,9 +143,24 @@ export type CompetitionDefinition = {
   moraleBoost: (phase: number, facts: GameFacts, manager: any) => number;
   readinessBoost: (phase: number, facts: GameFacts, manager: any) => number;
   seed: Array<
-    | ((competitions: Record<CompetitionId, Competition>) => Phase)
-    | ((...args: any[]) => Generator<any, any, any>)
+    (competitions: Record<CompetitionId, Competition>, context?: any) => Phase
   >;
+  // | ((...args: any[]) => Generator<any, any, any>)
+  // seed: (...args: any[]) => Generator<any, any, any>;
+  // start?: (...args: any[]) => Generator<any, any, any>;
+  // groupEnd?: (phase: number, group: number) => Generator;
+};
+
+export type CompetitionSagaDefinition = {
+  seedContext?: [
+    (
+      ...args: any[]
+    ) => Generator<
+      any,
+      [(phase: Phase) => Generator<CallEffect<void>, void, any>, unknown],
+      any
+    >
+  ];
   start?: (...args: any[]) => Generator<any, any, any>;
   groupEnd?: (phase: number, group: number) => Generator;
 };
