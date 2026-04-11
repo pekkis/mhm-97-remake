@@ -11,7 +11,7 @@ import BettingForm from "./championship-betting/BettingForm";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { advance } from "../ducks/game";
-import { betChampion } from "../ducks/betting";
+import { requestChampionBet } from "../ducks/betting";
 
 const ChampionshipBetting = () => {
   const manager = useAppSelector(
@@ -35,7 +35,9 @@ const ChampionshipBetting = () => {
 
         <BettingForm
           manager={manager}
-          betChampion={betChampion}
+          betChampion={(managerId: string, teamId: number, amount: number, odds: number) =>
+            dispatch(requestChampionBet({ manager: managerId, team: teamId, amount, odds }))
+          }
           competition={competitions.phl}
           teams={teams}
         />

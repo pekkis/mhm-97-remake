@@ -1,4 +1,4 @@
-import { select, call, all } from "typed-redux-saga";
+import { select, call } from "typed-redux-saga";
 import {
   competition,
   managerWhoControlsTeam,

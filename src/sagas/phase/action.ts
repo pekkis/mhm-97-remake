@@ -20,7 +20,7 @@ import { orderPrank } from "../prank";
 import { acceptInvitation } from "../invitation";
 
 import { INVITATION_ACCEPT_REQUEST } from "../../ducks/invitation";
-import { BETTING_BET_REQUEST } from "../../ducks/betting";
+import { requestBet } from "../../ducks/betting";
 import { bet } from "../betting";
 import { setGamePhase } from "../../ducks/game";
 import type { RootState } from "../../config/redux";
@@ -42,7 +42,7 @@ export default function* actionPhase() {
     takeEvery(INVITATION_ACCEPT_REQUEST as any, function* (action: any) {
       yield* call(acceptInvitation, action.payload.manager, action.payload.id);
     }),
-    takeEvery(BETTING_BET_REQUEST as any, function* (action: any) {
+    takeEvery(requestBet, function* (action: any) {
       const {
         payload: { manager, coupon, amount }
       } = action;

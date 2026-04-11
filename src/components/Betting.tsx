@@ -10,7 +10,7 @@ import BettingForm from "./betting/BettingForm";
 
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { bet } from "../ducks/betting";
+import { requestBet } from "../ducks/betting";
 
 const Betting = () => {
   const turn = useAppSelector((state) => state.game.turn);
@@ -37,7 +37,7 @@ const Betting = () => {
           teams={teams}
           manager={manager}
           bet={(coupon: string[], amount: number) =>
-            dispatch(bet(manager.id, coupon, amount))
+            dispatch(requestBet({ manager: manager.id, coupon, amount }))
           }
           competition={competition}
         />

@@ -1,7 +1,7 @@
 import { take, put, select, call, all, race } from "typed-redux-saga";
 import { seasonStart } from "../game";
 import strategies from "../../data/strategies";
-import { BETTING_BET_CHAMPION_REQUEST } from "../../ducks/betting";
+import { requestChampionBet } from "../../ducks/betting";
 import { betChampion } from "../betting";
 import { setActiveManager } from "../manager";
 import {
@@ -45,7 +45,7 @@ function* championshipBetting() {
   yield* put(setGamePhase("championship-betting"));
 
   const { bet } = yield* race({
-    bet: take(BETTING_BET_CHAMPION_REQUEST),
+    bet: take(requestChampionBet),
     advance: take("GAME_ADVANCE_REQUEST")
   });
 

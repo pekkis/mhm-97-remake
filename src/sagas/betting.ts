@@ -1,5 +1,5 @@
 import { put, all, call, select } from "typed-redux-saga";
-import { BETTING_BET_CHAMPION, BETTING_BET } from "../ducks/betting";
+import { placeBet, placeChampionBet } from "../ducks/betting";
 import type { SeasonStats } from "../ducks/stats";
 import type { RootState } from "../config/redux";
 import type { Pairing } from "../types/competitions";
@@ -12,7 +12,9 @@ import { resultFacts } from "../services/game";
 const victories = [false, false, false, 1, 2, 5, 10] as const;
 
 export function* processChampionBets() {
-  const bets = yield* select((state: RootState) => state.betting.championshipBets);
+  const bets = yield* select(
+    (state: RootState) => state.betting.championshipBets
+  );
   const stats = yield* select(
     (state: RootState) => state.stats.currentSeason as SeasonStats
   );
@@ -92,14 +94,13 @@ export function* bet(manager: string, coupon: string[], amount: number) {
       manager,
       "Kiikutat veikkauskuponkisi lähimmälle S-kioskille. Olkoon onni myötä!"
     ),
-    put({
-      type: BETTING_BET,
-      payload: {
+    put(
+      placeBet({
         manager,
         coupon,
         amount
-      }
-    }),
+      })
+    ),
     call(decrementBalance, manager, amount)
   ]);
 }
@@ -116,15 +117,14 @@ export function* betChampion(
       manager,
       "Kiikutat mestarusveikkauskuponkisi S-kioskille. Olkoon onni myötä!"
     ),
-    put({
-      type: BETTING_BET_CHAMPION,
-      payload: {
+    put(
+      placeChampionBet({
         manager,
         team,
         amount,
         odds
-      }
-    }),
+      })
+    ),
     call(decrementBalance, manager, amount)
   ]);
 }

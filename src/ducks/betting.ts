@@ -1,4 +1,5 @@
 import { produce } from "immer";
+import { createAction } from "@reduxjs/toolkit";
 import { META_QUIT_TO_MAIN_MENU, META_GAME_LOAD_STATE } from "./meta";
 import { SEASON_START, GAME_NEXT_TURN } from "./game";
 
@@ -6,6 +7,27 @@ export const BETTING_BET = "BETTING_BET";
 export const BETTING_BET_REQUEST = "BETTING_BET_REQUEST";
 export const BETTING_BET_CHAMPION = "BETTING_BET_CHAMPION";
 export const BETTING_BET_CHAMPION_REQUEST = "BETTING_BET_CHAMPION_REQUEST";
+
+export const placeBet = createAction<{
+  manager: string;
+  coupon: string[];
+  amount: number;
+}>(BETTING_BET);
+
+export const requestBet = createAction<{
+  manager: string;
+  coupon: string[];
+  amount: number;
+}>(BETTING_BET_REQUEST);
+
+export const placeChampionBet = createAction<ChampionshipBet>(BETTING_BET_CHAMPION);
+
+export const requestChampionBet = createAction<{
+  manager: string;
+  team: number;
+  amount: number;
+  odds: number;
+}>(BETTING_BET_CHAMPION_REQUEST);
 
 export type ChampionshipBet = {
   manager: string;
@@ -28,34 +50,6 @@ export type BettingState = {
 const defaultState: BettingState = {
   championshipBets: [],
   bets: []
-};
-
-export const betChampion = (
-  manager: string,
-  team: number,
-  amount: number,
-  odds: number
-) => {
-  return {
-    type: BETTING_BET_CHAMPION_REQUEST,
-    payload: {
-      manager,
-      team,
-      amount,
-      odds
-    }
-  };
-};
-
-export const bet = (manager: string, coupon: string[], amount: number) => {
-  return {
-    type: BETTING_BET_REQUEST,
-    payload: {
-      manager,
-      coupon,
-      amount
-    }
-  };
 };
 
 export default function bettingReducer(
