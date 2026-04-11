@@ -13,6 +13,7 @@ import { setMorale, setReadiness, setStrategy } from "../../sagas/team";
 import table from "../../services/league";
 import { cinteger } from "../../services/random";
 import type { MHMEvent } from "../../types/base";
+import type { RootState } from "../../config/redux";
 
 /*
 x = CINT(11 * RND) + 1
@@ -54,15 +55,15 @@ const event: MHMEvent<JobofferPHLData> = {
     const oldTeam = yield* select(managersTeamId(manager));
 
     const ehlTeams = yield* select(
-      (state: any) => state.game.competitions.ehl.teams
+      (state: RootState) => state.game.competitions.ehl.teams
     );
     const offerer = yield* select(randomTeamFrom(["phl"], false, ehlTeams));
 
     const group = yield* select(
-      (state: any) => state.game.competitions.phl.phases[0].groups[0]
+      (state: RootState) => state.game.competitions.phl.phases[0].groups[0]
     );
 
-    const ranking = table(group).findIndex((t: any) => t.id === offerer.id) + 1;
+    const ranking = table(group).findIndex((t) => t.id === offerer.id) + 1;
 
     yield* call(addEvent, {
       eventId,

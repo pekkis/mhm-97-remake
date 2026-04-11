@@ -27,7 +27,8 @@ import {
   managerIncrementInsuranceExtra,
   managerSetService,
   managerBuyPlayer,
-  managerSellPlayer
+  managerSellPlayer,
+  type ManagerServices
 } from "../ducks/manager";
 import difficultyLevels from "../data/difficulty-levels";
 import arenas from "../data/arenas";
@@ -252,7 +253,7 @@ export function* setService(manager: string, service: string, value: boolean) {
 }
 
 export function* toggleService(action: {
-  payload: { manager: string; service: string };
+  payload: { manager: string; service: keyof ManagerServices };
 }) {
   const {
     payload: { manager, service }

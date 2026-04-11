@@ -1,8 +1,6 @@
-import type { Effect } from "redux-saga/effects";
-
 export type MHMEventType = "manager";
 
-export type MHMEventGenerator = Generator<Effect, void, unknown>;
+export type MHMEventGenerator = Generator<unknown, void, unknown>;
 
 /**
  * Base fields present on all stored event data.

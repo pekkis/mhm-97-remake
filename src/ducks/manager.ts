@@ -86,8 +86,9 @@ export const managerSetService = createAction<{
 // Request actions (saga-intercepted, not in reducer)
 export const managerToggleService = createAction<{
   manager: string;
-  service: string;
+  service: keyof ManagerServices;
 }>("MANAGER_TOGGLE_SERVICE");
+
 export const managerBuyPlayer = createAction<{
   manager: string;
   playerType: string;

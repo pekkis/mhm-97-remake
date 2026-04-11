@@ -1,5 +1,5 @@
 import { amount as a } from "../services/format";
-import type { Manager } from "../ducks/manager";
+import type { Manager, ManagerServices } from "../ducks/manager";
 
 export type ServiceDefinition = {
   name: string;
@@ -8,7 +8,7 @@ export type ServiceDefinition = {
   effect: (competition: string, phase: number) => number;
 };
 
-const services: Record<string, ServiceDefinition> = {
+const services: Record<keyof ManagerServices, ServiceDefinition> = {
   cheer: {
     name: "Kannustusryhmä",
     description: (price) =>

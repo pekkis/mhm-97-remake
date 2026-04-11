@@ -1,4 +1,4 @@
-import { select, call, all } from "redux-saga/effects";
+import { select, call, all } from "typed-redux-saga";
 import { scheduler as roundRobinScheduler } from "../../services/round-robin";
 import tournamentScheduler from "../../services/tournament";
 import table, { sortStats } from "../../services/league";
@@ -15,6 +15,7 @@ import type {
   CompetitionDefinition,
   TeamStat
 } from "../../types/competitions";
+import type { RootState } from "../../config/redux";
 
 type Award = {
   amount: number;
@@ -62,12 +63,12 @@ const awards: Award[] = [
 ];
 
 function* ehlAwards() {
-  const finalTournament: any = yield select(
-    (state: any) => state.game.competitions.ehl.phases[1].groups[0]
+  const finalTournament = yield* select(
+    (state: RootState) => state.game.competitions.ehl.phases[1].groups[0]
   );
 
-  const managers: any = yield select((state: any) => state.manager.managers);
-  const teams: any = yield select((state: any) => state.game.teams);
+  const managers = yield* select((state: RootState) => state.manager.managers);
+  const teams = yield* select((state: RootState) => state.game.teams);
 
   for (const [ranking, stat] of (
     finalTournament.stats as TeamStat[]
@@ -75,22 +76,22 @@ function* ehlAwards() {
     const team = teams[stat.id];
 
     if (ranking === 0) {
-      yield call(setSeasonStat, ["ehlChampion"], team.id);
+      yield* call(setSeasonStat, ["ehlChampion"], team.id);
     }
 
     if (team.domestic) {
-      yield call(incrementReadiness, team.id, -2);
+      yield* call(incrementReadiness, team.id, -2);
 
       if (team.manager !== undefined) {
         const award = awards[ranking];
         const manager = managers[team.manager];
 
-        yield all([
+        yield* all([
           call(addAnnouncement, manager.id, award.text(award.amount)),
           call(incrementBalance, manager.id, award.amount)
         ]);
       } else {
-        yield call(incrementStrength, team.id, awards[ranking].strength);
+        yield* call(incrementStrength, team.id, awards[ranking].strength);
       }
     }
   }
@@ -111,27 +112,28 @@ const ehl: CompetitionDefinition = {
   promoteTo: false,
 
   start: function* () {
-    const turn: any = yield select((state: any) => state.game.turn);
+    const turn = yield* select((state: RootState) => state.game.turn);
     const season = turn.season;
 
-    const ehlTeams: number[] = yield select(
-      (state: any) => state.stats.seasons?.[season - 1]?.medalists ?? [2, 3, 5]
+    const ehlTeams: number[] = yield* select(
+      (state: RootState) =>
+        state.stats.seasons?.[season - 1]?.medalists ?? [2, 3, 5]
     );
 
-    const foreignTeamIds: number[] = yield select((state: any) =>
-      state.game.teams.slice(24, 24 + 17).map((t: any) => t.id)
+    const foreignTeamIds = yield* select((state: RootState) =>
+      state.game.teams.slice(24, 24 + 17).map((t) => t.id)
     );
 
     const allTeams = [...ehlTeams, ...foreignTeamIds].toSorted(
       () => r.real(1, 10000) - 5000
     );
 
-    yield call(setCompetitionTeams, "ehl", allTeams);
+    yield* call(setCompetitionTeams, "ehl", allTeams);
   },
 
   groupEnd: function* (phase, group) {
     if (phase === 1) {
-      yield call(ehlAwards);
+      yield* call(ehlAwards);
     }
   },
 

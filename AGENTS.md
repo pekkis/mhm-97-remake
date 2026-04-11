@@ -331,11 +331,13 @@ export type StatsState = {
 Replaced the entire styled-components + styled-system + PostCSS styling stack with Vanilla Extract in a single session.
 
 **Foundation files created:**
+
 - `src/styles/theme.css.ts` — `createGlobalTheme(":root", { color, space })` matching old theme values
 - `src/styles/sprinkles.css.ts` — `defineProperties` + `createSprinkles` for padding/margin/color utility props
 - `src/styles/global.css.ts` — `globalStyle` for html, body, form, p + normalize.css import + typography + spin animation
 
 **Components converted (27+ files):**
+
 - Form primitives: Button, ButtonRow, Field, Input, Label, LabelDiv, Select, Toggle (new), Slider (new)
 - UI primitives: HeaderedPage, ButtonContainer, Tab, Tabs, Loading
 - Layout: Box (sprinkles-based, maps old numeric props to space scale)
@@ -352,26 +354,27 @@ Replaced the entire styled-components + styled-system + PostCSS styling stack wi
 
 Systematically replaced heavy/abandoned dependencies with modern equivalents or native browser APIs:
 
-| Removed | Replaced with | Packages shed |
-|---------|--------------|---------------|
-| `styled-components` + `styled-system` | Vanilla Extract + sprinkles | ~18 |
-| `react-typography` + `typography` + `@types/typography` | `<link>` tag + VE `globalStyle` | ~16 |
-| `react-toggle` | Native `<input type="checkbox">` + VE CSS | ~3 |
-| `rc-slider` | Native `<input type="range">` | ~7 |
-| `@fortawesome/*` (3 packages) | `react-icons` | ~7 |
-| `formik` | `react-hook-form` + `zod` | ~12 (net ~-6) |
-| `roundrobin` | Already had own impl | ~1 |
-| `postcss-*` (4 plugins) | Deleted (no CSS preprocessing needed) | ~96 |
-| `prop-types` | Killed with its hosts | ~1 |
-| **Total** | | **~150+ packages removed** |
+| Removed                                                 | Replaced with                             | Packages shed              |
+| ------------------------------------------------------- | ----------------------------------------- | -------------------------- |
+| `styled-components` + `styled-system`                   | Vanilla Extract + sprinkles               | ~18                        |
+| `react-typography` + `typography` + `@types/typography` | `<link>` tag + VE `globalStyle`           | ~16                        |
+| `react-toggle`                                          | Native `<input type="checkbox">` + VE CSS | ~3                         |
+| `rc-slider`                                             | Native `<input type="range">`             | ~7                         |
+| `@fortawesome/*` (3 packages)                           | `react-icons`                             | ~7                         |
+| `formik`                                                | `react-hook-form` + `zod`                 | ~12 (net ~-6)              |
+| `roundrobin`                                            | Already had own impl                      | ~1                         |
+| `postcss-*` (4 plugins)                                 | Deleted (no CSS preprocessing needed)     | ~96                        |
+| `prop-types`                                            | Killed with its hosts                     | ~1                         |
+| **Total**                                               |                                           | **~150+ packages removed** |
 
 **Bundle trajectory (single session):**
+
 - JS: 806kB → **622.69kB** (−22.7%, gzip 196kB)
 - CSS: runtime-generated → **7.08kB** static (gzip 1.94kB)
 
 ### Gotchas learned from Vanilla Extract migration
 
-- **`styled(Component)` wrapper pattern:** Components like `styled(Current)\`...\`` need the styles moved to a class applied directly. Remove the `className` prop threading and apply the VE class in the component itself.
+- **`styled(Component)` wrapper pattern:** Components like `styled(Current)\`...\``need the styles moved to a class applied directly. Remove the`className` prop threading and apply the VE class in the component itself.
 - **`${Component}` interpolation in styled-components:** Used for sibling/child selectors (e.g. `${Tab} + ${Tab}`). In VE, export the class string from the component's `.css.ts` and use it in `globalStyle` selectors.
 - **Empty `styled(X)\`\`` wrappers:** Some components (e.g. `Game.tsx`) had no-op styled wrappers. Just remove the wrapper entirely.
 - **PostCSS transitive dependency trap:** Removing `react-toggle` killed `prop-types` as a transitive dep, which broke `react-typography`. Solution: kill both. Native CSS + `<link>` tag is simpler anyway.
@@ -482,7 +485,7 @@ Converted all 13 saga files + 13 phase files from `redux-saga/effects` to `typed
    - Prefer `type` aliases by default; use `interface` only when declaration merging/extension semantics are explicitly needed.
    - For React components, prefer the `FC<Props>` typing style where practical and readable.
    - `type-fest` is installed (devDep) — use it freely for utility types (`Simplify`, `PartialDeep`, `SetRequired`, `Opaque`, etc.) instead of reinventing them.
-   - `remeda` is installed — prefer native JS first, then `remeda` for TS-friendly utility composition in new/edited modules (do not reintroduce `ramda`).
+   - `remeda` is installed — prefer native JS first, then `remeda` for TS-friendly utility composition in new/edited modules (do not reintroduce `ramda`). Notable: use `entries()` from remeda instead of `Object.entries()` to preserve key types (avoids `string` widening).
 
 ---
 
@@ -555,6 +558,7 @@ Stack: `@vanilla-extract/css` + `@vanilla-extract/sprinkles` + `clsx` for condit
 ### P4.5 — Dependency modernization: ✅ COMPLETE
 
 **As of 2026-04-11, all legacy/abandoned UI dependencies replaced:**
+
 - `react-toggle` → native checkbox + VE CSS
 - `rc-slider` → native range input
 - `react-typography` + `typography` → `<link>` tag + VE globalStyle

@@ -15,6 +15,7 @@ import { incrementStrength } from "../sagas/team";
 import { incrementBalance } from "../sagas/manager";
 import { addNews } from "../sagas/news";
 import type { Team } from "../ducks/game";
+import type { RootState } from "../config/redux";
 
 type AwardData = {
   id: number;
@@ -63,7 +64,7 @@ const createRandom = (
   news: (team: Team) => string
 ) => {
   return function* (teamId: number) {
-    const team: Team = yield* select((state: any) => state.game.teams[teamId]);
+    const team = yield* select((state: RootState) => state.game.teams[teamId]);
 
     const canDo = yield* call(isEligible, teamId);
 
@@ -595,7 +596,7 @@ const roundRobinAwards: Award[] = [
 ];
 
 const yieldAwards = function* (awards: Award[], to: number[]) {
-  const teams: Team[] = yield* select((state: any) => state.game.teams);
+  const teams = yield* select((state: RootState) => state.game.teams);
 
   for (const [i, teamId] of to.entries()) {
     const award = awards[i];
@@ -619,6 +620,10 @@ const award = function* () {
 
   const finalPhase = phl.phases[3].groups[0];
 
+  if (finalPhase.type !== "playoffs") {
+    throw new Error("Invalid phase");
+  }
+
   const winners = victors(finalPhase);
   const losers = eliminated(finalPhase);
 
@@ -636,7 +641,7 @@ const award = function* () {
     .map((t: any) => t.id);
 
   yield* call(yieldAwards, roundRobinAwards, tableEntries);
-  const teams: Team[] = yield* select(pekkalandianTeams);
+  const teams = yield* select(pekkalandianTeams);
 
   for (const [, team] of teams.entries()) {
     for (const randomEvent of randomEvents) {

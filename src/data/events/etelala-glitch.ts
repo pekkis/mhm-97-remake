@@ -2,6 +2,7 @@ import { call, select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
 import { incrementInsuranceExtra } from "../../sagas/manager";
 import type { MHMEvent } from "../../types/base";
+import type { RootState } from "../../config/redux";
 
 /*
 sat77:
@@ -44,8 +45,8 @@ const event: MHMEvent<EtelalaGlitchData> = {
   process: function* (data) {
     const manager = data.manager;
 
-    const current = yield* select((state: any) =>
-      state.manager.managers[manager]?.insuranceExtra
+    const current = yield* select(
+      (state: RootState) => state.manager.managers[manager]?.insuranceExtra
     );
 
     yield* call(incrementInsuranceExtra, manager, 0 - current);

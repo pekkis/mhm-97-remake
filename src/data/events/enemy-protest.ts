@@ -9,6 +9,7 @@ import {
 import { addEvent } from "../../sagas/event";
 import { incurPenalty } from "../../sagas/team";
 import type { MHMEvent } from "../../types/base";
+import type { RootState } from "../../config/redux";
 
 const eventId = "enemyProtest";
 
@@ -71,19 +72,21 @@ Protesti menee läpi, ja teiltä vähennetään ${Math.abs(data.penalty)} pistet
     const reward = data.reward;
     const team = data.team;
 
-    const competitions = yield* select((state: any) => state.game.competitions);
+    const competitions = yield* select(
+      (state: RootState) => state.game.competitions
+    );
 
-    const competition = competitions
-      .filterNot((c: any) => c.get("id") === "ehl")
-      .find((c: any) => c.get("teams").includes(team));
+    const competition = Object.values(competitions)
+      .filter((c) => c.id !== "ehl")
+      .find((c) => c.teams.includes(team))!;
 
-    const groupId = competition
-      .getIn(["phases", 0, "groups"])
-      .findIndex((g: any) => g.get("teams").includes(team));
+    const groupId = competition.phases[0].groups.findIndex((g) =>
+      g.teams.includes(team)
+    );
 
     yield* all([
-      call(incurPenalty, competition.get("id"), 0, groupId, team, penalty),
-      call(incurPenalty, competition.get("id"), 0, groupId, otherTeam, reward)
+      call(incurPenalty, competition.id, 0, groupId, team, penalty),
+      call(incurPenalty, competition.id, 0, groupId, otherTeam, reward)
     ]);
   }
 };

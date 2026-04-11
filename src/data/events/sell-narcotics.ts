@@ -8,6 +8,7 @@ import { amount as a } from "../../services/format";
 import { addEvent } from "../../sagas/event";
 import { resolveEventAction } from "../../ducks/event";
 import type { MHMEvent } from "../../types/base";
+import type { RootState } from "../../config/redux";
 
 const eventId = "sellNarcotics";
 
@@ -54,7 +55,7 @@ const event: MHMEvent<SellNarcoticsData> = {
 
   resolve: function* (data) {
     const victimTeam = yield* select(
-      (state: any) => state.game.teams[data.victim]
+      (state: RootState) => state.game.teams[data.victim]
     );
 
     const victimPlaysInPHL = yield* select(
@@ -74,10 +75,12 @@ const event: MHMEvent<SellNarcoticsData> = {
       draft.resolved = true;
     });
 
-    yield* put(resolveEventAction({
-      id: resolved.id,
-      event: resolved
-    }));
+    yield* put(
+      resolveEventAction({
+        id: resolved.id,
+        event: resolved
+      })
+    );
   },
 
   render: (data) => {

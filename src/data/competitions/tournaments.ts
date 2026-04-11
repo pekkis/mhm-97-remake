@@ -1,4 +1,4 @@
-import { select, call, all } from "redux-saga/effects";
+import { select, call, all } from "typed-redux-saga";
 import tournamentScheduler from "../../services/tournament";
 import r from "../../services/random";
 import { foreignTeams } from "../selectors";
@@ -16,6 +16,7 @@ import type {
   TournamentGroup
 } from "../../types/competitions";
 import type { Team } from "../../ducks/game";
+import type { RootState } from "../../config/redux";
 
 const tournaments: CompetitionDefinition = {
   data: {
@@ -36,25 +37,27 @@ const tournaments: CompetitionDefinition = {
   },
 
   groupEnd: function* (phase, group) {
-    const tournament: any = yield select(
-      (state: any) =>
+    const tournament = yield* select(
+      (state: RootState) =>
         state.game.competitions.tournaments.phases[phase].groups[group]
     );
 
-    const managers: any = yield select((state: any) => state.manager.managers);
-    const teams: any[] = yield select((state: any) => state.game.teams);
+    const managers = yield* select(
+      (state: RootState) => state.manager.managers
+    );
+    const teams = yield* select((state: RootState) => state.game.teams);
 
     for (const stat of tournament.stats as TeamStat[]) {
       const team = teams[stat.id];
 
       if (team.domestic) {
-        yield call(incrementReadiness, team.id, -2);
+        yield* call(incrementReadiness, team.id, -2);
 
         if (team.manager !== undefined) {
           const award = tournamentList[group].award;
           const manager = managers[team.manager];
 
-          yield all([
+          yield* all([
             call(
               addAnnouncement,
               manager.id,
@@ -94,14 +97,14 @@ const tournaments: CompetitionDefinition = {
 
   seed: [
     function* (competitions: Record<string, Competition>) {
-      const teams: Team[] = yield select(foreignTeams);
+      const teams = yield* select(foreignTeams);
 
-      const managers: any = yield select(
-        (state: any) => state.manager.managers
+      const managers = yield* select(
+        (state: RootState) => state.manager.managers
       );
 
-      const invitations: any = yield select((state: any) =>
-        state.invitation.invitations.filter((i: any) => i.participate)
+      const invitations = yield* select((state: RootState) =>
+        state.invitation.invitations.filter((i) => i.participate)
       );
 
       // Build invited teams grouped by tournament index
@@ -147,7 +150,7 @@ const tournaments: CompetitionDefinition = {
         );
       }
 
-      yield call(setCompetitionTeams, "tournaments", allParticipantIds);
+      yield* call(setCompetitionTeams, "tournaments", allParticipantIds);
 
       return {
         name: "jouluturnaukset",

@@ -7,6 +7,7 @@ import Markdown from "react-markdown";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { managerToggleService } from "../ducks/manager";
+import { entries } from "remeda";
 
 import services from "../data/services";
 
@@ -26,7 +27,7 @@ const Services = () => {
         <h2>Erikoistoimenpiteet</h2>
 
         <div className={styles.servicesList}>
-          {Object.entries(services).map(([key, service]) => {
+          {entries(services).map(([key, service]) => {
             const basePrice = basePrices[key];
             return (
               <div key={key}>

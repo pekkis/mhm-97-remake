@@ -3,6 +3,7 @@ import { randomManager } from "../selectors";
 import { decrementStrength } from "../../sagas/team";
 import { addEvent } from "../../sagas/event";
 import type { MHMEvent } from "../../types/base";
+import type { RootState } from "../../config/redux";
 
 const eventId = "bazookaStrike";
 
@@ -25,7 +26,9 @@ const event: MHMEvent<BazookaStrikeData> = {
 
     const victimManager = yield* select(randomManager());
 
-    const victimTeam = yield* select((state: any) => state.game.teams[victim]);
+    const victimTeam = yield* select(
+      (state: RootState) => state.game.teams[victim]
+    );
 
     yield* call(addEvent, {
       eventId,
@@ -46,7 +49,9 @@ Iskun tekijäksi ilmoittautuu PVA. Miliisi ei kommentoi. Joukkue joutuu joka tap
   },
 
   process: function* (data) {
-    const team = yield* select((state: any) => state.game.teams[data.victim]);
+    const team = yield* select(
+      (state: RootState) => state.game.teams[data.victim]
+    );
 
     const skillLost = Math.round(0.75 * team.strength);
     yield* call(decrementStrength, data.victim, skillLost);
