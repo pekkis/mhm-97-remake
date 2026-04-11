@@ -1,9 +1,9 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaSpinner } from "react-icons/fa";
 
 const Loading = () => {
   return (
     <div>
-      <FontAwesomeIcon spin icon="spinner" />
+      <FaSpinner className="spin" />
     </div>
   );
 };

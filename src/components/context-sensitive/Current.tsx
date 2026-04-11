@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Calendar from "../ui/Calendar";
 import * as styles from "./Current.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaExclamationCircle } from "react-icons/fa";
 import { useAppSelector } from "@/config/redux";
 
 const Current = () => {
@@ -21,7 +21,7 @@ const Current = () => {
     <div className={styles.current}>
       {invitations.filter((i) => !i.participate).length > 0 && (
         <div className={styles.currentEntry}>
-          <FontAwesomeIcon icon={["fas", "exclamation-circle"]} />
+          <FaExclamationCircle />
           Pöydälläsi odottaa{" "}
           <Link to="/kutsut">avaamattomia kutsuja joulutauon turnauksiin.</Link>
         </div>
@@ -34,7 +34,7 @@ const Current = () => {
         }}
       >
         <div className={styles.currentEntry}>
-          <FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Nyt on
+          <FaExclamationCircle /> Nyt on
           viimeinen tilaisuutemme{" "}
           <Link to="/pelaajamarkkinat">ostaa pelaajia</Link>, sillä siirtoaika
           umpeutuu seuraavan ottelun jälkeen.
@@ -43,7 +43,7 @@ const Current = () => {
 
       <Calendar when={(e) => e.crisisMeeting && team.morale <= -3}>
         <div className={styles.currentEntry}>
-          <FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Joukkueen
+          <FaExclamationCircle /> Joukkueen
           moraali on huono. <Link to="/kriisipalaveri">Kriisipalaveri</Link>{" "}
           auttaisi.
         </div>

@@ -1,6 +1,6 @@
 import * as styles from "./Header.css";
 import Button from "./form/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { advance } from "../ducks/game";
@@ -41,7 +41,7 @@ const Header = ({
           {menu && (
             <div className="secondary">
               <Button secondary onClick={() => dispatch(toggleMenu())}>
-                <FontAwesomeIcon icon="bars" />
+                <FaBars />
               </Button>
             </div>
           )}

@@ -1,5 +1,5 @@
 import "normalize.css";
-import { globalStyle } from "@vanilla-extract/css";
+import { globalStyle, keyframes } from "@vanilla-extract/css";
 import { vars } from "./theme.css";
 
 globalStyle("html", {
@@ -37,4 +37,13 @@ globalStyle("form", {
 
 globalStyle("p", {
   margin: "1em 0"
+});
+
+const spin = keyframes({
+  "0%": { transform: "rotate(0deg)" },
+  "100%": { transform: "rotate(360deg)" },
+});
+
+globalStyle(".spin", {
+  animation: `${spin} 1s linear infinite`,
 });

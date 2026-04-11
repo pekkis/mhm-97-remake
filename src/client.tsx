@@ -3,13 +3,6 @@ import Root from "./Root";
 
 import createStore from "./store";
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faSpinner,
-  faBars,
-  faExclamationCircle,
-} from "@fortawesome/free-solid-svg-icons";
-
 
 
 // import * as Sentry from "@sentry/browser";
@@ -21,7 +14,7 @@ Sentry.init({
 });
 */
 
-library.add(faSpinner, faBars, faExclamationCircle);
+
 
 const store = createStore();
 
