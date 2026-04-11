@@ -4,32 +4,7 @@ import Box from "./styled-system/Box";
 import TurnIndicator from "./game/TurnIndicator";
 import { useAppSelector } from "@/config/redux";
 
-import styled from "styled-components";
-
-const ManagerName = styled.h2`
-  margin: 0;
-`;
-
-const Details = styled.div`
-  margin-top: 1em;
-  display: flex;
-  flex-basis: 100%;
-  flex-wrap: wrap;
-  align-items: stretch;
-`;
-
-const Detail = styled.div`
-  flex-shrink: 0;
-  width: 50%;
-  display: flex;
-`;
-
-const Title = styled.div`
-  font-weight: bold;
-  padding-right: 0.5em;
-`;
-
-const Value = styled.div``;
+import * as styles from "./ManagerInfo.css";
 
 type ManagerInfoProps = {
   details?: boolean;
@@ -46,32 +21,32 @@ const ManagerInfo = ({ details = false }: ManagerInfoProps) => {
 
   return (
     <Box p={1} bg="bar">
-      <ManagerName>{manager.name}</ManagerName>
+      <h2 className={styles.managerName}>{manager.name}</h2>
 
       {details && (
-        <Details>
-          <Detail>
-            <Title>Voima</Title>
-            <Value>{team.strength}</Value>
-          </Detail>
+        <div className={styles.details}>
+          <div className={styles.detail}>
+            <div className={styles.title}>Voima</div>
+            <div>{team.strength}</div>
+          </div>
 
-          <Detail>
-            <Title>Moraali</Title>
-            <Value>{team.morale}</Value>
-          </Detail>
+          <div className={styles.detail}>
+            <div className={styles.title}>Moraali</div>
+            <div>{team.morale}</div>
+          </div>
 
-          <Detail>
-            <Title>Raha</Title>
-            <Value>{amount(manager.balance)}</Value>
-          </Detail>
+          <div className={styles.detail}>
+            <div className={styles.title}>Raha</div>
+            <div>{amount(manager.balance)}</div>
+          </div>
 
-          <Detail>
-            <Title>Vuoro</Title>
-            <Value>
+          <div className={styles.detail}>
+            <div className={styles.title}>Vuoro</div>
+            <div>
               <TurnIndicator turn={turn} />
-            </Value>
-          </Detail>
-        </Details>
+            </div>
+          </div>
+        </div>
       )}
     </Box>
   );

@@ -2,36 +2,14 @@ import ButtonRow from "./form/ButtonRow";
 import Button from "./form/Button";
 import Box from "./styled-system/Box";
 import ManagerForm from "./start-menu/ManagerForm";
-import styled from "styled-components";
+import * as styles from "./StartMenu.css";
 import title from "./start-menu/title.png";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { startGame, loadGame } from "../ducks/meta";
 import { advance } from "../ducks/game";
 import { pick } from "remeda";
 
-const Menu = styled.div``;
-
-const Contents = styled.div`
-  h1 {
-    margin: 0;
-  }
-
-  h2 {
-    margin: 0;
-    font-size: 1em;
-  }
-`;
-
-const TitleImg = styled.img`
-  max-width: 100%;
-  display: block;
-`;
-
-const Centerer = styled.div`
-  text-align: center;
-`;
-
-const StartMenuInner = ({ className }: { className?: string }) => {
+const StartMenu = () => {
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) =>
     pick(state.game.competitions, ["phl", "division"]),
@@ -41,21 +19,21 @@ const StartMenuInner = ({ className }: { className?: string }) => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className={className}>
-      <Menu>
-        <Contents>
-          <Centerer>
-            <TitleImg src={title} />
+    <div className={styles.startMenu}>
+      <div>
+        <div className={styles.contents}>
+          <div className={styles.centerer}>
+            <img className={styles.titleImg} src={title} />
             <Box px={1} py={0}>
               <h1>MHM 97</h1>
               <h2>maailman paras jääkiekkomanagerisimulaatio</h2>
               <h2>build: rpoot</h2>
             </Box>
-          </Centerer>
+          </div>
 
           {!starting && (
             <Box p={1}>
-              <Centerer>
+              <div className={styles.centerer}>
                 <ButtonRow>
                   <Button onClick={() => dispatch(startGame())}>
                     Uusi peli
@@ -64,7 +42,7 @@ const StartMenuInner = ({ className }: { className?: string }) => {
                     Lataa peli
                   </Button>
                 </ButtonRow>
-              </Centerer>
+              </div>
               <h3>Alkuperäinen suunnittelu & ohjelmointi</h3>
               <ul>
                 <li>Mikko Forsström</li>
@@ -114,17 +92,10 @@ const StartMenuInner = ({ className }: { className?: string }) => {
               />
             </Box>
           )}
-        </Contents>
-      </Menu>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default styled(StartMenuInner)`
-  margin: 0 auto;
-  max-width: 600px;
-
-  p {
-    margin: 1em 0;
-  }
-`;
+export default StartMenu;

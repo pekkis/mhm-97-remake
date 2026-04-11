@@ -1,31 +1,9 @@
 import type { FC } from "react";
-import styled from "styled-components";
+import * as styles from "./Game.css";
 import TeamName from "../team/Name";
 import type { Team } from "../../ducks/game";
 import type { Manager } from "../../ducks/manager";
 import type { Group, Pairing } from "../../types/competitions";
-
-const Row = styled.div`
-  display: flex;
-  flex-basis: 100%;
-`;
-
-const TeamDiv = styled.div`
-  width: 50%;
-  overflow: hidden;
-`;
-
-const Separator = styled.div`
-  padding: 0 1em;
-`;
-
-const Result = styled.div`
-  width: 50%;
-  flex-shrink: 2;
-  display: flex;
-`;
-
-const Score = styled.div``;
 
 type GameProps = {
   context: Group;
@@ -36,30 +14,30 @@ type GameProps = {
 
 const Game: FC<GameProps> = ({ context, pairing, teams, managers }) => {
   return (
-    <Row>
-      <TeamDiv>
+    <div className={styles.row}>
+      <div className={styles.teamDiv}>
         <TeamName
           managers={managers}
           team={teams[context.teams[pairing.home]]}
         />
-      </TeamDiv>
-      <Separator>-</Separator>
-      <TeamDiv>
+      </div>
+      <div className={styles.separator}>-</div>
+      <div className={styles.teamDiv}>
         <TeamName
           managers={managers}
           team={teams[context.teams[pairing.away]]}
         />
-      </TeamDiv>
-      <Result>
+      </div>
+      <div className={styles.result}>
         {pairing.result && (
           <>
-            <Score>{pairing.result.home}</Score>
-            <Separator>-</Separator>
-            <Score>{pairing.result.away}</Score>
+            <div>{pairing.result.home}</div>
+            <div className={styles.separator}>-</div>
+            <div>{pairing.result.away}</div>
           </>
         )}
-      </Result>
-    </Row>
+      </div>
+    </div>
   );
 };
 

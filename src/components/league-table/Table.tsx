@@ -1,23 +1,11 @@
 import type { FC } from "react";
-import styled from "styled-components";
+import clsx from "clsx";
+import * as styles from "./Table.css";
 import RTable from "../responsive-table/Table";
 import Td from "../responsive-table/Td";
 import type { Team } from "../../ducks/game";
 import type { Manager } from "../../ducks/manager";
 import type { Group, TeamStat } from "../../types/competitions";
-
-type TableRowProps = {
-  $dark?: boolean;
-};
-
-const TableRow = styled.tr<TableRowProps>`
-  background-color: rgb(255, 255, 255);
-  ${(props) =>
-    props.$dark &&
-    `
-    background-color: rgb(238, 238, 238)
-  `}
-`;
 
 type TableProps = {
   managers: Record<string, Manager>;
@@ -52,7 +40,7 @@ const Table: FC<TableProps> = ({ managers, teams, division, isClone }) => {
       <tbody>
         {tbl.map((t, i) => {
           return (
-            <TableRow key={t.id} $dark={colors?.[i] === "d"}>
+            <tr key={t.id} className={clsx(styles.tableRow, colors?.[i] === "d" && styles.tableRowDark)}>
               <td className="fixed">
                 {t.managerControlled ? (
                   <strong>{teams[t.id]?.name}</strong>
@@ -68,7 +56,7 @@ const Table: FC<TableProps> = ({ managers, teams, division, isClone }) => {
               <td>{t.goalsFor}</td>
               <td>-</td>
               <td>{t.goalsAgainst}</td>
-            </TableRow>
+            </tr>
           );
         })}
       </tbody>

@@ -4,21 +4,12 @@ import ManagerInfo from "./ManagerInfo";
 import ButtonRow from "./form/ButtonRow";
 import Button from "./form/Button";
 import arenas from "../data/arenas";
-import styled, { css } from "styled-components";
+import clsx from "clsx";
+import * as styles from "./Arena.css";
 import { currency } from "../services/format";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { managerImproveArena } from "../ducks/manager";
-
-const ArenaHierarchy = styled.div``;
-
-const ArenaRow = styled.div<{ $current?: boolean }>`
-  ${(props) =>
-    props.$current &&
-    css`
-      font-weight: bold;
-    `}
-`;
 
 const Arenas = () => {
   const manager = useAppSelector(
@@ -41,19 +32,19 @@ const Arenas = () => {
       <Box p={1}>
         <h2>Areena</h2>
 
-        <ArenaHierarchy>
+        <div>
           <h3>Areenasi sijoitus areenahierarkiassa:</h3>
 
           {arenas
             .map((arena, level) => {
               return (
-                <ArenaRow $current={level === currentLevel} key={arena.id}>
+                <div className={clsx(styles.arenaRow, level === currentLevel && styles.arenaRowCurrent)} key={arena.id}>
                   {arena.name}
-                </ArenaRow>
+                </div>
               );
             })
             .toReversed()}
-        </ArenaHierarchy>
+        </div>
 
         <ButtonRow>
           {nextLevel && (

@@ -1,18 +1,14 @@
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
-import styled from "styled-components";
-import Toggle from "react-toggle";
+import * as styles from "./Services.css";
+import Toggle from "./form/Toggle";
 import Markdown from "react-markdown";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { managerToggleService } from "../ducks/manager";
 
 import services from "../data/services";
-
-const ServicesList = styled.div`
-  margin: 1em 0;
-`;
 
 const Services = () => {
   const manager = useAppSelector(
@@ -29,7 +25,7 @@ const Services = () => {
       <Box p={1}>
         <h2>Erikoistoimenpiteet</h2>
 
-        <ServicesList>
+        <div className={styles.servicesList}>
           {Object.entries(services).map(([key, service]) => {
             const basePrice = basePrices[key];
             return (
@@ -51,7 +47,7 @@ const Services = () => {
               </div>
             );
           })}
-        </ServicesList>
+        </div>
       </Box>
     </HeaderedPage>
   );

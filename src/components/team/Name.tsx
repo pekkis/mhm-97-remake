@@ -1,15 +1,8 @@
 import type { FC } from "react";
-import styled from "styled-components";
+import clsx from "clsx";
+import * as styles from "./Name.css";
 import type { Team } from "../../ducks/game";
 import type { Manager } from "../../ducks/manager";
-
-type SpanProps = {
-  $humanControlled: boolean;
-};
-
-const Span = styled.span<SpanProps>`
-  ${(props) => props.$humanControlled && `font-weight: bold;`}
-`;
 
 type NameProps = {
   team: Team;
@@ -17,11 +10,15 @@ type NameProps = {
 };
 
 const Name: FC<NameProps> = ({ team, managers = {} }) => {
-  const humanControlled = Object.values(managers).some(
+  const isHumanControlled = Object.values(managers).some(
     (p) => p.team === team.id,
   );
 
-  return <Span $humanControlled={humanControlled}>{team.name}</Span>;
+  return (
+    <span className={clsx(isHumanControlled && styles.humanControlled)}>
+      {team.name}
+    </span>
+  );
 };
 
 export default Name;

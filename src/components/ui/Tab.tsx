@@ -1,5 +1,6 @@
 import type { FC } from "react";
-import styled, { css } from "styled-components";
+import clsx from "clsx";
+import * as styles from "./Tab.css";
 
 type TabProps = {
   title: string;
@@ -9,10 +10,10 @@ type TabProps = {
   children?: React.ReactNode;
 };
 
-const Tab: FC<TabProps> = ({ title, className, onSelect }) => {
+const Tab: FC<TabProps> = ({ title, className, onSelect, isSelected }) => {
   return (
     <li
-      className={className}
+      className={clsx(styles.tab, isSelected && styles.selected, className)}
       onClick={() => {
         onSelect?.();
       }}
@@ -22,18 +23,5 @@ const Tab: FC<TabProps> = ({ title, className, onSelect }) => {
   );
 };
 
-export default styled(Tab)`
-  cursor: pointer;
-  background-color: rgba(33, 33, 33, 0.3);
-  padding: 1em;
-  list-style-position: inside;
-  list-style-type: none;
-  margin: 0 0;
-  padding: 0.5em 1em;
-
-  ${(props) =>
-    props.isSelected &&
-    css`
-      font-weight: bold;
-    `}
-`;
+export { styles as tabStyles };
+export default Tab;

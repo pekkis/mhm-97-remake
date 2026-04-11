@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import styled from "styled-components";
 
 import MainMenu from "./MainMenu";
 import TransferMarket from "./TransferMarket";
@@ -76,11 +75,11 @@ const Phase = ({ turn }: { turn: { phase: string | undefined } }) => {
   }
 };
 
-const GameInner = ({ className }: { className?: string }) => {
+const Game = () => {
   const turn = useAppSelector((state) => state.game.turn);
   const menu = useAppSelector((state) => state.ui.menu);
   return (
-    <div className={className}>
+    <div>
       {menu && <ModalMenu />}
       <Phase turn={turn} />
       <Notifications />
@@ -88,4 +87,4 @@ const GameInner = ({ className }: { className?: string }) => {
   );
 };
 
-export default styled(GameInner)``;
+export default Game;

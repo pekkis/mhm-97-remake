@@ -1,28 +1,5 @@
 import { Children, cloneElement, type ReactElement } from "react";
-import styled from "styled-components";
-import Tab from "./Tab";
-
-const TabsList = styled.ul`
-  background-color: rgba(33, 33, 33, 0.3);
-  padding: 1em;
-  display: flex;
-  flex-basis: 100%;
-  flex-wrap: wrap;
-  align-items: center;
-  align-content: stretch;
-
-  list-style-position: inside;
-  list-style-type: none;
-  margin: 1em 0;
-  padding: 0;
-  ${Tab} + ${Tab} {
-    margin-left: 1em;
-  }
-`;
-
-const TabContent = styled.div`
-  padding: 0;
-`;
+import * as styles from "./Tabs.css";
 
 type TabsProps = {
   className?: string;
@@ -35,21 +12,21 @@ const Tabs = ({ className, children, selected, onSelect }: TabsProps) => {
   const childrenArray = Children.toArray(children) as ReactElement<any>[];
 
   return (
-    <div className={className}>
-      <TabsList>
+    <div className={styles.tabs}>
+      <ul className={styles.tabsList}>
         {childrenArray.map((child, key) =>
           cloneElement(child, {
             isSelected: key === selected,
             onSelect: () => onSelect(key),
           } as any),
         )}
-      </TabsList>
+      </ul>
 
-      <TabContent>{(childrenArray[selected].props as any).children}</TabContent>
+      <div className={styles.tabContent}>
+        {(childrenArray[selected].props as any).children}
+      </div>
     </div>
   );
 };
 
-export default styled(Tabs)`
-  background-color: rgba(255, 255, 255);
-`;
+export default Tabs;

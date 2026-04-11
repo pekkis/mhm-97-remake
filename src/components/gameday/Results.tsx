@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import styled from "styled-components";
+import * as styles from "./Results.css";
 import Game from "./Game";
 import Box from "../styled-system/Box";
 import type { Team } from "../../ducks/game";
@@ -7,7 +7,6 @@ import type { Manager } from "../../ducks/manager";
 import type { Group } from "../../types/competitions";
 
 type ResultsProps = {
-  className?: string;
   teams: Team[];
   context: Group;
   round: number;
@@ -15,7 +14,6 @@ type ResultsProps = {
 };
 
 const Results: FC<ResultsProps> = ({
-  className,
   teams,
   context,
   round,
@@ -27,21 +25,21 @@ const Results: FC<ResultsProps> = ({
 
   return (
     <Box my={1}>
-      {pairings.map((pairing, i) => {
-        return (
-          <Game
-            key={i}
-            context={context}
-            pairing={pairing}
-            managers={managers}
-            teams={teams}
-          />
-        );
-      })}
+      <div className={styles.results}>
+        {pairings.map((pairing, i) => {
+          return (
+            <Game
+              key={i}
+              context={context}
+              pairing={pairing}
+              managers={managers}
+              teams={teams}
+            />
+          );
+        })}
+      </div>
     </Box>
   );
 };
 
-export default styled(Results)`
-  max-width: 30em;
-`;
+export default Results;
