@@ -23,10 +23,7 @@ export default function* eventPhase() {
     yield eventObj.resolve(event);
   }
 
-  const resolver = yield* takeEvery(
-    requestResolveEvent,
-    resolveEvent
-  );
+  const resolver = yield* takeEvery(requestResolveEvent, resolveEvent);
 
   let unresolved: number;
   do {

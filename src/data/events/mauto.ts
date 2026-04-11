@@ -13,6 +13,7 @@ import { incrementBalance } from "../../sagas/manager";
 import { incrementStrength } from "../../sagas/team";
 import { setFlag } from "../../sagas/game";
 import { teamRename } from "../../ducks/game";
+import { managerRenameArena } from "../../ducks/manager";
 import type { MHMEvent } from "../../types/base";
 
 const eventId = "mauto";
@@ -142,13 +143,9 @@ const event: MHMEvent<MautoData> = {
     } else {
       yield* call(incrementBalance, data.manager, data.amount);
 
-      yield* put({
-        type: "MANAGER_RENAME_ARENA",
-        payload: {
-          manager: data.manager,
-          name: "Mauto Center"
-        }
-      });
+      yield* put(
+        managerRenameArena({ manager: data.manager, name: "Mauto Center" })
+      );
     }
   }
 };

@@ -16,6 +16,11 @@ import {
   toggleService,
   setActiveManager
 } from "../manager";
+import {
+  managerCrisisMeeting,
+  managerImproveArena,
+  managerToggleService
+} from "../../ducks/manager";
 import { orderPrank as orderPrankAction } from "../../ducks/prank";
 import { orderPrank as orderPrankSaga } from "../prank";
 import { acceptInvitation } from "../invitation";
@@ -35,10 +40,10 @@ export default function* actionPhase() {
 
   const tasks = yield* all([
     fork(watchTransferMarket),
-    takeEvery("MANAGER_CRISIS_MEETING" as any, crisisMeeting),
-    takeEvery("MANAGER_IMPROVE_ARENA" as any, improveArena),
+    takeEvery(managerCrisisMeeting, crisisMeeting),
+    takeEvery(managerImproveArena, improveArena),
     takeEvery("META_GAME_SAVE_REQUEST" as any, gameSave),
-    takeEvery("MANAGER_TOGGLE_SERVICE" as any, toggleService),
+    takeEvery(managerToggleService, toggleService),
     takeEvery(orderPrankAction, function* (action) {
       yield* call(orderPrankSaga, action);
     }),

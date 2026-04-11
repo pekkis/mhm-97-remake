@@ -1,14 +1,11 @@
-import {
-  all,
-  select,
-    call,
-  put,
-  takeEvery
-} from "typed-redux-saga";
+import { all, select, call, put, takeEvery } from "typed-redux-saga";
 import competitionTypes from "../services/competition-type";
 import { resultFacts } from "../services/game";
 
-import { updateFromFacts, setSeasonStat as setSeasonStatAction } from "../ducks/stats";
+import {
+  updateFromFacts,
+  setSeasonStat as setSeasonStatAction
+} from "../ducks/stats";
 import { managersMainCompetition } from "../data/selectors";
 import {
   competitionSeed,

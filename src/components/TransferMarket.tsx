@@ -11,7 +11,7 @@ import Box from "./styled-system/Box";
 import Tabs from "./ui/Tabs";
 import Tab from "./ui/Tab";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { buyPlayer, sellPlayer } from "../ducks/manager";
+import { managerBuyPlayer, managerSellPlayer } from "../ducks/manager";
 
 const TransferMarket = () => {
   const manager = useAppSelector(
@@ -48,7 +48,7 @@ const TransferMarket = () => {
                     <Button
                       key={index}
                       onClick={() =>
-                        dispatch(buyPlayer(manager.id, index.toString()))
+                        dispatch(managerBuyPlayer({ manager: manager.id, playerType: index.toString() }))
                       }
                       block
                       disabled={balance < playerType.buy}
@@ -69,7 +69,7 @@ const TransferMarket = () => {
                     <Button
                       key={index}
                       onClick={() =>
-                        dispatch(sellPlayer(manager.id, index.toString()))
+                        dispatch(managerSellPlayer({ manager: manager.id, playerType: index.toString() }))
                       }
                       block
                     >

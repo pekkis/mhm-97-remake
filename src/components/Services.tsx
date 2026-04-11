@@ -6,7 +6,7 @@ import Toggle from "react-toggle";
 import Markdown from "react-markdown";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { toggleService } from "../ducks/manager";
+import { managerToggleService } from "../ducks/manager";
 
 import services from "../data/services";
 
@@ -38,7 +38,7 @@ const Services = () => {
                   <Toggle
                     id={key}
                     checked={manager.services[key]}
-                    onChange={() => dispatch(toggleService(manager.id, key))}
+                    onChange={() => dispatch(managerToggleService({ manager: manager.id, service: key }))}
                   />
                   <label htmlFor={key}>
                     <strong>{service.name}</strong>

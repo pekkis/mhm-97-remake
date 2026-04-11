@@ -4,6 +4,7 @@ import strategies from "../../data/strategies";
 import { requestChampionBet } from "../../ducks/betting";
 import { betChampion } from "../betting";
 import { setActiveManager } from "../manager";
+import { managerSelectStrategy } from "../../ducks/manager";
 import {
   setGamePhase,
   teamSetStrategy,
@@ -17,12 +18,11 @@ function* selectStrategy() {
 
   yield* put(setGamePhase("select-strategy"));
 
-  const action: any = yield* take("MANAGER_SELECT_STRATEGY");
+  const action = yield* take(managerSelectStrategy);
   const { payload } = action;
 
   const team = yield* select(
-    (state: RootState) =>
-      state.manager.managers[payload.manager as string]?.team
+    (state: RootState) => state.manager.managers[payload.manager]?.team
   );
 
   yield* all([

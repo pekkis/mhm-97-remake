@@ -2,7 +2,7 @@ import strategies from "../data/strategies";
 import Button from "./form/Button";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { selectStrategy } from "../ducks/manager";
+import { managerSelectStrategy } from "../ducks/manager";
 
 const SelectStrategy = () => {
   const manager = useAppSelector(
@@ -30,7 +30,7 @@ const SelectStrategy = () => {
               <Button
                 block
                 onClick={() =>
-                  dispatch(selectStrategy(manager.id, strategy.id))
+                  dispatch(managerSelectStrategy({ manager: manager.id, strategy: strategy.id }))
                 }
               >
                 Valitse strategia "{strategy.name}"

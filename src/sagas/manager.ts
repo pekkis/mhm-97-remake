@@ -1,10 +1,4 @@
-import {
-  select,
-  put,
-    call,
-  all,
-  takeEvery
-} from "typed-redux-saga";
+import { select, put, call, all, takeEvery } from "typed-redux-saga";
 import { gameFacts } from "../services/game";
 import competitionList from "../data/competitions";
 import playerTypes from "../data/transfer-market";
@@ -20,6 +14,21 @@ import {
 import { incrementMorale, incrementReadiness, incurPenalty } from "./team";
 import { addNotification } from "./notification";
 import crisis from "../data/crisis";
+import {
+  managerAdd,
+  managerSetActive,
+  managerSetBalance,
+  managerRenameArena,
+  managerIncrementBalance,
+  managerSetExtra,
+  managerSetFlag,
+  managerSetArenaLevel,
+  managerSetInsuranceExtra,
+  managerIncrementInsuranceExtra,
+  managerSetService,
+  managerBuyPlayer,
+  managerSellPlayer
+} from "../ducks/manager";
 import difficultyLevels from "../data/difficulty-levels";
 import arenas from "../data/arenas";
 import { incrementStrength, decrementStrength } from "./team";
@@ -62,21 +71,13 @@ export function* addManager(details: AddManagerDetails) {
     flags: {}
   };
 
-  yield* put({
-    type: "MANAGER_ADD" as const,
-    payload: {
-      manager
-    }
-  });
+  yield* put(managerAdd({ manager }));
 
   yield* call(hireManager, manager.id, teamId);
 }
 
 export function* setActiveManager(managerId: string) {
-  yield* put({
-    type: "MANAGER_SET_ACTIVE" as const,
-    payload: managerId
-  });
+  yield* put(managerSetActive(managerId));
 }
 
 export function* hireManager(managerId: string, teamId: number) {
@@ -101,23 +102,11 @@ export function* hireManager(managerId: string, teamId: number) {
 }
 
 export function* setBalance(managerId: string, amount: number) {
-  return yield* put({
-    type: "MANAGER_SET_BALANCE" as const,
-    payload: {
-      manager: managerId,
-      amount
-    }
-  });
+  return yield* put(managerSetBalance({ manager: managerId, amount }));
 }
 
 export function* renameArena(managerId: string, name: string) {
-  return yield* put({
-    type: "MANAGER_RENAME_ARENA" as const,
-    payload: {
-      manager: managerId,
-      name
-    }
-  });
+  return yield* put(managerRenameArena({ manager: managerId, name }));
 }
 
 export function* incrementBalance(managerId: string, amount: number) {
@@ -128,13 +117,7 @@ export function* incrementBalance(managerId: string, amount: number) {
     throw new Error(`INVALID MANAGER ${managerId} ${amount}`);
   }
 
-  return yield* put({
-    type: "MANAGER_INCREMENT_BALANCE" as const,
-    payload: {
-      manager: managerId,
-      amount
-    }
-  });
+  return yield* put(managerIncrementBalance({ manager: managerId, amount }));
 }
 
 export function* decrementBalance(managerId: string, amount: number) {
@@ -142,24 +125,11 @@ export function* decrementBalance(managerId: string, amount: number) {
 }
 
 export function* setExtra(manager: string, extra: number) {
-  yield* put({
-    type: "MANAGER_SET_EXTRA" as const,
-    payload: {
-      manager,
-      extra
-    }
-  });
+  yield* put(managerSetExtra({ manager, extra }));
 }
 
 export function* setFlag(manager: string, flag: string, value: boolean) {
-  yield* put({
-    type: "MANAGER_SET_FLAG" as const,
-    payload: {
-      manager,
-      flag,
-      value
-    }
-  });
+  yield* put(managerSetFlag({ manager, flag, value }));
 }
 
 export function* crisisMeeting(action: { payload: { manager: string } }) {
@@ -187,9 +157,7 @@ export function* crisisMeeting(action: { payload: { manager: string } }) {
   );
 }
 
-export function* buyPlayer(action: {
-  payload: { manager: string; playerType: number };
-}) {
+export function* buyPlayer(action: ReturnType<typeof managerBuyPlayer>) {
   console.log("buy manager", action);
 
   const { payload } = action;
@@ -212,13 +180,9 @@ export function* buyPlayer(action: {
 }
 
 export function* setArenaLevel(manager: string, level: number) {
-  yield* put({
-    type: "MANAGER_SET_ARENA_LEVEL" as const,
-    payload: {
-      manager,
-      level: Math.max(0, Math.min(9, level))
-    }
-  });
+  yield* put(
+    managerSetArenaLevel({ manager, level: Math.max(0, Math.min(9, level)) })
+  );
 }
 
 export function* improveArena(action: { payload: { manager: string } }) {
@@ -242,9 +206,7 @@ export function* improveArena(action: { payload: { manager: string } }) {
   );
 }
 
-export function* sellPlayer(action: {
-  payload: { manager: string; playerType: number };
-}) {
+export function* sellPlayer(action: ReturnType<typeof managerSellPlayer>) {
   const {
     payload: { manager: managerId, playerType }
   } = action;
@@ -280,34 +242,15 @@ export function* sellPlayer(action: {
 }
 
 export function* setInsuranceExtra(manager: string, value: number) {
-  yield* put({
-    type: "MANAGER_SET_INSURANCE_EXTRA" as const,
-    payload: {
-      manager,
-      value
-    }
-  });
+  yield* put(managerSetInsuranceExtra({ manager, value }));
 }
 
 export function* incrementInsuranceExtra(manager: string, amount: number) {
-  yield* put({
-    type: "MANAGER_INCREMENT_INSURANCE_EXTRA" as const,
-    payload: {
-      manager,
-      amount
-    }
-  });
+  yield* put(managerIncrementInsuranceExtra({ manager, amount }));
 }
 
 export function* setService(manager: string, service: string, value: boolean) {
-  yield* put({
-    type: "MANAGER_SET_SERVICE" as const,
-    payload: {
-      manager,
-      service,
-      value
-    }
-  });
+  yield* put(managerSetService({ manager, service, value }));
 }
 
 export function* toggleService(action: {
@@ -406,7 +349,7 @@ export function* afterGameday(
 
 export function* watchTransferMarket() {
   yield* all([
-    takeEvery("MANAGER_BUY_PLAYER" as any, buyPlayer),
-    takeEvery("MANAGER_SELL_PLAYER" as any, sellPlayer)
+    takeEvery(managerBuyPlayer, buyPlayer),
+    takeEvery(managerSellPlayer, sellPlayer)
   ]);
 }

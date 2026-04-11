@@ -1,7 +1,6 @@
 import { produce } from "immer";
+import { createAction } from "@reduxjs/toolkit";
 import { SEASON_START } from "./game";
-
-export const MANAGER_NEXT = "MANAGER_NEXT";
 
 export type ManagerArena = {
   name: string;
@@ -39,63 +38,74 @@ const defaultState: ManagerState = {
   managers: {}
 };
 
-export const toggleService = (manager: string, service: string) => {
-  return {
-    type: "MANAGER_TOGGLE_SERVICE",
-    payload: {
-      manager,
-      service
-    }
-  };
-};
+// State-changing actions (hit reducer)
+export const managerAdd = createAction<{ manager: Manager }>("MANAGER_ADD");
+export const managerSetActive = createAction<string>("MANAGER_SET_ACTIVE");
+export const managerSetBalance = createAction<{
+  manager: string;
+  amount: number;
+}>("MANAGER_SET_BALANCE");
+export const managerRenameArena = createAction<{
+  manager: string;
+  name: string;
+}>("MANAGER_RENAME_ARENA");
+export const managerIncrementBalance = createAction<{
+  manager: string;
+  amount: number;
+}>("MANAGER_INCREMENT_BALANCE");
+export const managerDecrementBalance = createAction<{
+  manager: string;
+  amount: number;
+}>("MANAGER_DECREMENT_BALANCE");
+export const managerSetExtra = createAction<{ manager: string; extra: number }>(
+  "MANAGER_SET_EXTRA"
+);
+export const managerSetFlag = createAction<{
+  manager: string;
+  flag: string;
+  value: boolean;
+}>("MANAGER_SET_FLAG");
+export const managerSetArenaLevel = createAction<{
+  manager: string;
+  level: number;
+}>("MANAGER_SET_ARENA_LEVEL");
+export const managerSetInsuranceExtra = createAction<{
+  manager: string;
+  value: number;
+}>("MANAGER_SET_INSURANCE_EXTRA");
+export const managerIncrementInsuranceExtra = createAction<{
+  manager: string;
+  amount: number;
+}>("MANAGER_INCREMENT_INSURANCE_EXTRA");
+export const managerSetService = createAction<{
+  manager: string;
+  service: string;
+  value: boolean;
+}>("MANAGER_SET_SERVICE");
 
-export const buyPlayer = (manager: string, playerType: string) => {
-  return {
-    type: "MANAGER_BUY_PLAYER",
-    payload: {
-      manager,
-      playerType
-    }
-  };
-};
-
-export const selectStrategy = (manager: string, strategy: number) => {
-  return {
-    type: "MANAGER_SELECT_STRATEGY",
-    payload: {
-      manager,
-      strategy
-    }
-  };
-};
-
-export const improveArena = (manager: string) => {
-  return {
-    type: "MANAGER_IMPROVE_ARENA",
-    payload: {
-      manager
-    }
-  };
-};
-
-export const sellPlayer = (manager: string, playerType: string) => {
-  return {
-    type: "MANAGER_SELL_PLAYER",
-    payload: {
-      manager,
-      playerType
-    }
-  };
-};
-
-export const crisisMeeting = (manager: string) => {
-  return {
-    type: "MANAGER_CRISIS_MEETING",
-    payload: {
-      manager
-    }
-  };
-};
+// Request actions (saga-intercepted, not in reducer)
+export const managerToggleService = createAction<{
+  manager: string;
+  service: string;
+}>("MANAGER_TOGGLE_SERVICE");
+export const managerBuyPlayer = createAction<{
+  manager: string;
+  playerType: string;
+}>("MANAGER_BUY_PLAYER");
+export const managerSelectStrategy = createAction<{
+  manager: string;
+  strategy: number;
+}>("MANAGER_SELECT_STRATEGY");
+export const managerImproveArena = createAction<{ manager: string }>(
+  "MANAGER_IMPROVE_ARENA"
+);
+export const managerSellPlayer = createAction<{
+  manager: string;
+  playerType: string;
+}>("MANAGER_SELL_PLAYER");
+export const managerCrisisMeeting = createAction<{ manager: string }>(
+  "MANAGER_CRISIS_MEETING"
+);
 
 export default function managerReducer(
   state: ManagerState = defaultState,

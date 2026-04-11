@@ -6,7 +6,7 @@ import ManagerInfo from "./ManagerInfo";
 import Calendar from "./ui/Calendar";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { crisisMeeting } from "../ducks/manager";
+import { managerCrisisMeeting } from "../ducks/manager";
 
 import crisis from "../data/crisis";
 import { currency as c } from "../services/format";
@@ -53,7 +53,7 @@ const CrisisActions = () => {
             disabled={
               balance < crisisInfo.amount || team.morale > CRISIS_MORALE_MAX
             }
-            onClick={() => dispatch(crisisMeeting(manager.id))}
+            onClick={() => dispatch(managerCrisisMeeting({ manager: manager.id }))}
           >
             Pidä kriisipalaveri
           </Button>

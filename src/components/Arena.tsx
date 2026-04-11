@@ -8,7 +8,7 @@ import styled, { css } from "styled-components";
 import { currency } from "../services/format";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { improveArena } from "../ducks/manager";
+import { managerImproveArena } from "../ducks/manager";
 
 const ArenaHierarchy = styled.div``;
 
@@ -60,7 +60,7 @@ const Arenas = () => {
             <Button
               block
               disabled={!canDo}
-              onClick={() => dispatch(improveArena(manager.id))}
+              onClick={() => dispatch(managerImproveArena({ manager: manager.id }))}
             >
               <div>Paranna halliolosuhteitasi</div>
               <div>{currency(nextLevel.price)}</div>
