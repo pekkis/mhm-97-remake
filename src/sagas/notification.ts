@@ -1,4 +1,8 @@
 import { put, call, spawn, delay } from "typed-redux-saga";
+import {
+  addNotification as addNotificationAction,
+  dismissNotification as dismissNotificationAction
+} from "../ducks/notification";
 
 export function* autoDismissal(id: string) {
   yield* delay(7000);
@@ -12,22 +16,18 @@ export function* addNotification(
 ) {
   const id = crypto.randomUUID();
 
-  yield* put({
-    type: "NOTIFICATION_ADD" as const,
-    payload: {
+  yield* put(
+    addNotificationAction({
       id,
       manager,
       message,
       type
-    }
-  });
+    })
+  );
 
   yield* spawn(autoDismissal, id);
 }
 
 export function* dismissNotification(id: string) {
-  yield* put({
-    type: "NOTIFICATION_DISMISS" as const,
-    payload: id
-  });
+  yield* put(dismissNotificationAction(id));
 }

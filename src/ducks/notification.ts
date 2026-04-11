@@ -1,4 +1,5 @@
 import { produce } from "immer";
+import { createAction } from "@reduxjs/toolkit";
 
 export type Notification = {
   id: string;
@@ -15,12 +16,8 @@ const defaultState: NotificationState = {
   notifications: []
 };
 
-export const dismissNotification = (id: string) => {
-  return {
-    type: "NOTIFICATION_DISMISS",
-    payload: id
-  };
-};
+export const addNotification = createAction<Notification>("NOTIFICATION_ADD");
+export const dismissNotification = createAction<string>("NOTIFICATION_DISMISS");
 
 export default function notificationReducer(
   state: NotificationState = defaultState,
@@ -32,7 +29,7 @@ export default function notificationReducer(
     case "META_QUIT_TO_MAIN_MENU":
       return defaultState;
 
-    case "NOTIFICATION_ADD":
+    case addNotification.type:
       return produce(state, (draft) => {
         draft.notifications.push(payload);
         if (draft.notifications.length > 3) {
@@ -40,7 +37,7 @@ export default function notificationReducer(
         }
       });
 
-    case "NOTIFICATION_DISMISS":
+    case dismissNotification.type:
       return produce(state, (draft) => {
         draft.notifications = draft.notifications.filter(
           (n) => n.id !== payload
