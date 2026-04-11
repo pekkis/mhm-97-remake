@@ -1,4 +1,5 @@
 import { produce } from "immer";
+import { createAction } from "@reduxjs/toolkit";
 import {
   SEASON_START,
   GAME_DECREMENT_DURATIONS,
@@ -22,19 +23,22 @@ const defaultState: InvitationState = {
 };
 
 export const INVITATION_ACCEPT_REQUEST = "INVITATION_ACCEPT_REQUEST";
-export const INVITATION_ADD = "INVITATION_ADD_INVITATION";
-export const INVITATION_ACCEPT = "INVITATION_ACCEPT";
-export const INVITATION_CLEAR = "INVITATION_CLEAR";
 
-export const acceptInvitation = (manager: string, id: string) => {
-  return {
-    type: INVITATION_ACCEPT_REQUEST,
-    payload: {
-      manager,
-      id
-    }
-  };
-};
+export const addInvitation = createAction<{
+  manager: string;
+  tournament: number;
+  duration: number;
+}>("INVITATION_ADD_INVITATION");
+
+export const acceptInvitationAction = createAction<{
+  manager: string;
+  id: string;
+}>("INVITATION_ACCEPT");
+
+export const requestAcceptInvitation = createAction<{
+  manager: string;
+  id: string;
+}>(INVITATION_ACCEPT_REQUEST);
 
 export default function invitationReducer(
   state: InvitationState = defaultState,
@@ -49,7 +53,7 @@ export default function invitationReducer(
     case "META_GAME_LOAD_STATE":
       return payload.invitation;
 
-    case INVITATION_ADD:
+    case addInvitation.type:
       return produce(state, (draft) => {
         draft.invitations.push({
           ...payload,
@@ -57,7 +61,7 @@ export default function invitationReducer(
         });
       });
 
-    case INVITATION_ACCEPT:
+    case acceptInvitationAction.type:
       return produce(state, (draft) => {
         const idx = draft.invitations.findIndex(
           (i) => i.manager === payload.manager && i.id === payload.id

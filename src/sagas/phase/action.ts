@@ -19,7 +19,7 @@ import {
 import { orderPrank } from "../prank";
 import { acceptInvitation } from "../invitation";
 
-import { INVITATION_ACCEPT_REQUEST } from "../../ducks/invitation";
+import { requestAcceptInvitation } from "../../ducks/invitation";
 import { requestBet } from "../../ducks/betting";
 import { bet } from "../betting";
 import { setGamePhase } from "../../ducks/game";
@@ -39,7 +39,7 @@ export default function* actionPhase() {
     takeEvery("META_GAME_SAVE_REQUEST" as any, gameSave),
     takeEvery("MANAGER_TOGGLE_SERVICE" as any, toggleService),
     takeEvery("PRANK_ORDER" as any, orderPrank),
-    takeEvery(INVITATION_ACCEPT_REQUEST as any, function* (action: any) {
+    takeEvery(requestAcceptInvitation, function* (action: any) {
       yield* call(acceptInvitation, action.payload.manager, action.payload.id);
     }),
     takeEvery(requestBet, function* (action: any) {

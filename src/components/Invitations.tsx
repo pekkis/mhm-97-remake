@@ -6,7 +6,7 @@ import tournamentList from "../data/tournaments";
 import Markdown from "react-markdown";
 import Button from "./form/Button";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { acceptInvitation } from "../ducks/invitation";
+import { requestAcceptInvitation } from "../ducks/invitation";
 
 const Invitations = () => {
   const manager = useAppSelector(
@@ -38,7 +38,7 @@ const Invitations = () => {
 
               <Button
                 block
-                onClick={() => dispatch(acceptInvitation(manager.id, i.id))}
+                onClick={() => dispatch(requestAcceptInvitation({ manager: manager.id, id: i.id }))}
                 disabled={i.participate}
               >
                 Hyväksy turnauskutsu
