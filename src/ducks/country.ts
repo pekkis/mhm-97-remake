@@ -1,7 +1,7 @@
 import { countries as countryList } from "../data/countries";
 import { produce } from "immer";
-import { META_QUIT_TO_MAIN_MENU, quitToMainMenu } from "./meta";
-import type { Reducer } from "redux";
+import { createAction } from "@reduxjs/toolkit";
+import { META_QUIT_TO_MAIN_MENU } from "./meta";
 
 export type Country = {
   iso: string;
@@ -29,53 +29,20 @@ const defaultState: CountryState = {
 const COUNTRY_ALTER_STRENGTH = "COUNTRY_ALTER_STRENGTH";
 const COUNTRY_SET_STRENGTH = "COUNTRY_SET_STRENGTH";
 
-type CountryAlterStrengthAction = {
-  type: typeof COUNTRY_ALTER_STRENGTH;
-  payload: {
-    country: string;
-    amount: number;
-  };
-};
+export const alterStrength = createAction<{
+  country: string;
+  amount: number;
+}>(COUNTRY_ALTER_STRENGTH);
 
-type CountrySetStrengthAction = {
-  type: typeof COUNTRY_SET_STRENGTH;
-  payload: {
-    country: string;
-    strength: number;
-  };
-};
+export const setStrength = createAction<{
+  country: string;
+  strength: number;
+}>(COUNTRY_SET_STRENGTH);
 
-export const alterStrength = (
-  country: string,
-  amount: number
-): CountryAlterStrengthAction => ({
-  type: COUNTRY_ALTER_STRENGTH,
-  payload: {
-    country,
-    amount
-  }
-});
-
-export const setStrength = (
-  country: string,
-  strength: number
-): CountrySetStrengthAction => ({
-  type: COUNTRY_SET_STRENGTH,
-  payload: {
-    country,
-    strength
-  }
-});
-
-type CountryActions =
-  | CountryAlterStrengthAction
-  | ReturnType<typeof quitToMainMenu>
-  | CountrySetStrengthAction;
-
-const countryReducer: Reducer<CountryState, CountryActions> = (
-  state = defaultState,
-  action
-) => {
+export default function countryReducer(
+  state: CountryState = defaultState,
+  action: any
+): CountryState {
   switch (action.type) {
     case META_QUIT_TO_MAIN_MENU:
       return defaultState;
@@ -99,6 +66,4 @@ const countryReducer: Reducer<CountryState, CountryActions> = (
     default:
       return defaultState;
   }
-};
-
-export default countryReducer;
+}

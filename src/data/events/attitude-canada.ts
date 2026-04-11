@@ -60,7 +60,7 @@ const event: MHMEvent<AttitudeCanadaData> = {
     const amount = attitude ? difference : -difference;
     yield* all([
       call(setFlag, "canada", attitude),
-      put(alterStrength("CA", amount))
+      put(alterStrength({ country: "CA", amount }))
     ]);
   }
 };

@@ -41,7 +41,7 @@ function* definePekkalandiaStrength() {
 
   console.log("strength", strength);
 
-  yield* put(setStrength("FI", strength));
+  yield* put(setStrength({ country: "FI", strength }));
 }
 
 function* worldChampionships() {
