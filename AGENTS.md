@@ -11,11 +11,13 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 ## Current Reality (as of 2026-04-11)
 
 - Runtime / build tool: **Vite 8** (`pnpm dev`, `pnpm build`)
-- UI stack: React 19, React Router 7, styled-components 6
+- UI stack: React 19, React Router 7
 - State stack: Redux 5 + **RTK `createAction`** + redux-saga + immer (Immutable.js fully removed 2026-04-08)
 - Language: **TypeScript only** — zero `.js`/`.jsx` in `src/` as of 2026-04-10
 - Lint/format stack: `oxlint` + `oxfmt` (ESLint/Prettier removed)
-- Styling stack: styled-components + styled-system + Emotion remnants
+- Styling stack: **Vanilla Extract** (zero-runtime CSS-in-TS) + **sprinkles** for utility props
+- Forms: **react-hook-form** + **zod** + `@hookform/resolvers`
+- Icons: **react-icons** (FA solid subset)
 - Persistence: localStorage with `JSON.stringify`/`JSON.parse`
 - Randomness: single `random-js` instance in `src/services/random.ts`; supports deterministic seeding via `VITE_RANDOM_SEED` env var
 - Build extras: React Compiler via `@rolldown/plugin-babel` + `babel-plugin-react-compiler`
@@ -23,24 +25,23 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - Root wiring: `src/Root.tsx`
 - Store wiring: `src/store.ts`, `src/config/redux.ts`
 - **TypeScript check: ZERO errors** (as of 2026-04-11)
+- **Bundle: 622.69kB JS (gzip 196kB), 7.08kB CSS (gzip 1.94kB)** — down from ~806kB JS + runtime CSS
 
-Recent completed migrations:
+Recent completed migrations (2026-04-11):
 
-- JSX-bearing component files were renamed from `.js` to `.jsx`, then all to `.tsx`
-- `react-markdown` deprecated `source` prop migrated to children syntax
-- `src/components/Game.tsx` routing updated to modern `<Routes>/<Route element={...}>`
-- Added `@` path alias support in Vite + TypeScript config (`@` => `src`) for incremental import migration
-- TypeScript checker profile optimized for migration speed: TS/TSX-only include + incremental cache (`.tsbuildinfo`); unused checks handled by `oxlint`
-- **Full TypeScript migration complete (2026-04-10):** zero `.js`/`.jsx` files in `src/`
-- All sagas use `typed-redux-saga` with `yield*` pattern
-- All components converted from class → FC with hooks
-- All `connect()` containers eliminated — hooks-only Redux access
-- `tsconfig.json` simplified for TypeScript 6 (removed 7 redundant options)
-- `.browserslistrc` deleted (Vite 8 doesn't use it)
-- **RTK `createAction` for all 12 ducks complete (2026-04-11)** — zero hand-rolled action creators remain
-- **`putResolve` fully eliminated (2026-04-11)** — all 36 sites replaced with `put` (all reducers are synchronous)
-- **`Root.tsx` `DefaultTheme` errors fixed (2026-04-11)** — hardcoded CSS values pending Vanilla Extract migration
-- **Zero TypeScript errors achieved (2026-04-11)** — first time in project history
+- **Vanilla Extract migration complete:** all 27+ styled-components converted to VE `.css.ts` files
+- **styled-components + styled-system + Emotion fully removed** from codebase + `package.json`
+- **PostCSS fully removed:** 4 plugins + config removed, `style.pcss` deleted
+- **react-typography + typography removed:** replaced with `<link>` tag + VE `globalStyle` (also fixed broken Google Fonts loading)
+- **react-toggle removed:** replaced with native `<input type="checkbox">` + VE CSS toggle
+- **rc-slider removed:** replaced with native `<input type="range">`
+- **FontAwesome (3 packages) removed:** replaced with `react-icons`
+- **formik removed:** replaced with `react-hook-form` + `zod` + `@hookform/resolvers`
+- **roundrobin removed:** dead code (own implementation in `src/services/round-robin.ts`)
+- RTK `createAction` for all 12 ducks complete — zero hand-rolled action creators remain
+- `putResolve` fully eliminated (36 sites → `put`)
+- `Root.tsx` simplified: no more `ThemeProvider`, `TypographyStyle`, or `createGlobalStyle`
+- Zero TypeScript errors maintained throughout all migrations
 
 ---
 
@@ -323,7 +324,59 @@ export type StatsState = {
 
 ### Pre-existing issues (not migration-related)
 
-- CSS `:global` pseudo-class warnings from lightningcss (legacy `.pcss` file)
+- ~~CSS `:global` pseudo-class warnings from lightningcss (legacy `.pcss` file)~~ **Fixed** — `.pcss` file deleted, all styles now in VE
+
+### Completed: Vanilla Extract migration (2026-04-11)
+
+Replaced the entire styled-components + styled-system + PostCSS styling stack with Vanilla Extract in a single session.
+
+**Foundation files created:**
+- `src/styles/theme.css.ts` — `createGlobalTheme(":root", { color, space })` matching old theme values
+- `src/styles/sprinkles.css.ts` — `defineProperties` + `createSprinkles` for padding/margin/color utility props
+- `src/styles/global.css.ts` — `globalStyle` for html, body, form, p + normalize.css import + typography + spin animation
+
+**Components converted (27+ files):**
+- Form primitives: Button, ButtonRow, Field, Input, Label, LabelDiv, Select, Toggle (new), Slider (new)
+- UI primitives: HeaderedPage, ButtonContainer, Tab, Tabs, Loading
+- Layout: Box (sprinkles-based, maps old numeric props to space scale)
+- Game components: Notification, Notifications, Header, ModalMenu, ManagerInfo, Current, Services, Arena, StartMenu, Game
+- Data display: league-table/Table, gameday/Game, gameday/Results, team/Name, responsive-table/Td, responsive-table/ResponsiveTable
+
+**Pattern:** Each component gets a `.css.ts` file with VE `style()` + optional `globalStyle()` for nested selectors. Components use `clsx` for conditional class composition. Custom props (e.g. `$dark`, `$humanControlled`) replaced with explicit className logic.
+
+**Packages removed:** styled-components, styled-system, @types/styled-system, postcss-import, postcss-preset-env, postcss-advanced-variables, postcss-nested
+
+**Packages added:** @vanilla-extract/css, @vanilla-extract/sprinkles, @vanilla-extract/vite-plugin, clsx
+
+### Completed: Legacy dependency purge (2026-04-11)
+
+Systematically replaced heavy/abandoned dependencies with modern equivalents or native browser APIs:
+
+| Removed | Replaced with | Packages shed |
+|---------|--------------|---------------|
+| `styled-components` + `styled-system` | Vanilla Extract + sprinkles | ~18 |
+| `react-typography` + `typography` + `@types/typography` | `<link>` tag + VE `globalStyle` | ~16 |
+| `react-toggle` | Native `<input type="checkbox">` + VE CSS | ~3 |
+| `rc-slider` | Native `<input type="range">` | ~7 |
+| `@fortawesome/*` (3 packages) | `react-icons` | ~7 |
+| `formik` | `react-hook-form` + `zod` | ~12 (net ~-6) |
+| `roundrobin` | Already had own impl | ~1 |
+| `postcss-*` (4 plugins) | Deleted (no CSS preprocessing needed) | ~96 |
+| `prop-types` | Killed with its hosts | ~1 |
+| **Total** | | **~150+ packages removed** |
+
+**Bundle trajectory (single session):**
+- JS: 806kB → **622.69kB** (−22.7%, gzip 196kB)
+- CSS: runtime-generated → **7.08kB** static (gzip 1.94kB)
+
+### Gotchas learned from Vanilla Extract migration
+
+- **`styled(Component)` wrapper pattern:** Components like `styled(Current)\`...\`` need the styles moved to a class applied directly. Remove the `className` prop threading and apply the VE class in the component itself.
+- **`${Component}` interpolation in styled-components:** Used for sibling/child selectors (e.g. `${Tab} + ${Tab}`). In VE, export the class string from the component's `.css.ts` and use it in `globalStyle` selectors.
+- **Empty `styled(X)\`\`` wrappers:** Some components (e.g. `Game.tsx`) had no-op styled wrappers. Just remove the wrapper entirely.
+- **PostCSS transitive dependency trap:** Removing `react-toggle` killed `prop-types` as a transitive dep, which broke `react-typography`. Solution: kill both. Native CSS + `<link>` tag is simpler anyway.
+- **`rc-slider` onChange types:** `rc-slider` passes `number | number[]` to onChange. Native `<input type="range">` passes an event — wrapper component normalizes to `(value: number) => void`.
+- **Formik nesting bug found during migration:** `betting/BettingForm.tsx` had the "2" radio incorrectly nested inside the "x" label. Fixed during react-hook-form conversion.
 
 ### Completed: RTK `createAction` for all 12 ducks (2026-04-11)
 
@@ -493,15 +546,21 @@ Next natural step: `createSlice` conversion (replaces reducer switch/cases + eli
 - **Mid term:** Evaluate selective Redux + Saga → RTK/RTK Query slices, but only for new async flows, not core game logic.
 - **Long term:** XState is the only realistic architectural upgrade for the game engine itself (phase/turn loop is a textbook state machine). But this is a full engine rewrite — only viable after a regression suite exists. TS migration prerequisite is now met. Do not attempt piecemeal.
 
-### P4 — Styling: styled-components/Emotion/styled-system → Vanilla Extract
+### P4 — Styling: ✅ COMPLETE
 
-- Current stack: styled-components 6 + styled-system 5 + Emotion remnants
-- Target: **Vanilla Extract** — zero runtime, TypeScript-native `.css.ts` files, first-class Vite support
-- **Sprinkles** replaces styled-system's `space`/`color`/`width` utility props with typed, static equivalents
-- Eliminates the `DefaultTheme` declaration merging pain (e.g. the pre-existing `Root.tsx` errors)
-- Migration path: one component at a time
-- **P2.5 is complete** — styling migration is now unblocked
-- Interim: use `shouldForwardProp` on typed styled-components to prevent custom props leaking to the DOM (see `Button.ts` pattern)
+**As of 2026-04-11, Vanilla Extract migration is complete.** All 27+ styled-components converted to VE `.css.ts` files. styled-components, styled-system, and Emotion fully removed. PostCSS fully removed. Typography handled by native `<link>` + VE `globalStyle`.
+
+Stack: `@vanilla-extract/css` + `@vanilla-extract/sprinkles` + `clsx` for conditional classes.
+
+### P4.5 — Dependency modernization: ✅ COMPLETE
+
+**As of 2026-04-11, all legacy/abandoned UI dependencies replaced:**
+- `react-toggle` → native checkbox + VE CSS
+- `rc-slider` → native range input
+- `react-typography` + `typography` → `<link>` tag + VE globalStyle
+- `@fortawesome/*` → `react-icons`
+- `formik` → `react-hook-form` + `zod` + `@hookform/resolvers`
+- `roundrobin` → own implementation (was already dead)
 
 ### Saga TypeScript strategy
 
@@ -589,10 +648,10 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
    - event creation sanity
 5. Playwright e2e tests using deterministic seed (`VITE_RANDOM_SEED=X pnpm dev`) — same seed + same clicks = same game.
 6. ~~Continue TypeScript migration of remaining `.js`/`.jsx` files.~~ ✅ Done.
-7. Audit stale peer dependency warnings (react-pose, react-toggle, react-typography, react-helmet all have React 19 peer issues).
-8. Tighten `tsconfig.json`: remove `allowJs` (no JS left), consider enabling `noImplicitAny` incrementally.
+7. ~~Audit stale peer dependency warnings (react-pose, react-toggle, react-typography, react-helmet all have React 19 peer issues).~~ Mostly resolved — react-toggle, react-typography removed. Only react-helmet remains (evaluate `react-helmet-async` or native `<title>` API).
+8. ~~Tighten `tsconfig.json`: remove `allowJs` (no JS left), consider enabling `noImplicitAny` incrementally.~~ `allowJs` removed. `noImplicitAny` still a candidate.
 9. ~~Clean up `any` casts introduced during saga migration (`takeEvery` string patterns, `race` result payloads) — these become unnecessary once action creators exist.~~ Mostly done. 32 `as any` remain (17 event data casts, 12 reducer `action: any`, 3 misc).
-10. ~~Fix the `Root.tsx` `DefaultTheme` typing gap (precursor to P4 Vanilla Extract migration).~~ ✅ Done (hardcoded CSS values).
+10. ~~Fix the `Root.tsx` `DefaultTheme` typing gap (precursor to P4 Vanilla Extract migration).~~ ✅ Done (VE replaced styled-components entirely).
 11. ~~Remove `@redux-saga/delay-p` from dependencies (sole consumer was `notification.js`, now uses `typed-redux-saga`'s `delay`).~~ ✅ Already removed.
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. Type the `MHMEvent.options` return to eliminate 17 event `as any` casts — `satisfies` or widen `Record<string, string>` to accept literal keys.
