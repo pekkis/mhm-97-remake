@@ -1,6 +1,6 @@
 import competitionData from "../data/competitions";
 import {
-  SEASON_START,
+  seasonStart as seasonStartAction,
   gameBegin,
   clearExpired,
   competitionStart as competitionStartAction,
@@ -262,9 +262,7 @@ export function* seasonStart() {
     );
   }
 
-  yield* put({
-    type: SEASON_START
-  });
+  yield* put(seasonStartAction());
 }
 
 export function* promote(competition: string, team: number) {

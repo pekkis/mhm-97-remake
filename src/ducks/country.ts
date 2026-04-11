@@ -1,7 +1,6 @@
 import { countries as countryList } from "../data/countries";
-import { produce } from "immer";
-import { createAction } from "@reduxjs/toolkit";
-import { META_QUIT_TO_MAIN_MENU } from "./meta";
+import { createAction, createReducer } from "@reduxjs/toolkit";
+import { quitToMainMenu } from "./meta";
 
 export type Country = {
   iso: string;
@@ -26,44 +25,29 @@ const defaultState: CountryState = {
   )
 };
 
-const COUNTRY_ALTER_STRENGTH = "COUNTRY_ALTER_STRENGTH";
-const COUNTRY_SET_STRENGTH = "COUNTRY_SET_STRENGTH";
-
 export const alterStrength = createAction<{
   country: string;
   amount: number;
-}>(COUNTRY_ALTER_STRENGTH);
+}>("COUNTRY_ALTER_STRENGTH");
 
 export const setStrength = createAction<{
   country: string;
   strength: number;
-}>(COUNTRY_SET_STRENGTH);
+}>("COUNTRY_SET_STRENGTH");
 
-export default function countryReducer(
-  state: CountryState = defaultState,
-  action: any
-): CountryState {
-  switch (action.type) {
-    case META_QUIT_TO_MAIN_MENU:
-      return defaultState;
-
-    case COUNTRY_SET_STRENGTH:
-      return produce(state, (draft) => {
-        if (draft.countries[action.payload.country]) {
-          draft.countries[action.payload.country].strength =
-            action.payload.strength;
-        }
-      });
-
-    case COUNTRY_ALTER_STRENGTH:
-      return produce(state, (draft) => {
-        const target = draft.countries[action.payload.country];
-        if (target) {
-          target.strength = (target.strength ?? 0) + action.payload.amount;
-        }
-      });
-
-    default:
-      return defaultState;
-  }
-}
+export default createReducer(defaultState, (builder) => {
+  builder
+    .addCase(quitToMainMenu, () => defaultState)
+    .addCase(setStrength, (state, action) => {
+      if (state.countries[action.payload.country]) {
+        state.countries[action.payload.country].strength =
+          action.payload.strength;
+      }
+    })
+    .addCase(alterStrength, (state, action) => {
+      const target = state.countries[action.payload.country];
+      if (target) {
+        target.strength = (target.strength ?? 0) + action.payload.amount;
+      }
+    });
+});

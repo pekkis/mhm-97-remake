@@ -1,7 +1,6 @@
-import { produce } from "immer";
-import { createAction } from "@reduxjs/toolkit";
+import { createAction, createReducer } from "@reduxjs/toolkit";
 import type { PrankInstance } from "../data/pranks";
-import { META_QUIT_TO_MAIN_MENU, META_GAME_LOAD_STATE } from "./meta";
+import { quitToMainMenu, gameLoadState } from "./meta";
 
 type PrankState = {
   pranks: PrankInstance[];
@@ -22,28 +21,14 @@ export const orderPrank = createAction<{
 export const addPrank = createAction<PrankInstance>("PRANK_ADD");
 export const dismissPrank = createAction<number>("PRANK_DISMISS");
 
-export default function prankReducer(
-  state: PrankState = defaultState,
-  action: any
-): PrankState {
-  switch (action.type) {
-    case META_QUIT_TO_MAIN_MENU:
-      return defaultState;
-
-    case META_GAME_LOAD_STATE:
-      return action.payload.prank;
-
-    case addPrank.type:
-      return produce(state, (draft) => {
-        draft.pranks.push(action.payload);
-      });
-
-    case dismissPrank.type:
-      return produce(state, (draft) => {
-        draft.pranks.splice(action.payload, 1);
-      });
-
-    default:
-      return state;
-  }
-}
+export default createReducer(defaultState, (builder) => {
+  builder
+    .addCase(quitToMainMenu, () => defaultState)
+    .addCase(gameLoadState, (_state, action) => action.payload.prank)
+    .addCase(addPrank, (state, action) => {
+      state.pranks.push(action.payload);
+    })
+    .addCase(dismissPrank, (state, action) => {
+      state.pranks.splice(action.payload, 1);
+    });
+});

@@ -1,10 +1,6 @@
-import { produce } from "immer";
-import { createAction } from "@reduxjs/toolkit";
-import {
-  SEASON_START,
-  GAME_DECREMENT_DURATIONS,
-  GAME_CLEAR_EXPIRED
-} from "./game";
+import { createAction, createReducer } from "@reduxjs/toolkit";
+import { seasonStart, decrementDurations, clearExpired } from "./game";
+import { quitToMainMenu, gameLoadState } from "./meta";
 
 export type Invitation = {
   id: string;
@@ -22,8 +18,6 @@ const defaultState: InvitationState = {
   invitations: []
 };
 
-export const INVITATION_ACCEPT_REQUEST = "INVITATION_ACCEPT_REQUEST";
-
 export const addInvitation = createAction<{
   manager: string;
   tournament: number;
@@ -38,64 +32,43 @@ export const acceptInvitationAction = createAction<{
 export const requestAcceptInvitation = createAction<{
   manager: string;
   id: string;
-}>(INVITATION_ACCEPT_REQUEST);
+}>("INVITATION_ACCEPT_REQUEST");
 
-export default function invitationReducer(
-  state: InvitationState = defaultState,
-  action: any
-): InvitationState {
-  const { type, payload } = action;
-
-  switch (type) {
-    case "META_QUIT_TO_MAIN_MENU":
-      return defaultState;
-
-    case "META_GAME_LOAD_STATE":
-      return payload.invitation;
-
-    case addInvitation.type:
-      return produce(state, (draft) => {
-        draft.invitations.push({
-          ...payload,
-          id: crypto.randomUUID()
-        });
+export default createReducer(defaultState, (builder) => {
+  builder
+    .addCase(quitToMainMenu, () => defaultState)
+    .addCase(gameLoadState, (_state, action) => action.payload.invitation)
+    .addCase(addInvitation, (state, action) => {
+      state.invitations.push({
+        ...action.payload,
+        id: crypto.randomUUID()
       });
-
-    case acceptInvitationAction.type:
-      return produce(state, (draft) => {
-        const idx = draft.invitations.findIndex(
-          (i) => i.manager === payload.manager && i.id === payload.id
-        );
-        if (idx !== -1) {
-          draft.invitations[idx].participate = true;
+    })
+    .addCase(acceptInvitationAction, (state, action) => {
+      const { manager, id } = action.payload;
+      const idx = state.invitations.findIndex(
+        (i) => i.manager === manager && i.id === id
+      );
+      if (idx !== -1) {
+        state.invitations[idx].participate = true;
+      }
+      state.invitations = state.invitations.filter(
+        (i) => i.manager !== manager || i.participate
+      );
+    })
+    .addCase(seasonStart, (state) => {
+      state.invitations = [];
+    })
+    .addCase(decrementDurations, (state) => {
+      for (const inv of state.invitations) {
+        if (!inv.participate) {
+          inv.duration -= 1;
         }
-        draft.invitations = draft.invitations.filter(
-          (i) => i.manager !== payload.manager || i.participate
-        );
-      });
-
-    case SEASON_START:
-      return produce(state, (draft) => {
-        draft.invitations = [];
-      });
-
-    case GAME_DECREMENT_DURATIONS:
-      return produce(state, (draft) => {
-        for (const inv of draft.invitations) {
-          if (!inv.participate) {
-            inv.duration -= 1;
-          }
-        }
-      });
-
-    case GAME_CLEAR_EXPIRED:
-      return produce(state, (draft) => {
-        draft.invitations = draft.invitations.filter(
-          (i) => i.participate || i.duration > 0
-        );
-      });
-
-    default:
-      return state;
-  }
-}
+      }
+    })
+    .addCase(clearExpired, (state) => {
+      state.invitations = state.invitations.filter(
+        (i) => i.participate || i.duration > 0
+      );
+    });
+});

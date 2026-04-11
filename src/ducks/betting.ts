@@ -1,33 +1,29 @@
-import { produce } from "immer";
-import { createAction } from "@reduxjs/toolkit";
-import { META_QUIT_TO_MAIN_MENU, META_GAME_LOAD_STATE } from "./meta";
-import { SEASON_START, GAME_NEXT_TURN } from "./game";
-
-export const BETTING_BET = "BETTING_BET";
-export const BETTING_BET_REQUEST = "BETTING_BET_REQUEST";
-export const BETTING_BET_CHAMPION = "BETTING_BET_CHAMPION";
-export const BETTING_BET_CHAMPION_REQUEST = "BETTING_BET_CHAMPION_REQUEST";
+import { createAction, createReducer } from "@reduxjs/toolkit";
+import { quitToMainMenu, gameLoadState } from "./meta";
+import { seasonStart, nextTurn } from "./game";
 
 export const placeBet = createAction<{
   manager: string;
   coupon: string[];
   amount: number;
-}>(BETTING_BET);
+}>("BETTING_BET");
 
 export const requestBet = createAction<{
   manager: string;
   coupon: string[];
   amount: number;
-}>(BETTING_BET_REQUEST);
+}>("BETTING_BET_REQUEST");
 
-export const placeChampionBet = createAction<ChampionshipBet>(BETTING_BET_CHAMPION);
+export const placeChampionBet = createAction<ChampionshipBet>(
+  "BETTING_BET_CHAMPION"
+);
 
 export const requestChampionBet = createAction<{
   manager: string;
   team: number;
   amount: number;
   odds: number;
-}>(BETTING_BET_CHAMPION_REQUEST);
+}>("BETTING_BET_CHAMPION_REQUEST");
 
 export type ChampionshipBet = {
   manager: string;
@@ -52,40 +48,20 @@ const defaultState: BettingState = {
   bets: []
 };
 
-export default function bettingReducer(
-  state: BettingState = defaultState,
-  action: any
-): BettingState {
-  const { type, payload } = action;
-
-  switch (type) {
-    case META_QUIT_TO_MAIN_MENU:
-      return defaultState;
-
-    case META_GAME_LOAD_STATE:
-      return payload.betting;
-
-    case SEASON_START:
-      return produce(state, (draft) => {
-        draft.championshipBets = [];
-      });
-
-    case BETTING_BET_CHAMPION:
-      return produce(state, (draft) => {
-        draft.championshipBets.push(payload);
-      });
-
-    case BETTING_BET:
-      return produce(state, (draft) => {
-        draft.bets.push(payload);
-      });
-
-    case GAME_NEXT_TURN:
-      return produce(state, (draft) => {
-        draft.bets = [];
-      });
-
-    default:
-      return state;
-  }
-}
+export default createReducer(defaultState, (builder) => {
+  builder
+    .addCase(quitToMainMenu, () => defaultState)
+    .addCase(gameLoadState, (_state, action) => action.payload.betting)
+    .addCase(seasonStart, (state) => {
+      state.championshipBets = [];
+    })
+    .addCase(placeChampionBet, (state, action) => {
+      state.championshipBets.push(action.payload);
+    })
+    .addCase(placeBet, (state, action) => {
+      state.bets.push(action.payload);
+    })
+    .addCase(nextTurn, (state) => {
+      state.bets = [];
+    });
+});

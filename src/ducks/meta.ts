@@ -1,6 +1,6 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
-import { SEASON_START } from "./game";
+import { seasonStart } from "./game";
 
 // String constants kept for cross-duck imports (used in 10+ reducer resets)
 export const META_QUIT_TO_MAIN_MENU = "META_QUIT_TO_MAIN_MENU";
@@ -50,7 +50,7 @@ export default createReducer(defaultState, (builder) => {
     })
     .addMatcher(
       (action: { type: string }) =>
-        action.type === SEASON_START || gameLoaded.match(action),
+        seasonStart.match(action) || gameLoaded.match(action),
       (state) => {
         state.started = true;
         state.loading = false;

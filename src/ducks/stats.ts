@@ -1,10 +1,6 @@
-import { produce } from "immer";
-import { createAction } from "@reduxjs/toolkit";
-import { META_QUIT_TO_MAIN_MENU, META_GAME_LOAD_STATE } from "./meta";
-import { SEASON_START, SEASON_END } from "./game";
-
-export const STATS_UPDATE_FROM_FACTS = "STATS_UPDATE_FROM_FACTS";
-export const STATS_SET_SEASON_STAT = "STATS_SET_SEASON_STAT";
+import { createAction, createReducer } from "@reduxjs/toolkit";
+import { quitToMainMenu, gameLoadState } from "./meta";
+import { seasonStart, seasonEnd } from "./game";
 
 export const updateFromFacts = createAction<{
   team: string;
@@ -12,12 +8,12 @@ export const updateFromFacts = createAction<{
   phase: string;
   manager: string | undefined;
   facts: { isWin: boolean; isDraw: boolean; isLoss: boolean };
-}>(STATS_UPDATE_FROM_FACTS);
+}>("STATS_UPDATE_FROM_FACTS");
 
 export const setSeasonStat = createAction<{
   path: string[];
   value: unknown;
-}>(STATS_SET_SEASON_STAT);
+}>("STATS_SET_SEASON_STAT");
 
 export type Streak = {
   win: number;
@@ -90,92 +86,70 @@ const defaultState: StatsState = {
   }
 };
 
-export default function statsReducer(
-  state: StatsState = defaultState,
-  action: any
-): StatsState {
-  const { type, payload } = action;
-
-  switch (type) {
-    case META_QUIT_TO_MAIN_MENU:
-      return defaultState;
-
-    case META_GAME_LOAD_STATE:
-      return payload.stats;
-
-    case SEASON_START:
-      return produce(state, (draft) => {
-        draft.currentSeason = { ...emptySeasonStats, stories: {} };
-      });
-
-    case SEASON_END:
-      return produce(state, (draft) => {
-        if (draft.currentSeason) {
-          draft.seasons.push(draft.currentSeason);
+export default createReducer(defaultState, (builder) => {
+  builder
+    .addCase(quitToMainMenu, () => defaultState)
+    .addCase(gameLoadState, (_state, action) => action.payload.stats)
+    .addCase(seasonStart, (state) => {
+      state.currentSeason = { ...emptySeasonStats, stories: {} };
+    })
+    .addCase(seasonEnd, (state) => {
+      if (state.currentSeason) {
+        state.seasons.push(state.currentSeason);
+      }
+    })
+    .addCase(setSeasonStat, (state, action) => {
+      const { path, value } = action.payload;
+      if (!state.currentSeason) {
+        return;
+      }
+      let target: any = state.currentSeason;
+      for (let i = 0; i < path.length - 1; i++) {
+        if (target[path[i]] === undefined) {
+          target[path[i]] = {};
         }
-      });
+        target = target[path[i]];
+      }
+      target[path[path.length - 1]] = value;
+    })
+    .addCase(updateFromFacts, (state, action) => {
+      const { team, competition, phase, manager, facts } = action.payload;
 
-    case STATS_SET_SEASON_STAT: {
-      const path: string[] = payload.path;
-      const value = payload.value;
-      return produce(state, (draft) => {
-        if (!draft.currentSeason) {
-          return;
-        }
-        let target: any = draft.currentSeason;
-        for (let i = 0; i < path.length - 1; i++) {
-          if (target[path[i]] === undefined) {
-            target[path[i]] = {};
-          }
-          target = target[path[i]];
-        }
-        target[path[path.length - 1]] = value;
-      });
-    }
+      // Update team streaks
+      if (!state.streaks.team[team]) {
+        state.streaks.team[team] = {};
+      }
+      if (!state.streaks.team[team][competition]) {
+        state.streaks.team[team][competition] = { ...emptyStreak };
+      }
+      const streak = state.streaks.team[team][competition];
+      streak.win = facts.isWin ? streak.win + 1 : 0;
+      streak.draw = facts.isDraw ? streak.draw + 1 : 0;
+      streak.loss = facts.isLoss ? streak.loss + 1 : 0;
+      streak.noLoss = facts.isWin || facts.isDraw ? streak.noLoss + 1 : 0;
+      streak.noWin = facts.isLoss || facts.isDraw ? streak.noWin + 1 : 0;
 
-    case STATS_UPDATE_FROM_FACTS: {
-      const { team, competition, phase, manager, facts } = payload;
-      return produce(state, (draft) => {
-        // Update team streaks
-        if (!draft.streaks.team[team]) {
-          draft.streaks.team[team] = {};
+      // Update manager game stats
+      if (manager) {
+        if (!state.managers[manager]) {
+          state.managers[manager] = { games: {} };
         }
-        if (!draft.streaks.team[team][competition]) {
-          draft.streaks.team[team][competition] = { ...emptyStreak };
+        if (!state.managers[manager].games[competition]) {
+          state.managers[manager].games[competition] = {};
         }
-        const streak = draft.streaks.team[team][competition];
-        streak.win = facts.isWin ? streak.win + 1 : 0;
-        streak.draw = facts.isDraw ? streak.draw + 1 : 0;
-        streak.loss = facts.isLoss ? streak.loss + 1 : 0;
-        streak.noLoss = facts.isWin || facts.isDraw ? streak.noLoss + 1 : 0;
-        streak.noWin = facts.isLoss || facts.isDraw ? streak.noWin + 1 : 0;
-
-        // Update manager game stats
-        if (manager) {
-          if (!draft.managers[manager]) {
-            draft.managers[manager] = { games: {} };
-          }
-          if (!draft.managers[manager].games[competition]) {
-            draft.managers[manager].games[competition] = {};
-          }
-          if (!draft.managers[manager].games[competition][phase]) {
-            draft.managers[manager].games[competition][phase] = {
-              ...emptyGameRecord
-            };
-          }
-          const record = draft.managers[manager].games[competition][phase];
-          if (facts.isWin) {
-            record.win += 1;
-          } else if (facts.isLoss) {
-            record.loss += 1;
-          } else {
-            record.draw += 1;
-          }
+        if (!state.managers[manager].games[competition][phase]) {
+          state.managers[manager].games[competition][phase] = {
+            ...emptyGameRecord
+          };
         }
-      });
-    }
-
-    default:
-      return state;
-  }
-}
+        const record = state.managers[manager].games[competition][phase];
+        if (facts.isWin) {
+          record.win += 1;
+        } else if (facts.isLoss) {
+          record.loss += 1;
+        } else {
+          record.draw += 1;
+        }
+      }
+    });
+});
