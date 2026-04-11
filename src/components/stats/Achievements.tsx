@@ -14,20 +14,20 @@ type AchievementsProps = {
 const medals: Record<number, string> = {
   0: "kulta",
   1: "hopea",
-  2: "pronssi",
+  2: "pronssi"
 };
 
 const playoffRounds: Record<string, [number, string][]> = {
   phl: [
     [1, "neljännesfinaalit"],
     [2, "semifinaali"],
-    [3, "pronssiottelu"],
+    [3, "pronssiottelu"]
   ],
   division: [
     [1, "neljännesfinaalit"],
     [2, "semifinaali"],
-    [3, "finaali"],
-  ],
+    [3, "finaali"]
+  ]
 };
 
 const Achievements: FC<AchievementsProps> = ({ story }) => {
@@ -38,7 +38,7 @@ const Achievements: FC<AchievementsProps> = ({ story }) => {
       playoffRounds[story.mainCompetition]?.[story.lastRound]?.[1],
     story.ehlChampion && "euroopan mestaruus",
     story.promoted && "sarjanousu",
-    story.relegated && "putoaminen",
+    story.relegated && "putoaminen"
   ].filter((t) => t);
 
   return <div>{achievements.join(", ")}</div>;

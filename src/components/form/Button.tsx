@@ -8,7 +8,13 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   block?: boolean;
 };
 
-const Button: FC<ButtonProps> = ({ secondary, terse, block, className, ...rest }) => {
+const Button: FC<ButtonProps> = ({
+  secondary,
+  terse,
+  block,
+  className,
+  ...rest
+}) => {
   return (
     <button
       className={clsx(

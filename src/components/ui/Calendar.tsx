@@ -8,7 +8,7 @@ type CalendarProps = {
   when: (
     entry: CalendarEntry,
     calendar: CalendarEntry[],
-    state: RootState,
+    state: RootState
   ) => boolean;
   children: ReactNode;
   fallback?: ReactNode;

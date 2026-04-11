@@ -6,7 +6,7 @@ import { managerSelectStrategy } from "../ducks/manager";
 
 const SelectStrategy = () => {
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const dispatch = useAppDispatch();
 
@@ -30,7 +30,12 @@ const SelectStrategy = () => {
               <Button
                 block
                 onClick={() =>
-                  dispatch(managerSelectStrategy({ manager: manager.id, strategy: strategy.id }))
+                  dispatch(
+                    managerSelectStrategy({
+                      manager: manager.id,
+                      strategy: strategy.id
+                    })
+                  )
                 }
               >
                 Valitse strategia "{strategy.name}"

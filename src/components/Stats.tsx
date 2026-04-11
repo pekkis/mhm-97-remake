@@ -14,7 +14,7 @@ import { useAppSelector } from "@/config/redux";
 
 const Stats = () => {
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);

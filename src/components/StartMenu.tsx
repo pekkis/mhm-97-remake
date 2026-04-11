@@ -12,7 +12,7 @@ import { pick } from "remeda";
 const StartMenu = () => {
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) =>
-    pick(state.game.competitions, ["phl", "division"]),
+    pick(state.game.competitions, ["phl", "division"])
   );
   const manager = useAppSelector((state) => state.meta.manager);
   const starting = useAppSelector((state) => state.meta.starting);

@@ -13,7 +13,7 @@ import services from "../data/services";
 
 const Services = () => {
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const basePrices = useAppSelector((state) => state.game.serviceBasePrices);
   const dispatch = useAppDispatch();
@@ -35,7 +35,14 @@ const Services = () => {
                   <Toggle
                     id={key}
                     checked={manager.services[key]}
-                    onChange={() => dispatch(managerToggleService({ manager: manager.id, service: key }))}
+                    onChange={() =>
+                      dispatch(
+                        managerToggleService({
+                          manager: manager.id,
+                          service: key
+                        })
+                      )
+                    }
                   />
                   <label htmlFor={key}>
                     <strong>{service.name}</strong>

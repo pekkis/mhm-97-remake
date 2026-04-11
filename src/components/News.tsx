@@ -10,7 +10,7 @@ import { requestResolveEvent } from "../ducks/event";
 const News = () => {
   const dispatch = useAppDispatch();
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const events = useAppSelector((state) => state.event.events);
   const announcements = useAppSelector((state) => state.news.announcements);
@@ -26,7 +26,9 @@ const News = () => {
         <EventsList
           manager={manager}
           events={events}
-          onAnswer={(e, key) => dispatch(requestResolveEvent({ event: e, value: key }))}
+          onAnswer={(e, key) =>
+            dispatch(requestResolveEvent({ event: e, value: key }))
+          }
         />
         <Announcements
           announcements={announcements[manager.id.toString()] || []}

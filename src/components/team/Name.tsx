@@ -11,7 +11,7 @@ type NameProps = {
 
 const Name: FC<NameProps> = ({ team, managers = {} }) => {
   const isHumanControlled = Object.values(managers).some(
-    (p) => p.team === team.id,
+    (p) => p.team === team.id
   );
 
   return (

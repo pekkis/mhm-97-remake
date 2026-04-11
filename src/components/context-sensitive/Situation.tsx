@@ -19,7 +19,7 @@ const Situation: FC<SituationProps> = ({
   competitions,
   interesting,
   teams,
-  manager,
+  manager
 }) => {
   return (
     <div>
@@ -39,7 +39,7 @@ const Situation: FC<SituationProps> = ({
                 .filter(
                   (group) =>
                     phase.groups.length === 1 ||
-                    group.teams.includes(manager.team!),
+                    group.teams.includes(manager.team!)
                 )
                 .map((group, i) => {
                   return (

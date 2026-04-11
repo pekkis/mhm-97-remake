@@ -5,7 +5,7 @@ const humanReadables: Record<string, string> = {
   loss: "tappiota",
   noWin: "voitotonta ottelua",
   noLoss: "tappiotonta ottelua",
-  win: "voittoa",
+  win: "voittoa"
 };
 
 type StreaksProps = {

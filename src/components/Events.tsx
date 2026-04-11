@@ -9,7 +9,7 @@ import { requestResolveEvent } from "../ducks/event";
 const Events = () => {
   const dispatch = useAppDispatch();
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const events = useAppSelector((state) => state.event.events);
 
@@ -23,7 +23,9 @@ const Events = () => {
         <EventsList
           manager={manager}
           events={events}
-          onAnswer={(e, key) => dispatch(requestResolveEvent({ event: e, value: key }))}
+          onAnswer={(e, key) =>
+            dispatch(requestResolveEvent({ event: e, value: key }))
+          }
         />
       </Box>
     </HeaderedPage>

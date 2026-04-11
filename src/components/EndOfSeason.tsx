@@ -9,7 +9,7 @@ import { useAppSelector } from "@/config/redux";
 
 const EndOfSeason = () => {
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const news = useAppSelector((state) => state.news.news);
   const turn = useAppSelector((state) => state.game.turn);

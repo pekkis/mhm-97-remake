@@ -15,7 +15,7 @@ import { managerBuyPlayer, managerSellPlayer } from "../ducks/manager";
 
 const TransferMarket = () => {
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const dispatch = useAppDispatch();
 
@@ -48,7 +48,12 @@ const TransferMarket = () => {
                     <Button
                       key={index}
                       onClick={() =>
-                        dispatch(managerBuyPlayer({ manager: manager.id, playerType: index.toString() }))
+                        dispatch(
+                          managerBuyPlayer({
+                            manager: manager.id,
+                            playerType: index.toString()
+                          })
+                        )
                       }
                       block
                       disabled={balance < playerType.buy}
@@ -69,7 +74,12 @@ const TransferMarket = () => {
                     <Button
                       key={index}
                       onClick={() =>
-                        dispatch(managerSellPlayer({ manager: manager.id, playerType: index.toString() }))
+                        dispatch(
+                          managerSellPlayer({
+                            manager: manager.id,
+                            playerType: index.toString()
+                          })
+                        )
                       }
                       block
                     >

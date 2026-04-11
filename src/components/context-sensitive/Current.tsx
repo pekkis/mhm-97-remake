@@ -6,13 +6,13 @@ import { useAppSelector } from "@/config/redux";
 
 const Current = () => {
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const teams = useAppSelector((state) => state.game.teams);
   const invitations = useAppSelector((state) =>
     state.invitation.invitations.filter(
-      (i) => i.manager === state.manager.active,
-    ),
+      (i) => i.manager === state.manager.active
+    )
   );
 
   const team = teams[manager.team!];
@@ -34,8 +34,7 @@ const Current = () => {
         }}
       >
         <div className={styles.currentEntry}>
-          <FaExclamationCircle /> Nyt on
-          viimeinen tilaisuutemme{" "}
+          <FaExclamationCircle /> Nyt on viimeinen tilaisuutemme{" "}
           <Link to="/pelaajamarkkinat">ostaa pelaajia</Link>, sillä siirtoaika
           umpeutuu seuraavan ottelun jälkeen.
         </div>
@@ -43,9 +42,8 @@ const Current = () => {
 
       <Calendar when={(e) => e.crisisMeeting && team.morale <= -3}>
         <div className={styles.currentEntry}>
-          <FaExclamationCircle /> Joukkueen
-          moraali on huono. <Link to="/kriisipalaveri">Kriisipalaveri</Link>{" "}
-          auttaisi.
+          <FaExclamationCircle /> Joukkueen moraali on huono.{" "}
+          <Link to="/kriisipalaveri">Kriisipalaveri</Link> auttaisi.
         </div>
       </Calendar>
     </div>

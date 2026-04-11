@@ -30,28 +30,37 @@ const BettingForm: FC<BettingFormProps> = ({
   manager,
   competition,
   teams,
-  bet,
+  bet
 }) => {
   const group = competition.phases[0].groups[0];
   const round = group.round;
   const pairings = group.schedule[round];
 
-  const { register, handleSubmit, control, watch } = useForm<BettingFormValues>({
-    defaultValues: {
-      "0": "",
-      "1": "",
-      "2": "",
-      "3": "",
-      "4": "",
-      "5": "",
-      amount: 10000,
-    },
-  });
+  const { register, handleSubmit, control, watch } = useForm<BettingFormValues>(
+    {
+      defaultValues: {
+        "0": "",
+        "1": "",
+        "2": "",
+        "3": "",
+        "4": "",
+        "5": "",
+        amount: 10000
+      }
+    }
+  );
 
   const values = watch();
 
   const onSubmit = (data: BettingFormValues) => {
-    const coupon = [data["0"], data["1"], data["2"], data["3"], data["4"], data["5"]];
+    const coupon = [
+      data["0"],
+      data["1"],
+      data["2"],
+      data["3"],
+      data["4"],
+      data["5"]
+    ];
     bet(coupon, data.amount);
   };
 
@@ -113,7 +122,9 @@ const BettingForm: FC<BettingFormProps> = ({
       </div>
 
       <Button
-        disabled={Object.entries(values).some(([k, v]) => k !== "amount" && v === "")}
+        disabled={Object.entries(values).some(
+          ([k, v]) => k !== "amount" && v === ""
+        )}
         block
         type="submit"
       >

@@ -15,7 +15,7 @@ import { requestChampionBet } from "../ducks/betting";
 
 const ChampionshipBetting = () => {
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);
@@ -35,8 +35,20 @@ const ChampionshipBetting = () => {
 
         <BettingForm
           manager={manager}
-          betChampion={(managerId: string, teamId: number, amount: number, odds: number) =>
-            dispatch(requestChampionBet({ manager: managerId, team: teamId, amount, odds }))
+          betChampion={(
+            managerId: string,
+            teamId: number,
+            amount: number,
+            odds: number
+          ) =>
+            dispatch(
+              requestChampionBet({
+                manager: managerId,
+                team: teamId,
+                amount,
+                odds
+              })
+            )
           }
           competition={competitions.phl}
           teams={teams}

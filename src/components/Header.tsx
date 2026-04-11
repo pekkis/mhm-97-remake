@@ -15,7 +15,7 @@ type HeaderProps = {
 const Header = ({
   back = false,
   menu = false,
-  forward = "Eteenpäin!",
+  forward = "Eteenpäin!"
 }: HeaderProps) => {
   const advanceEnabled = useAppSelector((state) => state.ui.advanceEnabled);
   const dispatch = useAppDispatch();

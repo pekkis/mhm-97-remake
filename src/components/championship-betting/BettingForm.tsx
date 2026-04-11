@@ -21,7 +21,7 @@ type ChampionshipBettingFormProps = {
     managerId: string,
     teamId: number,
     amount: number,
-    odds: number,
+    odds: number
   ) => void;
 };
 
@@ -29,16 +29,17 @@ const BettingForm: FC<ChampionshipBettingFormProps> = ({
   manager,
   competition,
   teams,
-  betChampion,
+  betChampion
 }) => {
   const teamsAndOdds = odds(competition, teams);
 
-  const { register, handleSubmit, control, watch } = useForm<ChampionshipBettingFormValues>({
-    defaultValues: {
-      team: "",
-      amount: 10000,
-    },
-  });
+  const { register, handleSubmit, control, watch } =
+    useForm<ChampionshipBettingFormValues>({
+      defaultValues: {
+        team: "",
+        amount: 10000
+      }
+    });
 
   const values = watch();
 
@@ -48,7 +49,7 @@ const BettingForm: FC<ChampionshipBettingFormProps> = ({
       manager.id,
       teamId,
       data.amount,
-      teamsAndOdds.find((t) => t.id === teamId)!.odds,
+      teamsAndOdds.find((t) => t.id === teamId)!.odds
     );
   };
 

@@ -3,8 +3,6 @@ import Root from "./Root";
 
 import createStore from "./store";
 
-
-
 // import * as Sentry from "@sentry/browser";
 
 /*
@@ -13,8 +11,6 @@ Sentry.init({
   dsn: "https://38630b0d78f645abb5cae7e82bc1582c@sentry.io/1367033"
 });
 */
-
-
 
 const store = createStore();
 

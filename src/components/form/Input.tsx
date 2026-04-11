@@ -7,7 +7,12 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 };
 
 const Input: FC<InputProps> = ({ block, className, ...rest }) => {
-  return <input className={clsx(styles.input, block && styles.block, className)} {...rest} />;
+  return (
+    <input
+      className={clsx(styles.input, block && styles.block, className)}
+      {...rest}
+    />
+  );
 };
 
 export default Input;

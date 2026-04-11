@@ -19,7 +19,7 @@ const Table: FC<TableProps> = ({ managers, teams, division, isClone }) => {
   const managerTeams = Object.values(managers).map((p) => p.team);
   const tbl = (division.stats as TeamStat[]).map((entry) => ({
     ...entry,
-    managerControlled: managerTeams.includes(entry.id),
+    managerControlled: managerTeams.includes(entry.id)
   }));
 
   return (
@@ -40,7 +40,13 @@ const Table: FC<TableProps> = ({ managers, teams, division, isClone }) => {
       <tbody>
         {tbl.map((t, i) => {
           return (
-            <tr key={t.id} className={clsx(styles.tableRow, colors?.[i] === "d" && styles.tableRowDark)}>
+            <tr
+              key={t.id}
+              className={clsx(
+                styles.tableRow,
+                colors?.[i] === "d" && styles.tableRowDark
+              )}
+            >
               <td className="fixed">
                 {t.managerControlled ? (
                   <strong>{teams[t.id]?.name}</strong>

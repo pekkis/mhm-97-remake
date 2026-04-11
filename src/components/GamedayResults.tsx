@@ -15,7 +15,7 @@ const GamedayResults = () => {
   const calendarEntry = calendar[turn.round];
 
   const currentCompetitions = calendarEntry.gamedays.map(
-    (c) => competitions[c],
+    (c) => competitions[c]
   );
 
   return (

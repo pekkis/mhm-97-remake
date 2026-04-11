@@ -5,7 +5,7 @@ import { dismissNotification } from "../../ducks/notification";
 
 const Notifications = () => {
   const notifications = useAppSelector(
-    (state) => state.notification.notifications,
+    (state) => state.notification.notifications
   );
   const dispatch = useAppDispatch();
 

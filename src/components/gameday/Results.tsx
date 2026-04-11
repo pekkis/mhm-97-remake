@@ -13,12 +13,7 @@ type ResultsProps = {
   managers: Record<string, Manager>;
 };
 
-const Results: FC<ResultsProps> = ({
-  teams,
-  context,
-  round,
-  managers,
-}) => {
+const Results: FC<ResultsProps> = ({ teams, context, round, managers }) => {
   const pairings = (context.schedule[round] ?? []).filter((p) => {
     return p.result;
   });

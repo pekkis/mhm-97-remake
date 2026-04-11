@@ -10,12 +10,12 @@ import { requestAcceptInvitation } from "../ducks/invitation";
 
 const Invitations = () => {
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const invitations = useAppSelector((state) =>
     state.invitation.invitations.filter(
-      (i) => i.manager === state.manager.active,
-    ),
+      (i) => i.manager === state.manager.active
+    )
   );
   const dispatch = useAppDispatch();
 
@@ -38,7 +38,11 @@ const Invitations = () => {
 
               <Button
                 block
-                onClick={() => dispatch(requestAcceptInvitation({ manager: manager.id, id: i.id }))}
+                onClick={() =>
+                  dispatch(
+                    requestAcceptInvitation({ manager: manager.id, id: i.id })
+                  )
+                }
                 disabled={i.participate}
               >
                 Hyväksy turnauskutsu

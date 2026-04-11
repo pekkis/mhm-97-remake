@@ -22,10 +22,10 @@ const ManagerForm: FC<ManagerFormProps> = ({
   manager,
   advance,
   competitions,
-  teams,
+  teams
 }) => {
   const { register, handleSubmit } = useForm<MetaManager>({
-    defaultValues: manager,
+    defaultValues: manager
   });
 
   return (

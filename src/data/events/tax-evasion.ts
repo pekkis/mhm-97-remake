@@ -128,10 +128,12 @@ const event: MHMEvent<TaxEvasionData> = {
       }
     });
 
-    yield* put(resolveEventAction({
-      id: resolved.id,
-      event: resolved
-    }));
+    yield* put(
+      resolveEventAction({
+        id: resolved.id,
+        event: resolved
+      })
+    );
   },
 
   render: (data) => {

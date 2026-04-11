@@ -14,13 +14,13 @@ import { requestResolveEvent } from "../ducks/event";
 const MainMenu = () => {
   const dispatch = useAppDispatch();
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);
   const events = useAppSelector((state) => state.event.events);
   const interesting = useAppSelector((state) =>
-    interestingCompetitions(state.manager.active!)(state),
+    interestingCompetitions(state.manager.active!)(state)
   );
 
   return (
@@ -42,7 +42,9 @@ const MainMenu = () => {
         <Events
           manager={manager}
           events={events}
-          onAnswer={(e, key) => dispatch(requestResolveEvent({ event: e, value: key }))}
+          onAnswer={(e, key) =>
+            dispatch(requestResolveEvent({ event: e, value: key }))
+          }
         />
       </Box>
     </HeaderedPage>

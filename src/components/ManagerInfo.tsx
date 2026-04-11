@@ -12,7 +12,7 @@ type ManagerInfoProps = {
 
 const ManagerInfo = ({ details = false }: ManagerInfoProps) => {
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const teams = useAppSelector((state) => state.game.teams);
   const turn = useAppSelector((state) => state.game.turn);

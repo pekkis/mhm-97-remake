@@ -24,10 +24,12 @@ export function* addEvent(eventData: Omit<StoredEvent, "id">) {
 }
 
 export function* resolvedEvent(eventData: StoredEvent) {
-  yield* put(resolveEventAction({
-    id: eventData.id,
-    event: eventData
-  }));
+  yield* put(
+    resolveEventAction({
+      id: eventData.id,
+      event: eventData
+    })
+  );
 }
 
 export function* processEvents() {

@@ -11,7 +11,7 @@ IF tuurix(tux) < -15 THEN COLOR 5, 0: PRINT lw(tux); " k\"rsi koko turnauksen aj
 
 const WorldChampionships = () => {
   const results = useAppSelector(
-    (state) => state.game.worldChampionshipResults,
+    (state) => state.game.worldChampionshipResults
   )!;
   const turn = useAppSelector((state) => state.game.turn);
 

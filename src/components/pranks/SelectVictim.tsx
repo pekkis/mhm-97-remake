@@ -19,7 +19,7 @@ const SelectVictim: FC<SelectVictimProps> = ({
   manager,
   selectVictim,
   teams,
-  cancel,
+  cancel
 }) => {
   return (
     <div>

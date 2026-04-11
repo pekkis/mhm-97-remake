@@ -14,7 +14,7 @@ import { getEffective } from "../services/effects";
 
 const CrisisActions = () => {
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);
@@ -53,7 +53,9 @@ const CrisisActions = () => {
             disabled={
               balance < crisisInfo.amount || team.morale > CRISIS_MORALE_MAX
             }
-            onClick={() => dispatch(managerCrisisMeeting({ manager: manager.id }))}
+            onClick={() =>
+              dispatch(managerCrisisMeeting({ manager: manager.id }))
+            }
           >
             Pidä kriisipalaveri
           </Button>

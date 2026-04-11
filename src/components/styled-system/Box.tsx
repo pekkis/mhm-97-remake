@@ -27,7 +27,17 @@ type BoxProps = {
   bg?: ColorKey;
 };
 
-const Box: FC<BoxProps> = ({ children, className, p, px, py, m, mx, my, bg }) => {
+const Box: FC<BoxProps> = ({
+  children,
+  className,
+  p,
+  px,
+  py,
+  m,
+  mx,
+  my,
+  bg
+}) => {
   const sprinkleClass = sprinkles({
     ...(p !== undefined && { padding: toSpaceKey(p) }),
     ...(px !== undefined && { paddingX: toSpaceKey(px) }),
@@ -35,7 +45,7 @@ const Box: FC<BoxProps> = ({ children, className, p, px, py, m, mx, my, bg }) =>
     ...(m !== undefined && { margin: toSpaceKey(m) }),
     ...(mx !== undefined && { marginX: toSpaceKey(mx) }),
     ...(my !== undefined && { marginY: toSpaceKey(my) }),
-    ...(bg !== undefined && { backgroundColor: bg }),
+    ...(bg !== undefined && { backgroundColor: bg })
   });
   return <div className={clsx(sprinkleClass, className)}>{children}</div>;
 };

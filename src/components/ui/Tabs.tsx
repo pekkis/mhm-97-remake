@@ -17,8 +17,8 @@ const Tabs = ({ className, children, selected, onSelect }: TabsProps) => {
         {childrenArray.map((child, key) =>
           cloneElement(child, {
             isSelected: key === selected,
-            onSelect: () => onSelect(key),
-          } as any),
+            onSelect: () => onSelect(key)
+          } as any)
         )}
       </ul>
 

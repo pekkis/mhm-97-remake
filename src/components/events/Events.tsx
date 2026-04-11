@@ -8,9 +8,8 @@ type EventsListProps = {
 };
 
 const Events = ({ events, manager, onAnswer }: EventsListProps) => {
-
   const managersEvents = Object.values(events).filter(
-    (e) => e.manager === manager.id,
+    (e) => e.manager === manager.id
   );
 
   return (
@@ -30,21 +29,23 @@ const Events = ({ events, manager, onAnswer }: EventsListProps) => {
             </Markdown>
             {!e.resolved && (
               <ul>
-                {Object.entries(event.options(e) as Record<string, string>).map(([key, option]) => {
-                  return (
-                    <li key={key}>
-                      <a
-                        href="#"
-                        onClick={(evt) => {
-                          evt.preventDefault();
-                          onAnswer(e, key);
-                        }}
-                      >
-                        {option}
-                      </a>
-                    </li>
-                  );
-                })}
+                {Object.entries(event.options(e) as Record<string, string>).map(
+                  ([key, option]) => {
+                    return (
+                      <li key={key}>
+                        <a
+                          href="#"
+                          onClick={(evt) => {
+                            evt.preventDefault();
+                            onAnswer(e, key);
+                          }}
+                        >
+                          {option}
+                        </a>
+                      </li>
+                    );
+                  }
+                )}
               </ul>
             )}
           </div>

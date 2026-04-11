@@ -18,7 +18,7 @@ const ConfirmPrank: FC<ConfirmPrankProps> = ({
   manager,
   teams,
   prank,
-  execute,
+  execute
 }) => {
   const prankInfo = pranks[prank.type!];
 

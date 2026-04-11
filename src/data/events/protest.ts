@@ -57,10 +57,12 @@ const event: MHMEvent<ProtestData> = {
       draft.penalty = -3;
     });
 
-    yield* put(resolveEventAction({
-      id: resolved.id,
-      event: resolved
-    }));
+    yield* put(
+      resolveEventAction({
+        id: resolved.id,
+        event: resolved
+      })
+    );
   },
 
   render: (data) => {

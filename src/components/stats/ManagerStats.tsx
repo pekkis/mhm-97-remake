@@ -18,12 +18,12 @@ const ManagerStats: FC<ManagerStatsProps> = ({
   competitions,
   manager,
   stats,
-  teams,
+  teams
 }) => {
   const [tab, setTab] = useState(0);
 
   const managersStories = stats.seasons.map(
-    (season) => season.stories?.[manager.id],
+    (season) => season.stories?.[manager.id]
   );
 
   return (
@@ -54,7 +54,7 @@ const ManagerStats: FC<ManagerStatsProps> = ({
                 ] ?? {
                   win: 0,
                   draw: 0,
-                  loss: 0,
+                  loss: 0
                 };
 
                 return (

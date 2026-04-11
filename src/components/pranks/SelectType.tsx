@@ -17,7 +17,7 @@ const SelectType: FC<SelectTypeProps> = ({
   manager,
   selectType,
   competition,
-  enabled,
+  enabled
 }) => {
   return (
     <div>

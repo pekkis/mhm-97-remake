@@ -13,7 +13,7 @@ import { managerImproveArena } from "../ducks/manager";
 
 const Arenas = () => {
   const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!],
+    (state) => state.manager.managers[state.manager.active!]
   );
   const dispatch = useAppDispatch();
 
@@ -38,7 +38,13 @@ const Arenas = () => {
           {arenas
             .map((arena, level) => {
               return (
-                <div className={clsx(styles.arenaRow, level === currentLevel && styles.arenaRowCurrent)} key={arena.id}>
+                <div
+                  className={clsx(
+                    styles.arenaRow,
+                    level === currentLevel && styles.arenaRowCurrent
+                  )}
+                  key={arena.id}
+                >
                   {arena.name}
                 </div>
               );
@@ -51,7 +57,9 @@ const Arenas = () => {
             <Button
               block
               disabled={!canDo}
-              onClick={() => dispatch(managerImproveArena({ manager: manager.id }))}
+              onClick={() =>
+                dispatch(managerImproveArena({ manager: manager.id }))
+              }
             >
               <div>Paranna halliolosuhteitasi</div>
               <div>{currency(nextLevel.price)}</div>
