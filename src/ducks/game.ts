@@ -8,13 +8,10 @@ import competitionList from "../data/competitions";
 import { quitToMainMenu, gameLoadState } from "./meta";
 import type { Competition, CompetitionId } from "../types/competitions";
 
-// String constants kept for saga `take()` consumers outside ducks
-export const GAME_ADVANCE_REQUEST = "GAME_ADVANCE_REQUEST";
-
 // --- Action creators ---
 
 // Game lifecycle
-export const advance = createAction<any>(GAME_ADVANCE_REQUEST);
+export const advance = createAction<any>("GAME_ADVANCE_REQUEST");
 export const clearExpired = createAction("GAME_CLEAR_EXPIRED");
 export const decrementDurations = createAction("GAME_DECREMENT_DURATIONS");
 export const nextTurn = createAction("GAME_NEXT_TURN");

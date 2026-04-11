@@ -51,14 +51,7 @@ import {
 } from "../data/selectors";
 import events from "../data/events";
 import type { RootState } from "../config/redux";
-import type {
-  Competition,
-  CompetitionDefinition,
-  Group,
-  TeamStat
-} from "../types/competitions";
-
-export const GAME_ADVANCE_REQUEST = "GAME_ADVANCE_REQUEST";
+import type { Group, TeamStat } from "../types/competitions";
 
 export function* beforeGame(action: ReturnType<typeof gameBegin>) {
   const {

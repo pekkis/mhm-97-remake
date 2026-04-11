@@ -29,7 +29,7 @@ import { acceptInvitation } from "../invitation";
 import { requestAcceptInvitation } from "../../ducks/invitation";
 import { requestBet } from "../../ducks/betting";
 import { bet } from "../betting";
-import { setGamePhase } from "../../ducks/game";
+import { advance, setGamePhase } from "../../ducks/game";
 import type { RootState } from "../../config/redux";
 
 export default function* actionPhase() {
@@ -65,6 +65,6 @@ export default function* actionPhase() {
     ]);
   });
 
-  yield* take("GAME_ADVANCE_REQUEST");
+  yield* take(advance);
   yield* cancel(task);
 }

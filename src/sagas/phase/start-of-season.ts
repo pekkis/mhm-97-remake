@@ -6,6 +6,7 @@ import { betChampion } from "../betting";
 import { setActiveManager } from "../manager";
 import { managerSelectStrategy } from "../../ducks/manager";
 import {
+  advance,
   setGamePhase,
   teamSetStrategy,
   teamSetReadiness
@@ -46,7 +47,7 @@ function* championshipBetting() {
 
   const { bet } = yield* race({
     bet: take(requestChampionBet),
-    advance: take("GAME_ADVANCE_REQUEST")
+    advance: take(advance)
   });
 
   if (bet) {

@@ -1,4 +1,5 @@
 import { call, all, take, put, select } from "typed-redux-saga";
+import { advance } from "../../ducks/game";
 import { seasonStart, promote, relegate, setPhase } from "../game";
 import { victors, eliminated } from "../../services/playoffs";
 import awards from "../../data/awards";
@@ -81,7 +82,7 @@ function* worldChampionships() {
     entries.map((e) => e.id)
   );
 
-  yield* take("GAME_ADVANCE_REQUEST");
+  yield* take(advance);
 }
 
 export default function* endOfSeasonPhase() {
@@ -132,7 +133,7 @@ export default function* endOfSeasonPhase() {
 
   yield* call(createSeasonStories);
 
-  yield* take("GAME_ADVANCE_REQUEST");
+  yield* take(advance);
 
   yield* put(seasonEnd());
 

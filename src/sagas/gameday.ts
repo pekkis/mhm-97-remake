@@ -8,6 +8,7 @@ import { calculateGroupStats } from "./stats";
 import { afterGameday } from "./manager";
 import { bettingResults } from "./betting";
 import {
+  advance,
   gameBegin,
   gameResult as gameResultAction,
   gamedayComplete,
@@ -176,11 +177,11 @@ export function* gameday(payload: string) {
       if (roundNumber < rounds) {
         yield* put(setGamePhase("results"));
 
-        yield* take("GAME_ADVANCE_REQUEST");
+        yield* take(advance);
 
         yield* put(setGamePhase("gameday"));
 
-        yield* take("GAME_ADVANCE_REQUEST");
+        yield* take(advance);
       }
     }
   }

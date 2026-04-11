@@ -1,5 +1,5 @@
 import { take, call, select } from "typed-redux-saga";
-import { GAME_ADVANCE_REQUEST } from "../../ducks/game";
+import { advance } from "../../ducks/game";
 import { setPhase } from "../game";
 import { addNews } from "../news";
 import { randomManager } from "../../data/selectors";
@@ -164,5 +164,5 @@ export default function* galaPhase() {
     }
   }
 
-  yield* take(GAME_ADVANCE_REQUEST);
+  yield* take(advance);
 }

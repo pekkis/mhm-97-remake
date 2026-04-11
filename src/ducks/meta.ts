@@ -2,15 +2,11 @@ import { createAction, createReducer } from "@reduxjs/toolkit";
 
 import { seasonStart } from "./game";
 
-// String constants kept for cross-duck imports (used in 10+ reducer resets)
-export const META_QUIT_TO_MAIN_MENU = "META_QUIT_TO_MAIN_MENU";
-export const META_GAME_LOAD_STATE = "META_GAME_LOAD_STATE";
-
-export const quitToMainMenu = createAction(META_QUIT_TO_MAIN_MENU);
+export const quitToMainMenu = createAction("META_QUIT_TO_MAIN_MENU");
 export const startGame = createAction("META_GAME_START_REQUEST");
 export const saveGame = createAction("META_GAME_SAVE_REQUEST");
 export const loadGame = createAction("META_GAME_LOAD_REQUEST");
-export const gameLoadState = createAction<any>(META_GAME_LOAD_STATE);
+export const gameLoadState = createAction<any>("META_GAME_LOAD_STATE");
 export const gameLoaded = createAction("META_GAME_LOADED");
 export const gameStart = createAction("GAME_START");
 

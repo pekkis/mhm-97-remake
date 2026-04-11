@@ -2,7 +2,7 @@ import { select, call, put, take } from "typed-redux-saga";
 import { gameday } from "../gameday";
 import calendar from "../../data/calendar";
 import { setPhase } from "../game";
-import { setGamePhase } from "../../ducks/game";
+import { advance, setGamePhase } from "../../ducks/game";
 import type { RootState } from "../../config/redux";
 
 export default function* gamedayPhase() {
@@ -13,7 +13,7 @@ export default function* gamedayPhase() {
   const calendarEntry = calendar[round];
   const gamedays = calendarEntry.gamedays;
 
-  yield* take("GAME_ADVANCE_REQUEST");
+  yield* take(advance);
 
   for (const item of gamedays) {
     yield* call(gameday, item);
@@ -21,5 +21,5 @@ export default function* gamedayPhase() {
 
   yield* put(setGamePhase("results"));
 
-  yield* take("GAME_ADVANCE_REQUEST");
+  yield* take(advance);
 }

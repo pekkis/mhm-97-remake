@@ -1,6 +1,7 @@
 import { addManager } from "./manager";
 import { gameLoop } from "./game";
 import { addNotification } from "./notification";
+import { advance } from "../ducks/game";
 import {
   quitToMainMenu,
   loadGame,
@@ -37,7 +38,7 @@ const load = (): RootState | null => {
 };
 
 function* gameStart() {
-  const action = yield* take("GAME_ADVANCE_REQUEST");
+  const action = yield* take(advance);
 
   yield* call(addManager, (action as any).payload);
 
