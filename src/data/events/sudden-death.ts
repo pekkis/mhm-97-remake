@@ -2,6 +2,7 @@ import { call, put } from "typed-redux-saga";
 import { produce } from "immer";
 import { amount as a } from "../../services/format";
 import { addEvent } from "../../sagas/event";
+import { resolveEventAction } from "../../ducks/event";
 import type { MHMEvent } from "../../types/base";
 
 const eventId = "suddenDeath";
@@ -58,10 +59,7 @@ const event: MHMEvent<SuddenDeathData> = {
       draft.resolved = true;
     });
 
-    yield* put({
-      type: "EVENT_RESOLVE",
-      payload: { id: resolved.id, event: resolved }
-    });
+    yield* put(resolveEventAction({ id: resolved.id, event: resolved }));
   },
 
   render: (data) => {

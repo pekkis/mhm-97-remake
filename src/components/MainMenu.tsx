@@ -9,7 +9,7 @@ import Current from "./context-sensitive/Current";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { interestingCompetitions } from "../data/selectors";
-import { resolveEvent } from "../ducks/event";
+import { requestResolveEvent } from "../ducks/event";
 
 const MainMenu = () => {
   const dispatch = useAppDispatch();
@@ -42,7 +42,7 @@ const MainMenu = () => {
         <Events
           manager={manager}
           events={events}
-          onAnswer={(e, key) => dispatch(resolveEvent(e, key))}
+          onAnswer={(e, key) => dispatch(requestResolveEvent({ event: e, value: key }))}
         />
       </Box>
     </HeaderedPage>

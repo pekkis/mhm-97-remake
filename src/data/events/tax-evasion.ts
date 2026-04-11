@@ -1,5 +1,6 @@
 import { put, select, call } from "typed-redux-saga";
 import { produce } from "immer";
+import { resolveEventAction } from "../../ducks/event";
 import {
   managersTeamId,
   randomTeamFrom,
@@ -127,13 +128,10 @@ const event: MHMEvent<TaxEvasionData> = {
       }
     });
 
-    yield* put({
-      type: "EVENT_RESOLVE",
-      payload: {
-        id: resolved.id,
-        event: resolved
-      }
-    });
+    yield* put(resolveEventAction({
+      id: resolved.id,
+      event: resolved
+    }));
   },
 
   render: (data) => {

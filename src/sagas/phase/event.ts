@@ -2,6 +2,7 @@ import { select, call, put, take, takeEvery, cancel } from "typed-redux-saga";
 import events from "../../data/events";
 import { resolveEvent, processEvents } from "../event";
 import { setGamePhase } from "../../ducks/game";
+import { requestResolveEvent } from "../../ducks/event";
 import type { RootState } from "../../config/redux";
 import type { StoredEvent } from "../../ducks/event";
 
@@ -24,7 +25,7 @@ export default function* eventPhase() {
   }
 
   const resolver = yield* takeEvery(
-    "EVENT_RESOLVE_REQUEST" as any,
+    requestResolveEvent,
     resolveEvent
   );
 

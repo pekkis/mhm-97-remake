@@ -16,17 +16,11 @@ import {
   nextTurn as nextTurnAction
 } from "../ducks/game";
 import { clearAnnouncements } from "../ducks/news";
+import { clearEvents } from "../ducks/event";
 
 import teamData from "../data/teams";
 
-import {
-  all,
-  call,
-  put,
-    select,
-  takeEvery,
-  fork
-} from "typed-redux-saga";
+import { all, call, put, select, takeEvery, fork } from "typed-redux-saga";
 
 import actionPhase from "./phase/action";
 import eventCreationPhase from "./phase/event-creation";
@@ -305,7 +299,7 @@ export function* incrementServiceBasePrice(service: string, amount: number) {
 
 function* nextTurn() {
   yield* put(clearAnnouncements());
-  yield* put({ type: "EVENT_CLEAR_EVENTS" as const });
+  yield* put(clearEvents());
   yield* put(nextTurnAction());
 }
 

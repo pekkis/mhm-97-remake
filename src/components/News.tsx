@@ -5,7 +5,7 @@ import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { resolveEvent } from "../ducks/event";
+import { requestResolveEvent } from "../ducks/event";
 
 const News = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +26,7 @@ const News = () => {
         <EventsList
           manager={manager}
           events={events}
-          onAnswer={(e, key) => dispatch(resolveEvent(e, key))}
+          onAnswer={(e, key) => dispatch(requestResolveEvent({ event: e, value: key }))}
         />
         <Announcements
           announcements={announcements[manager.id.toString()] || []}

@@ -1,4 +1,5 @@
 import { produce } from "immer";
+import { createAction } from "@reduxjs/toolkit";
 import type { BaseEventFields } from "../types/base";
 import { META_QUIT_TO_MAIN_MENU, META_GAME_LOAD_STATE } from "./meta";
 
@@ -12,39 +13,32 @@ const defaultState: EventState = {
   events: {}
 };
 
-type EventAction =
-  | { type: typeof META_QUIT_TO_MAIN_MENU }
-  | { type: typeof META_GAME_LOAD_STATE; payload: { event: EventState } }
-  | { type: "EVENT_ADD"; payload: { event: Omit<StoredEvent, "id"> } }
-  | { type: "EVENT_RESOLVE"; payload: { id: string; event: StoredEvent } }
-  | { type: "EVENT_CLEAR_EVENTS" }
-  | { type: "EVENT_SET_PROCESSED"; payload: { id: string } };
+export const EVENT_RESOLVE_REQUEST = "EVENT_RESOLVE_REQUEST";
 
-type ResolveEventAction = {
-  type: "EVENT_RESOLVE_REQUEST";
-  payload: {
-    event: StoredEvent;
-    value: string;
-  };
-};
+export const addEventAction = createAction<{
+  event: Omit<StoredEvent, "id">;
+}>("EVENT_ADD");
 
-export const resolveEvent = (
-  event: StoredEvent,
-  value: string
-): ResolveEventAction => {
-  return {
-    type: "EVENT_RESOLVE_REQUEST",
-    payload: {
-      event,
-      value
-    }
-  };
-};
+export const resolveEventAction = createAction<{
+  id: string;
+  event: StoredEvent;
+}>("EVENT_RESOLVE");
 
-const eventReducer = (
+export const clearEvents = createAction("EVENT_CLEAR_EVENTS");
+
+export const setEventProcessed = createAction<{
+  id: string;
+}>("EVENT_SET_PROCESSED");
+
+export const requestResolveEvent = createAction<{
+  event: StoredEvent;
+  value: string;
+}>(EVENT_RESOLVE_REQUEST);
+
+export default function eventReducer(
   state: EventState = defaultState,
-  action: EventAction
-): EventState => {
+  action: any
+): EventState {
   switch (action.type) {
     case META_QUIT_TO_MAIN_MENU:
       return defaultState;
@@ -52,22 +46,22 @@ const eventReducer = (
     case META_GAME_LOAD_STATE:
       return action.payload.event;
 
-    case "EVENT_ADD": {
+    case addEventAction.type: {
       const id = crypto.randomUUID();
       return produce(state, (draft) => {
         draft.events[id] = { ...action.payload.event, id } as StoredEvent;
       });
     }
 
-    case "EVENT_RESOLVE":
+    case resolveEventAction.type:
       return produce(state, (draft) => {
         draft.events[action.payload.id] = action.payload.event;
       });
 
-    case "EVENT_CLEAR_EVENTS":
+    case clearEvents.type:
       return { ...state, events: {} };
 
-    case "EVENT_SET_PROCESSED":
+    case setEventProcessed.type:
       return produce(state, (draft) => {
         draft.events[action.payload.id].processed = true;
       });
@@ -75,6 +69,4 @@ const eventReducer = (
     default:
       return state;
   }
-};
-
-export default eventReducer;
+}

@@ -4,6 +4,7 @@ import { managersTeam } from "../selectors";
 import r from "../../services/random";
 import { addEvent } from "../../sagas/event";
 import { incurPenalty } from "../../sagas/team";
+import { resolveEventAction } from "../../ducks/event";
 import type { MHMEvent } from "../../types/base";
 import type { RootState } from "../../config/redux";
 
@@ -56,13 +57,10 @@ const event: MHMEvent<ProtestData> = {
       draft.penalty = -3;
     });
 
-    yield* put({
-      type: "EVENT_RESOLVE",
-      payload: {
-        id: resolved.id,
-        event: resolved
-      }
-    });
+    yield* put(resolveEventAction({
+      id: resolved.id,
+      event: resolved
+    }));
   },
 
   render: (data) => {

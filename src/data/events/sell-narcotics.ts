@@ -6,6 +6,7 @@ import { decrementStrength } from "../../sagas/team";
 import { decrementBalance } from "../../sagas/manager";
 import { amount as a } from "../../services/format";
 import { addEvent } from "../../sagas/event";
+import { resolveEventAction } from "../../ducks/event";
 import type { MHMEvent } from "../../types/base";
 
 const eventId = "sellNarcotics";
@@ -73,13 +74,10 @@ const event: MHMEvent<SellNarcoticsData> = {
       draft.resolved = true;
     });
 
-    yield* put({
-      type: "EVENT_RESOLVE",
-      payload: {
-        id: resolved.id,
-        event: resolved
-      }
-    });
+    yield* put(resolveEventAction({
+      id: resolved.id,
+      event: resolved
+    }));
   },
 
   render: (data) => {
