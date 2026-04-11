@@ -2,7 +2,7 @@ import App from "./components/App";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import typography from "./services/typography";
-import { GoogleFont, TypographyStyle } from "react-typography";
+import { TypographyStyle } from "react-typography";
 import { createGlobalStyle } from "styled-components";
 
 import { ThemeProvider } from "styled-components";
@@ -11,8 +11,8 @@ import theme from "./themes/white";
 const GlobalStyle = createGlobalStyle`
 
   html {
-    background-color: ${(props) => props.theme.colors.white};
-    color: ${(props) => props.theme.colors.black}
+    background-color: ${() => 'rgb(255 255 255)'};
+    color: ${() => 'rgb(0 0 0 )'}
   }
 
   body {

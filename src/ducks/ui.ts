@@ -1,5 +1,12 @@
 import { produce } from "immer";
+import { createAction } from "@reduxjs/toolkit";
 import { META_QUIT_TO_MAIN_MENU } from "./meta";
+import {
+  cancelPrank,
+  orderPrank,
+  selectPrankType,
+  selectPrankVictim
+} from "./prank";
 
 type PrankSelection = {
   type: string | undefined;
@@ -35,76 +42,60 @@ const defaultState: UiState = {
   }
 };
 
-export const selectTab = (tab: keyof Tabs, value: number) => ({
-  type: "UI_SELECT_TAB" as const,
-  payload: { tab, value }
-});
-
-export const toggleMenu = () => ({
-  type: "UI_MENU_TOGGLE" as const
-});
-
-export const closeMenu = () => ({
-  type: "UI_MENU_CLOSE" as const
-});
-
-type UiAction =
-  | { type: typeof META_QUIT_TO_MAIN_MENU }
-  | { type: "UI_DISABLE_ADVANCE" }
-  | { type: "UI_ENABLE_ADVANCE" }
-  | { type: "UI_MENU_TOGGLE" }
-  | { type: "UI_MENU_CLOSE" }
-  | { type: "UI_SELECT_TAB"; payload: { tab: keyof Tabs; value: number } }
-  | { type: "PRANK_CANCEL" }
-  | { type: "PRANK_ORDER" }
-  | { type: "PRANK_SELECT_TYPE"; payload: string }
-  | { type: "PRANK_SELECT_VICTIM"; payload: number };
+export const disableAdvance = createAction("UI_DISABLE_ADVANCE");
+export const enableAdvance = createAction("UI_ENABLE_ADVANCE");
+export const selectTab = createAction<{
+  tab: keyof Tabs;
+  value: number;
+}>("UI_SELECT_TAB");
+export const toggleMenu = createAction("UI_MENU_TOGGLE");
+export const closeMenu = createAction("UI_MENU_CLOSE");
 
 export default function uiReducer(
   state: UiState = defaultState,
-  action: UiAction
+  action: any
 ): UiState {
   switch (action.type) {
     case META_QUIT_TO_MAIN_MENU:
       return defaultState;
 
-    case "UI_DISABLE_ADVANCE":
+    case disableAdvance.type:
       return produce(state, (draft) => {
         draft.advanceEnabled = false;
       });
 
-    case "UI_ENABLE_ADVANCE":
+    case enableAdvance.type:
       return produce(state, (draft) => {
         draft.advanceEnabled = true;
       });
 
-    case "UI_MENU_TOGGLE":
+    case toggleMenu.type:
       return produce(state, (draft) => {
         draft.menu = !draft.menu;
       });
 
-    case "UI_MENU_CLOSE":
+    case closeMenu.type:
       return produce(state, (draft) => {
         draft.menu = false;
       });
 
-    case "UI_SELECT_TAB":
+    case selectTab.type:
       return produce(state, (draft) => {
         draft.tabs[action.payload.tab] = action.payload.value;
       });
 
-    case "PRANK_CANCEL":
-    case "PRANK_ORDER":
+    case cancelPrank.type:
+    case orderPrank.type:
       return produce(state, (draft) => {
         draft.prank = { type: undefined, victim: undefined };
       });
 
-    case "PRANK_SELECT_TYPE":
+    case selectPrankType.type:
       return produce(state, (draft) => {
         draft.prank.type = action.payload;
       });
 
-    case "PRANK_SELECT_VICTIM":
+    case selectPrankVictim.type:
       return produce(state, (draft) => {
         draft.prank.victim = action.payload;
       });

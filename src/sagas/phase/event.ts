@@ -3,15 +3,14 @@ import events from "../../data/events";
 import { resolveEvent, processEvents } from "../event";
 import { setGamePhase } from "../../ducks/game";
 import { requestResolveEvent } from "../../ducks/event";
+import { disableAdvance, enableAdvance } from "../../ducks/ui";
 import type { RootState } from "../../config/redux";
 import type { StoredEvent } from "../../ducks/event";
 
 export default function* eventPhase() {
   yield* put(setGamePhase("event"));
 
-  yield* put({
-    type: "UI_DISABLE_ADVANCE" as const
-  });
+  yield* put(disableAdvance());
 
   const autoresolveEvents = yield* select((state: RootState) =>
     Object.values(state.event.events).filter(
@@ -45,7 +44,5 @@ export default function* eventPhase() {
 
   yield* call(processEvents);
 
-  yield* put({
-    type: "UI_ENABLE_ADVANCE" as const
-  });
+  yield* put(enableAdvance());
 }
