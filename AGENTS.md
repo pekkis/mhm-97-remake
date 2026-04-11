@@ -420,10 +420,32 @@ Converted all action creators from hand-rolled `{ type: "...", payload }` functi
 Categorized for future cleanup:
 
 1. **Event data `options()` return casts (17 files):** `} as any;` on event `options`/`resolve` returns. Root cause: `MHMEvent.options` returns `Record<string, string>` but event files return object literals with specific keys. Fix: widen return type or use `satisfies`.
-2. **Reducer `action: any` (all 12 ducks):** Every reducer has `action: any` parameter. Fix: `createSlice` migration eliminates this entirely.
-3. **Manager services cast (2 sites):** `(services as any)[key]` because `ManagerServices` has typed keys. Fix: index signature or type assertion helper.
+2. **Reducer `action: any` (11 remaining ducks):** Every reducer except `meta` has `action: any` parameter. Fix: `createReducer` migration eliminates this entirely.
+3. ~~**Manager services cast (2 sites):**~~ Fixed — `managerHasService` selector now takes `keyof ManagerServices`.
 4. **Saga boundary casts (4 sites):** `sagas/meta.ts`, `sagas/phase/start-of-season.ts`, `sagas/gameday.ts`, `phase/action.ts`. Fix: type the action payloads properly once all creators exist.
-5. **Component prop casts (2 sites):** `Tabs.tsx`, `ResponsiveTable.tsx`. Fix: proper generic component typing.
+
+### Completed: `redux-saga/effects` fully eliminated (2026-04-11)
+
+Zero `redux-saga/effects` imports remain in `src/`. Last 4 holdouts fixed:
+
+- `src/types/base.ts` — `Effect` type replaced with `unknown` in `MHMEventGenerator`
+- `src/getSagas.ts` — `all`, `setContext` → `typed-redux-saga` + `yield*`
+- `src/data/competitions/ehl.ts` — 12× `yield` → `yield*`
+- `src/data/competitions/tournaments.ts` — 9× `yield` → `yield*`
+
+### Completed: `(state: any)` → `RootState` in data layer (2026-04-11)
+
+Eliminated all 20 `(state: any)` casts across 8 files in `src/data/`:
+
+- **Event files (5):** `enemy-protest.ts`, `sell-narcotics.ts`, `bazooka-strike.ts`, `etelala-glitch.ts`, `joboffer-phl.ts`
+- **Competition files (2):** `ehl.ts`, `tournaments.ts`
+- **Awards:** `awards.ts`
+
+All now import `RootState` from `src/config/redux`. This also eliminated downstream `(t: any)`, `: any` declaration casts, and `(g: any)` callback casts that were only needed because the selector returned `any`.
+
+**Key discovery:** The `enemy-protest.ts` Immutable ghost crash (`.filterNot()` on plain `Record`) would have been caught at compile time with `RootState` typing. Inline `(state: any)` selectors are a type-safety escape hatch that masks real bugs.
+
+**Future direction:** Promote repeated inline selectors to named selectors in `src/data/selectors.ts` — these work identically with both `yield* select(selector)` in sagas and `useAppSelector(selector)` in components. 5. **Component prop casts (2 sites):** `Tabs.tsx`, `ResponsiveTable.tsx`. Fix: proper generic component typing.
 
 ### Completed: Full saga TypeScript migration (2026-04-10)
 
@@ -541,7 +563,24 @@ Key conventions established during migration:
 
 **As of 2026-04-11, all 12 ducks have RTK `createAction` creators.** Zero hand-rolled action creators remain. `putResolve` fully eliminated.
 
-Next natural step: `createSlice` conversion (replaces reducer switch/cases + eliminates `action: any` parameter typing). But this is lower priority than testing and styling.
+Next natural step: `createReducer` conversion (replaces switch/case + eliminates `action: any` + automatic immer). Pilot completed on `meta.ts` — see strategy below.
+
+### P2.8 — RTK `createReducer` migration (in progress)
+
+**Strategy:** Convert reducers from `switch/case` + manual `produce()` to RTK `createReducer` with builder API.
+
+**Why `createReducer` over `createSlice`:** `createSlice` auto-prefixes action types (e.g. `meta/quitToMainMenu` instead of `"META_QUIT_TO_MAIN_MENU"`). Since cross-duck action constants are referenced by string in 8+ reducer files, `createSlice` would cascade changes across the codebase. `createReducer` gives the same builder API and automatic immer without changing any action type strings.
+
+**Pilot: `meta.ts` (2026-04-11):**
+
+- `switch/case` + `produce()` → `createReducer(defaultState, (builder) => { ... })`
+- `addCase(actionCreator, handler)` for single-action cases
+- `addMatcher(predicate, handler)` for multi-action cases (e.g. `SEASON_START` and `gameLoaded` both set `{ started: true, loading: false }`)
+- `immer` import removed — RTK bundles it, `createReducer` wraps handlers automatically
+- `action: any` parameter eliminated — each `addCase` gets properly typed action
+- Found and removed dead `SEASON_START_REQUEST` case — nothing dispatched it
+
+**Migration order (suggested):** Start with simple ducks (country, notification, news) → medium (invitation, prank, betting, ui, stats, event) → complex (manager, game).
 
 ### P3 — State architecture evolution (controlled)
 

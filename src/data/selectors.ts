@@ -286,12 +286,23 @@ export const randomTeamFrom =
       .map((t) => state.game.teams[t])
       .filter((t) => {
         console.log("T", t);
+        console.log(
+          "kraa",
+          canBeHumanControlled || !managersTeams.includes(t.id)
+        );
         return canBeHumanControlled || !managersTeams.includes(t.id);
       })
       .filter((t) => !excluded.includes(t.id))
       .filter(f);
 
     if (teams.length === 0) {
+      console.log({
+        competitionIds,
+        canBeHumanControlled,
+        excluded,
+        managersTeams,
+        f
+      });
       throw new Error("Could not find a team!");
     }
 

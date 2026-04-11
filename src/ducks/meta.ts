@@ -1,5 +1,4 @@
-import { createAction } from "@reduxjs/toolkit";
-import { produce } from "immer";
+import { createAction, createReducer } from "@reduxjs/toolkit";
 
 import { SEASON_START } from "./game";
 
@@ -43,34 +42,18 @@ const defaultState: MetaState = {
   }
 };
 
-export default function metaReducer(
-  state: MetaState = defaultState,
-  action: any
-): MetaState {
-  const { type } = action;
-
-  switch (type) {
-    case META_QUIT_TO_MAIN_MENU:
-      return defaultState;
-
-    case "SEASON_START_REQUEST":
-      return produce(state, (draft) => {
-        draft.loading = true;
-      });
-
-    case SEASON_START:
-    case gameLoaded.type:
-      return produce(state, (draft) => {
-        draft.started = true;
-        draft.loading = false;
-      });
-
-    case startGame.type:
-      return produce(state, (draft) => {
-        draft.starting = true;
-      });
-
-    default:
-      return state;
-  }
-}
+export default createReducer(defaultState, (builder) => {
+  builder
+    .addCase(quitToMainMenu, () => defaultState)
+    .addCase(startGame, (state) => {
+      state.starting = true;
+    })
+    .addMatcher(
+      (action: { type: string }) =>
+        action.type === SEASON_START || gameLoaded.match(action),
+      (state) => {
+        state.started = true;
+        state.loading = false;
+      }
+    );
+});
