@@ -10,7 +10,7 @@ import {
   faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
-import "./style.pcss";
+
 
 // import * as Sentry from "@sentry/browser";
 

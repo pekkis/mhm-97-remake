@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { Formik } from "formik";
-import Slider from "rc-slider";
+import Slider from "../form/Slider";
 import { amount as a } from "../../services/format";
 import Button from "../form/Button";
 import TeamName from "../team/Name";
@@ -109,7 +109,7 @@ const BettingForm: FC<BettingFormProps> = ({
                 step={10000}
                 value={values.amount}
                 onChange={(value) => {
-                  setFieldValue("amount", value);
+                  void setFieldValue("amount", value);
                 }}
               />
               <strong>{a(values.amount)}</strong> pekkaa
