@@ -10,9 +10,6 @@ const defaultState: PrankState = {
   pranks: []
 };
 
-export const cancelPrank = createAction<string>("PRANK_CANCEL");
-export const selectPrankType = createAction<string>("PRANK_SELECT_TYPE");
-export const selectPrankVictim = createAction<number>("PRANK_SELECT_VICTIM");
 export const orderPrank = createAction<{
   manager: string;
   type: string;

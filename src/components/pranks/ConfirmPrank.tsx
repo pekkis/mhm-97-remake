@@ -6,10 +6,10 @@ import type { Team } from "../../ducks/game";
 import type { Manager } from "../../ducks/manager";
 
 type ConfirmPrankProps = {
-  cancel: (...args: any[]) => void;
+  cancel: () => void;
   manager: Manager;
   teams: Team[];
-  prank: { type?: string; victim?: number };
+  prank: { type: string; victim: number };
   execute: (managerId: string, type: string, victim: number) => void;
 };
 
@@ -20,7 +20,7 @@ const ConfirmPrank: FC<ConfirmPrankProps> = ({
   prank,
   execute
 }) => {
-  const prankInfo = pranks[prank.type!];
+  const prankInfo = pranks[prank.type];
 
   return (
     <div>
@@ -31,14 +31,14 @@ const ConfirmPrank: FC<ConfirmPrankProps> = ({
 
       <p>
         <strong>Uhri: </strong>
-        {teams[prank.victim!]?.name}
+        {teams[prank.victim]?.name}
       </p>
 
       <ButtonContainer>
         <Button
           block
           onClick={() => {
-            execute(manager.id, prank.type!, prank.victim!);
+            execute(manager.id, prank.type, prank.victim);
           }}
         >
           Varmista

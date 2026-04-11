@@ -1,3 +1,5 @@
+import type { CompetitionId } from "@/types/competitions";
+
 const CRISIS_DEADLINE = 52;
 const TRANSFER_DEADLINE = 30;
 const EVENT_DEADLINE = 53;
@@ -10,7 +12,7 @@ type Seed = {
 
 export type CalendarEntry = {
   phases: string[];
-  gamedays: string[];
+  gamedays: CompetitionId[];
   seed: Seed[];
   title?: string;
   round: number;
@@ -22,7 +24,7 @@ export type CalendarEntry = {
 
 type RawEntry = {
   phases: string[];
-  gamedays?: string[];
+  gamedays?: CompetitionId[];
   seed?: Seed[];
   title?: string;
 };

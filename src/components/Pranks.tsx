@@ -10,12 +10,9 @@ import Calendar from "./ui/Calendar";
 
 import difficultyLevels from "../data/difficulty-levels";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import {
-  orderPrank,
-  selectPrankType,
-  selectPrankVictim,
-  cancelPrank
-} from "../ducks/prank";
+import { orderPrank } from "../ducks/prank";
+import { useMachine } from "@xstate/react";
+import { prankSelectionMachine } from "../machines/prankSelection";
 
 const Pranks = () => {
   const manager = useAppSelector(
@@ -23,7 +20,7 @@ const Pranks = () => {
   );
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);
-  const prank = useAppSelector((state) => state.ui.prank);
+  const [state, send] = useMachine(prankSelectionMachine);
   const dispatch = useAppDispatch();
 
   const phl = competitions.phl;
@@ -55,36 +52,44 @@ const Pranks = () => {
             </p>
           )}
 
-          {!prank.type && (
+          {state.matches("idle") && (
             <SelectType
               manager={manager}
               enabled={canDo}
               competition={targetCompetition.name}
-              selectType={(id: string) => dispatch(selectPrankType(id))}
-              cancel={(id: string) => dispatch(cancelPrank(id))}
+              selectType={(id: string) =>
+                send({ type: "SELECT_TYPE", prankType: id })
+              }
+              cancel={() => send({ type: "CANCEL" })}
             />
           )}
 
-          {prank.type && !prank.victim && (
+          {state.matches("typeSelected") && (
             <SelectVictim
               manager={manager}
-              prank={prank}
+              prank={state.context}
               competition={targetCompetition}
               teams={teams}
-              selectVictim={(id: number) => dispatch(selectPrankVictim(id))}
-              cancel={(id: string) => dispatch(cancelPrank(id))}
+              selectVictim={(id: number) =>
+                send({ type: "SELECT_VICTIM", victim: id })
+              }
+              cancel={() => send({ type: "CANCEL" })}
             />
           )}
 
-          {prank.type && prank.victim && (
+          {state.matches("victimSelected") && (
             <ConfirmPrank
               manager={manager}
-              prank={prank}
-              execute={(m: string, t: string, v: number) =>
-                dispatch(orderPrank({ manager: m, type: t, victim: v }))
-              }
+              prank={{
+                type: state.context.type!,
+                victim: state.context.victim!
+              }}
+              execute={(m: string, t: string, v: number) => {
+                dispatch(orderPrank({ manager: m, type: t, victim: v }));
+                send({ type: "ORDER" });
+              }}
               teams={teams}
-              cancel={(id: string) => dispatch(cancelPrank(id))}
+              cancel={() => send({ type: "CANCEL" })}
             />
           )}
         </Calendar>

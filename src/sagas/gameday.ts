@@ -95,7 +95,7 @@ function* completeGameday(
   );
 }
 
-export function* gameday(payload: string) {
+export function* gameday(payload: CompetitionId) {
   const competition: Competition = yield* select(
     (state: RootState) => state.game.competitions[payload]
   );
