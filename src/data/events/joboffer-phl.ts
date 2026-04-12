@@ -80,7 +80,7 @@ const event: MHMEvent<JobofferPHLData> = {
     return {
       agree: `Kyllä, ilman muuta!`,
       disagree: "Ei, kiitos."
-    } as any;
+    };
   },
 
   resolve: function* (data, value) {

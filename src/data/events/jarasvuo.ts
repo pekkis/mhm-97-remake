@@ -38,12 +38,11 @@ const event: MHMEvent<JarasvuoData> = {
     });
   },
 
-  options: () =>
-    ({
-      fine: "Annan sakon.",
-      ban: "Annan kolme ottelua kurinpidollista pelikieltoa.",
-      nothing: "En tee mitään. Pojat ovat poikia!"
-    }) as any,
+  options: () => ({
+    fine: "Annan sakon.",
+    ban: "Annan kolme ottelua kurinpidollista pelikieltoa.",
+    nothing: "En tee mitään. Pojat ovat poikia!"
+  }),
 
   resolve: function* (data, value) {
     const resolved = produce(data, (draft) => {

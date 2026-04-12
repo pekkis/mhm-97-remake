@@ -87,11 +87,10 @@ const event: MHMEvent<JarkoData> = {
     });
   },
 
-  options: () =>
-    ({
-      agree: "Ostan Mantusen joukkueeseeni",
-      disagree: "En osta Mantusta joukkueeseeni"
-    }) as any,
+  options: () => ({
+    agree: "Ostan Mantusen joukkueeseeni",
+    disagree: "En osta Mantusta joukkueeseeni"
+  }),
 
   resolve: function* (data, value) {
     const resolved = produce(data, (draft) => {

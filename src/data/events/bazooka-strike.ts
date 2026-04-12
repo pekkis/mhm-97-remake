@@ -4,6 +4,7 @@ import { decrementStrength } from "../../sagas/team";
 import { addEvent } from "../../sagas/event";
 import type { MHMEvent } from "../../types/base";
 import type { RootState } from "../../config/redux";
+import type { PrankInstance } from "@/data/pranks";
 
 const eventId = "bazookaStrike";
 
@@ -17,12 +18,12 @@ type BazookaStrikeData = {
   victimManager: string;
 };
 
-const event: MHMEvent<BazookaStrikeData> = {
+const event: MHMEvent<BazookaStrikeData, PrankInstance> = {
   type: "manager",
 
   create: function* (data) {
     const { manager } = data;
-    const victim = (data as any).victim;
+    const victim = data.victim;
 
     const victimManager = yield* select(randomManager());
 

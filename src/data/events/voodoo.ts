@@ -36,7 +36,7 @@ const event: MHMEvent<VoodooData> = {
     return {
       agree: `Totta kai. Tervetuloa harjoituksiimme, hyvä herra, tässä rahat!`,
       disagree: "En maksa. Kiitos tarjouksesta, ehkä joku toinen kerta!"
-    } as any;
+    };
   },
 
   resolve: function* (data, value) {

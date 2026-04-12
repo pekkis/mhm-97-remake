@@ -34,11 +34,10 @@ const event: MHMEvent<KecklinData> = {
     });
   },
 
-  options: () =>
-    ({
-      agree: "Suostun, mutta vain pakon edessä.",
-      disagree: "Ei tule kuulonkaan."
-    }) as any,
+  options: () => ({
+    agree: "Suostun, mutta vain pakon edessä.",
+    disagree: "Ei tule kuulonkaan."
+  }),
 
   resolve: function* (data, value) {
     const resolved = produce(data, (draft) => {

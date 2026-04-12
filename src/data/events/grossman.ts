@@ -29,7 +29,7 @@ const event: MHMEvent<GrossmanData> = {
     return {
       agree: `Ei, kiitos!`,
       disagree: `Kiitos, ei!`
-    } as any;
+    };
   },
 
   resolve: function* (data) {

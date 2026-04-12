@@ -14,6 +14,7 @@ import {
   teamAddOpponentEffect,
   teamIncrementStrength
 } from "../ducks/game";
+import type { CompetitionId } from "@/types/competitions";
 
 const getMoraleMinMax = (manager: Manager | undefined) => {
   const difficulty = manager ? manager.difficulty : 2;
@@ -25,7 +26,7 @@ const getMoraleMinMax = (manager: Manager | undefined) => {
 };
 
 export function* incurPenalty(
-  competition: string,
+  competition: CompetitionId,
   phase: number,
   group: number,
   team: number,

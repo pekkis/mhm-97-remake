@@ -95,13 +95,15 @@ export const teamSetReadiness = createAction<{
   team: number;
   readiness: number;
 }>("TEAM_SET_READINESS");
+
 export const teamIncurPenalty = createAction<{
-  competition: string;
+  competition: CompetitionId;
   phase: number;
   group: number;
   team: number;
   penalty: number;
 }>("TEAM_INCUR_PENALTY");
+
 export const teamIncrementReadiness = createAction<{
   team: number;
   amount: number;
@@ -310,13 +312,13 @@ export default createReducer(defaultState, (builder) => {
         state.competitions[action.payload.competition].phases[
           action.payload.phase
         ].groups[action.payload.group];
-      if (!("penalties" in group)) {
-        (group as any).penalties = [];
+
+      if (group.type === "round-robin") {
+        group.penalties.push({
+          team: action.payload.team,
+          penalty: action.payload.penalty
+        });
       }
-      (group as any).penalties.push({
-        team: action.payload.team,
-        penalty: action.payload.penalty
-      });
     })
     .addCase(teamIncrementReadiness, (state, action) => {
       state.teams[action.payload.team].readiness += action.payload.amount;

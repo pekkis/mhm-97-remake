@@ -40,7 +40,7 @@ const load = (): RootState | null => {
 function* gameStart() {
   const action = yield* take(advance);
 
-  yield* call(addManager, (action as any).payload);
+  yield* call(addManager, action.payload);
 
   yield* put(gameStartAction());
 }

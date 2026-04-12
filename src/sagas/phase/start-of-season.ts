@@ -53,7 +53,7 @@ function* championshipBetting() {
   if (bet) {
     console.log("BET", bet);
 
-    const { payload } = bet as any;
+    const { payload } = bet;
     yield* call(
       betChampion,
       payload.manager,

@@ -1,5 +1,5 @@
 import competitionData from "../data/competitions";
-import gameService from "../services/game";
+import { simulate, type GameInput } from "../services/game";
 import competitionTypes from "../services/competition-type";
 
 import { call, put, select, take } from "typed-redux-saga";
@@ -30,7 +30,7 @@ function* playGame(
   gameParams: GamedayParams,
   overtime: (result: GameResult) => boolean,
   competitionId: string,
-  phaseId: string
+  phaseId: number
 ) {
   const teams = yield* select((state: RootState) => state.game.teams);
 
@@ -44,7 +44,7 @@ function* playGame(
     (state: RootState) => state.manager.managers[away.manager!]
   );
 
-  const game = {
+  const game: GameInput = {
     ...gameParams,
     overtime,
     home,
@@ -55,7 +55,7 @@ function* playGame(
     competitionId
   };
 
-  const result: GameResult = yield* call(gameService.simulate, game as any);
+  const result: GameResult = yield* call(simulate, game);
 
   return [
     result,
@@ -148,7 +148,7 @@ export function* gameday(payload: CompetitionId) {
             gameParams,
             overtime,
             competition.id,
-            phase.type
+            competition.phase
           );
 
           yield* put(

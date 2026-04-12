@@ -58,9 +58,7 @@ const event: MHMEvent<SellNarcoticsData> = {
       (state: RootState) => state.game.teams[data.victim]
     );
 
-    const victimPlaysInPHL = yield* select(
-      teamCompetesIn(data.victim as any, "phl")
-    );
+    const victimPlaysInPHL = yield* select(teamCompetesIn(data.victim, "phl"));
 
     const skillLost = victimPlaysInPHL
       ? cinteger(0, 25) + 1

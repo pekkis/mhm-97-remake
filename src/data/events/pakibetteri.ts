@@ -39,11 +39,10 @@ const event: MHMEvent<PakibetteriData> = {
     });
   },
 
-  options: () =>
-    ({
-      agree: "Suostun.",
-      disagree: "En suostu."
-    }) as any,
+  options: () => ({
+    agree: "Suostun.",
+    disagree: "En suostu."
+  }),
 
   resolve: function* (data, value) {
     const resolved = produce(data, (draft) => {

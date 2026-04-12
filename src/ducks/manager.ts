@@ -124,9 +124,8 @@ export default createReducer(defaultState, (builder) => {
         action.payload.value;
     })
     .addCase(managerSetService, (state, action) => {
-      (state.managers[action.payload.manager].services as any)[
-        action.payload.service
-      ] = action.payload.value;
+      state.managers[action.payload.manager].services[action.payload.service] =
+        action.payload.value;
     })
     .addCase(managerIncrementBalance, (state, action) => {
       state.managers[action.payload.manager].balance += action.payload.amount;

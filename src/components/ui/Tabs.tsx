@@ -18,12 +18,12 @@ const Tabs = ({ className, children, selected, onSelect }: TabsProps) => {
           cloneElement(child, {
             isSelected: key === selected,
             onSelect: () => onSelect(key)
-          } as any)
+          })
         )}
       </ul>
 
       <div className={styles.tabContent}>
-        {(childrenArray[selected].props as any).children}
+        {(childrenArray[selected].props).children}
       </div>
     </div>
   );

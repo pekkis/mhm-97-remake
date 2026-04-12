@@ -35,11 +35,10 @@ const event: MHMEvent<SopupeliData> = {
     });
   },
 
-  options: () =>
-    ({
-      agree: "Kyllä. Sopu sijaa antaa!",
-      disagree: "En. Kunnia ennen lompakkoa!"
-    }) as any,
+  options: () => ({
+    agree: "Kyllä. Sopu sijaa antaa!",
+    disagree: "En. Kunnia ennen lompakkoa!"
+  }),
 
   resolve: function* (data, value) {
     const resolved = produce(data, (draft) => {

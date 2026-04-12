@@ -7,6 +7,8 @@ import { incurPenalty } from "../../sagas/team";
 import { resolveEventAction } from "../../ducks/event";
 import type { MHMEvent } from "../../types/base";
 import type { RootState } from "../../config/redux";
+import type { PrankInstance } from "@/data/pranks";
+import { entries } from "remeda";
 
 const eventId = "protest";
 
@@ -24,10 +26,10 @@ type ProtestData = {
   penalty?: number;
 };
 
-const event: MHMEvent<ProtestData> = {
+const event: MHMEvent<ProtestData, PrankInstance> = {
   type: "manager",
 
-  create: function* (data: any) {
+  create: function* (data) {
     const { manager, victim } = data;
 
     yield* call(addEvent, {
@@ -40,8 +42,6 @@ const event: MHMEvent<ProtestData> = {
   },
 
   resolve: function* (data) {
-    console.log("FUCKEN RESOLVER?!?!?!?");
-
     const perpetratorTeam = yield* select(managersTeam(data.manager));
 
     const victimTeam = yield* select(
@@ -93,7 +93,7 @@ const event: MHMEvent<ProtestData> = {
       (state: RootState) => state.game.competitions
     );
 
-    const [competitionId, competition] = Object.entries(competitions)
+    const [competitionId, competition] = entries(competitions)
       .filter(([id]) => id !== "ehl")
       .find(([, c]) => c.teams.includes(penalizedTeam))!;
 

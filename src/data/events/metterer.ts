@@ -34,11 +34,10 @@ const event: MHMEvent<MettererData> = {
     });
   },
 
-  options: () =>
-    ({
-      agree: "Aina on tilaa yhdelle Karkukselle!",
-      disagree: "Ei. Karkus pysyköön kotona."
-    }) as any,
+  options: () => ({
+    agree: "Aina on tilaa yhdelle Karkukselle!",
+    disagree: "Ei. Karkus pysyköön kotona."
+  }),
 
   resolve: function* (data, value) {
     const resolved = produce(data, (draft) => {

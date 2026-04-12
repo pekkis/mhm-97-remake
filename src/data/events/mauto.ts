@@ -91,7 +91,7 @@ const event: MHMEvent<MautoData> = {
     return {
       y: `Suostun. Kauan eläköön ${data.newName} `,
       n: "En suostu. Pitäköön mautonsa!"
-    } as any;
+    };
   },
 
   resolve: function* (data, value) {

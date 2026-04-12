@@ -14,6 +14,8 @@ export type BaseEventFields = {
   processed?: boolean;
 };
 
+export type BaseEventCreationFields = { manager: string };
+
 /**
  * A game event definition, generic over its event-specific data shape.
  *
@@ -21,9 +23,12 @@ export type BaseEventFields = {
  * During the migration, JS event files use the unparameterized default and remain untyped.
  * Newly converted TS event files specify their TData for full type safety.
  */
-export type MHMEvent<TData extends BaseEventFields = BaseEventFields> = {
+export type MHMEvent<
+  TData extends BaseEventFields = BaseEventFields,
+  CData extends BaseEventCreationFields = BaseEventCreationFields
+> = {
   type: MHMEventType;
-  create: (data: { manager: string }) => MHMEventGenerator;
+  create: (data: CData) => MHMEventGenerator;
   render: (data: TData) => string[];
   process: (data: TData) => MHMEventGenerator;
   options?: (data: TData) => Record<string, string>;

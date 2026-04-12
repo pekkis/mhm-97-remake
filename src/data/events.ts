@@ -101,7 +101,7 @@ import protest from "./events/protest";
 import bazookaStrike from "./events/bazooka-strike";
 import sellNarcotics from "./events/sell-narcotics";
 
-const events: Record<string, any> = {
+const events = {
   protest,
   sellNarcotics,
   bazookaStrike,
@@ -198,6 +198,6 @@ const events: Record<string, any> = {
   strategySuccess,
   foreignLegion,
   incredibleFeeling
-};
+} as const;
 
 export default events;

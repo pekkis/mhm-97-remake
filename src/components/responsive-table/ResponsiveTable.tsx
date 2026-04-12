@@ -6,7 +6,7 @@ type ResponsiveTableProps = {
 };
 
 const ResponsiveTable = ({ children }: ResponsiveTableProps) => {
-  const clone = cloneElement(children, { isClone: true } as any);
+  const clone = cloneElement(children, { isClone: true });
 
   return (
     <div className={styles.tableScroller}>

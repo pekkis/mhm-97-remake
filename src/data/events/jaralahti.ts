@@ -64,7 +64,7 @@ const event: MHMEvent<JaralahtiData> = {
     return {
       support: `Lahjoitan miliisien virkistysrahastoon ${a(data.amount)} pekkaa.`,
       nothing: "Lyön luurin korvaan ja sanoudun irti koko hommasta!"
-    } as any;
+    };
   },
 
   resolve: function* (data, value) {

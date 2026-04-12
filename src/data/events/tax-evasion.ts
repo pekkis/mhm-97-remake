@@ -106,7 +106,7 @@ const event: MHMEvent<TaxEvasionData> = {
     return {
       agree: `Paljastan vilpin.`,
       disagree: `En paljasta vilppiä.`
-    } as any;
+    };
   },
 
   resolve: function* (data, value) {

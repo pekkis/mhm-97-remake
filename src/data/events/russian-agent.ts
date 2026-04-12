@@ -60,7 +60,7 @@ const event: MHMEvent<RussianAgentData> = {
     return {
       agree: `Ostan mysteeripelaajan`,
       disagree: `En osta mysteeripelaajaa`
-    } as any;
+    };
   },
 
   resolve: function* (data, value) {

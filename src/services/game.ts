@@ -1,5 +1,5 @@
 import r from "./random";
-import { pipe } from "remeda";
+import { entries, pipe } from "remeda";
 import { getEffective, getEffectiveOpponent } from "../services/effects";
 import services from "../data/services";
 import type { Team } from "../ducks/game";
@@ -8,12 +8,13 @@ import type {
   GameFacts,
   GamedayAdvantage
 } from "../types/competitions";
+import type { Manager } from "@/ducks/manager";
 
-type GameInput = {
+export type GameInput = {
   home: Team;
   away: Team;
-  homeManager: any;
-  awayManager: any;
+  homeManager: Manager;
+  awayManager: Manager;
   advantage: GamedayAdvantage;
   base: () => number;
   moraleEffect: (team: Team) => number;
@@ -79,7 +80,7 @@ export const simulate = (game: GameInput): GameResult => {
     } else {
       let total = 0;
       const svc = manager.services;
-      for (const [k, s] of Object.entries(svc)) {
+      for (const [k, s] of entries(svc)) {
         if (s) {
           total += services[k].effect(competitionId, phaseId);
         }
@@ -122,10 +123,6 @@ export const simulate = (game: GameInput): GameResult => {
   }
 
   return playOvertime(strengths.home, strengths.away, result);
-};
-
-export default {
-  simulate
 };
 
 export const resultFacts = (

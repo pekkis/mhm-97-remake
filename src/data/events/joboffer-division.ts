@@ -59,7 +59,7 @@ const event: MHMEvent<JobofferDivisionData> = {
     return {
       agree: `Kyllä otan!`,
       disagree: "En ota. Minun on hyvä täällä."
-    } as any;
+    };
   },
 
   resolve: function* (data, value) {

@@ -37,11 +37,10 @@ const event: MHMEvent<OtsohalliData> = {
     });
   },
 
-  options: () =>
-    ({
-      agree: "Kyllä. Olutraha kelpaa aina!",
-      disagree: "Ei. Onpa kerrassaan moraaliton ehdotus!"
-    }) as any,
+  options: () => ({
+    agree: "Kyllä. Olutraha kelpaa aina!",
+    disagree: "Ei. Onpa kerrassaan moraaliton ehdotus!"
+  }),
 
   resolve: function* (data, value) {
     const resolved = produce(data, (draft) => {

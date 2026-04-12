@@ -66,7 +66,7 @@ const event: MHMEvent<BoxingData> = {
     return {
       agree: `Otan haasteen vastaan. Nyrkkini on kova ja voittoni varma!`,
       disagree: `En ota haastetta vastaan. Aivoni ovat kovat, nyrkkini pehmeät.`
-    } as any;
+    };
   },
 
   resolve: function* (data, value) {

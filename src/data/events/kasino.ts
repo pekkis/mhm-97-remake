@@ -36,7 +36,7 @@ const event: MHMEvent<KasinoData> = {
       p: "Kaikki punaiselle!",
       m: "Kaikki mustalle!",
       e: "Ei. Uhkapeli on syntiä."
-    } as any;
+    };
   },
 
   resolve: function* (data, value) {

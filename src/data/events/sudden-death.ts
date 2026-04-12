@@ -51,7 +51,7 @@ const event: MHMEvent<SuddenDeathData> = {
     return {
       ok: `Aaaaasia selvä. `,
       wtf: `Hiiiieno homma. Kiitos infosta.`
-    } as any;
+    };
   },
 
   resolve: function* (data) {
