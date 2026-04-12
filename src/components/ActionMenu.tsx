@@ -48,13 +48,19 @@ const ActionMenu = () => {
             </li>
           </Calendar>
           <li>
-            <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/sarjataulukot">
+            <Link
+              onClick={() => uiStore.send({ type: "closeMenu" })}
+              to="/sarjataulukot"
+            >
               Sarjataulukot
             </Link>
           </li>
 
           <li>
-            <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/areena">
+            <Link
+              onClick={() => uiStore.send({ type: "closeMenu" })}
+              to="/areena"
+            >
               Areena
             </Link>
           </li>
@@ -70,14 +76,20 @@ const ActionMenu = () => {
 
           <Calendar when={(c) => c.pranks}>
             <li>
-              <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/jaynat">
+              <Link
+                onClick={() => uiStore.send({ type: "closeMenu" })}
+                to="/jaynat"
+              >
                 Jäynät
               </Link>
             </li>
           </Calendar>
 
           <li>
-            <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/tilastot">
+            <Link
+              onClick={() => uiStore.send({ type: "closeMenu" })}
+              to="/tilastot"
+            >
               Tilastot
             </Link>
           </li>
@@ -88,14 +100,20 @@ const ActionMenu = () => {
             }}
           >
             <li>
-              <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/veikkaus">
+              <Link
+                onClick={() => uiStore.send({ type: "closeMenu" })}
+                to="/veikkaus"
+              >
                 Veikkaus
               </Link>
             </li>
           </Calendar>
 
           <li>
-            <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/debug">
+            <Link
+              onClick={() => uiStore.send({ type: "closeMenu" })}
+              to="/debug"
+            >
               Devausmenukka
             </Link>
           </li>

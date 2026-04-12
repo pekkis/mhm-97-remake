@@ -41,7 +41,10 @@ const Header = ({
         <>
           {menu && (
             <div className="secondary">
-              <Button secondary onClick={() => uiStore.send({ type: "toggleMenu" })}>
+              <Button
+                secondary
+                onClick={() => uiStore.send({ type: "toggleMenu" })}
+              >
                 <FaBars />
               </Button>
             </div>

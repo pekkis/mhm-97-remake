@@ -4,7 +4,10 @@ import { uiStore } from "@/stores/ui";
 
 const ModalMenu = () => {
   return (
-    <div className={styles.menuContainer} onClick={() => uiStore.send({ type: "closeMenu" })}>
+    <div
+      className={styles.menuContainer}
+      onClick={() => uiStore.send({ type: "closeMenu" })}
+    >
       <div
         className={styles.menuContents}
         onClick={(e) => {
