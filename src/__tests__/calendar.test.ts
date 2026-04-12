@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import calendar from "../data/calendar";
-import type { CalendarEntry } from "../data/calendar";
 
 describe("calendar", () => {
   it("should have 75 rounds (0-74)", () => {
@@ -14,23 +13,20 @@ describe("calendar", () => {
   });
 
   describe("round 0: start of season", () => {
-    let entry: CalendarEntry;
-
-    beforeEach(() => {
-      entry = calendar[0];
-    });
-
     it("should include startOfSeason and seed phases", () => {
+      const entry = calendar[0];
       expect(entry.phases).toContain("startOfSeason");
       expect(entry.phases).toContain("seed");
     });
 
     it("should NOT include action or gameday phases", () => {
+      const entry = calendar[0];
       expect(entry.phases).not.toContain("action");
       expect(entry.phases).not.toContain("gameday");
     });
 
     it("should seed phl, division, and ehl competitions", () => {
+      const entry = calendar[0];
       const competitionIds = entry.seed.map((s) => s.competition);
       expect(competitionIds).toContain("phl");
       expect(competitionIds).toContain("division");
@@ -92,18 +88,14 @@ describe("calendar", () => {
   });
 
   describe("final round (74): world championships", () => {
-    let entry: CalendarEntry;
-
-    beforeEach(() => {
-      entry = calendar[74];
-    });
-
     it("should include action and endOfSeason phases", () => {
+      const entry = calendar[74];
       expect(entry.phases).toContain("action");
       expect(entry.phases).toContain("endOfSeason");
     });
 
     it("should have title 'Maailmanmestaruuskisat'", () => {
+      const entry = calendar[74];
       expect(entry.title).toBe("Maailmanmestaruuskisat");
     });
   });
