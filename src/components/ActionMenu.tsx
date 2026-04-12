@@ -4,7 +4,7 @@ import { getEffective } from "@/services/effects";
 import { CRISIS_MORALE_MAX } from "@/data/constants";
 import Button from "./form/Button";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { closeMenu } from "@/ducks/ui";
+import { uiStore } from "@/stores/ui";
 import { saveGame, quitToMainMenu } from "@/ducks/meta";
 import { activeManager } from "@/selectors";
 
@@ -20,7 +20,7 @@ const ActionMenu = () => {
       <nav>
         <ul>
           <li>
-            <Link onClick={() => dispatch(closeMenu())} to="/">
+            <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/">
               Päävalikko
             </Link>
           </li>
@@ -29,7 +29,7 @@ const ActionMenu = () => {
             <Calendar when={(c) => c.crisisMeeting}>
               <li>
                 <Link
-                  onClick={() => dispatch(closeMenu())}
+                  onClick={() => uiStore.send({ type: "closeMenu" })}
                   to="/kriisipalaveri"
                 >
                   Kriisipalaveri
@@ -40,7 +40,7 @@ const ActionMenu = () => {
           <Calendar when={(c) => c.transferMarket}>
             <li>
               <Link
-                onClick={() => dispatch(closeMenu())}
+                onClick={() => uiStore.send({ type: "closeMenu" })}
                 to="/pelaajamarkkinat"
               >
                 Pelaajamarkkinat
@@ -48,20 +48,20 @@ const ActionMenu = () => {
             </li>
           </Calendar>
           <li>
-            <Link onClick={() => dispatch(closeMenu())} to="/sarjataulukot">
+            <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/sarjataulukot">
               Sarjataulukot
             </Link>
           </li>
 
           <li>
-            <Link onClick={() => dispatch(closeMenu())} to="/areena">
+            <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/areena">
               Areena
             </Link>
           </li>
 
           <li>
             <Link
-              onClick={() => dispatch(closeMenu())}
+              onClick={() => uiStore.send({ type: "closeMenu" })}
               to="/erikoistoimenpiteet"
             >
               Erikoistoimenpiteet
@@ -70,14 +70,14 @@ const ActionMenu = () => {
 
           <Calendar when={(c) => c.pranks}>
             <li>
-              <Link onClick={() => dispatch(closeMenu())} to="/jaynat">
+              <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/jaynat">
                 Jäynät
               </Link>
             </li>
           </Calendar>
 
           <li>
-            <Link onClick={() => dispatch(closeMenu())} to="/tilastot">
+            <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/tilastot">
               Tilastot
             </Link>
           </li>
@@ -88,14 +88,14 @@ const ActionMenu = () => {
             }}
           >
             <li>
-              <Link onClick={() => dispatch(closeMenu())} to="/veikkaus">
+              <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/veikkaus">
                 Veikkaus
               </Link>
             </li>
           </Calendar>
 
           <li>
-            <Link onClick={() => dispatch(closeMenu())} to="/debug">
+            <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/debug">
               Devausmenukka
             </Link>
           </li>
@@ -107,7 +107,7 @@ const ActionMenu = () => {
         type="button"
         onClick={() => {
           dispatch(saveGame());
-          dispatch(closeMenu());
+          uiStore.send({ type: "closeMenu" });
         }}
       >
         Tallenna
@@ -118,7 +118,7 @@ const ActionMenu = () => {
         type="button"
         onClick={() => {
           dispatch(quitToMainMenu());
-          dispatch(closeMenu());
+          uiStore.send({ type: "closeMenu" });
         }}
       >
         Lopeta!

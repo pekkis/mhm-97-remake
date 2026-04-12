@@ -1,20 +1,22 @@
 import * as styles from "./Notifications.css";
 import Notification from "./Notification";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { dismissNotification } from "@/ducks/notification";
+import { useSelector } from "@xstate/store-react";
+import { notificationStore } from "@/stores/notification";
 
 const Notifications = () => {
-  const notifications = useAppSelector(
-    (state) => state.notification.notifications
+  const notifications = useSelector(
+    notificationStore,
+    (s) => s.context.notifications
   );
-  const dispatch = useAppDispatch();
 
   return (
     <div className={styles.notifications}>
       {notifications.toReversed().map((n) => (
         <Notification
           key={n.id}
-          dismiss={(id) => dispatch(dismissNotification(id))}
+          dismiss={(id) =>
+            notificationStore.send({ type: "dismissNotification", id })
+          }
           notification={n}
         />
       ))}
