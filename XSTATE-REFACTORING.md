@@ -165,12 +165,14 @@ Convert cluster by cluster, smallest first.
 - All `../` relative imports normalized to `@/` alias paths (709 sites across 189 files)
 - `src/data/` now contains only pure data — zero `typed-redux-saga` imports
 
-**PR 3: XState base branch setup + type foundations**
+**PR 3: XState base branch setup + type foundations** ✅ COMPLETE
 
-- Create `src/machines/types.ts` — `GameContext` type (union of all current duck state shapes)
-- Create `src/machines/commands.ts` — `EventCommand` discriminated union
-- Create `src/machines/selectors.ts` — selector functions taking `GameContext` instead of `RootState`
-- Verify build still works (these are additive, no behavioral changes)
+- Created `src/machines/types.ts` — `GameContext` type (flat union of all 12 Redux duck state shapes; `meta` excluded for `appMachine`, `ui` excluded for `@xstate/store`)
+- Created `src/machines/commands.ts` — `EventCommand` discriminated union (25 variants covering all mutations event files perform via saga helpers)
+- Created `src/machines/selectors.ts` — all selectors from `src/selectors.ts` mirrored as `ContextSelector<T>` reading from `GameContext` instead of `RootState`
+- **Bug found and fixed:** `totalGamesPlayed` selector was returning `undefined` when stats existed and `0` when missing (inverted logic). Fixed in both Redux selectors and XState selectors to correctly sum `record.win + record.draw + record.loss`.
+- `remeda` functions (`entries`, `values`, `keys`) adopted codebase-wide (~30 files) for better TypeScript key type preservation
+- Build verified, 105 tests pass, zero TypeScript errors
 
 ### Phase 1: Simple stores + app shell (PRs 4–6)
 
@@ -326,7 +328,7 @@ Convert cluster by cluster, smallest first.
 
 | Phase                              | Files Touched         | Estimated PRs  | Complexity  |
 | ---------------------------------- | --------------------- | -------------- | ----------- |
-| Phase 0: Foundation                | ~5                    | 3              | Medium      |
+| Phase 0: Foundation                | ~5                    | 3 ✅           | Medium      |
 | Phase 1: Simple stores + app shell | ~20                   | 3              | Low         |
 | Phase 2: Game machine core         | ~30                   | 4–6            | Very High   |
 | Phase 3: Event system              | ~100                  | 3              | High (bulk) |
