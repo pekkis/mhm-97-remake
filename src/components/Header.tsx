@@ -4,7 +4,7 @@ import { FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { advance } from "@/ducks/game";
-import { toggleMenu } from "@/ducks/ui";
+import { uiStore } from "@/stores/ui";
 import { advanceEnabled as advanceEnabledSelector } from "@/selectors";
 
 type HeaderProps = {
@@ -41,7 +41,10 @@ const Header = ({
         <>
           {menu && (
             <div className="secondary">
-              <Button secondary onClick={() => dispatch(toggleMenu())}>
+              <Button
+                secondary
+                onClick={() => uiStore.send({ type: "toggleMenu" })}
+              >
                 <FaBars />
               </Button>
             </div>

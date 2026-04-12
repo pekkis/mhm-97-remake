@@ -2,13 +2,16 @@ import { configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import * as reducers from "./ducks";
 import getSagas from "./getSagas";
+import { xstoreSyncMiddleware } from "./stores/sync";
 
 const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
   reducer: reducers,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware)
+    getDefaultMiddleware({ thunk: false })
+      .concat(sagaMiddleware)
+      .concat(xstoreSyncMiddleware)
 });
 
 sagaMiddleware.run(getSagas(), {});

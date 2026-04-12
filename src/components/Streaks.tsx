@@ -1,3 +1,4 @@
+import { entries } from "remeda";
 import Box from "./styled-system/Box";
 import { useAppSelector } from "@/config/redux";
 
@@ -17,7 +18,7 @@ const Streaks = ({ competition, team }: StreaksProps) => {
   const streaks = useAppSelector((state) => state.stats.streaks.team);
 
   const teamStreaks = streaks?.[team]?.[competition] ?? {};
-  const filtered = Object.entries(teamStreaks).filter(([, s]) => s > 1);
+  const filtered = entries(teamStreaks).filter(([, s]) => s > 1);
 
   if (filtered.length === 0) {
     return null;

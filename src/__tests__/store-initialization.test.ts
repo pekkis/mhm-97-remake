@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { createTestStore } from "./helpers/createTestStore";
+import { keys } from "remeda";
 
 describe("store initialization", () => {
   it("should create a store with all 12 reducer slices", () => {
@@ -204,7 +205,7 @@ describe("store initialization", () => {
       const { countries } = store.getState().country;
 
       // Should have multiple countries
-      const countryIds = Object.keys(countries);
+      const countryIds = keys(countries);
       expect(countryIds.length).toBeGreaterThan(0);
 
       // Each country should have iso, name, and strength

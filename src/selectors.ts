@@ -11,7 +11,7 @@ import type {
 
 type Selector<T> = (state: RootState) => T;
 
-import { pick } from "remeda";
+import { entries, keys, pick, values } from "remeda";
 import { createSelector } from "@reduxjs/toolkit";
 
 const competitions = (state: RootState) => state.game.competitions;
@@ -25,7 +25,7 @@ export const primaryCompetitions = createSelector(
 
 export const advanceEnabled = (state: RootState) =>
   state.game.turn.phase !== "event" ||
-  !Object.values(state.event.events).some((e) => !e.resolved);
+  !values(state.event.events).some((e) => !e.resolved);
 
 export const foreignTeams = (state: RootState) =>
   state.game.teams.filter((t) => !t.domestic);
@@ -37,15 +37,14 @@ export const totalGamesPlayed =
     phase: number
   ): Selector<number | undefined> =>
   (state) => {
-    const stats =
+    const record =
       state.stats.managers?.[manager]?.games?.[competition]?.[phase];
 
-    if (!stats) {
+    if (!record) {
       return 0;
     }
 
-    return undefined;
-    // const phlGamesPlayed = stats.reduce((r, s) => r + s, 0);
+    return record.win + record.draw + record.loss;
   };
 
 export const teamsManagerId =
@@ -98,9 +97,7 @@ export const managersCompetitions = (manager: string) => (state: RootState) => {
     return {};
   }
   return Object.fromEntries(
-    Object.entries(state.game.competitions).filter(([, c]) =>
-      c.teams.includes(team)
-    )
+    entries(state.game.competitions).filter(([, c]) => c.teams.includes(team))
   );
 };
 
@@ -183,7 +180,7 @@ export const teamCompetesIn =
 
 export const teamsCompetitions = (team: number) => (state: RootState) => {
   return Object.fromEntries(
-    Object.entries(state.game.competitions).filter(([, c]) =>
+    entries(state.game.competitions).filter(([, c]) =>
       (c.teams ?? []).includes(team)
     )
   );
@@ -207,7 +204,7 @@ export const managerHasService =
 export const managerWhoControlsTeam =
   (id: number): Selector<Manager | undefined> =>
   (state) => {
-    return Object.values(state.manager.managers).find((p) => p.team === id);
+    return values(state.manager.managers).find((p) => p.team === id);
   };
 
 export const competition = (id: CompetitionId) => (state: RootState) =>
@@ -258,7 +255,7 @@ export const randomRankedTeam =
     f: (t: Team) => boolean = () => true
   ): Selector<Team | false> =>
   (state) => {
-    const managerIds = Object.keys(state.manager.managers);
+    const managerIds = keys(state.manager.managers);
 
     const groups =
       state.game.competitions[competitionId].phases[phaseId].groups;
@@ -287,40 +284,49 @@ export const randomTeamFrom =
     f: (t: Team) => boolean = () => true
   ): Selector<Team> =>
   (state) => {
-    console.log(excluded, "excommunicado");
+    const team = randomTeamOrNullFrom(
+      competitionIds,
+      canBeHumanControlled,
+      excluded,
+      f
+    )(state);
 
-    const managersTeams: number[] = Object.values(state.manager.managers)
+    if (!team) {
+      throw new Error("Random team not found");
+    }
+
+    return team;
+  };
+
+export const randomTeamOrNullFrom =
+  (
+    competitionIds: string[],
+    canBeHumanControlled = false,
+    excluded: number[] = [],
+    f: (t: Team) => boolean = () => true
+  ): Selector<Team | null> =>
+  (state) => {
+    const managersTeams: number[] = values(state.manager.managers)
       .map((p) => p.team)
       .filter((t): t is number => t !== undefined);
 
-    const teams = Object.entries(state.game.competitions)
+    const teams = entries(state.game.competitions)
       .filter(([id]) => competitionIds.includes(id))
       .flatMap(([, c]) => c.teams)
       .map((t) => state.game.teams[t])
       .filter((t) => {
-        console.log("T", t);
-        console.log(
-          "kraa",
-          canBeHumanControlled || !managersTeams.includes(t.id)
-        );
         return canBeHumanControlled || !managersTeams.includes(t.id);
       })
       .filter((t) => !excluded.includes(t.id))
       .filter(f);
 
     if (teams.length === 0) {
-      console.log({
-        competitionIds,
-        canBeHumanControlled,
-        excluded,
-        managersTeams,
-        f
-      });
-      throw new Error("Could not find a team!");
+      return null;
     }
 
     const randomized: Team = r.pick(teams);
-    return state.game.teams[randomized.id];
+    const ret = state.game.teams[randomized.id];
+    return ret;
   };
 
 export const activeManager = (state: RootState): Manager => {
@@ -345,7 +351,7 @@ export const activeManagersTeam = createSelector(
 export const interestingCompetitions = createSelector(
   [competitions, activeManagersTeam],
   (competitions, team) => {
-    return Object.keys(competitions).filter((id) => {
+    return keys(competitions).filter((id) => {
       const comp = competitions[id];
       return comp.phases.some((phase) =>
         phase.groups.some((group) => group.teams.includes(team.id))

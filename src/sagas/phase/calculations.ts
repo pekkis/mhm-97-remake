@@ -5,6 +5,7 @@ import services from "@/data/services";
 import { decrementBalance } from "@/sagas/manager";
 import { teamIncrementReadiness, decrementDurations } from "@/ducks/game";
 import type { RootState } from "@/config/redux";
+import { entries } from "remeda";
 
 export default function* calculationsPhase() {
   const turn = yield* select((state: RootState) => state.game.turn);
@@ -34,8 +35,8 @@ export default function* calculationsPhase() {
     (state: RootState) => state.game.serviceBasePrices
   );
 
-  for (const [managerId, manager] of Object.entries(managers)) {
-    const managersServices = Object.entries(manager.services)
+  for (const [managerId, manager] of entries(managers)) {
+    const managersServices = entries(manager.services)
       .filter(([, active]) => active)
       .map(([k]) => [k, services[k]] as const);
 

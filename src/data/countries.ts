@@ -69,12 +69,8 @@ const countriesArray: Country[] = [
 
 type CountriesMap = Record<string, Country>;
 
-export const countries: CountriesMap = countriesArray.reduce(
-  (acc, country) => ({
-    ...acc,
-    [country.iso]: country
-  }),
-  {} as CountriesMap
-);
+export const countries: CountriesMap = Object.fromEntries(
+  countriesArray.map((c) => [c.iso, c])
+) as CountriesMap;
 
 export { countriesArray };

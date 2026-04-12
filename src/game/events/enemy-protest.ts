@@ -10,6 +10,7 @@ import { addEvent } from "@/sagas/event";
 import { incurPenalty } from "@/sagas/team";
 import type { MHMEvent } from "@/types/base";
 import type { RootState } from "@/config/redux";
+import { values } from "remeda";
 
 const eventId = "enemyProtest";
 
@@ -76,7 +77,7 @@ Protesti menee läpi, ja teiltä vähennetään ${Math.abs(data.penalty)} pistet
       (state: RootState) => state.game.competitions
     );
 
-    const competition = Object.values(competitions)
+    const competition = values(competitions)
       .filter((c) => c.id !== "ehl")
       .find((c) => c.teams.includes(team))!;
 

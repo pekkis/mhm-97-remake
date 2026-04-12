@@ -1,7 +1,7 @@
 import { call, select } from "typed-redux-saga";
 import { addEvent } from "@/sagas/event";
 import { addEffect } from "@/sagas/team";
-import { randomTeamFrom, randomManager } from "@/selectors";
+import { randomTeamOrNullFrom, randomManager } from "@/selectors";
 import type { MHMEvent } from "@/types/base";
 import type { Team } from "@/ducks/game";
 
@@ -40,7 +40,7 @@ const event: MHMEvent<IncredibleFeelingData> = {
     const { manager } = data;
 
     const team = yield* select(
-      randomTeamFrom(["phl"], false, [], (t: Team) => t.strength < 200)
+      randomTeamOrNullFrom(["phl"], false, [], (t: Team) => t.strength < 200)
     );
     if (!team) {
       return;

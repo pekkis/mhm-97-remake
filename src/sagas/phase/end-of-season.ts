@@ -11,6 +11,7 @@ import { setStrength, type Country } from "@/ducks/country";
 import { setWorldChampionshipResults, seasonEnd } from "@/ducks/game";
 import type { RootState } from "@/config/redux";
 import type { Competition, PlayoffGroup, TeamStat } from "@/types/competitions";
+import { values } from "remeda";
 
 const getLuck = () => {
   const isLucky = cinteger(1, 10);
@@ -49,7 +50,7 @@ function* worldChampionships() {
     (state: RootState) => state.country.countries
   );
 
-  const rawEntries = Object.values(countries)
+  const rawEntries = values(countries)
     .map((c) => ({
       id: c.iso,
       name: c.name,

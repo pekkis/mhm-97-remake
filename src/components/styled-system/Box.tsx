@@ -2,11 +2,12 @@ import type { FC, ReactNode } from "react";
 import clsx from "clsx";
 import { sprinkles } from "@/styles/sprinkles.css";
 import { vars } from "@/styles/theme.css";
+import { keys } from "remeda";
 
 type SpaceKey = keyof typeof vars.space;
 type ColorKey = keyof typeof vars.color;
 
-const spaceKeys = Object.keys(vars.space) as SpaceKey[];
+const spaceKeys = keys(vars.space) as SpaceKey[];
 
 const toSpaceKey = (value: number | SpaceKey): SpaceKey => {
   if (typeof value === "number") {
