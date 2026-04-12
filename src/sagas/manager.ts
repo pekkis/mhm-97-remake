@@ -39,6 +39,7 @@ import { amount as a } from "@/services/format";
 import { teamRemoveManager, teamAddManager } from "@/ducks/game";
 import type { RootState } from "@/config/redux";
 import type { CompetitionId } from "@/types/competitions";
+import { entries } from "remeda";
 
 type AddManagerDetails = {
   name: string;
@@ -277,7 +278,7 @@ export function* afterGameday(
       state.game.competitions[competition].phases[phase].groups[groupId]
   );
 
-  for (const [managerId, manager] of Object.entries(managers)) {
+  for (const [managerId, manager] of entries(managers)) {
     const managersIndex = group.teams.findIndex((t) => t === manager.team);
 
     if (managersIndex === -1) {

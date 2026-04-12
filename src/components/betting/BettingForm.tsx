@@ -7,6 +7,7 @@ import TeamName from "@/components/team/Name";
 import type { Team } from "@/ducks/game";
 import type { Manager } from "@/ducks/manager";
 import type { Competition } from "@/types/competitions";
+import { entries } from "remeda";
 
 type BettingFormValues = {
   "0": string;
@@ -117,9 +118,7 @@ const BettingForm: FC<BettingFormProps> = ({ competition, teams, bet }) => {
       </div>
 
       <Button
-        disabled={Object.entries(values).some(
-          ([k, v]) => k !== "amount" && v === ""
-        )}
+        disabled={entries(values).some(([k, v]) => k !== "amount" && v === "")}
         block
         type="submit"
       >

@@ -4,6 +4,7 @@ import { cinteger } from "@/services/random";
 import calendar from "@/data/calendar";
 import { setPhase } from "@/sagas/game";
 import type { RootState } from "@/config/redux";
+import { entries, values } from "remeda";
 
 const eventsMap: Record<number, string> = {
   1: "jaralahti",
@@ -142,7 +143,7 @@ const eventsMap: Record<number, string> = {
   234: "incredibleFeeling"
 };
 
-const eventNames = new Set(Object.values(eventsMap));
+const eventNames = new Set(values(eventsMap));
 
 const getEventId = (predefined?: string): string | undefined => {
   if (predefined) {
@@ -162,7 +163,7 @@ export default function* eventCreationPhase() {
   const calendarEntry = calendar[round];
 
   if (calendarEntry.createRandomEvent) {
-    for (const [, manager] of Object.entries(managers)) {
+    for (const [, manager] of entries(managers)) {
       const eventId = getEventId();
 
       if (!eventId) {

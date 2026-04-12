@@ -56,6 +56,9 @@ Recent completed migrations (2026-04-12):
 - **XState 5 introduced** for UI wizard flows — prank selection machine is first implementation
 - **`advanceEnabled` derived from state** — replaced stored boolean with selector (`phase !== "event" || allEventsResolved`)
 - **`MetaManager` form defaults moved to local component state** (`ManagerForm.tsx`)
+- **XState PR 3 (type foundations) complete:** `GameContext`, `EventCommand` union, context-aware selectors in `src/machines/`
+- **`totalGamesPlayed` selector bug fixed** — was returning `undefined` when stats existed, `0` when missing (inverted). Now correctly sums `record.win + record.draw + record.loss`. Fixed in both Redux (`src/selectors.ts`) and XState (`src/machines/selectors.ts`) worlds.
+- **`remeda` adopted codebase-wide** — `Object.entries()`, `Object.values()`, `Object.keys()` replaced with `entries()`, `values()`, `keys()` from remeda across ~30 files (selectors, ducks, sagas, components, tests) for better TypeScript key type preservation
 - Zero TypeScript errors maintained throughout all migrations
 
 ---
@@ -535,7 +538,7 @@ Converted all 13 saga files + 13 phase files from `redux-saga/effects` to `typed
    - Prefer `type` aliases by default; use `interface` only when declaration merging/extension semantics are explicitly needed.
    - For React components, prefer the `FC<Props>` typing style where practical and readable.
    - `type-fest` is installed (devDep) — use it freely for utility types (`Simplify`, `PartialDeep`, `SetRequired`, `Opaque`, etc.) instead of reinventing them.
-   - `remeda` is installed — prefer native JS first, then `remeda` for TS-friendly utility composition in new/edited modules (do not reintroduce `ramda`). Notable: use `entries()` from remeda instead of `Object.entries()` to preserve key types (avoids `string` widening).
+   - `remeda` is installed — prefer `entries()`, `values()`, `keys()` from remeda over `Object.entries/values/keys` for better key type preservation (avoids `string` widening). This is now standard practice codebase-wide (~30 files converted). For other utilities, prefer native JS first, then `remeda` (do not reintroduce `ramda`).
 
 ---
 
@@ -634,7 +637,7 @@ Next natural step: `createReducer` conversion (replaces switch/case + eliminates
 ```ts
 export const advanceEnabled = (state: RootState) =>
   state.game.turn.phase !== "event" ||
-  !Object.values(state.event.events).some((e) => !e.resolved);
+  !values(state.event.events).some((e) => !e.resolved);
 ```
 
 **Key insight:** The phase check is critical — events can be unresolved during creation phases (earlier in the turn) but should only block advance during the `"event"` phase when the player actually resolves them.
@@ -646,7 +649,8 @@ export const advanceEnabled = (state: RootState) =>
 - **Regression test harness: ✅ COMPLETE** — 105 vitest tests (81 new: calendar, store init, reducers, game simulation, save/load). Key discovery: calendar has **75 rounds** (0–74), not 54.
 - **`src/data/` cleanup: ✅ COMPLETE** — logic files moved out, `data/` is now pure data only. Selectors → `src/selectors.ts`, awards → `src/sagas/awards.ts`, events/pranks → `src/game/`, tournament eligibility → `src/sagas/tournament-eligibility.ts`.
 - **Import normalization: ✅ COMPLETE** — all 709 `../` relative imports across 189 files normalized to `@/` alias paths.
-- **Next:** PR 3 (XState type foundations) per [`XSTATE-REFACTORING.md`](XSTATE-REFACTORING.md).
+- **XState type foundations (PR 3): ✅ COMPLETE** — `src/machines/types.ts` (`GameContext`), `src/machines/commands.ts` (`EventCommand` — 25-variant discriminated union), `src/machines/selectors.ts` (all Redux selectors mirrored as `ContextSelector<T>` reading from `GameContext`). `totalGamesPlayed` bug found and fixed in both Redux and XState selectors.
+- **Next:** PR 4 (`@xstate/store` for ui, country, notification) per [`XSTATE-REFACTORING.md`](XSTATE-REFACTORING.md).
 - **Full plan:** Hierarchical actor model — `appMachine` → `gameMachine` → phase machines. 21 PRs across 5 phases. See XSTATE-REFACTORING.md for details.
 
 ### P4 — Styling: ✅ COMPLETE
@@ -758,7 +762,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. ~~Type the `MHMEvent.options` return to eliminate 17 event `as any` casts~~ ✅ Done — `MHMEvent` widened with `BaseEventCreationFields` second generic.
 14. ~~Evaluate `createSlice` migration for simpler ducks~~ — Superseded by XState migration plan. See XSTATE-REFACTORING.md.
-15. **Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors. See XSTATE-REFACTORING.md.
+15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. **Next XState PR:** PR 4 (`@xstate/store` for ui, country, notification). See XSTATE-REFACTORING.md.
 
 ---
 

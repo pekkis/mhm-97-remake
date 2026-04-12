@@ -1,6 +1,7 @@
 import { countries as countryList } from "@/data/countries";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 import { quitToMainMenu } from "./meta";
+import { values } from "remeda";
 
 export type Country = {
   iso: string;
@@ -13,7 +14,7 @@ type CountryState = {
 };
 
 const defaultState: CountryState = {
-  countries: Object.values(countryList).reduce(
+  countries: values(countryList).reduce(
     (acc, country) => {
       acc[country.iso] = {
         ...country,

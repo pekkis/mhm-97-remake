@@ -3,6 +3,7 @@ import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./styled-system/Box";
 import { useAppSelector } from "@/config/redux";
+import { values } from "remeda";
 
 const LeagueTables = () => {
   const managers = useAppSelector((state) => state.manager.managers);
@@ -15,7 +16,7 @@ const LeagueTables = () => {
       <Box p={1}>
         <h2>Sarjataulukot</h2>
 
-        {Object.values(competitions)
+        {values(competitions)
           .filter((c) => c.phase >= 0)
           .map((c) => {
             const phase = c.phases[0];

@@ -1,5 +1,6 @@
 import Markdown from "react-markdown";
 import eventList from "@/game/events";
+import { entries, values } from "remeda";
 
 type EventsListProps = {
   events: Record<string, any>;
@@ -8,9 +9,7 @@ type EventsListProps = {
 };
 
 const Events = ({ events, manager, onAnswer }: EventsListProps) => {
-  const managersEvents = Object.values(events).filter(
-    (e) => e.manager === manager.id
-  );
+  const managersEvents = values(events).filter((e) => e.manager === manager.id);
 
   return (
     <div>
@@ -29,7 +28,7 @@ const Events = ({ events, manager, onAnswer }: EventsListProps) => {
             </Markdown>
             {!e.resolved && (
               <ul>
-                {Object.entries(event.options(e) as Record<string, string>).map(
+                {entries(event.options(e) as Record<string, string>).map(
                   ([key, option]) => {
                     return (
                       <li key={key}>

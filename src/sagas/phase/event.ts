@@ -4,14 +4,13 @@ import { resolveEvent, processEvents } from "@/sagas/event";
 import { setGamePhase } from "@/ducks/game";
 import { requestResolveEvent } from "@/ducks/event";
 import type { RootState } from "@/config/redux";
+import { values } from "remeda";
 
 export default function* eventPhase() {
   yield* put(setGamePhase("event"));
 
   const autoresolveEvents = yield* select((state: RootState) =>
-    Object.values(state.event.events).filter(
-      (e) => !e.resolved && e.autoResolve
-    )
+    values(state.event.events).filter((e) => !e.resolved && e.autoResolve)
   );
 
   for (const event of autoresolveEvents) {
@@ -25,7 +24,7 @@ export default function* eventPhase() {
   do {
     unresolved = yield* select(
       (state: RootState) =>
-        Object.values(state.event.events).filter((e) => !e.resolved).length
+        values(state.event.events).filter((e) => !e.resolved).length
     );
 
     if (unresolved) {

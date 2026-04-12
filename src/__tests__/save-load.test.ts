@@ -9,6 +9,7 @@ import {
 } from "../ducks/game";
 import { managerAdd, managerSetActive } from "../ducks/manager";
 import { addEventAction } from "../ducks/event";
+import { keys } from "remeda";
 
 describe("save/load round-trip", () => {
   it("should serialize and deserialize state without loss", () => {
@@ -102,9 +103,9 @@ describe("save/load round-trip", () => {
       true
     );
     expect(store2.getState().game.teams[5].effects).toHaveLength(1);
-    expect(
-      Object.keys(store2.getState().event.events).length
-    ).toBeGreaterThanOrEqual(1);
+    expect(keys(store2.getState().event.events).length).toBeGreaterThanOrEqual(
+      1
+    );
   });
 
   it("should handle empty state round-trip gracefully", () => {

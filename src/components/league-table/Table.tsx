@@ -6,6 +6,7 @@ import RTable from "@/components/responsive-table/Table";
 import type { Team } from "@/ducks/game";
 import type { Manager } from "@/ducks/manager";
 import type { Group, TeamStat } from "@/types/competitions";
+import { values } from "remeda";
 
 type TableProps = {
   managers: Record<string, Manager>;
@@ -16,7 +17,7 @@ type TableProps = {
 
 const Table: FC<TableProps> = ({ managers, teams, division, isClone }) => {
   const colors = "colors" in division ? (division.colors as string[]) : [];
-  const managerTeams = Object.values(managers).map((p) => p.team);
+  const managerTeams = values(managers).map((p) => p.team);
   const tbl = (division.stats as TeamStat[]).map((entry) => ({
     ...entry,
     managerControlled: managerTeams.includes(entry.id)

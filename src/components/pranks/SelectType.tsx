@@ -4,6 +4,7 @@ import ButtonContainer from "@/components/ui/ButtonContainer";
 import pranks from "@/game/pranks";
 import { currency as c } from "@/services/format";
 import type { Manager } from "@/ducks/manager";
+import { entries } from "remeda";
 
 type SelectTypeProps = {
   manager: Manager;
@@ -22,7 +23,7 @@ const SelectType: FC<SelectTypeProps> = ({
   return (
     <div>
       <ButtonContainer>
-        {Object.entries(pranks).map(([key, prank]) => {
+        {entries(pranks).map(([key, prank]) => {
           const price = prank.price(competition);
 
           return (

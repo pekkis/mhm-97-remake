@@ -7,6 +7,7 @@ import { addNotification } from "./notification";
 import { managersTeamId } from "@/selectors";
 import { addTeamToCompetition } from "./game";
 import type { RootState } from "@/config/redux";
+import { entries } from "remeda";
 
 export function* acceptInvitation(managerId: string, id: string) {
   const team = yield* select(managersTeamId(managerId));
@@ -25,7 +26,7 @@ export function* acceptInvitation(managerId: string, id: string) {
 export function* createInvitations() {
   const managers = yield* select((state: RootState) => state.manager.managers);
 
-  for (const [managerId] of Object.entries(managers)) {
+  for (const [managerId] of entries(managers)) {
     for (
       let tournamentId = 0;
       tournamentId < tournamentList.length;

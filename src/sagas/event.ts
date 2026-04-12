@@ -8,6 +8,7 @@ import {
 } from "@/ducks/event";
 
 import events from "@/game/events";
+import { values } from "remeda";
 
 export function* resolveEvent(action: {
   payload: { event: StoredEvent; value: string };
@@ -34,7 +35,7 @@ export function* resolvedEvent(eventData: StoredEvent) {
 
 export function* processEvents() {
   const eventsToProcess = yield* select((state: RootState) =>
-    Object.values(state.event.events).filter((e) => e.resolved && !e.processed)
+    values(state.event.events).filter((e) => e.resolved && !e.processed)
   );
 
   for (const event of eventsToProcess) {

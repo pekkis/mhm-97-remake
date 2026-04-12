@@ -2,6 +2,7 @@ import { createAction, createReducer } from "@reduxjs/toolkit";
 import { seasonStart, teamRemoveManager, teamAddManager } from "./game";
 import { quitToMainMenu, gameLoadState } from "./meta";
 import { orderPrank } from "./prank";
+import { values } from "remeda";
 
 export type ManagerArena = {
   name: string;
@@ -114,7 +115,7 @@ export default createReducer(defaultState, (builder) => {
     .addCase(quitToMainMenu, () => defaultState)
     .addCase(gameLoadState, (_state, action) => action.payload.manager)
     .addCase(seasonStart, (state) => {
-      for (const manager of Object.values(state.managers)) {
+      for (const manager of values(state.managers)) {
         manager.pranksExecuted = 0;
         manager.flags.rally = false;
       }
@@ -137,7 +138,7 @@ export default createReducer(defaultState, (builder) => {
       state.managers[action.payload.manager].balance -= action.payload.amount;
     })
     .addCase(teamRemoveManager, (state, action) => {
-      const mgr = Object.values(state.managers).find(
+      const mgr = values(state.managers).find(
         (m) => m.team === action.payload.team
       );
       if (mgr) {
