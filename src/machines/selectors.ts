@@ -23,9 +23,21 @@
 
 import r from "@/services/random";
 import { victors } from "@/services/playoffs";
-import { pick } from "remeda";
-import type { GameContext, Manager, ManagerDefinition, ManagerServices, Team, GameFlags } from "./types";
-import type { CompetitionId, Competition, PlayoffGroup, TeamStat } from "@/types/competitions";
+import { entries, keys, pick, values } from "remeda";
+import type {
+  GameContext,
+  Manager,
+  ManagerDefinition,
+  ManagerServices,
+  Team,
+  GameFlags
+} from "./types";
+import type {
+  CompetitionId,
+  Competition,
+  PlayoffGroup,
+  TeamStat
+} from "@/types/competitions";
 
 // ---------------------------------------------------------------------------
 // Helper type — a selector is just a function from context to value
@@ -52,7 +64,7 @@ export const competition =
 
 export const advanceEnabled: ContextSelector<boolean> = (ctx) =>
   ctx.turn.phase !== "event" ||
-  !Object.values(ctx.event.events).some((e) => !e.resolved);
+  !values(ctx.event.events).some((e) => !e.resolved);
 
 // ---------------------------------------------------------------------------
 // Teams
@@ -99,9 +111,9 @@ export const teamsCompetitions =
   (team: number): ContextSelector<Record<string, Competition>> =>
   (ctx) =>
     Object.fromEntries(
-      Object.entries(ctx.competitions).filter(([, c]) =>
-        (c.teams ?? []).includes(team),
-      ),
+      entries(ctx.competitions).filter(([, c]) =>
+        (c.teams ?? []).includes(team)
+      )
     );
 
 export const teamCompetesIn =
@@ -123,7 +135,7 @@ export const teamWasRelegated =
     }
 
     const divisionVictor = victors(
-      ctx.competitions.division.phases[3].groups[0] as PlayoffGroup,
+      ctx.competitions.division.phases[3].groups[0] as PlayoffGroup
     )[0].id;
 
     if (divisionVictor === team) {
@@ -142,7 +154,7 @@ export const teamWasPromoted =
     }
 
     const divisionVictor = victors(
-      ctx.competitions.division.phases[3].groups[0] as PlayoffGroup,
+      ctx.competitions.division.phases[3].groups[0] as PlayoffGroup
     )[0].id;
 
     return divisionVictor === team;
@@ -152,7 +164,7 @@ export const teamsPositionInRoundRobin =
   (
     team: number,
     competitionId: string,
-    phase: number,
+    phase: number
   ): ContextSelector<number | false> =>
   (ctx) => {
     const thePhase = ctx.competitions[competitionId].phases[phase];
@@ -177,10 +189,10 @@ export const randomRankedTeam =
     competitionId: string,
     phaseId: number,
     range: number[],
-    f: (t: Team) => boolean = () => true,
+    f: (t: Team) => boolean = () => true
   ): ContextSelector<Team | false> =>
   (ctx) => {
-    const managerIds = Object.keys(ctx.manager.managers);
+    const managerIds = keys(ctx.manager.managers);
 
     const groups = ctx.competitions[competitionId].phases[phaseId].groups;
 
@@ -205,20 +217,18 @@ export const randomTeamFrom =
     competitionIds: string[],
     canBeHumanControlled = false,
     excluded: number[] = [],
-    f: (t: Team) => boolean = () => true,
+    f: (t: Team) => boolean = () => true
   ): ContextSelector<Team> =>
   (ctx) => {
-    const managersTeams: number[] = Object.values(ctx.manager.managers)
+    const managersTeams: number[] = values(ctx.manager.managers)
       .map((p) => p.team)
       .filter((t): t is number => t !== undefined);
 
-    const teams = Object.entries(ctx.competitions)
+    const teams = entries(ctx.competitions)
       .filter(([id]) => competitionIds.includes(id))
       .flatMap(([, c]) => c.teams)
       .map((t) => ctx.teams[t])
-      .filter(
-        (t) => canBeHumanControlled || !managersTeams.includes(t.id),
-      )
+      .filter((t) => canBeHumanControlled || !managersTeams.includes(t.id))
       .filter((t) => !excluded.includes(t.id))
       .filter(f);
 
@@ -284,9 +294,7 @@ export const managersCompetitions =
       return {};
     }
     return Object.fromEntries(
-      Object.entries(ctx.competitions).filter(([, c]) =>
-        c.teams.includes(team),
-      ),
+      entries(ctx.competitions).filter(([, c]) => c.teams.includes(team))
     );
   };
 
@@ -323,10 +331,7 @@ export const managersArena =
     ctx.manager.managers[manager]?.arena;
 
 export const managerHasService =
-  (
-    manager: string,
-    service: keyof ManagerServices,
-  ): ContextSelector<boolean> =>
+  (manager: string, service: keyof ManagerServices): ContextSelector<boolean> =>
   (ctx) =>
     ctx.manager.managers[manager]?.services?.[service];
 
@@ -340,7 +345,7 @@ export const managerHasEnoughMoney =
 export const managerWhoControlsTeam =
   (id: number): ContextSelector<Manager | undefined> =>
   (ctx) =>
-    Object.values(ctx.manager.managers).find((p) => p.team === id);
+    values(ctx.manager.managers).find((p) => p.team === id);
 
 export const managerFlag =
   (manager: string, flag: string): ContextSelector<boolean | undefined> =>
@@ -387,28 +392,20 @@ export const activeManagersInvitations: ContextSelector<
 // Stats
 // ---------------------------------------------------------------------------
 
-/**
- * NOTE: This selector has a known bug — it returns `0` when stats are
- * missing and `undefined` when stats exist (inverted). This mirrors the
- * original Redux selector in `src/selectors.ts` which has a commented-out
- * `stats.reduce(...)` call. Intentionally kept identical to avoid divergence.
- * TODO: Fix when the original selector is corrected.
- */
 export const totalGamesPlayed =
   (
     manager: string,
     competition: string,
-    phase: number,
+    phase: number
   ): ContextSelector<number | undefined> =>
   (ctx) => {
-    const stats =
-      ctx.stats.managers?.[manager]?.games?.[competition]?.[phase];
+    const record = ctx.stats.managers?.[manager]?.games?.[competition]?.[phase];
 
-    if (!stats) {
+    if (!record) {
       return 0;
     }
 
-    return undefined;
+    return record.win + record.draw + record.loss;
   };
 
 // ---------------------------------------------------------------------------
@@ -417,10 +414,10 @@ export const totalGamesPlayed =
 
 export const interestingCompetitions: ContextSelector<string[]> = (ctx) => {
   const team = activeManagersTeam(ctx);
-  return Object.keys(ctx.competitions).filter((id) => {
+  return keys(ctx.competitions).filter((id) => {
     const comp = ctx.competitions[id];
     return comp.phases.some((phase) =>
-      phase.groups.some((group) => group.teams.includes(team.id)),
+      phase.groups.some((group) => group.teams.includes(team.id))
     );
   });
 };

@@ -634,7 +634,7 @@ Next natural step: `createReducer` conversion (replaces switch/case + eliminates
 ```ts
 export const advanceEnabled = (state: RootState) =>
   state.game.turn.phase !== "event" ||
-  !Object.values(state.event.events).some((e) => !e.resolved);
+  !values(state.event.events).some((e) => !e.resolved);
 ```
 
 **Key insight:** The phase check is critical — events can be unresolved during creation phases (earlier in the turn) but should only block advance during the `"event"` phase when the player actually resolves them.

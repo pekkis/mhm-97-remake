@@ -23,6 +23,7 @@ import { addEventAction, clearEvents } from "../ducks/event";
 import { addNotification, dismissNotification } from "../ducks/notification";
 import { toggleMenu, closeMenu } from "../ducks/ui";
 import { addNews } from "../ducks/news";
+import { keys, values } from "remeda";
 
 describe("reducer unit tests", () => {
   let store: TestStore;
@@ -81,7 +82,7 @@ describe("reducer unit tests", () => {
       store.dispatch(seasonStart());
 
       const comps = store.getState().game.competitions;
-      for (const comp of Object.values(comps)) {
+      for (const comp of values(comps)) {
         expect(comp.phases).toEqual([]);
         expect(comp.phase).toBe(-1);
       }
@@ -289,7 +290,7 @@ describe("reducer unit tests", () => {
       );
 
       const events = store.getState().event.events;
-      const eventIds = Object.keys(events);
+      const eventIds = keys(events);
       expect(eventIds).toHaveLength(1);
 
       const event = events[eventIds[0]];
@@ -297,7 +298,7 @@ describe("reducer unit tests", () => {
       expect(event.resolved).toBe(false);
 
       store.dispatch(clearEvents());
-      expect(Object.keys(store.getState().event.events)).toHaveLength(0);
+      expect(keys(store.getState().event.events)).toHaveLength(0);
     });
   });
 

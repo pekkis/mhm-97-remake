@@ -3,6 +3,7 @@ import HeaderedPage from "./ui/HeaderedPage";
 import { getEffective } from "@/services/effects";
 import Box from "./styled-system/Box";
 import { useAppSelector } from "@/config/redux";
+import { values } from "remeda";
 
 const DeveloperMenu = () => {
   const teams = useAppSelector((state) => state.game.teams);
@@ -15,7 +16,7 @@ const DeveloperMenu = () => {
       <Box p={1}>
         <h2>Devausinfo</h2>
 
-        {Object.values(competitions).map((c) => {
+        {values(competitions).map((c) => {
           return (
             <div key={c.id}>
               <h2>{c.name}</h2>

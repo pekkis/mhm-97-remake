@@ -7,6 +7,7 @@ import type { ManagerDefinition } from "@/data/managers";
 import competitionList from "@/data/competitions";
 import { quitToMainMenu, gameLoadState } from "./meta";
 import type { Competition, CompetitionId } from "@/types/competitions";
+import { entries, values } from "remeda";
 
 // --- Action creators ---
 
@@ -207,7 +208,7 @@ const defaultState: GameState = {
   },
   managers,
   competitions: Object.fromEntries(
-    Object.entries(competitionList).map(([key, def]) => [key, { ...def.data }])
+    entries(competitionList).map(([key, def]) => [key, { ...def.data }])
   ) as Record<CompetitionId, Competition>,
   teams: teamDefs.map((t) => ({
     id: t.id,
@@ -264,7 +265,7 @@ export default createReducer(defaultState, (builder) => {
         t.readiness = 0;
       }
       state.flags.jarko = false;
-      for (const comp of Object.values(state.competitions)) {
+      for (const comp of values(state.competitions)) {
         comp.phase = -1;
         comp.phases = [];
       }

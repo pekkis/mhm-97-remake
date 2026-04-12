@@ -9,6 +9,7 @@ import Field from "@/components/form/Field";
 import difficultyLevels from "@/data/difficulty-levels";
 import type { Team } from "@/ducks/game";
 import type { Competition } from "@/types/competitions";
+import { values } from "remeda";
 
 export type ManagerFormValues = {
   name: string;
@@ -74,7 +75,7 @@ const ManagerForm: FC<ManagerFormProps> = ({
           <LabelDiv>Joukkue</LabelDiv>
 
           <Select {...register("team")}>
-            {Object.values(competitions).map((c) => {
+            {values(competitions).map((c) => {
               return (
                 <optgroup key={c.id} label={c.name}>
                   {c.teams

@@ -225,7 +225,7 @@ export function* seasonStart() {
   }
 
   const managers = yield* select((state: RootState) => state.manager.managers);
-  for (const [, manager] of Object.entries(managers)) {
+  for (const [, manager] of entries(managers)) {
     console.log("MANAGER", manager);
 
     // Skip the first season for salary payments.

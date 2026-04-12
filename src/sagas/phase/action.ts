@@ -31,11 +31,12 @@ import { requestBet } from "@/ducks/betting";
 import { bet } from "@/sagas/betting";
 import { advance, setGamePhase } from "@/ducks/game";
 import type { RootState } from "@/config/redux";
+import { values } from "remeda";
 
 export default function* actionPhase() {
   const managers = yield* select((state: RootState) => state.manager.managers);
 
-  yield* call(setActiveManager, Object.values(managers)[0].id);
+  yield* call(setActiveManager, values(managers)[0].id);
 
   yield* put(setGamePhase("action"));
 

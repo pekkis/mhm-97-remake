@@ -14,6 +14,7 @@ import {
 } from "@/ducks/game";
 import type { RootState } from "@/config/redux";
 import type { Phase } from "@/types/competitions";
+import { entries } from "remeda";
 
 export function* stats() {
   yield* all([
@@ -102,7 +103,7 @@ export function* createSeasonStories() {
 
   const stats = yield* select((state: RootState) => state.stats.currentSeason!);
 
-  for (const [managerId, manager] of Object.entries(managers)) {
+  for (const [managerId, manager] of entries(managers)) {
     const teamId = manager.team;
 
     const mainCompetition = yield* select(managersMainCompetition(managerId));
