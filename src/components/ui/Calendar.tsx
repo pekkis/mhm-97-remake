@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from "react";
-import calendar from "../../data/calendar";
-import type { CalendarEntry } from "../../data/calendar";
+import calendar from "@/data/calendar";
+import type { CalendarEntry } from "@/data/calendar";
 import { useAppSelector } from "@/config/redux";
 import type { Competition, CompetitionId } from "@/types/competitions";
 

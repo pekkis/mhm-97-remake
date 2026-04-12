@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { roundRobin, scheduler } from "../services/round-robin";
+import { roundRobin, scheduler } from "@/services/round-robin";
 
 describe("round-robin scheduler", () => {
   describe("roundRobin (base algorithm)", () => {

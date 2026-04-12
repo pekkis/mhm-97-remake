@@ -1,15 +1,15 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { amount as a } from "../../services/format";
+import { addEvent } from "@/sagas/event";
+import { amount as a } from "@/services/format";
 import {
   managersTeamId,
   managersDifficulty,
   managersArena,
   managersBalance
 } from "@/selectors";
-import { incrementStrength } from "../../sagas/team";
-import { setArenaLevel, incrementBalance } from "../../sagas/manager";
-import type { MHMEvent } from "../../types/base";
+import { incrementStrength } from "@/sagas/team";
+import { setArenaLevel, incrementBalance } from "@/sagas/manager";
+import type { MHMEvent } from "@/types/base";
 
 /*
 PRINT "Tisa Ekkanen, loistava NHL-pelaaja, palaa kotimaahan monien vuosien"

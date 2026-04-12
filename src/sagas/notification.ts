@@ -2,7 +2,7 @@ import { put, call, spawn, delay } from "typed-redux-saga";
 import {
   addNotification as addNotificationAction,
   dismissNotification as dismissNotificationAction
-} from "../ducks/notification";
+} from "@/ducks/notification";
 
 export function* autoDismissal(id: string) {
   yield* delay(7000);

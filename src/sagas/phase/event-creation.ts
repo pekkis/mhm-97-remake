@@ -1,9 +1,9 @@
 import { select, call } from "typed-redux-saga";
 import events from "@/game/events";
-import { cinteger } from "../../services/random";
-import calendar from "../../data/calendar";
-import { setPhase } from "../game";
-import type { RootState } from "../../config/redux";
+import { cinteger } from "@/services/random";
+import calendar from "@/data/calendar";
+import { setPhase } from "@/sagas/game";
+import type { RootState } from "@/config/redux";
 
 const eventsMap: Record<number, string> = {
   1: "jaralahti",

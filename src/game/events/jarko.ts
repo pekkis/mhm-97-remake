@@ -7,12 +7,12 @@ import {
   managerHasEnoughMoney,
   randomTeamFrom
 } from "@/selectors";
-import { amount as a } from "../../services/format";
-import { incrementMorale, incrementStrength } from "../../sagas/team";
-import { addEvent } from "../../sagas/event";
-import { decrementBalance } from "../../sagas/manager";
-import { setFlag } from "../../sagas/game";
-import type { MHMEvent } from "../../types/base";
+import { amount as a } from "@/services/format";
+import { incrementMorale, incrementStrength } from "@/sagas/team";
+import { addEvent } from "@/sagas/event";
+import { decrementBalance } from "@/sagas/manager";
+import { setFlag } from "@/sagas/game";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "jarko";
 

@@ -1,5 +1,5 @@
 import { style, globalStyle } from "@vanilla-extract/css";
-import { button } from "../form/Button.css";
+import { button } from "@/components/form/Button.css";
 
 export const buttonContainer = style({});
 

@@ -1,4 +1,4 @@
-import { CRISIS_MORALE_MAX } from "../data/constants";
+import { CRISIS_MORALE_MAX } from "@/data/constants";
 import Button from "./form/Button";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
@@ -6,11 +6,11 @@ import ManagerInfo from "./ManagerInfo";
 import Calendar from "./ui/Calendar";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { managerCrisisMeeting } from "../ducks/manager";
+import { managerCrisisMeeting } from "@/ducks/manager";
 
-import crisis from "../data/crisis";
-import { currency as c } from "../services/format";
-import { getEffective } from "../services/effects";
+import crisis from "@/data/crisis";
+import { currency as c } from "@/services/format";
+import { getEffective } from "@/services/effects";
 import { activeManager } from "@/selectors";
 
 const CrisisActions = () => {

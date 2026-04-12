@@ -1,11 +1,11 @@
 import { useState, type FC } from "react";
-import Tabs from "../ui/Tabs";
-import Tab from "../ui/Tab";
+import Tabs from "@/components/ui/Tabs";
+import Tab from "@/components/ui/Tab";
 import Story from "./Story";
-import type { Team } from "../../ducks/game";
-import type { Manager } from "../../ducks/manager";
-import type { StatsState } from "../../ducks/stats";
-import type { Competition } from "../../types/competitions";
+import type { Team } from "@/ducks/game";
+import type { Manager } from "@/ducks/manager";
+import type { StatsState } from "@/ducks/stats";
+import type { Competition } from "@/types/competitions";
 
 type ManagerStatsProps = {
   competitions: Record<string, Competition>;

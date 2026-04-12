@@ -1,5 +1,5 @@
 import type { CallEffect } from "redux-saga/effects";
-import type { Team } from "../ducks/game";
+import type { Team } from "@/ducks/game";
 
 // --- Game result ---
 

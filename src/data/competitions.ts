@@ -5,7 +5,7 @@ import tournaments from "./competitions/tournaments";
 import type {
   CompetitionDefinition,
   CompetitionId
-} from "../types/competitions";
+} from "@/types/competitions";
 
 const competitionEntries: [CompetitionId, CompetitionDefinition][] = [
   ["phl", phl],

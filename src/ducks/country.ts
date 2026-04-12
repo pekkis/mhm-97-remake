@@ -1,4 +1,4 @@
-import { countries as countryList } from "../data/countries";
+import { countries as countryList } from "@/data/countries";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 import { quitToMainMenu } from "./meta";
 

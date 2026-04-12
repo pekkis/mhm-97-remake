@@ -1,5 +1,5 @@
-import { amount } from "../services/format";
-import { getEffective } from "../services/effects";
+import { amount } from "@/services/format";
+import { getEffective } from "@/services/effects";
 import Box from "./styled-system/Box";
 import TurnIndicator from "./game/TurnIndicator";
 import { useAppSelector } from "@/config/redux";

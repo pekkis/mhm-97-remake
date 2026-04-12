@@ -1,7 +1,7 @@
 import type { FC, ReactNode } from "react";
 import clsx from "clsx";
-import { sprinkles } from "../../styles/sprinkles.css";
-import { vars } from "../../styles/theme.css";
+import { sprinkles } from "@/styles/sprinkles.css";
+import { vars } from "@/styles/theme.css";
 
 type SpaceKey = keyof typeof vars.space;
 type ColorKey = keyof typeof vars.color;

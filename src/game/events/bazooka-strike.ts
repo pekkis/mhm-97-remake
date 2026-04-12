@@ -1,9 +1,9 @@
 import { select, call } from "typed-redux-saga";
 import { randomManager } from "@/selectors";
-import { decrementStrength } from "../../sagas/team";
-import { addEvent } from "../../sagas/event";
-import type { MHMEvent } from "../../types/base";
-import type { RootState } from "../../config/redux";
+import { decrementStrength } from "@/sagas/team";
+import { addEvent } from "@/sagas/event";
+import type { MHMEvent } from "@/types/base";
+import type { RootState } from "@/config/redux";
 import type { PrankInstance } from "@/game/pranks";
 
 const eventId = "bazookaStrike";

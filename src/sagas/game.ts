@@ -1,4 +1,4 @@
-import competitionData from "../data/competitions";
+import competitionData from "@/data/competitions";
 import {
   seasonStart as seasonStartAction,
   gameBegin,
@@ -14,11 +14,11 @@ import {
   competitionAddTeam,
   competitionSetTeams,
   nextTurn as nextTurnAction
-} from "../ducks/game";
-import { clearAnnouncements } from "../ducks/news";
-import { clearEvents } from "../ducks/event";
+} from "@/ducks/game";
+import { clearAnnouncements } from "@/ducks/news";
+import { clearEvents } from "@/ducks/event";
 
-import teamData from "../data/teams";
+import teamData from "@/data/teams";
 
 import { all, call, put, select, takeEvery, fork } from "typed-redux-saga";
 
@@ -36,8 +36,8 @@ import startOfSeasonPhase from "./phase/start-of-season";
 import galaPhase from "./phase/gala";
 
 import calculationsPhase from "./phase/calculations";
-import calendar from "../data/calendar";
-import difficultyLevels from "../data/difficulty-levels";
+import calendar from "@/data/calendar";
+import difficultyLevels from "@/data/difficulty-levels";
 
 import { setExtra, decrementBalance, incrementInsuranceExtra } from "./manager";
 import { stats } from "./stats";
@@ -50,8 +50,8 @@ import {
   managersArena
 } from "@/selectors";
 import events from "@/game/events";
-import type { RootState } from "../config/redux";
-import type { CompetitionId, Group, TeamStat } from "../types/competitions";
+import type { RootState } from "@/config/redux";
+import type { CompetitionId, Group, TeamStat } from "@/types/competitions";
 import { competitionSagas } from "./competition-registry";
 import { entries } from "remeda";
 

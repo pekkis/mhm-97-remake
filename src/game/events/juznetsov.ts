@@ -1,14 +1,14 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { incrementInsuranceExtra, incrementBalance } from "../../sagas/manager";
-import { addOpponentEffect } from "../../sagas/team";
+import { addEvent } from "@/sagas/event";
+import { incrementInsuranceExtra, incrementBalance } from "@/sagas/manager";
+import { addOpponentEffect } from "@/sagas/team";
 import {
   managerHasService,
   managerCompetesIn,
   managersTeamId
 } from "@/selectors";
-import { cinteger } from "../../services/random";
-import type { MHMEvent } from "../../types/base";
+import { cinteger } from "@/services/random";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "juznetsov";
 

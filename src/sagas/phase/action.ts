@@ -8,29 +8,29 @@ import {
   put,
   select
 } from "typed-redux-saga";
-import { gameSave } from "../meta";
-import { saveGame } from "../../ducks/meta";
+import { gameSave } from "@/sagas/meta";
+import { saveGame } from "@/ducks/meta";
 import {
   watchTransferMarket,
   crisisMeeting,
   improveArena,
   toggleService,
   setActiveManager
-} from "../manager";
+} from "@/sagas/manager";
 import {
   managerCrisisMeeting,
   managerImproveArena,
   managerToggleService
-} from "../../ducks/manager";
-import { orderPrank as orderPrankAction } from "../../ducks/prank";
-import { orderPrank as orderPrankSaga } from "../prank";
-import { acceptInvitation } from "../invitation";
+} from "@/ducks/manager";
+import { orderPrank as orderPrankAction } from "@/ducks/prank";
+import { orderPrank as orderPrankSaga } from "@/sagas/prank";
+import { acceptInvitation } from "@/sagas/invitation";
 
-import { requestAcceptInvitation } from "../../ducks/invitation";
-import { requestBet } from "../../ducks/betting";
-import { bet } from "../betting";
-import { advance, setGamePhase } from "../../ducks/game";
-import type { RootState } from "../../config/redux";
+import { requestAcceptInvitation } from "@/ducks/invitation";
+import { requestBet } from "@/ducks/betting";
+import { bet } from "@/sagas/betting";
+import { advance, setGamePhase } from "@/ducks/game";
+import type { RootState } from "@/config/redux";
 
 export default function* actionPhase() {
   const managers = yield* select((state: RootState) => state.manager.managers);

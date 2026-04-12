@@ -1,11 +1,11 @@
 import { call, select } from "typed-redux-saga";
 import { produce } from "immer";
-import { addEvent, resolvedEvent } from "../../sagas/event";
-import { addOpponentEffect } from "../../sagas/team";
+import { addEvent, resolvedEvent } from "@/sagas/event";
+import { addOpponentEffect } from "@/sagas/team";
 import { managersTeamId } from "@/selectors";
-import { amount as a } from "../../services/format";
-import { decrementBalance } from "../../sagas/manager";
-import type { MHMEvent } from "../../types/base";
+import { amount as a } from "@/services/format";
+import { decrementBalance } from "@/sagas/manager";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "kecklin";
 

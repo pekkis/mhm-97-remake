@@ -1,5 +1,5 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
+import { addEvent } from "@/sagas/event";
 import {
   managersMainCompetition,
   managersDifficulty,
@@ -7,13 +7,13 @@ import {
   managerHasService,
   managersArena
 } from "@/selectors";
-import { amount as a } from "../../services/format";
+import { amount as a } from "@/services/format";
 import {
   decrementBalance,
   incrementBalance,
   incrementInsuranceExtra
-} from "../../sagas/manager";
-import type { MHMEvent } from "../../types/base";
+} from "@/sagas/manager";
+import type { MHMEvent } from "@/types/base";
 
 /*
 sat72:

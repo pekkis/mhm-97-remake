@@ -1,9 +1,9 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
+import { addEvent } from "@/sagas/event";
 import { managerHasService } from "@/selectors";
-import { cinteger } from "../../services/random";
-import { incrementServiceBasePrice } from "../../sagas/game";
-import type { MHMEvent } from "../../types/base";
+import { cinteger } from "@/services/random";
+import { incrementServiceBasePrice } from "@/sagas/game";
+import type { MHMEvent } from "@/types/base";
 
 /*
 sat75:

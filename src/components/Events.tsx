@@ -4,7 +4,7 @@ import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { requestResolveEvent } from "../ducks/event";
+import { requestResolveEvent } from "@/ducks/event";
 import { activeManager } from "@/selectors";
 
 const Events = () => {

@@ -1,4 +1,4 @@
-import calendar from "../data/calendar";
+import calendar from "@/data/calendar";
 import Table from "./league-table/Table";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";

@@ -1,10 +1,10 @@
 import { take, call, select } from "typed-redux-saga";
-import { advance } from "../../ducks/game";
-import { setPhase } from "../game";
-import { addNews } from "../news";
+import { advance } from "@/ducks/game";
+import { setPhase } from "@/sagas/game";
+import { addNews } from "@/sagas/news";
 import { randomManager } from "@/selectors";
-import type { RootState } from "../../config/redux";
-import type { TeamStat } from "../../types/competitions";
+import type { RootState } from "@/config/redux";
+import type { TeamStat } from "@/types/competitions";
 
 export default function* galaPhase() {
   yield* call(setPhase, "gala");

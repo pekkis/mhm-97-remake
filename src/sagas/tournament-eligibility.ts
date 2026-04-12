@@ -1,7 +1,7 @@
 import { select } from "typed-redux-saga";
 import { managersMainCompetition, managersTeamId } from "@/selectors";
-import type { RootState } from "../config/redux";
-import type { CompetitionId, TeamStat } from "../types/competitions";
+import type { RootState } from "@/config/redux";
+import type { CompetitionId, TeamStat } from "@/types/competitions";
 
 export function* isInvitedToTournament(
   competitionId: CompetitionId,

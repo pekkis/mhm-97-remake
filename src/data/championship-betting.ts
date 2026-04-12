@@ -3,8 +3,8 @@ IF v(x) >= yttre - 100 THEN ker(x) = 460: GOTO esukki
 IF v(x) <= yttre - 100 THEN ker(x) = 1000: GOTO esukki
 */
 
-import type { Team } from "../ducks/game";
-import type { Competition } from "../types/competitions";
+import type { Team } from "@/ducks/game";
+import type { Competition } from "@/types/competitions";
 
 type OddsEntry = {
   id: number;

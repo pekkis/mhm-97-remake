@@ -1,7 +1,7 @@
 import * as styles from "./Notifications.css";
 import Notification from "./Notification";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { dismissNotification } from "../../ducks/notification";
+import { dismissNotification } from "@/ducks/notification";
 
 const Notifications = () => {
   const notifications = useAppSelector(

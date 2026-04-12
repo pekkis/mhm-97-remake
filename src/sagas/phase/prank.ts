@@ -1,7 +1,7 @@
 import { select, call, put } from "typed-redux-saga";
 import prankTypes from "@/game/pranks";
-import { dismissPrank } from "../../ducks/prank";
-import type { RootState } from "../../config/redux";
+import { dismissPrank } from "@/ducks/prank";
+import type { RootState } from "@/config/redux";
 
 export default function* prankPhase() {
   const pranks = yield* select((state: RootState) => state.prank.pranks);

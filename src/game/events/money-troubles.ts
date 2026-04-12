@@ -1,9 +1,9 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { decrementStrength, incrementStrength } from "../../sagas/team";
+import { addEvent } from "@/sagas/event";
+import { decrementStrength, incrementStrength } from "@/sagas/team";
 import { randomTeamFrom, randomRankedTeam, randomManager } from "@/selectors";
-import { cinteger } from "../../services/random";
-import type { MHMEvent } from "../../types/base";
+import { cinteger } from "@/services/random";
+import type { MHMEvent } from "@/types/base";
 import type { Team } from "@/ducks/game";
 
 const eventId = "moneyTroubles";

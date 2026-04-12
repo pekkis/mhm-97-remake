@@ -1,9 +1,9 @@
 import type { FC } from "react";
-import Button from "../form/Button";
-import ButtonContainer from "../ui/ButtonContainer";
+import Button from "@/components/form/Button";
+import ButtonContainer from "@/components/ui/ButtonContainer";
 import pranks from "@/game/pranks";
-import { currency as c } from "../../services/format";
-import type { Manager } from "../../ducks/manager";
+import { currency as c } from "@/services/format";
+import type { Manager } from "@/ducks/manager";
 
 type SelectTypeProps = {
   manager: Manager;

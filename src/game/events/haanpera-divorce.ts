@@ -1,9 +1,9 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { incrementStrength } from "../../sagas/team";
+import { addEvent } from "@/sagas/event";
+import { incrementStrength } from "@/sagas/team";
 import { managersTeam, flag, managerCompetesIn } from "@/selectors";
-import { setFlag } from "../../sagas/game";
-import type { MHMEvent } from "../../types/base";
+import { setFlag } from "@/sagas/game";
+import type { MHMEvent } from "@/types/base";
 
 /*
 IF ero = 1 THEN RETURN

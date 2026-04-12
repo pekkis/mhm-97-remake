@@ -1,9 +1,9 @@
 import { call, put } from "typed-redux-saga";
 import { produce } from "immer";
-import { amount as a } from "../../services/format";
-import { addEvent } from "../../sagas/event";
-import { resolveEventAction } from "../../ducks/event";
-import type { MHMEvent } from "../../types/base";
+import { amount as a } from "@/services/format";
+import { addEvent } from "@/sagas/event";
+import { resolveEventAction } from "@/ducks/event";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "suddenDeath";
 

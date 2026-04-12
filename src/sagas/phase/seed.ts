@@ -1,8 +1,8 @@
 import { select, put, call } from "typed-redux-saga";
-import calendar from "../../data/calendar";
-import { seedCompetition } from "../game";
-import { setGamePhase } from "../../ducks/game";
-import type { RootState } from "../../config/redux";
+import calendar from "@/data/calendar";
+import { seedCompetition } from "@/sagas/game";
+import { setGamePhase } from "@/ducks/game";
+import type { RootState } from "@/config/redux";
 import type { CompetitionId } from "@/types/competitions";
 
 export default function* seedPhase() {

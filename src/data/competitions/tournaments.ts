@@ -3,7 +3,7 @@ import type {
   Competition,
   CompetitionDefinition,
   TournamentGroup
-} from "../../types/competitions";
+} from "@/types/competitions";
 import tournamentScheduler from "@/services/tournament";
 import type { Manager } from "@/ducks/manager";
 import type { Invitation } from "@/ducks/invitation";

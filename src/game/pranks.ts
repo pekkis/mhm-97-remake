@@ -1,6 +1,6 @@
 import { call } from "typed-redux-saga";
-import { addNotification } from "../sagas/notification";
-import { addEffect } from "../sagas/team";
+import { addNotification } from "@/sagas/notification";
+import { addEffect } from "@/sagas/team";
 import events from "@/game/events";
 
 export type PrankInstance = {

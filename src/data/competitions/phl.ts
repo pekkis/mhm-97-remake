@@ -1,12 +1,12 @@
-import { scheduler as roundRobinScheduler } from "../../services/round-robin";
-import playoffScheduler, { victors, eliminated } from "../../services/playoffs";
-import { defaultMoraleBoost } from "../../services/morale";
-import r from "../../services/random";
+import { scheduler as roundRobinScheduler } from "@/services/round-robin";
+import playoffScheduler, { victors, eliminated } from "@/services/playoffs";
+import { defaultMoraleBoost } from "@/services/morale";
+import r from "@/services/random";
 import type {
   Competition,
   CompetitionDefinition,
   PlayoffGroup
-} from "../../types/competitions";
+} from "@/types/competitions";
 
 const phl: CompetitionDefinition = {
   data: {

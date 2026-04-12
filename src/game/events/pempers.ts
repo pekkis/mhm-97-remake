@@ -1,10 +1,10 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { incrementBalance } from "../../sagas/manager";
-import { decrementMorale } from "../../sagas/team";
-import { amount as a } from "../../services/format";
+import { addEvent } from "@/sagas/event";
+import { incrementBalance } from "@/sagas/manager";
+import { decrementMorale } from "@/sagas/team";
+import { amount as a } from "@/services/format";
 import { managersTeamId } from "@/selectors";
-import type { MHMEvent } from "../../types/base";
+import type { MHMEvent } from "@/types/base";
 
 /*
 PRINT "Mainostoimisto maksaa 55000 pekkaa joukkueen esiintymisest„ vaippa-"

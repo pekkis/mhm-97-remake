@@ -1,11 +1,11 @@
 import type { FC } from "react";
 import clsx from "clsx";
 import * as styles from "./Table.css";
-import RTable from "../responsive-table/Table";
+import RTable from "@/components/responsive-table/Table";
 
-import type { Team } from "../../ducks/game";
-import type { Manager } from "../../ducks/manager";
-import type { Group, TeamStat } from "../../types/competitions";
+import type { Team } from "@/ducks/game";
+import type { Manager } from "@/ducks/manager";
+import type { Group, TeamStat } from "@/types/competitions";
 
 type TableProps = {
   managers: Record<string, Manager>;

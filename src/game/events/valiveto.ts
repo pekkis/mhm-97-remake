@@ -1,8 +1,8 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { setArenaLevel } from "../../sagas/manager";
+import { addEvent } from "@/sagas/event";
+import { setArenaLevel } from "@/sagas/manager";
 import { managersDifficulty, managersArena } from "@/selectors";
-import type { MHMEvent } from "../../types/base";
+import type { MHMEvent } from "@/types/base";
 
 /*
 sat34:

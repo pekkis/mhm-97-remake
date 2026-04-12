@@ -1,12 +1,12 @@
 import { put, select, call } from "typed-redux-saga";
 import { produce } from "immer";
 import { managersTeamId, teamCompetesIn } from "@/selectors";
-import { currency as c } from "../../services/format";
-import { cinteger } from "../../services/random";
-import { addEvent } from "../../sagas/event";
-import { decrementBalance } from "../../sagas/manager";
-import { incrementStrength } from "../../sagas/team";
-import type { MHMEvent } from "../../types/base";
+import { currency as c } from "@/services/format";
+import { cinteger } from "@/services/random";
+import { addEvent } from "@/sagas/event";
+import { decrementBalance } from "@/sagas/manager";
+import { incrementStrength } from "@/sagas/team";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "russianAgent";
 

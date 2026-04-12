@@ -1,7 +1,7 @@
 import { select, put, call, all, takeEvery } from "typed-redux-saga";
-import { gameFacts } from "../services/game";
-import competitionList from "../data/competitions";
-import playerTypes from "../data/transfer-market";
+import { gameFacts } from "@/services/game";
+import competitionList from "@/data/competitions";
+import playerTypes from "@/data/transfer-market";
 import {
   managersTeam,
   managersTeamId,
@@ -13,7 +13,7 @@ import {
 } from "@/selectors";
 import { incrementMorale, incrementReadiness, incurPenalty } from "./team";
 import { addNotification } from "./notification";
-import crisis from "../data/crisis";
+import crisis from "@/data/crisis";
 import {
   managerAdd,
   managerSetActive,
@@ -29,16 +29,16 @@ import {
   managerBuyPlayer,
   managerSellPlayer,
   type ManagerServices
-} from "../ducks/manager";
-import difficultyLevels from "../data/difficulty-levels";
-import arenas from "../data/arenas";
+} from "@/ducks/manager";
+import difficultyLevels from "@/data/difficulty-levels";
+import arenas from "@/data/arenas";
 import { incrementStrength, decrementStrength } from "./team";
-import r from "../services/random";
+import r from "@/services/random";
 import { addAnnouncement } from "./news";
-import { amount as a } from "../services/format";
-import { teamRemoveManager, teamAddManager } from "../ducks/game";
-import type { RootState } from "../config/redux";
-import type { CompetitionId } from "../types/competitions";
+import { amount as a } from "@/services/format";
+import { teamRemoveManager, teamAddManager } from "@/ducks/game";
+import type { RootState } from "@/config/redux";
+import type { CompetitionId } from "@/types/competitions";
 
 type AddManagerDetails = {
   name: string;

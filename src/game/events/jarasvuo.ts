@@ -1,15 +1,15 @@
 import { call, select } from "typed-redux-saga";
 import { produce } from "immer";
-import { addEvent, resolvedEvent } from "../../sagas/event";
+import { addEvent, resolvedEvent } from "@/sagas/event";
 import {
   decrementMorale,
   decrementStrength,
   incrementMorale,
   addEffect
-} from "../../sagas/team";
+} from "@/sagas/team";
 import { managersTeamId, managerCompetesIn } from "@/selectors";
-import { incrementBalance } from "../../sagas/manager";
-import type { MHMEvent } from "../../types/base";
+import { incrementBalance } from "@/sagas/manager";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "jarasvuo";
 

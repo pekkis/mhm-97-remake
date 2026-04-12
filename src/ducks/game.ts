@@ -1,12 +1,12 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
-import teamDefs from "../data/teams";
-import managers from "../data/managers";
-import type { ManagerDefinition } from "../data/managers";
+import teamDefs from "@/data/teams";
+import managers from "@/data/managers";
+import type { ManagerDefinition } from "@/data/managers";
 
-import competitionList from "../data/competitions";
+import competitionList from "@/data/competitions";
 import { quitToMainMenu, gameLoadState } from "./meta";
-import type { Competition, CompetitionId } from "../types/competitions";
+import type { Competition, CompetitionId } from "@/types/competitions";
 
 // --- Action creators ---
 

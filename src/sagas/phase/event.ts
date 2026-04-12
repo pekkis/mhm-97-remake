@@ -1,9 +1,9 @@
 import { select, call, put, take, takeEvery, cancel } from "typed-redux-saga";
 import events from "@/game/events";
-import { resolveEvent, processEvents } from "../event";
-import { setGamePhase } from "../../ducks/game";
-import { requestResolveEvent } from "../../ducks/event";
-import type { RootState } from "../../config/redux";
+import { resolveEvent, processEvents } from "@/sagas/event";
+import { setGamePhase } from "@/ducks/game";
+import { requestResolveEvent } from "@/ducks/event";
+import type { RootState } from "@/config/redux";
 
 export default function* eventPhase() {
   yield* put(setGamePhase("event"));

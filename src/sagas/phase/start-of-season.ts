@@ -1,17 +1,17 @@
 import { take, put, select, call, all, race } from "typed-redux-saga";
-import { seasonStart } from "../game";
-import strategies from "../../data/strategies";
-import { requestChampionBet } from "../../ducks/betting";
-import { betChampion } from "../betting";
-import { setActiveManager } from "../manager";
-import { managerSelectStrategy } from "../../ducks/manager";
+import { seasonStart } from "@/sagas/game";
+import strategies from "@/data/strategies";
+import { requestChampionBet } from "@/ducks/betting";
+import { betChampion } from "@/sagas/betting";
+import { setActiveManager } from "@/sagas/manager";
+import { managerSelectStrategy } from "@/ducks/manager";
 import {
   advance,
   setGamePhase,
   teamSetStrategy,
   teamSetReadiness
-} from "../../ducks/game";
-import type { RootState } from "../../config/redux";
+} from "@/ducks/game";
+import type { RootState } from "@/config/redux";
 
 function* selectStrategy() {
   const managers = yield* select((state: RootState) => state.manager.managers);

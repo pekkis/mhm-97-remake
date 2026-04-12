@@ -4,7 +4,7 @@ import HeaderedPage from "./ui/HeaderedPage";
 import BettingForm from "./betting/BettingForm";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { requestBet } from "../ducks/betting";
+import { requestBet } from "@/ducks/betting";
 import { activeManager } from "@/selectors";
 
 const Betting = () => {

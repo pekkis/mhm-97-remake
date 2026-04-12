@@ -3,13 +3,13 @@ import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import ButtonRow from "./form/ButtonRow";
 import Button from "./form/Button";
-import arenas from "../data/arenas";
+import arenas from "@/data/arenas";
 import clsx from "clsx";
 import * as styles from "./Arena.css";
-import { currency } from "../services/format";
+import { currency } from "@/services/format";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { managerImproveArena } from "../ducks/manager";
+import { managerImproveArena } from "@/ducks/manager";
 import { activeManager } from "@/selectors";
 
 const Arenas = () => {

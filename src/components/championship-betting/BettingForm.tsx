@@ -1,12 +1,12 @@
 import type { FC } from "react";
 import { useForm, Controller } from "react-hook-form";
-import Slider from "../form/Slider";
-import { amount as a } from "../../services/format";
-import odds from "../../data/championship-betting";
-import Button from "../form/Button";
-import type { Team } from "../../ducks/game";
-import type { Manager } from "../../ducks/manager";
-import type { Competition } from "../../types/competitions";
+import Slider from "@/components/form/Slider";
+import { amount as a } from "@/services/format";
+import odds from "@/data/championship-betting";
+import Button from "@/components/form/Button";
+import type { Team } from "@/ducks/game";
+import type { Manager } from "@/ducks/manager";
+import type { Competition } from "@/types/competitions";
 
 type ChampionshipBettingFormValues = {
   team: string;

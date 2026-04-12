@@ -1,10 +1,10 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { incrementBalance, incrementInsuranceExtra } from "../../sagas/manager";
-import { amount as a } from "../../services/format";
-import { addEffect } from "../../sagas/team";
+import { addEvent } from "@/sagas/event";
+import { incrementBalance, incrementInsuranceExtra } from "@/sagas/manager";
+import { amount as a } from "@/services/format";
+import { addEffect } from "@/sagas/team";
 import { managersTeam, managerHasService } from "@/selectors";
-import type { MHMEvent } from "../../types/base";
+import type { MHMEvent } from "@/types/base";
 
 /*
 sat20:

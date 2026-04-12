@@ -1,4 +1,4 @@
-import calendar from "../../data/calendar";
+import calendar from "@/data/calendar";
 import { useAppSelector } from "@/config/redux";
 
 const Forward = () => {

@@ -1,9 +1,9 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { incrementBalance, decrementBalance } from "../../sagas/manager";
-import { amount as a } from "../../services/format";
+import { addEvent } from "@/sagas/event";
+import { incrementBalance, decrementBalance } from "@/sagas/manager";
+import { amount as a } from "@/services/format";
 import { managersDifficulty } from "@/selectors";
-import type { MHMEvent } from "../../types/base";
+import type { MHMEvent } from "@/types/base";
 
 /*
 PRINT "Pankkinne on tehnyt virheen. Tilill„nne on 500.000 pekkaa liikaa."

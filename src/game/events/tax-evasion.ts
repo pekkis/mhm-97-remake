@@ -1,6 +1,6 @@
 import { put, select, call } from "typed-redux-saga";
 import { produce } from "immer";
-import { resolveEventAction } from "../../ducks/event";
+import { resolveEventAction } from "@/ducks/event";
 import {
   managersTeamId,
   randomTeamFrom,
@@ -9,13 +9,13 @@ import {
   managersDifficulty,
   managersArena
 } from "@/selectors";
-import { amount as a } from "../../services/format";
-import r from "../../services/random";
-import { decrementMorale } from "../../sagas/team";
-import { addEvent } from "../../sagas/event";
-import { decrementBalance, incrementInsuranceExtra } from "../../sagas/manager";
-import { decrementStrength, incrementStrength } from "../../sagas/team";
-import type { MHMEvent } from "../../types/base";
+import { amount as a } from "@/services/format";
+import r from "@/services/random";
+import { decrementMorale } from "@/sagas/team";
+import { addEvent } from "@/sagas/event";
+import { decrementBalance, incrementInsuranceExtra } from "@/sagas/manager";
+import { decrementStrength, incrementStrength } from "@/sagas/team";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "taxEvasion";
 

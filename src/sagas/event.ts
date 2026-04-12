@@ -1,11 +1,11 @@
 import { put, select } from "typed-redux-saga";
-import type { RootState } from "../config/redux";
+import type { RootState } from "@/config/redux";
 import {
   addEventAction,
   resolveEventAction,
   setEventProcessed,
   type StoredEvent
-} from "../ducks/event";
+} from "@/ducks/event";
 
 import events from "@/game/events";
 

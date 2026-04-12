@@ -1,12 +1,12 @@
 import type { FC } from "react";
-import Table from "../league-table/Table";
-import ResponsiveTable from "../responsive-table/ResponsiveTable";
-import Matchups from "../playoffs/Matchups";
-import Games from "../gameday/Games";
-import Streaks from "../Streaks";
-import type { Team } from "../../ducks/game";
-import type { Manager } from "../../ducks/manager";
-import type { Competition, PlayoffGroup } from "../../types/competitions";
+import Table from "@/components/league-table/Table";
+import ResponsiveTable from "@/components/responsive-table/ResponsiveTable";
+import Matchups from "@/components/playoffs/Matchups";
+import Games from "@/components/gameday/Games";
+import Streaks from "@/components/Streaks";
+import type { Team } from "@/ducks/game";
+import type { Manager } from "@/ducks/manager";
+import type { Competition, PlayoffGroup } from "@/types/competitions";
 
 type SituationProps = {
   competitions: Record<string, Competition>;

@@ -4,8 +4,8 @@ import Button from "./form/Button";
 import BettingForm from "./championship-betting/BettingForm";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { advance } from "../ducks/game";
-import { requestChampionBet } from "../ducks/betting";
+import { advance } from "@/ducks/game";
+import { requestChampionBet } from "@/ducks/betting";
 import { activeManager } from "@/selectors";
 
 const ChampionshipBetting = () => {

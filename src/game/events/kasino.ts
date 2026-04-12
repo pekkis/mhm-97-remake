@@ -1,9 +1,9 @@
 import { call, put } from "typed-redux-saga";
 import { produce } from "immer";
-import r from "../../services/random";
-import { addEvent } from "../../sagas/event";
-import { incrementBalance } from "../../sagas/manager";
-import type { MHMEvent } from "../../types/base";
+import r from "@/services/random";
+import { addEvent } from "@/sagas/event";
+import { incrementBalance } from "@/sagas/manager";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "kasino";
 

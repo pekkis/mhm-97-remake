@@ -1,7 +1,7 @@
 import type { FC } from "react";
-import type { Team } from "../../ducks/game";
-import type { Manager } from "../../ducks/manager";
-import type { PlayoffGroup, MatchupStat } from "../../types/competitions";
+import type { Team } from "@/ducks/game";
+import type { Manager } from "@/ducks/manager";
+import type { PlayoffGroup, MatchupStat } from "@/types/competitions";
 
 type MatchupsProps = {
   managers: Record<string, Manager>;

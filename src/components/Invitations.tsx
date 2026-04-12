@@ -2,11 +2,11 @@ import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import Box from "./styled-system/Box";
-import tournamentList from "../data/tournaments";
+import tournamentList from "@/data/tournaments";
 import Markdown from "react-markdown";
 import Button from "./form/Button";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { requestAcceptInvitation } from "../ducks/invitation";
+import { requestAcceptInvitation } from "@/ducks/invitation";
 import { activeManager, activeManagersInvitations } from "@/selectors";
 
 const Invitations = () => {

@@ -1,17 +1,17 @@
 import { useState } from "react";
-import playerTypes from "../data/transfer-market";
+import playerTypes from "@/data/transfer-market";
 import Button from "./form/Button";
 import ButtonContainer from "./ui/ButtonContainer";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import Calendar from "./ui/Calendar";
-import { currency } from "../services/format";
+import { currency } from "@/services/format";
 import ManagerInfo from "./ManagerInfo";
 import Box from "./styled-system/Box";
 import Tabs from "./ui/Tabs";
 import Tab from "./ui/Tab";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { managerBuyPlayer, managerSellPlayer } from "../ducks/manager";
+import { managerBuyPlayer, managerSellPlayer } from "@/ducks/manager";
 import { activeManager } from "@/selectors";
 
 const TransferMarket = () => {

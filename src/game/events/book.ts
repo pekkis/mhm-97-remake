@@ -1,9 +1,9 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { incrementMorale } from "../../sagas/team";
+import { addEvent } from "@/sagas/event";
+import { incrementMorale } from "@/sagas/team";
 import { managersTeamId, managerById, totalGamesPlayed } from "@/selectors";
-import { cinteger } from "../../services/random";
-import type { MHMEvent } from "../../types/base";
+import { cinteger } from "@/services/random";
+import type { MHMEvent } from "@/types/base";
 
 /*
 sat88:

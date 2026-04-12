@@ -1,7 +1,7 @@
 import { addManager } from "./manager";
 import { gameLoop } from "./game";
 import { addNotification } from "./notification";
-import { advance } from "../ducks/game";
+import { advance } from "@/ducks/game";
 import {
   quitToMainMenu,
   loadGame,
@@ -9,7 +9,7 @@ import {
   gameLoadState,
   gameLoaded,
   gameStart as gameStartAction
-} from "../ducks/meta";
+} from "@/ducks/meta";
 
 import {
   all,
@@ -21,7 +21,7 @@ import {
   fork,
   cancel
 } from "typed-redux-saga";
-import type { RootState } from "../config/redux";
+import type { RootState } from "@/config/redux";
 import type { Task } from "redux-saga";
 
 const save = (state: RootState) => {

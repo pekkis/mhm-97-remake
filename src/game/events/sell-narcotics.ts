@@ -1,14 +1,14 @@
 import { select, put, call } from "typed-redux-saga";
 import { produce } from "immer";
 import { teamCompetesIn } from "@/selectors";
-import r, { cinteger } from "../../services/random";
-import { decrementStrength } from "../../sagas/team";
-import { decrementBalance } from "../../sagas/manager";
-import { amount as a } from "../../services/format";
-import { addEvent } from "../../sagas/event";
-import { resolveEventAction } from "../../ducks/event";
-import type { MHMEvent } from "../../types/base";
-import type { RootState } from "../../config/redux";
+import r, { cinteger } from "@/services/random";
+import { decrementStrength } from "@/sagas/team";
+import { decrementBalance } from "@/sagas/manager";
+import { amount as a } from "@/services/format";
+import { addEvent } from "@/sagas/event";
+import { resolveEventAction } from "@/ducks/event";
+import type { MHMEvent } from "@/types/base";
+import type { RootState } from "@/config/redux";
 
 const eventId = "sellNarcotics";
 

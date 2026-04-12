@@ -1,11 +1,11 @@
 import { useState } from "react";
 import type { FC } from "react";
-import Tabs from "../ui/Tabs";
-import Tab from "../ui/Tab";
-import Season from "../data/Season";
-import ResponsiveTable from "../responsive-table/ResponsiveTable";
-import Table from "../responsive-table/Table";
-import Td from "../responsive-table/Td";
+import Tabs from "@/components/ui/Tabs";
+import Tab from "@/components/ui/Tab";
+import Season from "@/components/data/Season";
+import ResponsiveTable from "@/components/responsive-table/ResponsiveTable";
+import Table from "@/components/responsive-table/Table";
+import Td from "@/components/responsive-table/Td";
 
 type TeamStatsProps = {
   stats: any;

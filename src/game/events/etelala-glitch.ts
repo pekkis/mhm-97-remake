@@ -1,8 +1,8 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { incrementInsuranceExtra } from "../../sagas/manager";
-import type { MHMEvent } from "../../types/base";
-import type { RootState } from "../../config/redux";
+import { addEvent } from "@/sagas/event";
+import { incrementInsuranceExtra } from "@/sagas/manager";
+import type { MHMEvent } from "@/types/base";
+import type { RootState } from "@/config/redux";
 
 /*
 sat77:

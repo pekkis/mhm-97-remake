@@ -1,18 +1,18 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
+import { addEvent } from "@/sagas/event";
 import {
   incrementBalance,
   incrementInsuranceExtra,
   setArenaLevel
-} from "../../sagas/manager";
-import { amount as a } from "../../services/format";
+} from "@/sagas/manager";
+import { amount as a } from "@/services/format";
 import {
   managerHasService,
   managersDifficulty,
   managersArena
 } from "@/selectors";
-import arenas from "../../data/arenas";
-import type { MHMEvent } from "../../types/base";
+import arenas from "@/data/arenas";
+import type { MHMEvent } from "@/types/base";
 
 /*
 IF ghalli = 1 THEN RETURN

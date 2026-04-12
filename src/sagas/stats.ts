@@ -1,19 +1,19 @@
 import { all, select, call, put, takeEvery } from "typed-redux-saga";
-import competitionTypes from "../services/competition-type";
-import { resultFacts } from "../services/game";
+import competitionTypes from "@/services/competition-type";
+import { resultFacts } from "@/services/game";
 
 import {
   updateFromFacts,
   setSeasonStat as setSeasonStatAction
-} from "../ducks/stats";
+} from "@/ducks/stats";
 import { managersMainCompetition } from "@/selectors";
 import {
   competitionSeed,
   gameResult,
   competitionUpdateStats
-} from "../ducks/game";
-import type { RootState } from "../config/redux";
-import type { Phase } from "../types/competitions";
+} from "@/ducks/game";
+import type { RootState } from "@/config/redux";
+import type { Phase } from "@/types/competitions";
 
 export function* stats() {
   yield* all([

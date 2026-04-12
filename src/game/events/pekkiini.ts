@@ -1,8 +1,8 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
+import { addEvent } from "@/sagas/event";
 import { managersDifficulty, managersTeam } from "@/selectors";
-import { addEffect } from "../../sagas/team";
-import type { MHMEvent } from "../../types/base";
+import { addEffect } from "@/sagas/team";
+import type { MHMEvent } from "@/types/base";
 
 /*
 IF yk > 0 THEN RETURN

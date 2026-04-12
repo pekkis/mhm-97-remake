@@ -1,12 +1,9 @@
 import { Link } from "react-router-dom";
-import Calendar from "../ui/Calendar";
+import Calendar from "@/components/ui/Calendar";
 import * as styles from "./Current.css";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useAppSelector } from "@/config/redux";
-import {
-  activeManagersInvitations,
-  activeManagersTeam
-} from "@/selectors";
+import { activeManagersInvitations, activeManagersTeam } from "@/selectors";
 
 const Current = () => {
   const invitations = useAppSelector(activeManagersInvitations);

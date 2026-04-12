@@ -1,10 +1,10 @@
 import type { FC } from "react";
-import competitionTypes from "../../services/competition-type";
+import competitionTypes from "@/services/competition-type";
 import Game from "./Game";
-import Box from "../styled-system/Box";
-import type { Team } from "../../ducks/game";
-import type { Manager } from "../../ducks/manager";
-import type { Group } from "../../types/competitions";
+import Box from "@/components/styled-system/Box";
+import type { Team } from "@/ducks/game";
+import type { Manager } from "@/ducks/manager";
+import type { Group } from "@/types/competitions";
 
 type GamesProps = {
   teams: Team[];

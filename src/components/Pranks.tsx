@@ -8,11 +8,11 @@ import ConfirmPrank from "./pranks/ConfirmPrank";
 import Box from "./styled-system/Box";
 import Calendar from "./ui/Calendar";
 
-import difficultyLevels from "../data/difficulty-levels";
+import difficultyLevels from "@/data/difficulty-levels";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { orderPrank } from "../ducks/prank";
+import { orderPrank } from "@/ducks/prank";
 import { useMachine } from "@xstate/react";
-import { prankSelectionMachine } from "../machines/prankSelection";
+import { prankSelectionMachine } from "@/machines/prankSelection";
 import { activeManager } from "@/selectors";
 
 const Pranks = () => {

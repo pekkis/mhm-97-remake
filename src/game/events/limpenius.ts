@@ -1,11 +1,11 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { incrementBalance, decrementBalance } from "../../sagas/manager";
-import { incrementMorale, decrementMorale } from "../../sagas/team";
-import { amount as a } from "../../services/format";
+import { addEvent } from "@/sagas/event";
+import { incrementBalance, decrementBalance } from "@/sagas/manager";
+import { incrementMorale, decrementMorale } from "@/sagas/team";
+import { amount as a } from "@/services/format";
 import { managersTeamId } from "@/selectors";
-import r from "../../services/random";
-import type { MHMEvent } from "../../types/base";
+import r from "@/services/random";
+import type { MHMEvent } from "@/types/base";
 
 /*
 sat28:

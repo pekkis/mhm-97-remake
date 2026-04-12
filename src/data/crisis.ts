@@ -1,6 +1,6 @@
-import { CRISIS_COST } from "../data/constants";
-import type { Team } from "../ducks/game";
-import type { Competition } from "../types/competitions";
+import { CRISIS_COST } from "@/data/constants";
+import type { Team } from "@/ducks/game";
+import type { Competition } from "@/types/competitions";
 
 type CrisisResult = {
   amount: number;

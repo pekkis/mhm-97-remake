@@ -1,9 +1,9 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
+import { addEvent } from "@/sagas/event";
 import { randomManager, managersArena } from "@/selectors";
-import { decrementBalance } from "../../sagas/manager";
-import { amount as a } from "../../services/format";
-import type { MHMEvent } from "../../types/base";
+import { decrementBalance } from "@/sagas/manager";
+import { amount as a } from "@/services/format";
+import type { MHMEvent } from "@/types/base";
 
 /*
 sat80:

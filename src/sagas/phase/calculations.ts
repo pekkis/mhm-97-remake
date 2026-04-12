@@ -1,10 +1,10 @@
 import { put, select, call } from "typed-redux-saga";
 
-import strategies from "../../data/strategies";
-import services from "../../data/services";
-import { decrementBalance } from "../manager";
-import { teamIncrementReadiness, decrementDurations } from "../../ducks/game";
-import type { RootState } from "../../config/redux";
+import strategies from "@/data/strategies";
+import services from "@/data/services";
+import { decrementBalance } from "@/sagas/manager";
+import { teamIncrementReadiness, decrementDurations } from "@/ducks/game";
+import type { RootState } from "@/config/redux";
 
 export default function* calculationsPhase() {
   const turn = yield* select((state: RootState) => state.game.turn);

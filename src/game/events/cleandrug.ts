@@ -1,6 +1,6 @@
 import { call } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import type { MHMEvent } from "../../types/base";
+import { addEvent } from "@/sagas/event";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "cleandrug";
 

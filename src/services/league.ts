@@ -1,4 +1,4 @@
-import type { Group, Pairing, Penalty, TeamStat } from "../types/competitions";
+import type { Group, Pairing, Penalty, TeamStat } from "@/types/competitions";
 
 const changedPoints = (
   points: number,

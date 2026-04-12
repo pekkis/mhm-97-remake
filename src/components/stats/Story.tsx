@@ -1,12 +1,12 @@
 import type { FC } from "react";
-import Season from "../data/Season";
+import Season from "@/components/data/Season";
 import Achievements from "./Achievements";
-import ResponsiveTable from "../responsive-table/ResponsiveTable";
-import Table from "../responsive-table/Table";
-import Td from "../responsive-table/Td";
-import Box from "../styled-system/Box";
-import type { Team } from "../../ducks/game";
-import type { Competition } from "../../types/competitions";
+import ResponsiveTable from "@/components/responsive-table/ResponsiveTable";
+import Table from "@/components/responsive-table/Table";
+import Td from "@/components/responsive-table/Td";
+import Box from "@/components/styled-system/Box";
+import type { Team } from "@/ducks/game";
+import type { Competition } from "@/types/competitions";
 
 type StoryProps = {
   season: number;

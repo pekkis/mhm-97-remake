@@ -1,20 +1,16 @@
 import { call, all, take, put, select } from "typed-redux-saga";
-import { advance } from "../../ducks/game";
-import { seasonStart, promote, relegate, setPhase } from "../game";
-import { victors, eliminated } from "../../services/playoffs";
-import awards from "../awards";
-import { cinteger } from "../../services/random";
-import { setSeasonStat, createSeasonStories } from "../stats";
-import { processChampionBets } from "../betting";
+import { advance } from "@/ducks/game";
+import { seasonStart, promote, relegate, setPhase } from "@/sagas/game";
+import { victors, eliminated } from "@/services/playoffs";
+import awards from "@/sagas/awards";
+import { cinteger } from "@/services/random";
+import { setSeasonStat, createSeasonStories } from "@/sagas/stats";
+import { processChampionBets } from "@/sagas/betting";
 import { competition, allTeams } from "@/selectors";
-import { setStrength, type Country } from "../../ducks/country";
-import { setWorldChampionshipResults, seasonEnd } from "../../ducks/game";
-import type { RootState } from "../../config/redux";
-import type {
-  Competition,
-  PlayoffGroup,
-  TeamStat
-} from "../../types/competitions";
+import { setStrength, type Country } from "@/ducks/country";
+import { setWorldChampionshipResults, seasonEnd } from "@/ducks/game";
+import type { RootState } from "@/config/redux";
+import type { Competition, PlayoffGroup, TeamStat } from "@/types/competitions";
 
 const getLuck = () => {
   const isLucky = cinteger(1, 10);

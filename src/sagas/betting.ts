@@ -1,13 +1,13 @@
 import { put, all, call, select } from "typed-redux-saga";
-import { placeBet, placeChampionBet } from "../ducks/betting";
-import type { SeasonStats } from "../ducks/stats";
-import type { RootState } from "../config/redux";
-import type { Pairing } from "../types/competitions";
+import { placeBet, placeChampionBet } from "@/ducks/betting";
+import type { SeasonStats } from "@/ducks/stats";
+import type { RootState } from "@/config/redux";
+import type { Pairing } from "@/types/competitions";
 import { decrementBalance, incrementBalance } from "./manager";
 import { addAnnouncement } from "./news";
-import { amount as a } from "../services/format";
+import { amount as a } from "@/services/format";
 import { addNotification } from "./notification";
-import { resultFacts } from "../services/game";
+import { resultFacts } from "@/services/game";
 
 const victories = [false, false, false, 1, 2, 5, 10] as const;
 

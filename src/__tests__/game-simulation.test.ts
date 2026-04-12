@@ -11,10 +11,7 @@ import {
   teamAddEffect,
   teamIncrementMorale
 } from "../ducks/game";
-import {
-  managerAdd,
-  managerSetActive
-} from "../ducks/manager";
+import { managerAdd, managerSetActive } from "../ducks/manager";
 import { clearAnnouncements } from "../ducks/news";
 import { clearEvents } from "../ducks/event";
 

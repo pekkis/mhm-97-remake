@@ -1,13 +1,13 @@
 import r from "./random";
 import { entries, pipe } from "remeda";
-import { getEffective, getEffectiveOpponent } from "../services/effects";
-import services from "../data/services";
-import type { Team } from "../ducks/game";
+import { getEffective, getEffectiveOpponent } from "@/services/effects";
+import services from "@/data/services";
+import type { Team } from "@/ducks/game";
 import type {
   GameResult,
   GameFacts,
   GamedayAdvantage
-} from "../types/competitions";
+} from "@/types/competitions";
 import type { Manager } from "@/ducks/manager";
 
 export type GameInput = {

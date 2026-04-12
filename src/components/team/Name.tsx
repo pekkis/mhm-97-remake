@@ -1,8 +1,8 @@
 import type { FC } from "react";
 import clsx from "clsx";
 import * as styles from "./Name.css";
-import type { Team } from "../../ducks/game";
-import type { Manager } from "../../ducks/manager";
+import type { Team } from "@/ducks/game";
+import type { Manager } from "@/ducks/manager";
 
 type NameProps = {
   team: Team;

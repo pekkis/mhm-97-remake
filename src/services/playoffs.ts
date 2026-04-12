@@ -3,7 +3,7 @@ import type {
   MatchupTeamStat,
   Pairing,
   PlayoffGroup
-} from "../types/competitions";
+} from "@/types/competitions";
 import { gameFacts } from "./game";
 
 export const victors = (phase: PlayoffGroup): MatchupTeamStat[] => {

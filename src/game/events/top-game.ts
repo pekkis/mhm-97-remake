@@ -1,7 +1,7 @@
 import { call } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { incrementBalance } from "../../sagas/manager";
-import type { MHMEvent } from "../../types/base";
+import { addEvent } from "@/sagas/event";
+import { incrementBalance } from "@/sagas/manager";
+import type { MHMEvent } from "@/types/base";
 
 /*
 sat68:

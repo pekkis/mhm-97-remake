@@ -1,6 +1,6 @@
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
-import { getEffective } from "../services/effects";
+import { getEffective } from "@/services/effects";
 import Box from "./styled-system/Box";
 import { useAppSelector } from "@/config/redux";
 

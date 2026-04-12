@@ -1,8 +1,8 @@
-import strategies from "../data/strategies";
+import strategies from "@/data/strategies";
 import Button from "./form/Button";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { managerSelectStrategy } from "../ducks/manager";
+import { managerSelectStrategy } from "@/ducks/manager";
 import { activeManager } from "@/selectors";
 
 const SelectStrategy = () => {

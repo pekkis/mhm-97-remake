@@ -1,7 +1,7 @@
 import { call } from "typed-redux-saga";
 import { produce } from "immer";
-import { addEvent, resolvedEvent } from "../../sagas/event";
-import type { MHMEvent } from "../../types/base";
+import { addEvent, resolvedEvent } from "@/sagas/event";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "grossman";
 

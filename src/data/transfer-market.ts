@@ -1,4 +1,4 @@
-import { cinteger } from "../services/random";
+import { cinteger } from "@/services/random";
 
 export type PlayerType = {
   description: string;

@@ -6,10 +6,10 @@ import Toggle from "./form/Toggle";
 import Markdown from "react-markdown";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { managerToggleService } from "../ducks/manager";
+import { managerToggleService } from "@/ducks/manager";
 import { entries } from "remeda";
 
-import services from "../data/services";
+import services from "@/data/services";
 import { activeManager } from "@/selectors";
 
 const Services = () => {

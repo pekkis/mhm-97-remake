@@ -1,6 +1,6 @@
-import { amount as a } from "../services/format";
-import type { Team } from "../ducks/game";
-import type { CompetitionId } from "../types/competitions";
+import { amount as a } from "@/services/format";
+import type { Team } from "@/ducks/game";
+import type { CompetitionId } from "@/types/competitions";
 
 type Tournament = {
   name: string;

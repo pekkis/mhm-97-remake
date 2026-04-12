@@ -1,12 +1,12 @@
 import { call, select, put } from "typed-redux-saga";
-import tournamentList from "../data/tournaments";
+import tournamentList from "@/data/tournaments";
 import { isInvitedToTournament } from "./tournament-eligibility";
 
-import { addInvitation, acceptInvitationAction } from "../ducks/invitation";
+import { addInvitation, acceptInvitationAction } from "@/ducks/invitation";
 import { addNotification } from "./notification";
 import { managersTeamId } from "@/selectors";
 import { addTeamToCompetition } from "./game";
-import type { RootState } from "../config/redux";
+import type { RootState } from "@/config/redux";
 
 export function* acceptInvitation(managerId: string, id: string) {
   const team = yield* select(managersTeamId(managerId));

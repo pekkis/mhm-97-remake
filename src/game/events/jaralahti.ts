@@ -1,15 +1,11 @@
 import { put, select, all, call } from "typed-redux-saga";
 import { produce } from "immer";
-import {
-  managersTeamId,
-  teamCompetesIn,
-  managerHasService
-} from "@/selectors";
-import { amount as a } from "../../services/format";
-import { addEvent } from "../../sagas/event";
-import { incrementBalance, decrementBalance } from "../../sagas/manager";
-import { decrementStrength, incrementStrength } from "../../sagas/team";
-import type { MHMEvent } from "../../types/base";
+import { managersTeamId, teamCompetesIn, managerHasService } from "@/selectors";
+import { amount as a } from "@/services/format";
+import { addEvent } from "@/sagas/event";
+import { incrementBalance, decrementBalance } from "@/sagas/manager";
+import { decrementStrength, incrementStrength } from "@/sagas/team";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "jaralahti";
 

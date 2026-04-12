@@ -1,12 +1,12 @@
-import { matchups } from "../services/playoffs";
-import table from "../services/league";
+import { matchups } from "@/services/playoffs";
+import table from "@/services/league";
 import type {
   GameResult,
   Group,
   MatchupStat,
   PlayoffGroup,
   TeamStat
-} from "../types/competitions";
+} from "@/types/competitions";
 
 type CompetitionType = {
   playMatch: (

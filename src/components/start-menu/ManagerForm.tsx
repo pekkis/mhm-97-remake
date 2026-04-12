@@ -1,14 +1,14 @@
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
-import Button from "../form/Button";
-import Input from "../form/Input";
-import Select from "../form/Select";
-import Label from "../form/Label";
-import LabelDiv from "../form/LabelDiv";
-import Field from "../form/Field";
-import difficultyLevels from "../../data/difficulty-levels";
-import type { Team } from "../../ducks/game";
-import type { Competition } from "../../types/competitions";
+import Button from "@/components/form/Button";
+import Input from "@/components/form/Input";
+import Select from "@/components/form/Select";
+import Label from "@/components/form/Label";
+import LabelDiv from "@/components/form/LabelDiv";
+import Field from "@/components/form/Field";
+import difficultyLevels from "@/data/difficulty-levels";
+import type { Team } from "@/ducks/game";
+import type { Competition } from "@/types/competitions";
 
 export type ManagerFormValues = {
   name: string;

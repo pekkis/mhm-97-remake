@@ -1,6 +1,6 @@
-import competitionData from "../data/competitions";
-import { simulate, type GameInput } from "../services/game";
-import competitionTypes from "../services/competition-type";
+import competitionData from "@/data/competitions";
+import { simulate, type GameInput } from "@/services/game";
+import competitionTypes from "@/services/competition-type";
 
 import { call, put, select, take } from "typed-redux-saga";
 import { groupEnd } from "./game";
@@ -13,8 +13,8 @@ import {
   gameResult as gameResultAction,
   gamedayComplete,
   setGamePhase
-} from "../ducks/game";
-import type { RootState } from "../config/redux";
+} from "@/ducks/game";
+import type { RootState } from "@/config/redux";
 import type {
   Competition,
   CompetitionId,
@@ -22,7 +22,7 @@ import type {
   GamedayParams,
   Group,
   Pairing
-} from "../types/competitions";
+} from "@/types/competitions";
 
 function* playGame(
   group: Group,

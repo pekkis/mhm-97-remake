@@ -1,4 +1,4 @@
-import r from "../services/random";
+import r from "@/services/random";
 
 export type TeamDefinition = {
   id: number;

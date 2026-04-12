@@ -1,19 +1,19 @@
 import { select, call, all } from "typed-redux-saga";
 import { produce } from "immer";
 import { randomTeamFrom, randomManager, managersTeamId } from "@/selectors";
-import { addEvent, resolvedEvent } from "../../sagas/event";
+import { addEvent, resolvedEvent } from "@/sagas/event";
 import {
   hireManager,
   setInsuranceExtra,
   setBalance,
   setArenaLevel,
   setService
-} from "../../sagas/manager";
-import { setMorale, setReadiness, setStrategy } from "../../sagas/team";
-import table from "../../services/league";
-import { cinteger } from "../../services/random";
-import type { MHMEvent } from "../../types/base";
-import type { RootState } from "../../config/redux";
+} from "@/sagas/manager";
+import { setMorale, setReadiness, setStrategy } from "@/sagas/team";
+import table from "@/services/league";
+import { cinteger } from "@/services/random";
+import type { MHMEvent } from "@/types/base";
+import type { RootState } from "@/config/redux";
 
 /*
 x = CINT(11 * RND) + 1

@@ -1,8 +1,8 @@
 import { put, call, select } from "typed-redux-saga";
 import { teamsManager } from "@/selectors";
-import difficultyLevels from "../data/difficulty-levels";
+import difficultyLevels from "@/data/difficulty-levels";
 import { calculateGroupStats } from "./stats";
-import type { Manager } from "../ducks/manager";
+import type { Manager } from "@/ducks/manager";
 import {
   teamIncurPenalty,
   teamSetStrategy,
@@ -13,7 +13,7 @@ import {
   teamAddEffect,
   teamAddOpponentEffect,
   teamIncrementStrength
-} from "../ducks/game";
+} from "@/ducks/game";
 import type { CompetitionId } from "@/types/competitions";
 
 const getMoraleMinMax = (manager: Manager | undefined) => {

@@ -1,5 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import type { BaseEventFields } from "../types/base";
+import type { BaseEventFields } from "@/types/base";
 import { quitToMainMenu, gameLoadState } from "./meta";
 
 export type StoredEvent = BaseEventFields & Record<string, unknown>;

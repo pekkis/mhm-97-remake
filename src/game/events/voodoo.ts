@@ -1,11 +1,11 @@
 import { select, call } from "typed-redux-saga";
 import { produce } from "immer";
 import { managersTeamId } from "@/selectors";
-import { amount as a } from "../../services/format";
-import { addEvent, resolvedEvent } from "../../sagas/event";
-import { incrementMorale, decrementMorale } from "../../sagas/team";
-import { decrementBalance } from "../../sagas/manager";
-import type { MHMEvent } from "../../types/base";
+import { amount as a } from "@/services/format";
+import { addEvent, resolvedEvent } from "@/sagas/event";
+import { incrementMorale, decrementMorale } from "@/sagas/team";
+import { decrementBalance } from "@/sagas/manager";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "voodoo";
 

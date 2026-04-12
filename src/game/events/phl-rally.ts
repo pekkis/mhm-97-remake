@@ -1,15 +1,15 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { addEffect } from "../../sagas/team";
+import { addEvent } from "@/sagas/event";
+import { addEffect } from "@/sagas/team";
 import {
   managerCompetesIn,
   managerFlag,
   managersTeamId,
   managersDifficulty
 } from "@/selectors";
-import { setFlag, setExtra } from "../../sagas/manager";
-import difficultyLevels from "../../data/difficulty-levels";
-import type { MHMEvent } from "../../types/base";
+import { setFlag, setExtra } from "@/sagas/manager";
+import difficultyLevels from "@/data/difficulty-levels";
+import type { MHMEvent } from "@/types/base";
 
 /*
 IF sarja = 2 THEN RETURN

@@ -1,11 +1,8 @@
-import table, { sortStats } from "../../services/league";
-import { defaultMoraleBoost } from "../../services/morale";
-import { scheduler as roundRobinScheduler } from "../../services/round-robin";
-import tournamentScheduler from "../../services/tournament";
-import type {
-  Competition,
-  CompetitionDefinition
-} from "../../types/competitions";
+import table, { sortStats } from "@/services/league";
+import { defaultMoraleBoost } from "@/services/morale";
+import { scheduler as roundRobinScheduler } from "@/services/round-robin";
+import tournamentScheduler from "@/services/tournament";
+import type { Competition, CompetitionDefinition } from "@/types/competitions";
 
 const ehl: CompetitionDefinition = {
   data: {

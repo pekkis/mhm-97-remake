@@ -1,17 +1,17 @@
 import { select, call, all } from "typed-redux-saga";
 import { produce } from "immer";
 import { randomTeamFrom, randomManager, managersTeamId } from "@/selectors";
-import { addEvent, resolvedEvent } from "../../sagas/event";
+import { addEvent, resolvedEvent } from "@/sagas/event";
 import {
   hireManager,
   setInsuranceExtra,
   setBalance,
   setArenaLevel,
   setService
-} from "../../sagas/manager";
-import { setMorale, setReadiness, setStrategy } from "../../sagas/team";
-import { cinteger } from "../../services/random";
-import type { MHMEvent } from "../../types/base";
+} from "@/sagas/manager";
+import { setMorale, setReadiness, setStrategy } from "@/sagas/team";
+import { cinteger } from "@/services/random";
+import type { MHMEvent } from "@/types/base";
 
 /*
 PRINT ld(x); " tarjoaa sinulle ty"paikkaa!! Joukkue yritt„„ tosissaan nousua,"

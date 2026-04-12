@@ -1,8 +1,8 @@
 import { call, select } from "typed-redux-saga";
-import { addEvent } from "../../sagas/event";
-import { setBalance } from "../../sagas/manager";
+import { addEvent } from "@/sagas/event";
+import { setBalance } from "@/sagas/manager";
 import { managersDifficulty } from "@/selectors";
-import type { MHMEvent } from "../../types/base";
+import type { MHMEvent } from "@/types/base";
 
 /*
 IF banki = 1 THEN RETURN

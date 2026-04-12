@@ -5,12 +5,12 @@ import {
   managerHasService,
   teamHasActiveEffects
 } from "@/selectors";
-import { currency as c } from "../../services/format";
-import { cinteger } from "../../services/random";
-import { addEvent } from "../../sagas/event";
-import { incrementBalance, incrementInsuranceExtra } from "../../sagas/manager";
-import { addEffect } from "../../sagas/team";
-import type { MHMEvent } from "../../types/base";
+import { currency as c } from "@/services/format";
+import { cinteger } from "@/services/random";
+import { addEvent } from "@/sagas/event";
+import { incrementBalance, incrementInsuranceExtra } from "@/sagas/manager";
+import { addEffect } from "@/sagas/team";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "kuralahti";
 

@@ -7,13 +7,13 @@ import {
   managersTeam,
   managersDifficulty
 } from "@/selectors";
-import { addEvent } from "../../sagas/event";
-import { incrementBalance } from "../../sagas/manager";
-import { incrementStrength } from "../../sagas/team";
-import { setFlag } from "../../sagas/game";
-import { teamRename } from "../../ducks/game";
-import { managerRenameArena } from "../../ducks/manager";
-import type { MHMEvent } from "../../types/base";
+import { addEvent } from "@/sagas/event";
+import { incrementBalance } from "@/sagas/manager";
+import { incrementStrength } from "@/sagas/team";
+import { setFlag } from "@/sagas/game";
+import { teamRename } from "@/ducks/game";
+import { managerRenameArena } from "@/ducks/manager";
+import type { MHMEvent } from "@/types/base";
 
 const eventId = "mauto";
 

@@ -49,11 +49,15 @@ describe("reducer unit tests", () => {
   describe("game: seasonStart", () => {
     it("should reset all team effects, morale, strategy, and readiness", () => {
       // Set up some state first
-      store.dispatch(teamAddEffect({
-        team: 0,
-        effect: { parameter: ["strength"], amount: 5, duration: 3 }
-      }));
-      store.dispatch(teamIncrementMorale({ team: 0, amount: 5, min: -20, max: 20 }));
+      store.dispatch(
+        teamAddEffect({
+          team: 0,
+          effect: { parameter: ["strength"], amount: 5, duration: 3 }
+        })
+      );
+      store.dispatch(
+        teamIncrementMorale({ team: 0, amount: 5, min: -20, max: 20 })
+      );
 
       store.dispatch(seasonStart());
 
@@ -95,14 +99,18 @@ describe("reducer unit tests", () => {
 
   describe("game: clearExpired", () => {
     it("should remove effects with duration <= 0", () => {
-      store.dispatch(teamAddEffect({
-        team: 0,
-        effect: { parameter: ["strength"], amount: 5, duration: 1 }
-      }));
-      store.dispatch(teamAddEffect({
-        team: 0,
-        effect: { parameter: ["morale"], amount: 3, duration: 0 }
-      }));
+      store.dispatch(
+        teamAddEffect({
+          team: 0,
+          effect: { parameter: ["strength"], amount: 5, duration: 1 }
+        })
+      );
+      store.dispatch(
+        teamAddEffect({
+          team: 0,
+          effect: { parameter: ["morale"], amount: 3, duration: 0 }
+        })
+      );
 
       store.dispatch(clearExpired());
 
@@ -114,14 +122,18 @@ describe("reducer unit tests", () => {
 
   describe("game: decrementDurations", () => {
     it("should decrement duration of all effects", () => {
-      store.dispatch(teamAddEffect({
-        team: 0,
-        effect: { parameter: ["strength"], amount: 5, duration: 3 }
-      }));
-      store.dispatch(teamAddEffect({
-        team: 0,
-        effect: { parameter: ["morale"], amount: 2, duration: 1 }
-      }));
+      store.dispatch(
+        teamAddEffect({
+          team: 0,
+          effect: { parameter: ["strength"], amount: 5, duration: 3 }
+        })
+      );
+      store.dispatch(
+        teamAddEffect({
+          team: 0,
+          effect: { parameter: ["morale"], amount: 2, duration: 1 }
+        })
+      );
 
       store.dispatch(decrementDurations());
 
@@ -156,17 +168,23 @@ describe("reducer unit tests", () => {
       const initialStrength = store.getState().game.teams[0].strength;
 
       store.dispatch(teamIncrementStrength({ team: 0, amount: 10 }));
-      expect(store.getState().game.teams[0].strength).toBe(initialStrength + 10);
+      expect(store.getState().game.teams[0].strength).toBe(
+        initialStrength + 10
+      );
 
       store.dispatch(teamDecrementStrength({ team: 0, amount: 3 }));
       expect(store.getState().game.teams[0].strength).toBe(initialStrength + 7);
     });
 
     it("should clamp morale within min/max bounds", () => {
-      store.dispatch(teamIncrementMorale({ team: 0, amount: 100, min: -10, max: 12 }));
+      store.dispatch(
+        teamIncrementMorale({ team: 0, amount: 100, min: -10, max: 12 })
+      );
       expect(store.getState().game.teams[0].morale).toBe(12);
 
-      store.dispatch(teamIncrementMorale({ team: 0, amount: -200, min: -10, max: 12 }));
+      store.dispatch(
+        teamIncrementMorale({ team: 0, amount: -200, min: -10, max: 12 })
+      );
       expect(store.getState().game.teams[0].morale).toBe(-10);
     });
 
@@ -180,20 +198,27 @@ describe("reducer unit tests", () => {
 
     it("should add and remove manager from team", () => {
       // Need to add a manager to the manager state first
-      store.dispatch(managerAdd({
-        manager: {
-          id: "test-mgr-id",
-          name: "Test Manager",
-          difficulty: 2,
-          pranksExecuted: 0,
-          services: { coach: false, insurance: false, microphone: false, cheer: false },
-          balance: 0,
-          arena: { name: "Test Arena", level: 1 },
-          extra: 0,
-          insuranceExtra: 0,
-          flags: {}
-        }
-      }));
+      store.dispatch(
+        managerAdd({
+          manager: {
+            id: "test-mgr-id",
+            name: "Test Manager",
+            difficulty: 2,
+            pranksExecuted: 0,
+            services: {
+              coach: false,
+              insurance: false,
+              microphone: false,
+              cheer: false
+            },
+            balance: 0,
+            arena: { name: "Test Arena", level: 1 },
+            extra: 0,
+            insuranceExtra: 0,
+            flags: {}
+          }
+        })
+      );
 
       store.dispatch(teamAddManager({ team: 0, manager: "test-mgr-id" }));
       expect(store.getState().game.teams[0].manager).toBe("test-mgr-id");
@@ -253,13 +278,15 @@ describe("reducer unit tests", () => {
 
   describe("event slice", () => {
     it("should add and clear events", () => {
-      store.dispatch(addEventAction({
-        event: {
-          eventId: "test-event",
-          manager: "mgr-1",
-          resolved: false
-        }
-      }));
+      store.dispatch(
+        addEventAction({
+          event: {
+            eventId: "test-event",
+            manager: "mgr-1",
+            resolved: false
+          }
+        })
+      );
 
       const events = store.getState().event.events;
       const eventIds = Object.keys(events);
@@ -277,12 +304,14 @@ describe("reducer unit tests", () => {
   describe("notification slice", () => {
     it("should add notifications up to max 3", () => {
       for (let i = 0; i < 5; i++) {
-        store.dispatch(addNotification({
-          id: `n-${i}`,
-          manager: "mgr-1",
-          message: `Notification ${i}`,
-          type: "info"
-        }));
+        store.dispatch(
+          addNotification({
+            id: `n-${i}`,
+            manager: "mgr-1",
+            message: `Notification ${i}`,
+            type: "info"
+          })
+        );
       }
 
       const { notifications } = store.getState().notification;
@@ -290,12 +319,14 @@ describe("reducer unit tests", () => {
     });
 
     it("should dismiss notifications", () => {
-      store.dispatch(addNotification({
-        id: "n-1",
-        manager: "mgr-1",
-        message: "Test",
-        type: "info"
-      }));
+      store.dispatch(
+        addNotification({
+          id: "n-1",
+          manager: "mgr-1",
+          message: "Test",
+          type: "info"
+        })
+      );
 
       store.dispatch(dismissNotification("n-1"));
       expect(store.getState().notification.notifications).toHaveLength(0);

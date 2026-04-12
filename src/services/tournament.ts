@@ -1,5 +1,5 @@
 import { roundRobin } from "./round-robin";
-import type { Pairing } from "../types/competitions";
+import type { Pairing } from "@/types/competitions";
 
 const tournamentScheduler = (numberOfTeams: number): Pairing[][] => {
   return roundRobin(numberOfTeams).map((round) => {
