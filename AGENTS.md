@@ -6,9 +6,11 @@ Modernize `mhm-97-remake` to 2026 standards while preserving game behavior.
 
 This is a long-running migration. Prioritize **safe, incremental changes** with clear verification, not large rewrites.
 
+> **Important:** Also read [`XSTATE-REFACTORING.md`](XSTATE-REFACTORING.md) — the full XState migration plan with locked architectural decisions, PR sequence, and risk assessment.
+
 ---
 
-## Current Reality (as of 2026-04-11)
+## Current Reality (as of 2026-04-12)
 
 - Runtime / build tool: **Vite 8** (`pnpm dev`, `pnpm build`)
 - UI stack: React 19, React Router 7
@@ -24,10 +26,18 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - Entry point: `src/client.tsx`
 - Root wiring: `src/Root.tsx`
 - Store wiring: `src/store.ts`, `src/config/redux.ts`
-- **TypeScript check: ZERO errors** (as of 2026-04-11)
-- **Bundle: 622.69kB JS (gzip 196kB), 7.08kB CSS (gzip 1.94kB)** — down from ~806kB JS + runtime CSS
+- Import convention: all `../` relative imports normalized to `@/` alias paths (`@/*` → `./src/*`)
+- Selectors: `src/selectors.ts` (moved from `data/selectors.ts` — Redux selectors, not data)
+- Game definitions: `src/game/events/` (96 event files), `src/game/events.ts` (registry), `src/game/pranks.ts`
+- Awards saga: `src/sagas/awards.ts` (moved from `data/awards.ts`)
+- Tournament eligibility: `src/sagas/tournament-eligibility.ts` (extracted from `data/tournaments.ts`)
+- Competition saga registry: `src/sagas/competition-registry.ts` (moved from `data/competition-sagas.ts`)
+- `src/data/` now contains **only pure data** — zero `typed-redux-saga` imports
+- **Regression tests:** 105 vitest tests (81 new across 5 suites + 24 existing)
+- **TypeScript check: ZERO errors** (as of 2026-04-12)
+- **Bundle: 665.89kB JS (gzip 212kB), 7.08kB CSS (gzip 1.94kB)** — down from ~806kB JS + runtime CSS
 
-Recent completed migrations (2026-04-11):
+Recent completed migrations (2026-04-12):
 
 - **Vanilla Extract migration complete:** all 27+ styled-components converted to VE `.css.ts` files
 - **styled-components + styled-system + Emotion fully removed** from codebase + `package.json`
@@ -50,7 +60,7 @@ Recent completed migrations (2026-04-11):
 
 ---
 
-## Migration Status (as of 2026-04-11)
+## Migration Status (as of 2026-04-12)
 
 ### Completed de-immutable + TypeScript conversions
 
@@ -58,7 +68,7 @@ Recent completed migrations (2026-04-11):
 
 - `src/data/countries.ts` — plain `Country` type + `Record<string, Country>`
 - `src/data/teams.ts` — plain `TeamDefinition[]` array
-- `src/data/pranks.ts` — plain `Record<string, Prank>` + `PrankInstance` type
+- `src/game/pranks.ts` — plain `Record<string, Prank>` + `PrankInstance` type (moved from `data/`)
 - `src/data/difficulty-levels.ts` — plain `DifficultyLevel[]` array
 - `src/data/named-effects.ts` — plain `Record<string, NamedEffectFn>` (Immutable Map param removed)
 - `src/services/effects.ts` — fully typed with plain `Team` + `TeamEffect` (no more Immutable)
@@ -68,14 +78,14 @@ Recent completed migrations (2026-04-11):
 - `src/data/transfer-market.ts` — typed `PlayerType[]` array
 - `src/data/strategies.ts` — typed `Strategy[]` array
 - `src/data/crisis.ts` — typed crisis data (was already plain, types added)
-- `src/data/awards.ts` — typed award/random-event system (was `awards.js` with Immutable `List.of`)
-- `src/data/events.ts` — inferred `as const` event registry (was `Record<string, any>`)
+- `src/sagas/awards.ts` — typed award/random-event system (moved from `data/`, was `awards.js` with Immutable `List.of`)
+- `src/game/events.ts` — inferred `as const` event registry (moved from `data/`, was `Record<string, any>`)
 - `src/services/random.ts` — typed, deterministic seed support via `VITE_RANDOM_SEED`
 
 **Reducers (ducks):**
 
 - `src/ducks/prank.ts` — plain `{ pranks: PrankInstance[] }` + RTK `createReducer`
-- `src/ducks/ui.ts` — plain `UiState` (`{ menu: boolean }`) + RTK `createReducer`; `advanceEnabled` removed (derived from `game.turn.phase` + `event.events` via selector in `data/selectors.ts`)
+- `src/ducks/ui.ts` — plain `UiState` (`{ menu: boolean }`) + RTK `createReducer`; `advanceEnabled` removed (derived from `game.turn.phase` + `event.events` via selector in `src/selectors.ts`)
 - `src/ducks/event.ts` — RTK `createReducer`
 - `src/ducks/game.ts` — **root is plain `GameState`** + RTK `createReducer`; `teams` is typed `Team[]`; `competitions` is typed `Record<string, Competition>`; `managers` is `ManagerDefinition[]`; `flags` is typed `GameFlags`
 - `src/ducks/manager.ts` — plain `ManagerState` + RTK `createReducer` (`Manager` type with `ManagerArena`, `ManagerServices`)
@@ -458,7 +468,7 @@ All now import `RootState` from `src/config/redux`. This also eliminated downstr
 
 **Key discovery:** The `enemy-protest.ts` Immutable ghost crash (`.filterNot()` on plain `Record`) would have been caught at compile time with `RootState` typing. Inline `(state: any)` selectors are a type-safety escape hatch that masks real bugs.
 
-**Future direction:** Promote repeated inline selectors to named selectors in `src/data/selectors.ts` — these work identically with both `yield* select(selector)` in sagas and `useAppSelector(selector)` in components.
+**Future direction:** Promote repeated inline selectors to named selectors in `src/selectors.ts` — these work identically with both `yield* select(selector)` in sagas and `useAppSelector(selector)` in components.
 
 ### Completed: Full saga TypeScript migration (2026-04-10)
 
@@ -509,10 +519,10 @@ Converted all 13 saga files + 13 phase files from `redux-saga/effects` to `typed
    - Prefer named exports; avoid default exports for new/edited modules unless interop absolutely requires it.
    - **Prefer non-mutating array methods:** use `toSorted()` over `[...arr].sort()` or `arr.sort()`, `toReversed()` over `reverse()`, `toSpliced()` over `splice()`, and `with()` over index assignment. Avoid in-place mutation even on freshly created arrays — consistency matters more than micro-optimization.
 
-6. **Two state homes: Redux or `useState` — nothing in between**
-   - State lives in Redux (global, cross-component) or `useState` (local, component-scoped). Period.
+6. **State homes: Redux/XState or `useState` — nothing in between**
+   - State lives in Redux (global, cross-component), XState machines/stores (when migrated per XSTATE-REFACTORING.md), or `useState` (local, component-scoped). Period.
    - Do not introduce React Context as a state management layer. Context is for dependency injection (themes, i18n providers), not for shuttling mutable state around the tree.
-   - Do not kill a Redux slice just because it's small today — the `ui` duck will grow as new game features land.
+   - During the XState migration, dual-write (Redux + XState) is acceptable temporarily. See XSTATE-REFACTORING.md for the transition plan.
 
 7. **Page/leaf component boundary**
    - **Page components** (route-level screens that assemble a view) may use `useAppSelector`/`useAppDispatch` and talk to the Redux store directly.
@@ -600,9 +610,9 @@ Next natural step: `createReducer` conversion (replaces switch/case + eliminates
 
 **Circular dependency gotcha:** `game.ts` ↔ `meta.ts` cycle caused `Cannot access 'nextTurn' before initialization`. Root cause: `game.ts` imports from `meta.ts`, `meta.ts` imported `seasonStart` from `game.ts`. Fix: `meta.ts` uses `action.type === "SEASON_START"` string literal in its matcher instead of importing the creator.
 
-### P2.9 — XState for UI wizard flows (started)
+### P2.9 — XState migration (active — see XSTATE-REFACTORING.md)
 
-**XState 5 + @xstate/react installed.** First machine: prank selection wizard.
+**XState 5 + @xstate/react installed.** Full migration plan in [`XSTATE-REFACTORING.md`](XSTATE-REFACTORING.md). First machine: prank selection wizard.
 
 **`src/machines/prankSelection.ts`:**
 
@@ -619,7 +629,7 @@ Next natural step: `createReducer` conversion (replaces switch/case + eliminates
 
 ### P2.95 — Derived state: `advanceEnabled` (complete)
 
-**Replaced stored `advanceEnabled` boolean** in `ui.ts` with a derived selector in `data/selectors.ts`:
+**Replaced stored `advanceEnabled` boolean** in `ui.ts` with a derived selector in `src/selectors.ts`:
 
 ```ts
 export const advanceEnabled = (state: RootState) =>
@@ -631,11 +641,13 @@ export const advanceEnabled = (state: RootState) =>
 
 **Removed:** `disableAdvance`/`enableAdvance` actions from `ui.ts`, dispatches from `sagas/phase/event.ts`, dead read from `News.tsx`. The `ui` duck now only holds `{ menu: boolean }`.
 
-### P3 — State architecture evolution (controlled)
+### P3 — State architecture evolution: XState migration (active)
 
-- **Short term:** Build regression test suite (deterministic seed support is ready via `VITE_RANDOM_SEED`).
-- **Mid term:** Evaluate selective Redux + Saga → RTK/RTK Query slices, but only for new async flows, not core game logic. Continue XState adoption for UI wizard flows (betting, invitations, etc.) where ephemeral multi-step state doesn't belong in Redux.
-- **Long term:** XState for the game engine itself (phase/turn loop is a textbook state machine). But this is a full engine rewrite — only viable after a regression suite exists. TS migration prerequisite is now met. Do not attempt piecemeal.
+- **Regression test harness: ✅ COMPLETE** — 105 vitest tests (81 new: calendar, store init, reducers, game simulation, save/load). Key discovery: calendar has **75 rounds** (0–74), not 54.
+- **`src/data/` cleanup: ✅ COMPLETE** — logic files moved out, `data/` is now pure data only. Selectors → `src/selectors.ts`, awards → `src/sagas/awards.ts`, events/pranks → `src/game/`, tournament eligibility → `src/sagas/tournament-eligibility.ts`.
+- **Import normalization: ✅ COMPLETE** — all 709 `../` relative imports across 189 files normalized to `@/` alias paths.
+- **Next:** PR 3 (XState type foundations) per [`XSTATE-REFACTORING.md`](XSTATE-REFACTORING.md).
+- **Full plan:** Hierarchical actor model — `appMachine` → `gameMachine` → phase machines. 21 PRs across 5 phases. See XSTATE-REFACTORING.md for details.
 
 ### P4 — Styling: ✅ COMPLETE
 
@@ -672,7 +684,7 @@ Do not use `typed-redux-saga/macro` — it requires a Babel transform and this p
 
 - `src/sagas/**` phase sequencing and cancellation logic
 - `src/ducks/**` reducer state shapes (now plain objects + immer)
-- event generation and calendar-dependent flows (`src/sagas/phase/**`, `src/data/calendar.ts`, `src/data/events.ts`)
+- event generation and calendar-dependent flows (`src/sagas/phase/**`, `src/data/calendar.ts`, `src/game/events.ts`, `src/game/events/`)
 - save/load serialization (`JSON.stringify`/`JSON.parse` in `src/sagas/meta.ts`)
 
 When touching these areas:
@@ -688,6 +700,7 @@ When touching these areas:
 ### Before coding
 
 - Read the affected file(s) fully.
+- Read [`XSTATE-REFACTORING.md`](XSTATE-REFACTORING.md) if working on state management, sagas, or the XState migration.
 - Find neighboring usage sites before changing signatures.
 - Verify whether code is legacy/unused before deleting.
 
@@ -734,10 +747,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 1. Update `README.md` to current install/run commands (`pnpm` + `vite`).
 2. Inventory and remove webpack-only dependencies/config that are now dead.
 3. Vitest is configured (`vitest.config.ts`, `@vitest/ui` installed, Jest fully removed); add scripts for lint/typecheck/test so modernization has consistent gates.
-4. Add a small regression suite around:
-   - game start/load/save (now plain JSON — easy to snapshot)
-   - one full turn phase progression (use `VITE_RANDOM_SEED` for determinism)
-   - event creation sanity
+4. ~~Add a small regression suite around game start/load/save, turn phase progression, event creation.~~ ✅ Done — 105 tests via `pnpm run test`.
 5. Playwright e2e tests using deterministic seed (`VITE_RANDOM_SEED=X pnpm dev`) — same seed + same clicks = same game.
 6. ~~Continue TypeScript migration of remaining `.js`/`.jsx` files.~~ ✅ Done.
 7. ~~Audit stale peer dependency warnings (react-pose, react-toggle, react-typography, react-helmet all have React 19 peer issues).~~ Mostly resolved — react-toggle, react-typography removed. Only react-helmet remains (evaluate `react-helmet-async` or native `<title>` API).
@@ -747,7 +757,8 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 11. ~~Remove `@redux-saga/delay-p` from dependencies (sole consumer was `notification.js`, now uses `typed-redux-saga`'s `delay`).~~ ✅ Already removed.
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. ~~Type the `MHMEvent.options` return to eliminate 17 event `as any` casts~~ ✅ Done — `MHMEvent` widened with `BaseEventCreationFields` second generic.
-14. Evaluate `createSlice` migration for simpler ducks (country, notification, news) as a pilot before tackling game/manager.
+14. ~~Evaluate `createSlice` migration for simpler ducks~~ — Superseded by XState migration plan. See XSTATE-REFACTORING.md.
+15. **Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors. See XSTATE-REFACTORING.md.
 
 ---
 
