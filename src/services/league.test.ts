@@ -63,9 +63,7 @@ describe("league", () => {
     it("should award 2 points for a win", () => {
       const group = makeGroup({
         teams: [0, 1],
-        schedule: [
-          [makePairing(0, 1, { home: 3, away: 1, overtime: false })]
-        ]
+        schedule: [[makePairing(0, 1, { home: 3, away: 1, overtime: false })]]
       });
       const stats = groupStats(group);
 
@@ -79,9 +77,7 @@ describe("league", () => {
     it("should award 1 point each for a draw", () => {
       const group = makeGroup({
         teams: [0, 1],
-        schedule: [
-          [makePairing(0, 1, { home: 2, away: 2, overtime: false })]
-        ]
+        schedule: [[makePairing(0, 1, { home: 2, away: 2, overtime: false })]]
       });
       const stats = groupStats(group);
 
@@ -94,9 +90,7 @@ describe("league", () => {
     it("should award 0 points for a loss", () => {
       const group = makeGroup({
         teams: [0, 1],
-        schedule: [
-          [makePairing(0, 1, { home: 0, away: 5, overtime: false })]
-        ]
+        schedule: [[makePairing(0, 1, { home: 0, away: 5, overtime: false })]]
       });
       const stats = groupStats(group);
 
@@ -141,9 +135,7 @@ describe("league", () => {
     it("should apply penalty points", () => {
       const group = makeGroup({
         teams: [0, 1],
-        schedule: [
-          [makePairing(0, 1, { home: 3, away: 1, overtime: false })]
-        ],
+        schedule: [[makePairing(0, 1, { home: 3, away: 1, overtime: false })]],
         penalties: [{ team: 0, penalty: -4 }]
       });
       const stats = groupStats(group);
@@ -261,7 +253,7 @@ describe("league", () => {
         teams: [10, 20, 30],
         schedule: [
           [
-            makePairing(0, 1, { home: 3, away: 1, overtime: false }), // 10 beats 20
+            makePairing(0, 1, { home: 3, away: 1, overtime: false }) // 10 beats 20
             // team 2 (id 30) has bye
           ],
           [

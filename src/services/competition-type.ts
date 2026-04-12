@@ -43,12 +43,10 @@ const competitionTypes: Record<string, CompetitionType> = {
       const match = situation[matchup] as MatchupStat;
 
       if (match.home.wins === p.winsToAdvance) {
-        console.log("HOME TEAM HAS ENUFF WINS");
         return false;
       }
 
       if (match.away.wins === p.winsToAdvance) {
-        console.log("AWAY TEAM HAS ENUFF WINS");
         return false;
       }
 

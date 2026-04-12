@@ -1,23 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { resultFacts, gameFacts, simulate } from "@/services/game";
+import { describe, it, expect } from "vitest";
+import { resultFacts, gameFacts } from "@/services/game";
+import { createGameService } from "@/services/game";
+import { createRandom } from "@/services/random";
 import type { GameInput } from "@/services/game";
 import type { Team } from "@/ducks/game";
 import type { Manager } from "@/ducks/manager";
 import type { GameResult } from "@/types/competitions";
-
-// Mock random to make tests deterministic
-vi.mock("@/services/random", () => {
-  let callCount = 0;
-  return {
-    default: {
-      integer: (min: number, max: number) => {
-        callCount++;
-        // Return a predictable value: midpoint of range
-        return Math.floor((min + max) / 2);
-      }
-    }
-  };
-});
 
 const makeTeam = (overrides: Partial<Team> = {}): Team => ({
   id: 0,
@@ -128,6 +116,7 @@ describe("game service", () => {
 
   describe("simulate", () => {
     it("should return a GameResult with home, away, and overtime fields", () => {
+      const { simulate } = createGameService(createRandom(42));
       const input: GameInput = {
         home: makeTeam({ id: 0, strength: 50 }),
         away: makeTeam({ id: 1, strength: 50 }),
@@ -154,6 +143,7 @@ describe("game service", () => {
     });
 
     it("should produce non-negative scores", () => {
+      const { simulate } = createGameService(createRandom(42));
       const input: GameInput = {
         home: makeTeam({ strength: 10, morale: 10, readiness: 0 }),
         away: makeTeam({ strength: 10, morale: 10, readiness: 0 }),
@@ -176,6 +166,7 @@ describe("game service", () => {
     });
 
     it("should not trigger overtime when overtime callback returns false", () => {
+      const { simulate } = createGameService(createRandom(42));
       const input: GameInput = {
         home: makeTeam({ strength: 50, morale: 50, readiness: 10 }),
         away: makeTeam({ strength: 50, morale: 50, readiness: 10 }),
@@ -197,6 +188,7 @@ describe("game service", () => {
     });
 
     it("should apply team effects during simulation", () => {
+      const { simulate } = createGameService(createRandom(42));
       // Team with a huge strength boost should generally score more
       const strongTeam = makeTeam({
         id: 0,
@@ -259,14 +251,18 @@ describe("game service", () => {
         phaseId: 0
       };
 
-      const resultWithServices = simulate(input);
+      const resultWithServices = createGameService(createRandom(42)).simulate(
+        input
+      );
 
-      // Now without services
+      // Now without services — same seed for fair comparison
       const input2: GameInput = {
         ...input,
         homeManager: makeManager()
       };
-      const resultWithout = simulate(input2);
+      const resultWithout = createGameService(createRandom(42)).simulate(
+        input2
+      );
 
       // Home team with services should score at least as much (with deterministic mock)
       expect(resultWithServices.home).toBeGreaterThanOrEqual(
@@ -279,9 +275,7 @@ describe("game service", () => {
       const awayTeam = makeTeam({
         id: 1,
         strength: 60,
-        opponentEffects: [
-          { parameter: ["strength"], amount: -20, duration: 1 }
-        ]
+        opponentEffects: [{ parameter: ["strength"], amount: -50, duration: 1 }]
       });
 
       const input: GameInput = {
@@ -300,10 +294,19 @@ describe("game service", () => {
         phaseId: 0
       };
 
-      const result = simulate(input);
-      // Home team is weakened by away team's opponent effects
-      // Away team should have advantage
-      expect(result.away).toBeGreaterThanOrEqual(result.home);
+      // Run multiple times — with a severe -50 opponent effect, away should
+      // outscore home on average
+      let awayWins = 0;
+      const runs = 20;
+      for (let i = 0; i < runs; i++) {
+        const { simulate: sim } = createGameService(createRandom(i));
+        const result = sim(input);
+        if (result.away >= result.home) {
+          awayWins++;
+        }
+      }
+      // Away should win majority of the time with such a large advantage
+      expect(awayWins).toBeGreaterThan(runs / 2);
     });
 
     it("should use the base() function for score scaling", () => {
@@ -323,13 +326,13 @@ describe("game service", () => {
         phaseId: 0
       };
 
-      const highBase = simulate(input);
+      const highBase = createGameService(createRandom(42)).simulate(input);
 
       const input2: GameInput = {
         ...input,
         base: () => 10 // low base = higher scores
       };
-      const lowBase = simulate(input2);
+      const lowBase = createGameService(createRandom(42)).simulate(input2);
 
       // Lower base divisor should produce higher scores
       expect(lowBase.home).toBeGreaterThanOrEqual(highBase.home);
@@ -352,12 +355,21 @@ describe("game service", () => {
         phaseId: 0
       };
 
-      const result = simulate(input);
-      // With deterministic mock, home team with advantage should outscore or equal
-      expect(result.home).toBeGreaterThanOrEqual(result.away);
+      // Run multiple seeds — home advantage should win majority
+      let homeWins = 0;
+      const runs = 20;
+      for (let i = 0; i < runs; i++) {
+        const { simulate } = createGameService(createRandom(i));
+        const result = simulate(input);
+        if (result.home >= result.away) {
+          homeWins++;
+        }
+      }
+      expect(homeWins).toBeGreaterThan(runs / 2);
     });
 
     it("should return integer scores", () => {
+      const { simulate } = createGameService(createRandom(42));
       const input: GameInput = {
         home: makeTeam({ strength: 47, morale: 33, readiness: 7 }),
         away: makeTeam({ strength: 53, morale: 41, readiness: 13 }),

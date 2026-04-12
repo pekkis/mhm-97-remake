@@ -28,9 +28,7 @@ describe("effects", () => {
     it("should apply a single numeric strength effect", () => {
       const team = makeTeam({
         strength: 50,
-        effects: [
-          { parameter: ["strength"], amount: 10, duration: 1 }
-        ]
+        effects: [{ parameter: ["strength"], amount: 10, duration: 1 }]
       });
       const result = getEffective(team);
       expect(result.strength).toBe(60);
@@ -39,9 +37,7 @@ describe("effects", () => {
     it("should apply a single numeric morale effect", () => {
       const team = makeTeam({
         morale: 50,
-        effects: [
-          { parameter: ["morale"], amount: -5, duration: 2 }
-        ]
+        effects: [{ parameter: ["morale"], amount: -5, duration: 2 }]
       });
       const result = getEffective(team);
       expect(result.morale).toBe(45);
@@ -113,9 +109,7 @@ describe("effects", () => {
     it("should apply opponent's opponentEffects to the target team", () => {
       const team = makeTeam({ strength: 60 });
       const opponent = makeTeam({
-        opponentEffects: [
-          { parameter: ["strength"], amount: -10, duration: 1 }
-        ]
+        opponentEffects: [{ parameter: ["strength"], amount: -10, duration: 1 }]
       });
       const result = getEffectiveOpponent(team, opponent);
       expect(result.strength).toBe(50);
@@ -138,9 +132,7 @@ describe("effects", () => {
       const team = makeTeam({ strength: 60 });
       const opponent = makeTeam({
         effects: [{ parameter: ["strength"], amount: 100, duration: 1 }],
-        opponentEffects: [
-          { parameter: ["strength"], amount: -5, duration: 1 }
-        ]
+        opponentEffects: [{ parameter: ["strength"], amount: -5, duration: 1 }]
       });
       const result = getEffectiveOpponent(team, opponent);
       expect(result.strength).toBe(55);
@@ -154,9 +146,7 @@ describe("effects", () => {
         effects: [{ parameter: ["strength"], amount: 10, duration: 1 }]
       });
       const opponent = makeTeam({
-        opponentEffects: [
-          { parameter: ["strength"], amount: -5, duration: 1 }
-        ]
+        opponentEffects: [{ parameter: ["strength"], amount: -5, duration: 1 }]
       });
 
       // This is the actual game.ts pattern:
