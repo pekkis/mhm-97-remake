@@ -12,7 +12,7 @@ import Tabs from "./ui/Tabs";
 import Tab from "./ui/Tab";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { managerBuyPlayer, managerSellPlayer } from "../ducks/manager";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 const TransferMarket = () => {
   const manager = useAppSelector(activeManager);

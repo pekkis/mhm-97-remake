@@ -6,7 +6,7 @@ import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { advance } from "../ducks/game";
 import { requestChampionBet } from "../ducks/betting";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 const ChampionshipBetting = () => {
   const manager = useAppSelector(activeManager);

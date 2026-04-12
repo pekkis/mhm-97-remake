@@ -7,7 +7,7 @@ import {
   incrementMorale,
   addEffect
 } from "../../sagas/team";
-import { managersTeamId, managerCompetesIn } from "../selectors";
+import { managersTeamId, managerCompetesIn } from "@/selectors";
 import { incrementBalance } from "../../sagas/manager";
 import type { MHMEvent } from "../../types/base";
 

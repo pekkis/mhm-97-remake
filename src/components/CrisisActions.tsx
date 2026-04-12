@@ -11,7 +11,7 @@ import { managerCrisisMeeting } from "../ducks/manager";
 import crisis from "../data/crisis";
 import { currency as c } from "../services/format";
 import { getEffective } from "../services/effects";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 const CrisisActions = () => {
   const manager = useAppSelector(activeManager);

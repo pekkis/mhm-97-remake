@@ -3,7 +3,7 @@ import Button from "./form/Button";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { managerSelectStrategy } from "../ducks/manager";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 const SelectStrategy = () => {
   const manager = useAppSelector(activeManager);

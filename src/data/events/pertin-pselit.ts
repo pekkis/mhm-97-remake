@@ -1,7 +1,7 @@
 import { select, call } from "typed-redux-saga";
 import { incrementMorale } from "../../sagas/team";
 import { addEvent } from "../../sagas/event";
-import { managersTeamId, managersDifficulty } from "../selectors";
+import { managersTeamId, managersDifficulty } from "@/selectors";
 import type { MHMEvent } from "../../types/base";
 
 const eventId = "pertinPselit";

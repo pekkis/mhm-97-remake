@@ -2,7 +2,7 @@ import { take, call, select } from "typed-redux-saga";
 import { advance } from "../../ducks/game";
 import { setPhase } from "../game";
 import { addNews } from "../news";
-import { randomManager } from "../../data/selectors";
+import { randomManager } from "@/selectors";
 import type { RootState } from "../../config/redux";
 import type { TeamStat } from "../../types/competitions";
 

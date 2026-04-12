@@ -1,7 +1,7 @@
 import { call, select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
 import { addEffect, incrementMorale } from "../../sagas/team";
-import { managersTeam, flag } from "../selectors";
+import { managersTeam, flag } from "@/selectors";
 import { setFlag } from "../../sagas/game";
 import type { MHMEvent } from "../../types/base";
 

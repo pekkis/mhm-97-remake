@@ -6,7 +6,7 @@ import { useAppSelector } from "@/config/redux";
 import {
   activeManagersInvitations,
   activeManagersTeam
-} from "@/data/selectors";
+} from "@/selectors";
 
 const Current = () => {
   const invitations = useAppSelector(activeManagersInvitations);

@@ -5,7 +5,7 @@ import BettingForm from "./betting/BettingForm";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { requestBet } from "../ducks/betting";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 const Betting = () => {
   const turn = useAppSelector((state) => state.game.turn);

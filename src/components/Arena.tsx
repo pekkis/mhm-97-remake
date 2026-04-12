@@ -10,7 +10,7 @@ import { currency } from "../services/format";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { managerImproveArena } from "../ducks/manager";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 const Arenas = () => {
   const manager = useAppSelector(activeManager);

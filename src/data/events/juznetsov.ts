@@ -6,7 +6,7 @@ import {
   managerHasService,
   managerCompetesIn,
   managersTeamId
-} from "../selectors";
+} from "@/selectors";
 import { cinteger } from "../../services/random";
 import type { MHMEvent } from "../../types/base";
 

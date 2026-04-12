@@ -1,7 +1,7 @@
 import { call, select } from "typed-redux-saga";
 import { produce } from "immer";
 import { addEvent, resolvedEvent } from "../../sagas/event";
-import { managersArena } from "../selectors";
+import { managersArena } from "@/selectors";
 import { incrementBalance, renameArena } from "../../sagas/manager";
 import { amount as a } from "../../services/format";
 import type { MHMEvent } from "../../types/base";

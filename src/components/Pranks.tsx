@@ -13,7 +13,7 @@ import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { orderPrank } from "../ducks/prank";
 import { useMachine } from "@xstate/react";
 import { prankSelectionMachine } from "../machines/prankSelection";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 const Pranks = () => {
   const manager = useAppSelector(activeManager);

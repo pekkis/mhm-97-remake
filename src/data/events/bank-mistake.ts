@@ -2,7 +2,7 @@ import { call, select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
 import { incrementBalance, decrementBalance } from "../../sagas/manager";
 import { amount as a } from "../../services/format";
-import { managersDifficulty } from "../selectors";
+import { managersDifficulty } from "@/selectors";
 import type { MHMEvent } from "../../types/base";
 
 /*

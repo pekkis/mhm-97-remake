@@ -10,7 +10,7 @@ import { managerToggleService } from "../ducks/manager";
 import { entries } from "remeda";
 
 import services from "../data/services";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 const Services = () => {
   const manager = useAppSelector(activeManager);

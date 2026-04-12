@@ -7,7 +7,7 @@ import title from "./start-menu/title.png";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { startGame, loadGame } from "../ducks/meta";
 import { advance } from "../ducks/game";
-import { primaryCompetitions } from "@/data/selectors";
+import { primaryCompetitions } from "@/selectors";
 
 const StartMenu = () => {
   const teams = useAppSelector((state) => state.game.teams);

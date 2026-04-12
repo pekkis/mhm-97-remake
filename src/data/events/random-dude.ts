@@ -1,7 +1,7 @@
 import { call, select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
 import { incrementStrength } from "../../sagas/team";
-import { randomTeamFrom } from "../selectors";
+import { randomTeamFrom } from "@/selectors";
 import { cinteger } from "../../services/random";
 import type { MHMEvent } from "../../types/base";
 

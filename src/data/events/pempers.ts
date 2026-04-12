@@ -3,7 +3,7 @@ import { addEvent } from "../../sagas/event";
 import { incrementBalance } from "../../sagas/manager";
 import { decrementMorale } from "../../sagas/team";
 import { amount as a } from "../../services/format";
-import { managersTeamId } from "../../data/selectors";
+import { managersTeamId } from "@/selectors";
 import type { MHMEvent } from "../../types/base";
 
 /*

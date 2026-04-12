@@ -6,7 +6,7 @@ import {
   randomTeamFrom,
   managersTeam,
   managersDifficulty
-} from "../selectors";
+} from "@/selectors";
 import { addEvent } from "../../sagas/event";
 import { incrementBalance } from "../../sagas/manager";
 import { incrementStrength } from "../../sagas/team";

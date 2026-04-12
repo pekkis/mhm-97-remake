@@ -6,7 +6,7 @@ import Button from "./form/Button";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { closeMenu } from "../ducks/ui";
 import { saveGame, quitToMainMenu } from "../ducks/meta";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 const ActionMenu = () => {
   const manager = useAppSelector(activeManager);

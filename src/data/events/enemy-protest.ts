@@ -5,7 +5,7 @@ import {
   randomManager,
   managerCompetesIn,
   randomTeamFrom
-} from "../selectors";
+} from "@/selectors";
 import { addEvent } from "../../sagas/event";
 import { incurPenalty } from "../../sagas/team";
 import type { MHMEvent } from "../../types/base";

@@ -6,7 +6,7 @@ import {
   updateFromFacts,
   setSeasonStat as setSeasonStatAction
 } from "../ducks/stats";
-import { managersMainCompetition } from "../data/selectors";
+import { managersMainCompetition } from "@/selectors";
 import {
   competitionSeed,
   gameResult,

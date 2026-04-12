@@ -1,6 +1,6 @@
 import { call, select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
-import { managerHasService, managersArena } from "../selectors";
+import { managerHasService, managersArena } from "@/selectors";
 import { amount as a } from "../../services/format";
 import { incrementInsuranceExtra } from "../../sagas/manager";
 import type { MHMEvent } from "../../types/base";

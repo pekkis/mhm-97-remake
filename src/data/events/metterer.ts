@@ -2,7 +2,7 @@ import { call, select } from "typed-redux-saga";
 import { produce } from "immer";
 import { addEvent, resolvedEvent } from "../../sagas/event";
 import { addOpponentEffect } from "../../sagas/team";
-import { managersTeam } from "../selectors";
+import { managersTeam } from "@/selectors";
 import r from "../../services/random";
 import type { MHMEvent } from "../../types/base";
 

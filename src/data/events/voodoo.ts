@@ -1,6 +1,6 @@
 import { select, call } from "typed-redux-saga";
 import { produce } from "immer";
-import { managersTeamId } from "../selectors";
+import { managersTeamId } from "@/selectors";
 import { amount as a } from "../../services/format";
 import { addEvent, resolvedEvent } from "../../sagas/event";
 import { incrementMorale, decrementMorale } from "../../sagas/team";

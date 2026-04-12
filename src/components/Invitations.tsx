@@ -7,7 +7,7 @@ import Markdown from "react-markdown";
 import Button from "./form/Button";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { requestAcceptInvitation } from "../ducks/invitation";
-import { activeManager, activeManagersInvitations } from "@/data/selectors";
+import { activeManager, activeManagersInvitations } from "@/selectors";
 
 const Invitations = () => {
   const manager = useAppSelector(activeManager);

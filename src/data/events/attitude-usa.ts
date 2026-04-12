@@ -1,6 +1,6 @@
 import { call, select, all, put } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
-import { flag } from "../selectors";
+import { flag } from "@/selectors";
 import { setFlag } from "../../sagas/game";
 import { alterStrength } from "../../ducks/country";
 import type { MHMEvent } from "../../types/base";

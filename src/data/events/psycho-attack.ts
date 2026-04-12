@@ -1,6 +1,6 @@
 import { call, select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
-import { randomManager, flag, totalGamesPlayed } from "../selectors";
+import { randomManager, flag, totalGamesPlayed } from "@/selectors";
 import { setFlag } from "../../sagas/game";
 import type { MHMEvent } from "../../types/base";
 

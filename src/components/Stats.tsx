@@ -11,7 +11,7 @@ import Tab from "./ui/Tab";
 import ManagerStats from "./stats/ManagerStats";
 import TeamStats from "./stats/TeamStats";
 import { useAppSelector } from "@/config/redux";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 const Stats = () => {
   const manager = useAppSelector(activeManager);

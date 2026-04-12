@@ -1,6 +1,6 @@
 import { select, put, call } from "typed-redux-saga";
 import { produce } from "immer";
-import { teamCompetesIn } from "../selectors";
+import { teamCompetesIn } from "@/selectors";
 import r, { cinteger } from "../../services/random";
 import { decrementStrength } from "../../sagas/team";
 import { decrementBalance } from "../../sagas/manager";

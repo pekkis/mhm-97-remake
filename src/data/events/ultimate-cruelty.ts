@@ -6,7 +6,7 @@ import {
   managersTeam,
   managerHasService,
   managersArena
-} from "../selectors";
+} from "@/selectors";
 import { amount as a } from "../../services/format";
 import { decrementBalance, setArenaLevel } from "../../sagas/manager";
 import type { MHMEvent } from "../../types/base";

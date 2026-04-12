@@ -8,7 +8,7 @@ import Current from "./context-sensitive/Current";
 
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { activeManager, interestingCompetitions } from "../data/selectors";
+import { activeManager, interestingCompetitions } from "@/selectors";
 import { requestResolveEvent } from "../ducks/event";
 
 const MainMenu = () => {

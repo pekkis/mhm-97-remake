@@ -10,7 +10,7 @@ import {
   managerHasService,
   managersDifficulty,
   managersArena
-} from "../selectors";
+} from "@/selectors";
 import arenas from "../../data/arenas";
 import type { MHMEvent } from "../../types/base";
 

@@ -5,7 +5,7 @@ import TurnIndicator from "./game/TurnIndicator";
 import { useAppSelector } from "@/config/redux";
 
 import * as styles from "./ManagerInfo.css";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 type ManagerInfoProps = {
   details?: boolean;

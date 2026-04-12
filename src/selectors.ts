@@ -1,13 +1,13 @@
-import r from "../services/random";
-import { victors } from "../services/playoffs";
-import type { RootState } from "../config/redux";
-import type { GameFlags, Team } from "../ducks/game";
-import type { Manager, ManagerServices } from "../ducks/manager";
+import r from "@/services/random";
+import { victors } from "@/services/playoffs";
+import type { RootState } from "@/config/redux";
+import type { GameFlags, Team } from "@/ducks/game";
+import type { Manager, ManagerServices } from "@/ducks/manager";
 import type {
   CompetitionId,
   PlayoffGroup,
   TeamStat
-} from "../types/competitions";
+} from "@/types/competitions";
 
 type Selector<T> = (state: RootState) => T;
 

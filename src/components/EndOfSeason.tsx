@@ -6,7 +6,7 @@ import Announcements from "./events/Announcements";
 
 import Box from "./styled-system/Box";
 import { useAppSelector } from "@/config/redux";
-import { activeManager } from "@/data/selectors";
+import { activeManager } from "@/selectors";
 
 const EndOfSeason = () => {
   const manager = useAppSelector(activeManager);

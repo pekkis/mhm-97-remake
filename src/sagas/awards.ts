@@ -8,12 +8,12 @@ import {
   teamsPositionInRoundRobin,
   teamWasRelegated,
   teamWasPromoted
-} from "./selectors";
+} from "@/selectors";
 import { victors, eliminated } from "../services/playoffs";
 import r from "../services/random";
-import { incrementStrength } from "../sagas/team";
-import { incrementBalance } from "../sagas/manager";
-import { addNews } from "../sagas/news";
+import { incrementStrength } from "./team";
+import { incrementBalance } from "./manager";
+import { addNews } from "./news";
 import type { Team } from "../ducks/game";
 import type { RootState } from "../config/redux";
 

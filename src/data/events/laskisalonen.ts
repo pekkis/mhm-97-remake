@@ -5,7 +5,7 @@ import {
   managerCompetesIn,
   managerHasService,
   managersTeamId
-} from "../selectors";
+} from "@/selectors";
 import { amount as a } from "../../services/format";
 import { incrementBalance, incrementInsuranceExtra } from "../../sagas/manager";
 import type { MHMEvent } from "../../types/base";

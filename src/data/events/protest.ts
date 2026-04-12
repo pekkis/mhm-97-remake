@@ -1,6 +1,6 @@
 import { select, put, call } from "typed-redux-saga";
 import { produce } from "immer";
-import { managersTeam } from "../selectors";
+import { managersTeam } from "@/selectors";
 import r from "../../services/random";
 import { addEvent } from "../../sagas/event";
 import { incurPenalty } from "../../sagas/team";

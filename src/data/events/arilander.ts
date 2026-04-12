@@ -1,7 +1,7 @@
 import { call, select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
 import { decrementMorale } from "../../sagas/team";
-import { managersTeam, managersDifficulty, randomTeamFrom } from "../selectors";
+import { managersTeam, managersDifficulty, randomTeamFrom } from "@/selectors";
 import type { MHMEvent } from "../../types/base";
 
 const eventId = "arilander";

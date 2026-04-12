@@ -6,7 +6,7 @@ import {
   managersDifficulty,
   managersArena,
   managersBalance
-} from "../selectors";
+} from "@/selectors";
 import { incrementStrength } from "../../sagas/team";
 import { setArenaLevel, incrementBalance } from "../../sagas/manager";
 import type { MHMEvent } from "../../types/base";

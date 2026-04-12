@@ -6,7 +6,7 @@ import {
   managerFlag,
   managersTeamId,
   managersDifficulty
-} from "../selectors";
+} from "@/selectors";
 import { setFlag, setExtra } from "../../sagas/manager";
 import difficultyLevels from "../../data/difficulty-levels";
 import type { MHMEvent } from "../../types/base";

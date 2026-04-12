@@ -1,7 +1,7 @@
 import { call, select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
 import { setBalance } from "../../sagas/manager";
-import { managersDifficulty } from "../selectors";
+import { managersDifficulty } from "@/selectors";
 import type { MHMEvent } from "../../types/base";
 
 /*

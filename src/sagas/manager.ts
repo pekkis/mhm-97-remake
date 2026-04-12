@@ -10,7 +10,7 @@ import {
   managersArena,
   managerHasService,
   teamsMainCompetition
-} from "../data/selectors";
+} from "@/selectors";
 import { incrementMorale, incrementReadiness, incurPenalty } from "./team";
 import { addNotification } from "./notification";
 import crisis from "../data/crisis";

@@ -1,5 +1,5 @@
 import type { RootState } from "@/config/redux";
-import { foreignTeams } from "@/data/selectors";
+import { foreignTeams } from "@/selectors";
 import tournamentList from "@/data/tournaments";
 import { setCompetitionTeams } from "@/sagas/game";
 import { incrementBalance } from "@/sagas/manager";

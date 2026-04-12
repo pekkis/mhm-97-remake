@@ -3,7 +3,7 @@ import {
   managersTeamId,
   teamCompetesIn,
   managerHasService
-} from "../selectors";
+} from "@/selectors";
 import { amount as a } from "../../services/format";
 import { incrementMorale } from "../../sagas/team";
 import { addEvent } from "../../sagas/event";

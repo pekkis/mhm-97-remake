@@ -48,11 +48,11 @@ import {
   managersMainCompetition,
   managerHasService,
   managersArena
-} from "../data/selectors";
+} from "@/selectors";
 import events from "../data/events";
 import type { RootState } from "../config/redux";
 import type { CompetitionId, Group, TeamStat } from "../types/competitions";
-import { competitionSagas } from "@/data/competition-sagas";
+import { competitionSagas } from "./competition-registry";
 import { entries } from "remeda";
 
 export function* beforeGame(action: ReturnType<typeof gameBegin>) {
