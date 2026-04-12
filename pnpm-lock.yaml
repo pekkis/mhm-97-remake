@@ -11,9 +11,6 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.72.1(react@19.2.5))
-      '@redux-devtools/extension':
-        specifier: ^4.0.0
-        version: 4.0.0(redux@5.0.1)
       '@reduxjs/toolkit':
         specifier: ^2.11.2
         version: 2.11.2(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.5)(redux@5.0.1))(react@19.2.5)
@@ -654,11 +651,6 @@ packages:
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
-
-  '@redux-devtools/extension@4.0.0':
-    resolution: {integrity: sha512-pLIzgo5MvqdDLe5D1pzHLgmr8THra/DOyRf5MvOEPZnKKDn6RhFbNSS5oXZ3Cal0cpx08kx7sR6zD8QgoXEnZA==}
-    peerDependencies:
-      redux: ^3.1.0 || ^4.0.0 || ^5.0.0
 
   '@redux-saga/core@1.4.2':
     resolution: {integrity: sha512-nIMLGKo6jV6Wc1sqtVQs1iqbB3Kq20udB/u9XEaZQisT6YZ0NRB8+4L6WqD/E+YziYutd27NJbG8EWUPkb7c6Q==}
@@ -2227,10 +2219,6 @@ snapshots:
     optional: true
 
   '@polka/url@1.0.0-next.29': {}
-
-  '@redux-devtools/extension@4.0.0(redux@5.0.1)':
-    dependencies:
-      redux: 5.0.1
 
   '@redux-saga/core@1.4.2':
     dependencies:

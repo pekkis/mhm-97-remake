@@ -1,7 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
-import { seasonStart } from "./game";
-
 export const quitToMainMenu = createAction("META_QUIT_TO_MAIN_MENU");
 export const startGame = createAction("META_GAME_START_REQUEST");
 export const saveGame = createAction("META_GAME_SAVE_REQUEST");
@@ -46,7 +44,7 @@ export default createReducer(defaultState, (builder) => {
     })
     .addMatcher(
       (action: { type: string }) =>
-        seasonStart.match(action) || gameLoaded.match(action),
+        action.type === "SEASON_START" || gameLoaded.match(action),
       (state) => {
         state.started = true;
         state.loading = false;

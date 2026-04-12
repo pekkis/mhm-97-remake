@@ -4,16 +4,15 @@ import Box from "./styled-system/Box";
 import ManagerForm from "./start-menu/ManagerForm";
 import * as styles from "./StartMenu.css";
 import title from "./start-menu/title.png";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { useAppSelector, useAppDispatch, type RootState } from "@/config/redux";
 import { startGame, loadGame } from "../ducks/meta";
 import { advance } from "../ducks/game";
-import { pick } from "remeda";
+import { primaryCompetitions } from "@/data/selectors";
 
 const StartMenu = () => {
   const teams = useAppSelector((state) => state.game.teams);
-  const competitions = useAppSelector((state) =>
-    pick(state.game.competitions, ["phl", "division"])
-  );
+  const competitions = useAppSelector(primaryCompetitions);
+
   const starting = useAppSelector((state) => state.meta.starting);
   const dispatch = useAppDispatch();
 

@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@redux-devtools/extension": "^4.0.0",
     "@reduxjs/toolkit": "^2.11.2",
     "@vanilla-extract/css": "^1.20.1",
     "@vanilla-extract/sprinkles": "^1.6.5",

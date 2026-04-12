@@ -7,16 +7,12 @@ import Markdown from "react-markdown";
 import Button from "./form/Button";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { requestAcceptInvitation } from "../ducks/invitation";
+import { activeManager, activeManagersInvitations } from "@/data/selectors";
 
 const Invitations = () => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
-  const invitations = useAppSelector((state) =>
-    state.invitation.invitations.filter(
-      (i) => i.manager === state.manager.active
-    )
-  );
+  const manager = useAppSelector(activeManager);
+
+  const invitations = useAppSelector(activeManagersInvitations);
   const dispatch = useAppDispatch();
 
   return (

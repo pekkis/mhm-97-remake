@@ -11,6 +11,18 @@ import type {
 
 type Selector<T> = (state: RootState) => T;
 
+import { pick } from "remeda";
+import { createSelector } from "@reduxjs/toolkit";
+
+const competitions = (state: RootState) => state.game.competitions;
+
+export const primaryCompetitions = createSelector(
+  [competitions],
+  (competitions) => {
+    return pick(competitions, ["phl", "division"]);
+  }
+);
+
 export const advanceEnabled = (state: RootState) =>
   state.game.turn.phase !== "event" ||
   !Object.values(state.event.events).some((e) => !e.resolved);
@@ -183,9 +195,6 @@ export const teamHasActiveEffects =
     return state.game.teams[team].effects.length > 0;
   };
 
-export const allTeams: Selector<Team[]> = (state: RootState) =>
-  state.game.teams;
-
 export const pekkalandianTeams = (state: RootState) =>
   state.game.teams.slice(0, 24);
 
@@ -314,17 +323,46 @@ export const randomTeamFrom =
     return state.game.teams[randomized.id];
   };
 
-export const interestingCompetitions =
-  (manager: string) => (state: RootState) => {
-    const team = managersTeam(manager)(state);
+export const activeManager = (state: RootState): Manager => {
+  const activeManager = state.manager.active;
 
-    return Object.keys(state.game.competitions).filter((id) => {
-      const comp = state.game.competitions[id];
+  if (!activeManager) {
+    throw new Error("No manager is active");
+  }
+
+  return state.manager.managers[activeManager];
+};
+
+export const allTeams = (state: RootState) => state.game.teams;
+
+export const activeManagersTeam = createSelector(
+  [activeManager, allTeams],
+  (manager, allTeams) => {
+    return allTeams[manager.team!];
+  }
+);
+
+export const interestingCompetitions = createSelector(
+  [competitions, activeManagersTeam],
+  (competitions, team) => {
+    return Object.keys(competitions).filter((id) => {
+      const comp = competitions[id];
       return comp.phases.some((phase) =>
         phase.groups.some((group) => group.teams.includes(team.id))
       );
     });
-  };
+  }
+);
+
+export const allInvitations = (state: RootState) =>
+  state.invitation.invitations;
+
+export const activeManagersInvitations = createSelector(
+  [activeManager, allInvitations],
+  (manager, invitations) => {
+    return invitations.filter((i) => i.manager === manager.id);
+  }
+);
 
 export const randomManager =
   (exclude: number[] = []) =>

@@ -2,13 +2,13 @@ import type { FC, ReactNode } from "react";
 import calendar from "../../data/calendar";
 import type { CalendarEntry } from "../../data/calendar";
 import { useAppSelector } from "@/config/redux";
-import type { RootState } from "@/config/redux";
+import type { Competition, CompetitionId } from "@/types/competitions";
 
 type CalendarProps = {
   when: (
     entry: CalendarEntry,
     calendar: CalendarEntry[],
-    state: RootState
+    competitions: Record<CompetitionId, Competition>
   ) => boolean;
   children: ReactNode;
   fallback?: ReactNode;
@@ -16,11 +16,11 @@ type CalendarProps = {
 
 const Calendar: FC<CalendarProps> = ({ when, children, fallback = null }) => {
   const turn = useAppSelector((state) => state.game.turn);
-  const state = useAppSelector((state) => state);
+  const competitions = useAppSelector((state) => state.game.competitions);
 
   const entry = calendar[turn.round];
 
-  if (when(entry, calendar, state)) {
+  if (when(entry, calendar, competitions)) {
     return <>{children}</>;
   }
   return <>{fallback}</>;

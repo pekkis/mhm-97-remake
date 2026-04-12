@@ -431,6 +431,7 @@ Converted all action creators from hand-rolled `{ type: "...", payload }` functi
 5. ~~**Component prop casts (2 sites):**~~ ✅ Fixed — `cloneElement` casts in `Tabs.tsx` and `ResponsiveTable.tsx` simply removed (React 19 types handle it).
 
 **Other fixes in the sweep:**
+
 - `teamIncurPenalty` — proper `group.type === "round-robin"` narrowing instead of `as any` cast
 - `events` registry — `as const` instead of `Record<string, any>`
 - `remeda.entries()` used in game service for type-safe key iteration

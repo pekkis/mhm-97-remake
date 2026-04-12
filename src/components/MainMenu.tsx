@@ -19,9 +19,7 @@ const MainMenu = () => {
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);
   const events = useAppSelector((state) => state.event.events);
-  const interesting = useAppSelector((state) =>
-    interestingCompetitions(state.manager.active!)(state)
-  );
+  const interesting = useAppSelector(interestingCompetitions);
 
   return (
     <HeaderedPage>

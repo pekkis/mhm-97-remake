@@ -114,13 +114,9 @@ export function* gameLoop() {
 
     const phases = roundData.phases;
 
-    console.log("HAHAH");
-
     if (phases.includes("action")) {
       yield* call(actionPhase);
     }
-
-    console.log("HAHAH 2");
 
     if (phases.includes("prank")) {
       yield* call(prankPhase);

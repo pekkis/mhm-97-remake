@@ -3,17 +3,14 @@ import Calendar from "../ui/Calendar";
 import * as styles from "./Current.css";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useAppSelector } from "@/config/redux";
+import { activeManager, activeManagersInvitations } from "@/data/selectors";
 
 const Current = () => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
+
   const teams = useAppSelector((state) => state.game.teams);
-  const invitations = useAppSelector((state) =>
-    state.invitation.invitations.filter(
-      (i) => i.manager === state.manager.active
-    )
-  );
+
+  const invitations = useAppSelector(activeManagersInvitations);
 
   const team = teams[manager.team!];
 
