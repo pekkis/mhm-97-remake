@@ -7,7 +7,7 @@ import { incurPenalty } from "../../sagas/team";
 import { resolveEventAction } from "../../ducks/event";
 import type { MHMEvent } from "../../types/base";
 import type { RootState } from "../../config/redux";
-import type { PrankInstance } from "@/data/pranks";
+import type { PrankInstance } from "@/game/pranks";
 import { entries } from "remeda";
 
 const eventId = "protest";

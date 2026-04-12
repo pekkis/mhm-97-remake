@@ -1,5 +1,5 @@
 import Markdown from "react-markdown";
-import eventList from "../../data/events";
+import eventList from "@/game/events";
 
 type EventsListProps = {
   events: Record<string, any>;

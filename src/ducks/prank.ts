@@ -1,5 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import type { PrankInstance } from "../data/pranks";
+import type { PrankInstance } from "@/game/pranks";
 import { quitToMainMenu, gameLoadState } from "./meta";
 
 type PrankState = {

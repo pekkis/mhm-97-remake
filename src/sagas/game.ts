@@ -49,7 +49,7 @@ import {
   managerHasService,
   managersArena
 } from "@/selectors";
-import events from "../data/events";
+import events from "@/game/events";
 import type { RootState } from "../config/redux";
 import type { CompetitionId, Group, TeamStat } from "../types/competitions";
 import { competitionSagas } from "./competition-registry";

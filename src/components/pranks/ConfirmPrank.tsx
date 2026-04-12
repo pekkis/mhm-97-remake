@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import ButtonContainer from "../ui/ButtonContainer";
 import Button from "../form/Button";
-import pranks from "../../data/pranks";
+import pranks from "@/game/pranks";
 import type { Team } from "../../ducks/game";
 import type { Manager } from "../../ducks/manager";
 

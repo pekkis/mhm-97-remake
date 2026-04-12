@@ -7,7 +7,7 @@ import {
   type StoredEvent
 } from "../ducks/event";
 
-import events from "../data/events";
+import events from "@/game/events";
 
 export function* resolveEvent(action: {
   payload: { event: StoredEvent; value: string };

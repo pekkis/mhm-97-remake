@@ -1,5 +1,5 @@
 import { select, call, put } from "typed-redux-saga";
-import prankTypes from "../../data/pranks";
+import prankTypes from "@/game/pranks";
 import { dismissPrank } from "../../ducks/prank";
 import type { RootState } from "../../config/redux";
 

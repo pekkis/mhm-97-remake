@@ -1,7 +1,7 @@
 import { put, call, select } from "typed-redux-saga";
 
-import prankTypes from "../data/pranks";
-import type { PrankInstance } from "../data/pranks";
+import prankTypes from "@/game/pranks";
+import type { PrankInstance } from "@/game/pranks";
 import { managerCompetesIn } from "@/selectors";
 import { decrementBalance } from "../sagas/manager";
 import { addPrank } from "../ducks/prank";
