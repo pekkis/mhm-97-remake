@@ -2,6 +2,9 @@ import { createRoot } from "react-dom/client";
 import Root from "./Root";
 
 import store from "./store";
+import { connectInspector } from "./stores/inspector";
+
+connectInspector();
 
 const rootElement = document.getElementById("app");
 if (!rootElement) {

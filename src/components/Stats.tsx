@@ -11,6 +11,8 @@ import Tab from "./ui/Tab";
 import ManagerStats from "./stats/ManagerStats";
 import TeamStats from "./stats/TeamStats";
 import { useAppSelector } from "@/config/redux";
+import { useSelector } from "@xstate/store-react";
+import { countryStore } from "@/stores/country";
 import { activeManager } from "@/selectors";
 
 const Stats = () => {
@@ -18,7 +20,7 @@ const Stats = () => {
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);
   const stats = useAppSelector((state) => state.stats);
-  const countries = useAppSelector((state) => state.country.countries);
+  const countries = useSelector(countryStore, (s) => s.context.countries);
 
   const [tab, setTab] = useState(0);
 

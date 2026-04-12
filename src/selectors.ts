@@ -284,8 +284,28 @@ export const randomTeamFrom =
     f: (t: Team) => boolean = () => true
   ): Selector<Team> =>
   (state) => {
-    console.log(excluded, "excommunicado");
+    const team = randomTeamOrNullFrom(
+      competitionIds,
+      canBeHumanControlled,
+      excluded,
+      f
+    )(state);
 
+    if (!team) {
+      throw new Error("Random team not found");
+    }
+
+    return team;
+  };
+
+export const randomTeamOrNullFrom =
+  (
+    competitionIds: string[],
+    canBeHumanControlled = false,
+    excluded: number[] = [],
+    f: (t: Team) => boolean = () => true
+  ): Selector<Team | null> =>
+  (state) => {
     const managersTeams: number[] = values(state.manager.managers)
       .map((p) => p.team)
       .filter((t): t is number => t !== undefined);
@@ -295,29 +315,18 @@ export const randomTeamFrom =
       .flatMap(([, c]) => c.teams)
       .map((t) => state.game.teams[t])
       .filter((t) => {
-        console.log("T", t);
-        console.log(
-          "kraa",
-          canBeHumanControlled || !managersTeams.includes(t.id)
-        );
         return canBeHumanControlled || !managersTeams.includes(t.id);
       })
       .filter((t) => !excluded.includes(t.id))
       .filter(f);
 
     if (teams.length === 0) {
-      console.log({
-        competitionIds,
-        canBeHumanControlled,
-        excluded,
-        managersTeams,
-        f
-      });
-      throw new Error("Could not find a team!");
+      return null;
     }
 
     const randomized: Team = r.pick(teams);
-    return state.game.teams[randomized.id];
+    const ret = state.game.teams[randomized.id];
+    return ret;
   };
 
 export const activeManager = (state: RootState): Manager => {

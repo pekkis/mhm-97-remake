@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import * as styles from "./Notification.css";
-import type { Notification as NotificationType } from "@/ducks/notification";
+import type { Notification as NotificationType } from "@/stores/notification";
 
 type NotificationProps = {
   notification: NotificationType;

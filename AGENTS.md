@@ -14,7 +14,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 
 - Runtime / build tool: **Vite 8** (`pnpm dev`, `pnpm build`)
 - UI stack: React 19, React Router 7
-- State stack: Redux 5 + **RTK `createReducer`** + redux-saga + XState 5 (Immutable.js fully removed 2026-04-08)
+- State stack: Redux 5 + **RTK `createReducer`** + redux-saga + XState 5 + **`@xstate/store`** (ui, country, notification migrated) (Immutable.js fully removed 2026-04-08)
 - Language: **TypeScript only** — zero `.js`/`.jsx` in `src/` as of 2026-04-10
 - Lint/format stack: `oxlint` + `oxfmt` (ESLint/Prettier removed)
 - Styling stack: **Vanilla Extract** (zero-runtime CSS-in-TS) + **sprinkles** for utility props
@@ -35,7 +35,8 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - `src/data/` now contains **only pure data** — zero `typed-redux-saga` imports
 - **Regression tests:** 105 vitest tests (81 new across 5 suites + 24 existing)
 - **TypeScript check: ZERO errors** (as of 2026-04-12)
-- **Bundle: 665.89kB JS (gzip 212kB), 7.08kB CSS (gzip 1.94kB)** — down from ~806kB JS + runtime CSS
+- Dev tooling: **Stately Inspector** (`@statelyai/inspect`) for XState store visualization (dev-only, tree-shaken in prod)
+- **Bundle: 674.25kB JS (gzip 215kB), 7.08kB CSS (gzip 1.94kB)** — down from ~806kB JS + runtime CSS
 
 Recent completed migrations (2026-04-12):
 
@@ -59,6 +60,7 @@ Recent completed migrations (2026-04-12):
 - **XState PR 3 (type foundations) complete:** `GameContext`, `EventCommand` union, context-aware selectors in `src/machines/`
 - **`totalGamesPlayed` selector bug fixed** — was returning `undefined` when stats existed, `0` when missing (inverted). Now correctly sums `record.win + record.draw + record.loss`. Fixed in both Redux (`src/selectors.ts`) and XState (`src/machines/selectors.ts`) worlds.
 - **`remeda` adopted codebase-wide** — `Object.entries()`, `Object.values()`, `Object.keys()` replaced with `entries()`, `values()`, `keys()` from remeda across ~30 files (selectors, ducks, sagas, components, tests) for better TypeScript key type preservation
+- **XState PR 4 (`@xstate/store` for leaf ducks) complete:** `ui`, `country`, `notification` migrated to `@xstate/store` instances in `src/stores/`. Dual-write sync middleware (`src/stores/sync.ts`) bridges Redux → XState. Components read from XState stores. Stately Inspector added for dev visualization (`src/stores/inspector.ts`).
 - Zero TypeScript errors maintained throughout all migrations
 
 ---
@@ -499,6 +501,11 @@ Converted all 13 saga files + 13 phase files from `redux-saga/effects` to `typed
 
 ## Non-Negotiables for Agents
 
+0. **Raise concerns early**
+   - If something looks wrong, smells wrong, or might break something — say so immediately. Better to flag a false alarm than miss a real problem.
+   - This applies to code review, migration steps, architectural decisions, and runtime behavior.
+   - Don't self-censor concerns to avoid slowing things down.
+
 1. **KISS: Keep It Simple, Stupid**
    - Always prefer the simpler solution when possible.
    - Simple does not mean easy — a well-designed simple solution often requires more thought than a complex one.
@@ -650,7 +657,8 @@ export const advanceEnabled = (state: RootState) =>
 - **`src/data/` cleanup: ✅ COMPLETE** — logic files moved out, `data/` is now pure data only. Selectors → `src/selectors.ts`, awards → `src/sagas/awards.ts`, events/pranks → `src/game/`, tournament eligibility → `src/sagas/tournament-eligibility.ts`.
 - **Import normalization: ✅ COMPLETE** — all 709 `../` relative imports across 189 files normalized to `@/` alias paths.
 - **XState type foundations (PR 3): ✅ COMPLETE** — `src/machines/types.ts` (`GameContext`), `src/machines/commands.ts` (`EventCommand` — 25-variant discriminated union), `src/machines/selectors.ts` (all Redux selectors mirrored as `ContextSelector<T>` reading from `GameContext`). `totalGamesPlayed` bug found and fixed in both Redux and XState selectors.
-- **Next:** PR 4 (`@xstate/store` for ui, country, notification) per [`XSTATE-REFACTORING.md`](XSTATE-REFACTORING.md).
+- **XState PR 4 (`@xstate/store` for leaf ducks): ✅ COMPLETE** — `src/stores/ui.ts`, `src/stores/country.ts`, `src/stores/notification.ts` created with `@xstate/store`. Sync middleware (`src/stores/sync.ts`) dual-writes Redux actions → XState stores using RTK `.match()` type guards. Components read from XState stores via `useSelector` from `@xstate/store-react`. Stately Inspector (`src/stores/inspector.ts`) added for dev-only visualization.
+- **Next:** PR 5 (meta/app lifecycle — `appMachine` for menu ↔ game transitions) per [`XSTATE-REFACTORING.md`](XSTATE-REFACTORING.md).
 - **Full plan:** Hierarchical actor model — `appMachine` → `gameMachine` → phase machines. 21 PRs across 5 phases. See XSTATE-REFACTORING.md for details.
 
 ### P4 — Styling: ✅ COMPLETE
@@ -762,7 +770,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. ~~Type the `MHMEvent.options` return to eliminate 17 event `as any` casts~~ ✅ Done — `MHMEvent` widened with `BaseEventCreationFields` second generic.
 14. ~~Evaluate `createSlice` migration for simpler ducks~~ — Superseded by XState migration plan. See XSTATE-REFACTORING.md.
-15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. **Next XState PR:** PR 4 (`@xstate/store` for ui, country, notification). See XSTATE-REFACTORING.md.
+15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. **Next XState PR:** PR 5 (meta/app lifecycle — `appMachine`). See XSTATE-REFACTORING.md.
 
 ---
 

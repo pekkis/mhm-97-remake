@@ -23,6 +23,8 @@ import Stats from "./Stats";
 import Invitations from "./Invitations";
 import Gala from "./Gala";
 import { useAppSelector } from "@/config/redux";
+import { useSelector } from "@xstate/store-react";
+import { uiStore } from "@/stores/ui";
 
 const Phase = ({ turn }: { turn: { phase: string | undefined } }) => {
   switch (true) {
@@ -77,7 +79,7 @@ const Phase = ({ turn }: { turn: { phase: string | undefined } }) => {
 
 const Game = () => {
   const turn = useAppSelector((state) => state.game.turn);
-  const menu = useAppSelector((state) => state.ui.menu);
+  const menu = useSelector(uiStore, (s) => s.context.menu);
   return (
     <div>
       {menu && <ModalMenu />}

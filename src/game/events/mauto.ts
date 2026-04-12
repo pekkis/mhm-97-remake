@@ -97,7 +97,7 @@ const event: MHMEvent<MautoData> = {
     const manager = data.manager;
     const difficulty = yield* select(managersDifficulty(manager));
 
-    let team: any;
+    let team: { id: number; name: string };
     if (value === "n") {
       team = yield* select(randomTeamFrom(["phl", "division"], false));
     } else if (value === "y" && difficulty >= 3) {

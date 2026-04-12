@@ -16,15 +16,30 @@
 
 // --- Re-exports from ducks/types (canonical locations) ---
 
-export type { Team, TeamEffect, GameFlags, WorldChampionshipEntry } from "@/ducks/game";
-export type { Manager, ManagerArena, ManagerServices, ManagerState } from "@/ducks/manager";
+export type {
+  Team,
+  TeamEffect,
+  GameFlags,
+  WorldChampionshipEntry
+} from "@/ducks/game";
+export type {
+  Manager,
+  ManagerArena,
+  ManagerServices,
+  ManagerState
+} from "@/ducks/manager";
 export type { BettingState, Bet, ChampionshipBet } from "@/ducks/betting";
 export type { EventState, StoredEvent } from "@/ducks/event";
 export type { InvitationState, Invitation } from "@/ducks/invitation";
 export type { MetaState, MetaManager } from "@/ducks/meta";
 export type { NewsState } from "@/ducks/news";
 export type { NotificationState, Notification } from "@/ducks/notification";
-export type { StatsState, SeasonStats, Streak, GameRecord } from "@/ducks/stats";
+export type {
+  StatsState,
+  SeasonStats,
+  Streak,
+  GameRecord
+} from "@/ducks/stats";
 export type { UiState } from "@/ducks/ui";
 export type { Country } from "@/ducks/country";
 export type { PrankInstance } from "@/game/pranks";
@@ -43,7 +58,7 @@ export type {
   TeamStat,
   MatchupStat,
   MatchupTeamStat,
-  Penalty,
+  Penalty
 } from "@/types/competitions";
 
 // --- GameContext ---
