@@ -8,12 +8,14 @@ import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { startGame, loadGame } from "@/ducks/meta";
 import { advance } from "@/ducks/game";
 import { primaryCompetitions } from "@/selectors";
+import { useSelector } from "@xstate/react";
+import { appActor } from "@/machines/app";
 
 const StartMenu = () => {
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector(primaryCompetitions);
 
-  const starting = useAppSelector((state) => state.meta.starting);
+  const starting = useSelector(appActor, (state) => state.matches("starting"));
   const dispatch = useAppDispatch();
 
   return (

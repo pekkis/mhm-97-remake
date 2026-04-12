@@ -1,6 +1,7 @@
 import StartMenu from "./StartMenu";
 import Game from "./Game";
-import { useAppSelector } from "@/config/redux";
+import { useSelector } from "@xstate/react";
+import { appActor } from "@/machines/app";
 import { ErrorBoundary } from "react-error-boundary";
 
 const ErrorFallback = () => (
@@ -15,7 +16,7 @@ const ErrorFallback = () => (
 );
 
 const App = () => {
-  const started = useAppSelector((state) => state.meta.started);
+  const started = useSelector(appActor, (state) => state.matches("inGame"));
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
