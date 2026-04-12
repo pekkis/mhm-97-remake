@@ -8,7 +8,7 @@ type TabsProps = {
   onSelect: (index: number) => void;
 };
 
-const Tabs = ({ className, children, selected, onSelect }: TabsProps) => {
+const Tabs = ({ children, selected, onSelect }: TabsProps) => {
   const childrenArray = Children.toArray(children) as ReactElement<any>[];
 
   return (
@@ -23,7 +23,7 @@ const Tabs = ({ className, children, selected, onSelect }: TabsProps) => {
       </ul>
 
       <div className={styles.tabContent}>
-        {(childrenArray[selected].props).children}
+        {childrenArray[selected].props.children}
       </div>
     </div>
   );

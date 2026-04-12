@@ -34,7 +34,7 @@ const event: MHMEvent<StrategySuccessData> = {
     return;
   },
 
-  render: (data) => {
+  render: () => {
     return [
       `Pelaajiesi kunto kohenee jostain syystä silmissä! Kiekko liikkuu kovalla sykkeellä treeneissä ja peliesityksetkin kohenevat.`
     ];

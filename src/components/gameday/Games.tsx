@@ -15,7 +15,7 @@ type GamesProps = {
 
 const Games: FC<GamesProps> = ({ teams, context, round, managers }) => {
   const playMatch = competitionTypes[context.type].playMatch;
-  const pairings = (context.schedule[round] ?? []).filter((p, i) => {
+  const pairings = (context.schedule[round] ?? []).filter((_p, i) => {
     return playMatch(context, round, i);
   });
 

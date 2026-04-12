@@ -38,23 +38,23 @@ const tournaments: CompetitionDefinition = {
 
   */
 
-  gameBalance: (phase, facts, manager) => {
+  gameBalance: (_phase, _facts, _manager) => {
     return 0;
   },
 
-  moraleBoost: (phase, facts, manager) => {
+  moraleBoost: (_phase, _facts, _manager) => {
     return 0;
   },
 
-  readinessBoost: (phase, facts, manager) => {
+  readinessBoost: (_phase, _facts, _manager) => {
     return 0;
   },
 
   parameters: {
-    gameday: (phase, group) => ({
+    gameday: (_phase, _group) => ({
       advantage: {
-        home: (team) => 0,
-        away: (team) => 0
+        home: (_team) => 0,
+        away: (_team) => 0
       },
       base: () => 20,
       moraleEffect: (team) => {
@@ -65,7 +65,7 @@ const tournaments: CompetitionDefinition = {
 
   seed: [
     (
-      competitions: Record<string, Competition>,
+      _competitions: Record<string, Competition>,
       context: TournamentSeedContext
     ) => {
       const { teams, invitations, managers } = context;

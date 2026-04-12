@@ -44,7 +44,7 @@ const event: MHMEvent<HaanperaMarriesData> = {
     return;
   },
 
-  render: (data) => {
+  render: () => {
     return [
       `Pelaaja Aki Haanperän polttarit ovat seuraavana iltana. Koko joukkue on mukana ja kankkunen vaivaa seuraavan ottelun ajan!`
     ];

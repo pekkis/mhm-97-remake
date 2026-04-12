@@ -10,7 +10,7 @@ export default defineConfig({
   rules: {
     "no-empty-file": "off",
     "require-yield": "off",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "error",
     "no-constant-condition": "off",
     curly: "error"
   }

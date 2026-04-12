@@ -4,7 +4,6 @@ import { cinteger } from "../../services/random";
 import calendar from "../../data/calendar";
 import { setPhase } from "../game";
 import type { RootState } from "../../config/redux";
-import type { Manager } from "../../ducks/manager";
 
 const eventsMap: Record<number, string> = {
   1: "jaralahti",

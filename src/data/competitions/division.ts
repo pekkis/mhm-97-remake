@@ -23,7 +23,7 @@ const division: CompetitionDefinition = {
   relegateTo: false,
   promoteTo: "phl",
 
-  gameBalance: (phase, facts, manager) => {
+  gameBalance: (_phase, facts, manager) => {
     const arenaLevel = manager.arena.level + 1;
 
     if (facts.isLoss) {
@@ -37,19 +37,19 @@ const division: CompetitionDefinition = {
     return 10000 + 3000 * arenaLevel + manager.extra;
   },
 
-  moraleBoost: (phase, facts, manager) => {
+  moraleBoost: (_phase, facts, _manager) => {
     return defaultMoraleBoost(facts);
   },
 
-  readinessBoost: (phase, facts, manager) => {
+  readinessBoost: (_phase, _facts, _manager) => {
     return 0;
   },
 
   parameters: {
-    gameday: (phase) => ({
+    gameday: (_phase) => ({
       advantage: {
-        home: (team) => 5,
-        away: (team) => -5
+        home: (_team) => 5,
+        away: (_team) => -5
       },
       base: () => 10,
       moraleEffect: (team) => {

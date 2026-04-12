@@ -1,5 +1,5 @@
 import { select, call } from "typed-redux-saga";
-import { managersTeamId, managersDifficulty } from "../selectors";
+import { managersDifficulty } from "../selectors";
 import { amount as a } from "../../services/format";
 import { addEvent } from "../../sagas/event";
 import { incrementBalance, decrementBalance } from "../../sagas/manager";

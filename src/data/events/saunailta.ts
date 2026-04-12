@@ -50,7 +50,7 @@ const event: MHMEvent<SaunailtaData> = {
     return;
   },
 
-  render: (data) => {
+  render: () => {
     return [
       `Rento saunailta muuttuu katastrofiksi, kun ajaudutte joukkueenjohtajan kanssa käsirysyyn pelillisten erimielisyyksien vuoksi.
 

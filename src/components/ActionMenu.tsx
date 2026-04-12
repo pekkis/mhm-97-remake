@@ -83,7 +83,7 @@ const ActionMenu = () => {
           </li>
 
           <Calendar
-            when={(e, c, competitions) => {
+            when={(e, _c, competitions) => {
               return e.gamedays.includes("phl") && competitions.phl.phase === 0;
             }}
           >

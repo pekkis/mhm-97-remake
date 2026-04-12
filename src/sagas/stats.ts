@@ -32,7 +32,7 @@ export function* calculatePhaseStats(
   );
 
   yield* all(
-    phase.groups.map((group, groupId) =>
+    phase.groups.map((_group, groupId) =>
       call(groupStats, payload.competition, payload.phase, groupId)
     )
   );

@@ -42,7 +42,7 @@ const event: MHMEvent<HaanperaDivorceData> = {
     return;
   },
 
-  render: (data) => {
+  render: () => {
     return [
       `Pelaaja Aki Haanperän avioliitto päättyy eroon! Mies on onnellinen kun pääsee eroon nalkuttavasta vaimosta ja parantaa otteitaan!`
     ];

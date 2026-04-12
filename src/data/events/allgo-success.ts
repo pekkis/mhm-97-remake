@@ -41,7 +41,7 @@ const event: MHMEvent<AllgoSuccessData> = {
     return;
   },
 
-  render: (data) => {
+  render: () => {
     return [
       `Pelaajiesi kunto on osoittautunut odotettuakin paremmaksi! Kuluttavasta "kaikki peliin"-strategiastanne huolimatta "pojat" jaksavat yhä treenata entistäkin kovemmin, ja tämä näkyy toivottavasti peliesityksissä pitkälle kevääseen!`
     ];

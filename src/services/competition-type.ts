@@ -37,7 +37,7 @@ const competitionTypes: Record<string, CompetitionType> = {
     stats: (group) => {
       return matchups(group as PlayoffGroup);
     },
-    playMatch: (phase, round, matchup) => {
+    playMatch: (phase, _round, matchup) => {
       const p = phase as PlayoffGroup;
       const situation = p.stats;
       const match = situation[matchup] as MatchupStat;

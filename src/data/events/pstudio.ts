@@ -41,7 +41,7 @@ const event: MHMEvent<PstudioData> = {
     return;
   },
 
-  render: (data) => {
+  render: () => {
     return [
       `__P-Studio__ tekee reportaasin joukkueenne verorästien takia. Juttu on valetta, mutta se laskee moraalia kun pelaajat pelkäävät palkanmaksun viivästymistä.`
     ];

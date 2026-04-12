@@ -25,7 +25,7 @@ const Situation: FC<SituationProps> = ({
     <div>
       {interesting
         .map((i) => competitions[i])
-        .map((competition, key) => {
+        .map((competition) => {
           const phaseNo = competition.phase;
           const phase = competition.phases[phaseNo];
 

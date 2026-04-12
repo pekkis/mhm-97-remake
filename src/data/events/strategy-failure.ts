@@ -34,7 +34,7 @@ const event: MHMEvent<StrategyFailureData> = {
     return;
   },
 
-  render: (data) => {
+  render: () => {
     return [
       `Pelaajasi väsyvät kovaa vauhtia! Heidän kuntopohjansa ei yksinkertaisesti ole kestänyt kiivasta ottelurytmiä.`
     ];

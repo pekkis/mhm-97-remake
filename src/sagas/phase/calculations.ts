@@ -5,8 +5,6 @@ import services from "../../data/services";
 import { decrementBalance } from "../manager";
 import { teamIncrementReadiness, decrementDurations } from "../../ducks/game";
 import type { RootState } from "../../config/redux";
-import type { Manager } from "../../ducks/manager";
-import type { Team } from "../../ducks/game";
 
 export default function* calculationsPhase() {
   const turn = yield* select((state: RootState) => state.game.turn);

@@ -56,7 +56,7 @@ const services: Record<keyof ManagerServices, ServiceDefinition> = {
         price
       )}__ pekalla / ottelu.`,
     price: (basePrice) => basePrice,
-    effect: (competition, phase) => {
+    effect: (_competition, phase) => {
       if (phase > 0) {
         return 0;
       }

@@ -4,13 +4,7 @@ import { setPhase } from "../game";
 import { addNews } from "../news";
 import { randomManager } from "../../data/selectors";
 import type { RootState } from "../../config/redux";
-import type {
-  Competition,
-  TeamStat,
-  PlayoffGroup
-} from "../../types/competitions";
-import type { Team } from "../../ducks/game";
-import type { Manager } from "../../ducks/manager";
+import type { TeamStat } from "../../types/competitions";
 
 export default function* galaPhase() {
   yield* call(setPhase, "gala");

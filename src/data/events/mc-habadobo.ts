@@ -1,8 +1,6 @@
 import { call, select } from "typed-redux-saga";
 import { addEvent } from "../../sagas/event";
-import { incrementMorale } from "../../sagas/team";
 import {
-  managersTeamId,
   managersMainCompetition,
   managersDifficulty,
   managersTeam,

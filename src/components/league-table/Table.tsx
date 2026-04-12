@@ -2,7 +2,7 @@ import type { FC } from "react";
 import clsx from "clsx";
 import * as styles from "./Table.css";
 import RTable from "../responsive-table/Table";
-import Td from "../responsive-table/Td";
+
 import type { Team } from "../../ducks/game";
 import type { Manager } from "../../ducks/manager";
 import type { Group, TeamStat } from "../../types/competitions";

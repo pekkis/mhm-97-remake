@@ -9,7 +9,7 @@ import {
   managersDifficulty,
   managersArena
 } from "../selectors";
-import { currency as c, amount as a } from "../../services/format";
+import { amount as a } from "../../services/format";
 import r from "../../services/random";
 import { decrementMorale } from "../../sagas/team";
 import { addEvent } from "../../sagas/event";

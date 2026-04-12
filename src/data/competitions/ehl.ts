@@ -1,4 +1,3 @@
-import { amount as a } from "../../services/format";
 import table, { sortStats } from "../../services/league";
 import { defaultMoraleBoost } from "../../services/morale";
 import { scheduler as roundRobinScheduler } from "../../services/round-robin";
@@ -22,7 +21,7 @@ const ehl: CompetitionDefinition = {
   relegateTo: false,
   promoteTo: false,
 
-  gameBalance: (phase, facts, manager) => {
+  gameBalance: (phase, _facts, manager) => {
     if (phase > 0) {
       return 0;
     }
@@ -31,7 +30,7 @@ const ehl: CompetitionDefinition = {
     return 100000 + 20000 * arenaLevel;
   },
 
-  moraleBoost: (phase, facts, manager) => {
+  moraleBoost: (phase, facts, _manager) => {
     if (phase > 0) {
       return 0;
     }
@@ -39,7 +38,7 @@ const ehl: CompetitionDefinition = {
     return defaultMoraleBoost(facts);
   },
 
-  readinessBoost: (phase, facts, manager) => {
+  readinessBoost: (phase, _facts, _manager) => {
     if (phase > 0) {
       return 0;
     }
@@ -49,8 +48,8 @@ const ehl: CompetitionDefinition = {
   parameters: {
     gameday: (phase) => ({
       advantage: {
-        home: (team) => (phase === 0 ? 10 : 0),
-        away: (team) => (phase === 0 ? -10 : 0)
+        home: (_team) => (phase === 0 ? 10 : 0),
+        away: (_team) => (phase === 0 ? -10 : 0)
       },
       base: () => 20,
       moraleEffect: (team) => {

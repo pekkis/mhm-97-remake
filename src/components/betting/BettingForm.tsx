@@ -26,12 +26,7 @@ type BettingFormProps = {
   turn?: unknown;
 };
 
-const BettingForm: FC<BettingFormProps> = ({
-  manager,
-  competition,
-  teams,
-  bet
-}) => {
+const BettingForm: FC<BettingFormProps> = ({ competition, teams, bet }) => {
   const group = competition.phases[0].groups[0];
   const round = group.round;
   const pairings = group.schedule[round];

@@ -40,7 +40,7 @@ const event: MHMEvent<SimonovSuccessData> = {
     return;
   },
 
-  render: (data) => {
+  render: () => {
     return [
       `Pelaajasi ovat edellä suunniteltua aikataulua. Vaikka "Juri Simonov"-strategian ansiosta  kuntohuippunne onkin ajoitettu play-offeihin, pelaavat "pojat" jo nyt kuin huomista ei olisi. Sinulla on hyvä syy odottaa tilanteen ainoastaan paranevan kohti kevättä!`
     ];
