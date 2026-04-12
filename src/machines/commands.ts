@@ -92,7 +92,7 @@ type SetManagerFlag = {
 type SetGameFlag = {
   type: "setGameFlag";
   flag: string;
-  value: unknown;
+  value: boolean | number | undefined;
 };
 
 type RenameArena = {

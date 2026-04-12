@@ -387,6 +387,13 @@ export const activeManagersInvitations: ContextSelector<
 // Stats
 // ---------------------------------------------------------------------------
 
+/**
+ * NOTE: This selector has a known bug — it returns `0` when stats are
+ * missing and `undefined` when stats exist (inverted). This mirrors the
+ * original Redux selector in `src/selectors.ts` which has a commented-out
+ * `stats.reduce(...)` call. Intentionally kept identical to avoid divergence.
+ * TODO: Fix when the original selector is corrected.
+ */
 export const totalGamesPlayed =
   (
     manager: string,
