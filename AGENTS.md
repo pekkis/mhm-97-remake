@@ -69,7 +69,7 @@ Recent completed migrations (2026-04-11):
 - `src/data/strategies.ts` — typed `Strategy[]` array
 - `src/data/crisis.ts` — typed crisis data (was already plain, types added)
 - `src/data/awards.ts` — typed award/random-event system (was `awards.js` with Immutable `List.of`)
-- `src/data/events.ts` — plain `Record<string, any>` event registry (was Immutable `Map`)
+- `src/data/events.ts` — inferred `as const` event registry (was `Record<string, any>`)
 - `src/services/random.ts` — typed, deterministic seed support via `VITE_RANDOM_SEED`
 
 **Reducers (ducks):**
@@ -419,14 +419,22 @@ Converted all action creators from hand-rolled `{ type: "...", payload }` functi
 - `awards.ts` refactored from `redux-saga/effects` to `typed-redux-saga` with `yield*`
 - Zero raw `type: "..."` in put() calls remain in saga files
 - Only 1 string-pattern `takeEvery` remains: `"META_GAME_SAVE_REQUEST"` in `phase/action.ts` (can use `saveGame` creator from `meta.ts`)
-### Remaining `as any` inventory (32 sites)
 
-Categorized for future cleanup:
+### Remaining `as any` inventory: ✅ ZERO (2026-04-12)
 
-1. **Event data `options()` return casts (17 files):** `} as any;` on event `options`/`resolve` returns. Root cause: `MHMEvent.options` returns `Record<string, string>` but event files return object literals with specific keys. Fix: widen return type or use `satisfies`.
+**All 32 `as any` casts eliminated.** Zero `as any` in `src/`. Key fixes:
+
+1. ~~**Event data `options()` return casts (17 files):**~~ ✅ Fixed — `MHMEvent` generic widened with second type param `CData extends BaseEventCreationFields`; event `options()` return type no longer conflicts with literal keys.
 2. ~~**Reducer `action: any` (11 remaining ducks):**~~ ✅ Fixed — `createReducer` migration eliminates this entirely.
-3. ~~**Manager services cast (2 sites):**~~ Fixed — `managerHasService` selector now takes `keyof ManagerServices`.
-4. **Saga boundary casts (4 sites):** `sagas/meta.ts`, `sagas/phase/start-of-season.ts`, `sagas/gameday.ts`, `phase/action.ts`. Fix: type the action payloads properly once all creators exist.
+3. ~~**Manager services cast (2 sites):**~~ ✅ Fixed — `managerHasService` selector now takes `keyof ManagerServices`.
+4. ~~**Saga boundary casts (4 sites):**~~ ✅ Fixed — `GameInput` typed with `Manager`, `phaseId: number`, `CompetitionId`; `simulate` imported directly (default export wrapper removed).
+5. ~~**Component prop casts (2 sites):**~~ ✅ Fixed — `cloneElement` casts in `Tabs.tsx` and `ResponsiveTable.tsx` simply removed (React 19 types handle it).
+
+**Other fixes in the sweep:**
+- `teamIncurPenalty` — proper `group.type === "round-robin"` narrowing instead of `as any` cast
+- `events` registry — `as const` instead of `Record<string, any>`
+- `remeda.entries()` used in game service for type-safe key iteration
+- `data/events.ts` — untyped `Record<string, any>` → inferred `as const` object
 
 ### Completed: `redux-saga/effects` fully eliminated (2026-04-11)
 
@@ -449,7 +457,7 @@ All now import `RootState` from `src/config/redux`. This also eliminated downstr
 
 **Key discovery:** The `enemy-protest.ts` Immutable ghost crash (`.filterNot()` on plain `Record`) would have been caught at compile time with `RootState` typing. Inline `(state: any)` selectors are a type-safety escape hatch that masks real bugs.
 
-**Future direction:** Promote repeated inline selectors to named selectors in `src/data/selectors.ts` — these work identically with both `yield* select(selector)` in sagas and `useAppSelector(selector)` in components. 5. **Component prop casts (2 sites):** `Tabs.tsx`, `ResponsiveTable.tsx`. Fix: proper generic component typing.
+**Future direction:** Promote repeated inline selectors to named selectors in `src/data/selectors.ts` — these work identically with both `yield* select(selector)` in sagas and `useAppSelector(selector)` in components.
 
 ### Completed: Full saga TypeScript migration (2026-04-10)
 
@@ -573,11 +581,13 @@ Key conventions established during migration:
 **As of 2026-04-11, all 12 ducks have RTK `createAction` creators.** Zero hand-rolled action creators remain. `putResolve` fully eliminated.
 
 Next natural step: `createReducer` conversion (replaces switch/case + eliminates `action: any` + automatic immer). Pilot completed on `meta.ts` — see strategy below.
+
 ### P2.8 — RTK `createReducer` migration: ✅ COMPLETE
 
 **As of 2026-04-11, all 12 ducks converted** from `switch/case` + manual `produce()` to RTK `createReducer` with builder API.
 
 **What it gave us:**
+
 - `addCase(actionCreator, handler)` for single-action cases — fully typed payloads
 - `addMatcher(predicate, handler)` for multi-action cases (e.g. `SEASON_START` and `gameLoaded` both set `{ started: true, loading: false }`)
 - `immer` import removed from all ducks — RTK bundles it, `createReducer` wraps handlers automatically
@@ -594,6 +604,7 @@ Next natural step: `createReducer` conversion (replaces switch/case + eliminates
 **XState 5 + @xstate/react installed.** First machine: prank selection wizard.
 
 **`src/machines/prankSelection.ts`:**
+
 - States: `idle` → `typeSelected` → `victimSelected`
 - Events: `SELECT_TYPE`, `SELECT_VICTIM`, `ORDER`, `CANCEL`
 - Context: `{ type: string | undefined, victim: number | undefined }`
@@ -730,12 +741,13 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 6. ~~Continue TypeScript migration of remaining `.js`/`.jsx` files.~~ ✅ Done.
 7. ~~Audit stale peer dependency warnings (react-pose, react-toggle, react-typography, react-helmet all have React 19 peer issues).~~ Mostly resolved — react-toggle, react-typography removed. Only react-helmet remains (evaluate `react-helmet-async` or native `<title>` API).
 8. ~~Tighten `tsconfig.json`: remove `allowJs` (no JS left), consider enabling `noImplicitAny` incrementally.~~ `allowJs` removed. `noImplicitAny` still a candidate.
-9. ~~Clean up `any` casts introduced during saga migration (`takeEvery` string patterns, `race` result payloads) — these become unnecessary once action creators exist.~~ Mostly done. 32 `as any` remain (17 event data casts, 12 reducer `action: any`, 3 misc).
+9. ~~Clean up `any` casts introduced during saga migration (`takeEvery` string patterns, `race` result payloads) — these become unnecessary once action creators exist.~~ ✅ Done — zero `as any` in `src/` as of 2026-04-12.
 10. ~~Fix the `Root.tsx` `DefaultTheme` typing gap (precursor to P4 Vanilla Extract migration).~~ ✅ Done (VE replaced styled-components entirely).
 11. ~~Remove `@redux-saga/delay-p` from dependencies (sole consumer was `notification.js`, now uses `typed-redux-saga`'s `delay`).~~ ✅ Already removed.
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
-13. Type the `MHMEvent.options` return to eliminate 17 event `as any` casts — `satisfies` or widen `Record<string, string>` to accept literal keys.
+13. ~~Type the `MHMEvent.options` return to eliminate 17 event `as any` casts~~ ✅ Done — `MHMEvent` widened with `BaseEventCreationFields` second generic.
 14. Evaluate `createSlice` migration for simpler ducks (country, notification, news) as a pilot before tackling game/manager.
+
 ---
 
 ## Decision Heuristics
