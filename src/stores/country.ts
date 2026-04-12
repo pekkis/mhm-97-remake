@@ -29,10 +29,7 @@ export const countryStore = createStore({
     countries: buildDefaultCountries()
   } satisfies CountryStoreContext,
   on: {
-    setStrength: (
-      context,
-      event: { country: string; strength: number }
-    ) => {
+    setStrength: (context, event: { country: string; strength: number }) => {
       if (!context.countries[event.country]) {
         return context;
       }
@@ -47,10 +44,7 @@ export const countryStore = createStore({
         }
       };
     },
-    alterStrength: (
-      context,
-      event: { country: string; amount: number }
-    ) => {
+    alterStrength: (context, event: { country: string; amount: number }) => {
       const target = context.countries[event.country];
       if (!target) {
         return context;

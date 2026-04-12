@@ -54,6 +54,7 @@
   },
   "devDependencies": {
     "@rolldown/plugin-babel": "^0.2.2",
+    "@statelyai/inspect": "^0.7.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vanilla-extract/vite-plugin": "^5.2.2",

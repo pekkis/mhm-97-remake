@@ -1,7 +1,11 @@
 import { call, select } from "typed-redux-saga";
 import { addEvent } from "@/sagas/event";
 import { decrementStrength, incrementStrength } from "@/sagas/team";
-import { randomTeamFrom, randomRankedTeam, randomManager } from "@/selectors";
+import {
+  randomTeamOrNullFrom,
+  randomRankedTeam,
+  randomManager
+} from "@/selectors";
 import { cinteger } from "@/services/random";
 import type { MHMEvent } from "@/types/base";
 import type { Team } from "@/ducks/game";
@@ -29,7 +33,12 @@ const event: MHMEvent<MoneyTroublesData> = {
 
     const phlTeam = yield* select(randomRankedTeam("phl", 0, [9, 10, 11]));
     const divTeam = yield* select(
-      randomTeamFrom(["division"], false, [], (t: Team) => t.strength > 95)
+      randomTeamOrNullFrom(
+        ["division"],
+        false,
+        [],
+        (t: Team) => t.strength > 95
+      )
     );
 
     if (!phlTeam || !divTeam) {

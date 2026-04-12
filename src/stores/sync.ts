@@ -2,6 +2,10 @@ import type { Middleware } from "redux";
 import { uiStore } from "./ui";
 import { countryStore } from "./country";
 import { notificationStore } from "./notification";
+import { toggleMenu, closeMenu } from "@/ducks/ui";
+import { setStrength, alterStrength } from "@/ducks/country";
+import { addNotification, dismissNotification } from "@/ducks/notification";
+import { quitToMainMenu } from "@/ducks/meta";
 
 /**
  * Redux middleware that forwards relevant Redux actions to XState stores.
@@ -13,58 +17,47 @@ import { notificationStore } from "./notification";
 export const xstoreSyncMiddleware: Middleware = () => (next) => (action) => {
   const result = next(action);
 
-  const act = action as { type: string; payload?: unknown };
+  if (toggleMenu.match(action)) {
+    uiStore.send({ type: "toggleMenu" });
+    return result;
+  }
 
-  switch (act.type) {
-    // UI actions
-    case "UI_MENU_TOGGLE":
-      uiStore.send({ type: "toggleMenu" });
-      break;
-    case "UI_MENU_CLOSE":
-      uiStore.send({ type: "closeMenu" });
-      break;
+  if (closeMenu.match(action)) {
+    uiStore.send({ type: "closeMenu" });
+    return result;
+  }
 
-    // Country actions
-    case "COUNTRY_SET_STRENGTH":
-      countryStore.send({
-        type: "setStrength",
-        ...(act.payload as { country: string; strength: number })
-      });
-      break;
-    case "COUNTRY_ALTER_STRENGTH":
-      countryStore.send({
-        type: "alterStrength",
-        ...(act.payload as { country: string; amount: number })
-      });
-      break;
+  if (setStrength.match(action)) {
+    countryStore.send({ type: "setStrength", ...action.payload });
+    return result;
+  }
 
-    // Notification actions
-    case "NOTIFICATION_ADD": {
-      const notification = act.payload as {
-        id: string;
-        manager: string;
-        message: string;
-        type: string;
-      };
-      notificationStore.send({
-        type: "addNotification",
-        notification
-      });
-      break;
-    }
-    case "NOTIFICATION_DISMISS":
-      notificationStore.send({
-        type: "dismissNotification",
-        id: act.payload as string
-      });
-      break;
+  if (alterStrength.match(action)) {
+    countryStore.send({ type: "alterStrength", ...action.payload });
+    return result;
+  }
 
-    // Cross-duck reset: quitToMainMenu resets all three stores
-    case "META_QUIT_TO_MAIN_MENU":
-      uiStore.send({ type: "reset" });
-      countryStore.send({ type: "reset" });
-      notificationStore.send({ type: "reset" });
-      break;
+  if (addNotification.match(action)) {
+    notificationStore.send({
+      type: "addNotification",
+      notification: action.payload
+    });
+    return result;
+  }
+
+  if (dismissNotification.match(action)) {
+    notificationStore.send({
+      type: "dismissNotification",
+      id: action.payload
+    });
+    return result;
+  }
+
+  if (quitToMainMenu.match(action)) {
+    uiStore.send({ type: "reset" });
+    countryStore.send({ type: "reset" });
+    notificationStore.send({ type: "reset" });
+    return result;
   }
 
   return result;

@@ -220,6 +220,28 @@ export const randomTeamFrom =
     f: (t: Team) => boolean = () => true
   ): ContextSelector<Team> =>
   (ctx) => {
+    const team = randomTeamOrNullFrom(
+      competitionIds,
+      canBeHumanControlled,
+      excluded,
+      f
+    )(ctx);
+
+    if (!team) {
+      throw new Error("Random team not found");
+    }
+
+    return team;
+  };
+
+export const randomTeamOrNullFrom =
+  (
+    competitionIds: string[],
+    canBeHumanControlled = false,
+    excluded: number[] = [],
+    f: (t: Team) => boolean = () => true
+  ): ContextSelector<Team | null> =>
+  (ctx) => {
     const managersTeams: number[] = values(ctx.manager.managers)
       .map((p) => p.team)
       .filter((t): t is number => t !== undefined);
@@ -233,7 +255,7 @@ export const randomTeamFrom =
       .filter(f);
 
     if (teams.length === 0) {
-      throw new Error("Could not find a team!");
+      return null;
     }
 
     const randomized: Team = r.pick(teams);

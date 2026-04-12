@@ -18,10 +18,7 @@ export const notificationStore = createStore({
     notifications: [] as Notification[]
   },
   on: {
-    addNotification: (
-      context,
-      event: { notification: Notification }
-    ) => ({
+    addNotification: (context, event: { notification: Notification }) => ({
       ...context,
       notifications: [...context.notifications, event.notification].slice(
         -MAX_NOTIFICATIONS
