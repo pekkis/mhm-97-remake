@@ -6,11 +6,10 @@ import Button from "./form/Button";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { closeMenu } from "../ducks/ui";
 import { saveGame, quitToMainMenu } from "../ducks/meta";
+import { activeManager } from "@/data/selectors";
 
 const ActionMenu = () => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const teams = useAppSelector((state) => state.game.teams);
   const turn = useAppSelector((state) => state.game.turn);
   const dispatch = useAppDispatch();

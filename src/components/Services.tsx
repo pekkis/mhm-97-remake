@@ -10,11 +10,10 @@ import { managerToggleService } from "../ducks/manager";
 import { entries } from "remeda";
 
 import services from "../data/services";
+import { activeManager } from "@/data/selectors";
 
 const Services = () => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const basePrices = useAppSelector((state) => state.game.serviceBasePrices);
   const dispatch = useAppDispatch();
 

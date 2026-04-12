@@ -1,22 +1,15 @@
-import Events from "./events/Events";
-import News from "./news/News";
-import Situation from "./context-sensitive/Situation";
 import ManagerInfo from "./ManagerInfo";
-import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import Button from "./form/Button";
-
 import BettingForm from "./championship-betting/BettingForm";
-
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { advance } from "../ducks/game";
 import { requestChampionBet } from "../ducks/betting";
+import { activeManager } from "@/data/selectors";
 
 const ChampionshipBetting = () => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);
   const dispatch = useAppDispatch();

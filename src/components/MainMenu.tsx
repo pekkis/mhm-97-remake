@@ -8,14 +8,12 @@ import Current from "./context-sensitive/Current";
 
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { interestingCompetitions } from "../data/selectors";
+import { activeManager, interestingCompetitions } from "../data/selectors";
 import { requestResolveEvent } from "../ducks/event";
 
 const MainMenu = () => {
   const dispatch = useAppDispatch();
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);
   const events = useAppSelector((state) => state.event.events);

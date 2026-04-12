@@ -5,15 +5,14 @@ import TurnIndicator from "./game/TurnIndicator";
 import { useAppSelector } from "@/config/redux";
 
 import * as styles from "./ManagerInfo.css";
+import { activeManager } from "@/data/selectors";
 
 type ManagerInfoProps = {
   details?: boolean;
 };
 
 const ManagerInfo = ({ details = false }: ManagerInfoProps) => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const teams = useAppSelector((state) => state.game.teams);
   const turn = useAppSelector((state) => state.game.turn);
 

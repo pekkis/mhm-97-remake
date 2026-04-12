@@ -6,11 +6,10 @@ import Announcements from "./events/Announcements";
 
 import Box from "./styled-system/Box";
 import { useAppSelector } from "@/config/redux";
+import { activeManager } from "@/data/selectors";
 
 const EndOfSeason = () => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const news = useAppSelector((state) => state.news.news);
   const turn = useAppSelector((state) => state.game.turn);
   const announcements = useAppSelector((state) => state.news.announcements);

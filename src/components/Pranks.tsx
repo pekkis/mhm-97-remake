@@ -13,11 +13,10 @@ import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { orderPrank } from "../ducks/prank";
 import { useMachine } from "@xstate/react";
 import { prankSelectionMachine } from "../machines/prankSelection";
+import { activeManager } from "@/data/selectors";
 
 const Pranks = () => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);
   const [state, send] = useMachine(prankSelectionMachine);

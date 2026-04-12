@@ -3,11 +3,10 @@ import Button from "./form/Button";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { managerSelectStrategy } from "../ducks/manager";
+import { activeManager } from "@/data/selectors";
 
 const SelectStrategy = () => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const dispatch = useAppDispatch();
 
   return (

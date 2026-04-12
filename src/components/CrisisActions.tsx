@@ -11,11 +11,10 @@ import { managerCrisisMeeting } from "../ducks/manager";
 import crisis from "../data/crisis";
 import { currency as c } from "../services/format";
 import { getEffective } from "../services/effects";
+import { activeManager } from "@/data/selectors";
 
 const CrisisActions = () => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);
   const dispatch = useAppDispatch();

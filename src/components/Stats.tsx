@@ -11,11 +11,10 @@ import Tab from "./ui/Tab";
 import ManagerStats from "./stats/ManagerStats";
 import TeamStats from "./stats/TeamStats";
 import { useAppSelector } from "@/config/redux";
+import { activeManager } from "@/data/selectors";
 
 const Stats = () => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector((state) => state.game.competitions);
   const stats = useAppSelector((state) => state.stats);

@@ -6,12 +6,11 @@ import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { requestResolveEvent } from "../ducks/event";
+import { activeManager } from "@/data/selectors";
 
 const News = () => {
   const dispatch = useAppDispatch();
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const events = useAppSelector((state) => state.event.events);
   const announcements = useAppSelector((state) => state.news.announcements);
 

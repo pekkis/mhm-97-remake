@@ -10,11 +10,10 @@ import { currency } from "../services/format";
 import Box from "./styled-system/Box";
 import { useAppSelector, useAppDispatch } from "@/config/redux";
 import { managerImproveArena } from "../ducks/manager";
+import { activeManager } from "@/data/selectors";
 
 const Arenas = () => {
-  const manager = useAppSelector(
-    (state) => state.manager.managers[state.manager.active!]
-  );
+  const manager = useAppSelector(activeManager);
   const dispatch = useAppDispatch();
 
   const currentLevel = manager.arena.level;
