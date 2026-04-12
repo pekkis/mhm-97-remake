@@ -63,8 +63,9 @@ export const appMachine = setup({
  * Module-level singleton actor, following the same pattern as
  * `@xstate/store` instances in `src/stores/`.
  *
- * Started eagerly so it's ready when the sync middleware and
- * components first access it.
+ * Started eagerly at module load time so it's ready when the sync
+ * middleware and components first access it. Test files should create
+ * fresh actors via `createActor(appMachine)` to avoid shared state.
  */
 export const appActor = createActor(appMachine);
 appActor.start();

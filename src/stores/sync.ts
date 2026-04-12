@@ -12,6 +12,7 @@ import {
   loadGame,
   gameLoaded
 } from "@/ducks/meta";
+import { seasonStart } from "@/ducks/game";
 
 /**
  * Redux middleware that forwards relevant Redux actions to XState stores
@@ -86,7 +87,7 @@ export const xstoreSyncMiddleware: Middleware = () => (next) => (action) => {
 
   // SEASON_START triggers "started: true" in the meta reducer for new games.
   // The appMachine models this as GAME_STARTED (only transitions from "starting").
-  if ((action as { type: string }).type === "SEASON_START") {
+  if (seasonStart.match(action)) {
     appActor.send({ type: "GAME_STARTED" });
     return result;
   }
