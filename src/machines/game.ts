@@ -169,8 +169,12 @@ export const gameMachine = setup({
      * Replace all game context fields from a fresh Redux snapshot.
      *
      * Called on `SYNC_CONTEXT` to keep the machine's context up-to-date
-     * while sagas still own phase execution. Preserves machine-internal
-     * bookkeeping fields (currentRoundCalendar, remainingPhases, etc.).
+     * while sagas still own phase execution. XState's `assign()` does a
+     * shallow merge — only the keys present in the returned object are
+     * updated. Since `event.context` is typed as `GameContext` (not
+     * `GameMachineContext`), machine-internal fields (`currentRoundCalendar`,
+     * `remainingPhases`, `currentPhase`, `reduxPhase`) are absent and
+     * therefore preserved.
      */
     syncContext: assign(({ event }) => {
       if (event.type === "SYNC_CONTEXT") {

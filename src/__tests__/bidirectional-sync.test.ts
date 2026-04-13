@@ -104,8 +104,16 @@ describe("bidirectional context sync bridge", () => {
       expect(snapBefore.currentPhase).toBe("startOfSeason");
       expect(snapBefore.remainingPhases).toEqual(["seed"]);
       expect(snapBefore.currentRoundCalendar).toBeDefined();
+      expect(snapBefore.reduxPhase).toBeUndefined();
 
-      // Send SYNC_CONTEXT with updated game fields
+      // Send a redux phase so reduxPhase is set
+      actor.send({ type: "SYNC_REDUX_PHASE", phase: "select-strategy" });
+      expect(actor.getSnapshot().context.reduxPhase).toBe("select-strategy");
+
+      // Send SYNC_CONTEXT with updated game fields.
+      // GameContext does NOT include machine-internal fields
+      // (currentRoundCalendar, remainingPhases, currentPhase, reduxPhase),
+      // so XState's shallow merge leaves them untouched.
       const updatedContext = createTestContext({
         manager: {
           active: "pier-paolo",
@@ -129,10 +137,11 @@ describe("bidirectional context sync bridge", () => {
       actor.send({ type: "SYNC_CONTEXT", context: updatedContext });
 
       const ctx = actor.getSnapshot().context;
-      // Machine-internal fields preserved
+      // Machine-internal fields preserved (not part of GameContext)
       expect(ctx.currentPhase).toBe("startOfSeason");
       expect(ctx.remainingPhases).toEqual(["seed"]);
       expect(ctx.currentRoundCalendar).toBeDefined();
+      expect(ctx.reduxPhase).toBe("select-strategy");
       // But game context fields were updated
       expect(ctx.manager.active).toBe("pier-paolo");
       expect(ctx.manager.managers["pier-paolo"].name).toBe(
