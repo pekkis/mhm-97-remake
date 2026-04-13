@@ -10,18 +10,18 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 
 ---
 
-## Current Reality (as of 2026-04-12)
+## Current Reality (as of 2026-04-13)
 
 - Runtime / build tool: **Vite 8** (`pnpm dev`, `pnpm build`)
 - UI stack: React 19, React Router 7
-- State stack: Redux 5 + **RTK `createReducer`** + redux-saga + XState 5 + **`@xstate/store`** (ui, country, notification migrated) (Immutable.js fully removed 2026-04-08)
+- State stack: Redux 5 + **RTK `createReducer`** + redux-saga + XState 5 + **`@xstate/store`** (ui, country, notification) + **`appMachine`** (menu ↔ game lifecycle) (Immutable.js fully removed 2026-04-08)
 - Language: **TypeScript only** — zero `.js`/`.jsx` in `src/` as of 2026-04-10
 - Lint/format stack: `oxlint` + `oxfmt` (ESLint/Prettier removed)
 - Styling stack: **Vanilla Extract** (zero-runtime CSS-in-TS) + **sprinkles** for utility props
 - Forms: **react-hook-form** + **zod** + `@hookform/resolvers`
 - Icons: **react-icons** (FA solid subset)
 - Persistence: localStorage with `JSON.stringify`/`JSON.parse`
-- Randomness: single `random-js` instance in `src/services/random.ts`; supports deterministic seeding via `VITE_RANDOM_SEED` env var
+- Randomness: **`RandomService`** type in `src/services/random.ts` with `createRandom(seed)` factory for testable DI; app-wide singleton as default export; supports deterministic seeding via `VITE_RANDOM_SEED` env var
 - Build extras: React Compiler via `@rolldown/plugin-babel` + `babel-plugin-react-compiler`
 - Entry point: `src/client.tsx`
 - Root wiring: `src/Root.tsx`
@@ -61,6 +61,8 @@ Recent completed migrations (2026-04-12):
 - **`totalGamesPlayed` selector bug fixed** — was returning `undefined` when stats existed, `0` when missing (inverted). Now correctly sums `record.win + record.draw + record.loss`. Fixed in both Redux (`src/selectors.ts`) and XState (`src/machines/selectors.ts`) worlds.
 - **`remeda` adopted codebase-wide** — `Object.entries()`, `Object.values()`, `Object.keys()` replaced with `entries()`, `values()`, `keys()` from remeda across ~30 files (selectors, ducks, sagas, components, tests) for better TypeScript key type preservation
 - **XState PR 4 (`@xstate/store` for leaf ducks) complete:** `ui`, `country`, `notification` migrated to `@xstate/store` instances in `src/stores/`. Dual-write sync middleware (`src/stores/sync.ts`) bridges Redux → XState. Components read from XState stores. Stately Inspector added for dev visualization (`src/stores/inspector.ts`).
+- **XState PR 5 (`appMachine`) complete:** `src/machines/app.ts` (pure machine definition), `src/machines/actors.ts` (singleton actor instantiation). States: `menu` → `starting`/`loading` → `inGame`. Sync middleware bridges `startGame`/`loadGame`/`seasonStart`/`gameLoaded`/`quitToMainMenu` → machine events. `App.tsx` and `StartMenu.tsx` read from `appActor` via `useSelector` from `@xstate/react`.
+- **`RandomService` + `createRandom(seed)` factory** — `src/services/random.ts` exports typed `RandomService` interface (`integer`, `real`, `bool`, `pick`, `cinteger`), `createRandom(seed)` for deterministic test instances, and `createGameService(random)` closure in `game.ts` for DI. Tests use real seeded random instead of `vi.mock`.
 - Zero TypeScript errors maintained throughout all migrations
 
 ---
@@ -658,8 +660,11 @@ export const advanceEnabled = (state: RootState) =>
 - **Import normalization: ✅ COMPLETE** — all 709 `../` relative imports across 189 files normalized to `@/` alias paths.
 - **XState type foundations (PR 3): ✅ COMPLETE** — `src/machines/types.ts` (`GameContext`), `src/machines/commands.ts` (`EventCommand` — 25-variant discriminated union), `src/machines/selectors.ts` (all Redux selectors mirrored as `ContextSelector<T>` reading from `GameContext`). `totalGamesPlayed` bug found and fixed in both Redux and XState selectors.
 - **XState PR 4 (`@xstate/store` for leaf ducks): ✅ COMPLETE** — `src/stores/ui.ts`, `src/stores/country.ts`, `src/stores/notification.ts` created with `@xstate/store`. Sync middleware (`src/stores/sync.ts`) dual-writes Redux actions → XState stores using RTK `.match()` type guards. Components read from XState stores via `useSelector` from `@xstate/store-react`. Stately Inspector (`src/stores/inspector.ts`) added for dev-only visualization.
-- **Next:** PR 5 (meta/app lifecycle — `appMachine` for menu ↔ game transitions) per [`XSTATE-REFACTORING.md`](XSTATE-REFACTORING.md).
-- **Full plan:** Hierarchical actor model — `appMachine` → `gameMachine` → phase machines. 21 PRs across 5 phases. See XSTATE-REFACTORING.md for details.
+- **XState PR 5 (`appMachine`): ✅ COMPLETE** — `src/machines/app.ts` exports pure machine definition (states: `menu`, `starting`, `loading`, `inGame`). `src/machines/actors.ts` is the central wiring point for all actor instantiation (machine definitions stay pure, actors live here). Sync middleware bridges Redux meta actions → machine events. `App.tsx` reads `state.matches("inGame")`, `StartMenu.tsx` reads `state.matches("starting")` via `useSelector(appActor, ...)` from `@xstate/react`. Note: `SEASON_START` fires every season (not just the first) — the machine silently ignores `GAME_STARTED` when already in `inGame`. Harmless, goes away when game machine owns season transitions.
+- **Architectural decision: machine files vs actor files** — Machine files (`src/machines/*.ts`) export only the machine definition + types. Actor instantiation lives in `src/machines/actors.ts`. This keeps machine files pure and side-effect-free, avoids module-level `createActor().start()` in machine files, and provides a single wiring point for all actors.
+- **PR 6 combines persistence extraction + gameMachine skeleton** — Original PR 6 (persistence) was too thin on its own. Now: `src/machines/game.ts` (central game machine with `GameContext`, round states, calendar lookup) + `src/services/persistence.ts` (extracted save/load). This is the big one.
+- **Next:** PR 6 (`gameMachine` skeleton + persistence — the big one). See XSTATE-REFACTORING.md.
+- **Full plan:** Hierarchical actor model — `appMachine` → `gameMachine` → phase machines. ~20 PRs across 5 phases. See XSTATE-REFACTORING.md for details.
 
 ### P4 — Styling: ✅ COMPLETE
 
@@ -770,7 +775,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. ~~Type the `MHMEvent.options` return to eliminate 17 event `as any` casts~~ ✅ Done — `MHMEvent` widened with `BaseEventCreationFields` second generic.
 14. ~~Evaluate `createSlice` migration for simpler ducks~~ — Superseded by XState migration plan. See XSTATE-REFACTORING.md.
-15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. **Next XState PR:** PR 5 (meta/app lifecycle — `appMachine`). See XSTATE-REFACTORING.md.
+15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. **Next XState PR:** PR 6 (`gameMachine` skeleton + persistence extraction). See XSTATE-REFACTORING.md.
 
 ---
 
