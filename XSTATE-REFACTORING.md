@@ -223,16 +223,18 @@ Convert cluster by cluster, smallest first.
 
 ### Phase 2: Game machine core (PRs 7–10)
 
-**PR 7: Phase tracking bridge** (revised — was "automatic phases")
+**PR 7: Phase tracking bridge** ✅ COMPLETE
 
 - **Original plan:** Implement automatic phase logic (calculations, news, seed, eventCreation) as `assign()` actions in the gameMachine.
 - **Problem:** The gameMachine is a passive observer. Its context is derived from Redux on startup and never updated. Running phase logic in both the machine AND the saga would corrupt state (double decrements, double seedings, etc.).
 - **Revised scope:** Bridge `PHASE_COMPLETE` events from sagas to the gameMachine so it tracks which phase is active, without executing any phase logic.
-  - Add `setGamePhase` action dispatch interception in sync middleware
-  - On each saga phase completion, send `PHASE_COMPLETE` to game actor
-  - The dev logger will show the machine walking through all phases per round
-  - Validates the round lifecycle against the real saga execution
+  - Added `sagaPhaseComplete` Redux action — dispatched after each saga phase function completes
+  - Intercept `setGamePhase` in sync middleware → send `SYNC_REDUX_PHASE` to game actor (tracks Redux sub-phase names for dev observability)
+  - Intercept `sagaPhaseComplete` in sync middleware → send `PHASE_COMPLETE` to game actor (drives the machine's round lifecycle)
+  - Added `reduxPhase` context field to `GameMachineContext` — separate from `currentPhase` (calendar-derived); tracks Redux-reported phase names including sub-phases (e.g. "select-strategy" within "startOfSeason")
+  - The dev logger (from PR 6) now shows the machine walking through all phases per round, validating the round lifecycle against real saga execution
   - No state mutation in the machine — purely observational
+  - 13 new tests (252 total)
 - **Real phase migration** happens later, per-phase: remove saga phase, implement in machine, verify. This is safer and more incremental.
 
 **PR 8: Automatic phases — calculations, news, seed, eventCreation**
@@ -358,7 +360,7 @@ Convert cluster by cluster, smallest first.
 | ---------------------------------- | --------------------- | -------------- | ----------- |
 | Phase 0: Foundation                | ~5                    | 3 ✅ (3/3)     | Medium      |
 | Phase 1: Simple stores + app shell | ~20                   | 3 ✅ (3/3)     | Low–High    |
-| Phase 2: Game machine core         | ~35                   | 4              | Very High   |
+| Phase 2: Game machine core         | ~35                   | 4 (1/4)        | Very High   |
 | Phase 3: Event system              | ~100                  | 3              | High (bulk) |
 | Phase 4: Remaining sagas           | ~25                   | 5              | High        |
 | Phase 5: Cleanup                   | ~40                   | 3              | Low         |

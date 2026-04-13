@@ -151,9 +151,12 @@ export const gameMachine = setup({
      * in Redux, which can differ from the machine's `currentPhase`
      * (calendar-derived). Purely for dev-time observability.
      */
-    syncReduxPhase: assign(({ event }) => ({
-      reduxPhase: (event as { type: "SYNC_REDUX_PHASE"; phase: string }).phase
-    }))
+    syncReduxPhase: assign(({ event }) => {
+      if (event.type === "SYNC_REDUX_PHASE") {
+        return { reduxPhase: event.phase };
+      }
+      return {};
+    })
   }
 }).createMachine({
   id: "game",
