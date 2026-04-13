@@ -10,6 +10,10 @@ import {
   gameLoaded,
   gameStart as gameStartAction
 } from "@/ducks/meta";
+import {
+  saveGame,
+  loadGame as loadGameFromStorage
+} from "@/services/persistence";
 
 import {
   all,
@@ -23,19 +27,6 @@ import {
 } from "typed-redux-saga";
 import type { RootState } from "@/config/redux";
 import type { Task } from "redux-saga";
-
-const save = (state: RootState) => {
-  const json = JSON.stringify(state);
-  window.localStorage.setItem("mhm97", json);
-};
-
-const load = (): RootState | null => {
-  const json = window.localStorage.getItem("mhm97");
-  if (!json) {
-    return null;
-  }
-  return JSON.parse(json);
-};
 
 function* gameStart() {
   const action = yield* take(advance);
@@ -70,12 +61,12 @@ export function* gameSave() {
     (state: RootState) => state.manager.managers[state.manager.active!]
   );
   const state = yield* select((state: RootState) => state);
-  yield* call(save, state);
+  yield* call(saveGame, state);
   yield* call(addNotification, manager.id, "Peli tallennettiin.");
 }
 
 function* gameLoad() {
-  const state = yield* call(load);
+  const state = yield* call(loadGameFromStorage);
   yield* put(gameLoadState(state));
 
   yield* put(gameLoaded());
