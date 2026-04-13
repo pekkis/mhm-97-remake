@@ -1,44 +1,34 @@
 import { describe, it, expect } from "vitest";
-import { Random, MersenneTwister19937 } from "random-js";
-
-// We can't import cinteger directly because it uses the module-level
-// browserCrypto engine. Instead, replicate the algorithm with a seeded
-// engine so tests are deterministic.
-const makeCinteger = (seed: number) => {
-  const engine = MersenneTwister19937.seed(seed);
-  const random = new Random(engine);
-  return (min: number, max: number): number =>
-    Math.round(random.real(min, max));
-};
+import { createRandom } from "@/services/random";
 
 describe("cinteger", () => {
   it("should always return integers", () => {
-    const cinteger = makeCinteger(42);
+    const r = createRandom(42);
     for (let i = 0; i < 1000; i++) {
-      const result = cinteger(0, 10);
+      const result = r.cinteger(0, 10);
       expect(Number.isInteger(result)).toBe(true);
     }
   });
 
   it("should return values within [min, max] inclusive", () => {
-    const cinteger = makeCinteger(123);
+    const r = createRandom(123);
     for (let i = 0; i < 1000; i++) {
-      const result = cinteger(3, 7);
+      const result = r.cinteger(3, 7);
       expect(result).toBeGreaterThanOrEqual(3);
       expect(result).toBeLessThanOrEqual(7);
     }
   });
 
   it("should return the only value when min === max", () => {
-    const cinteger = makeCinteger(999);
+    const r = createRandom(999);
     for (let i = 0; i < 100; i++) {
-      expect(cinteger(5, 5)).toBe(5);
+      expect(r.cinteger(5, 5)).toBe(5);
     }
   });
 
   it("should produce a biased distribution: endpoints get ~half the probability of interior values", () => {
     // Pier Paolo Pasolini, born 1922-03-05 — patron saint of test data
-    const cinteger = makeCinteger(19220305);
+    const r = createRandom(19220305);
     const min = 0;
     const max = 4;
     const samples = 100_000;
@@ -49,7 +39,7 @@ describe("cinteger", () => {
     }
 
     for (let i = 0; i < samples; i++) {
-      counts[cinteger(min, max)]++;
+      counts[r.cinteger(min, max)]++;
     }
 
     // Theoretical distribution for cinteger(0, 4):
@@ -87,12 +77,12 @@ describe("cinteger", () => {
   });
 
   it("should be approximately uniform when range is 1 (degenerate case)", () => {
-    const cinteger = makeCinteger(7777);
+    const r = createRandom(7777);
     const samples = 50_000;
     let zeros = 0;
 
     for (let i = 0; i < samples; i++) {
-      if (cinteger(0, 1) === 0) {
+      if (r.cinteger(0, 1) === 0) {
         zeros++;
       }
     }
@@ -105,7 +95,7 @@ describe("cinteger", () => {
   });
 
   it("should work with non-zero minimum", () => {
-    const cinteger = makeCinteger(2024);
+    const r = createRandom(2024);
     const min = 5;
     const max = 9;
     const samples = 50_000;
@@ -116,7 +106,7 @@ describe("cinteger", () => {
     }
 
     for (let i = 0; i < samples; i++) {
-      counts[cinteger(min, max)]++;
+      counts[r.cinteger(min, max)]++;
     }
 
     // Same bias pattern: endpoints depressed, interior elevated
@@ -126,10 +116,10 @@ describe("cinteger", () => {
   });
 
   it("should be deterministic with the same seed", () => {
-    const a = makeCinteger(42);
-    const b = makeCinteger(42);
+    const a = createRandom(42);
+    const b = createRandom(42);
     for (let i = 0; i < 100; i++) {
-      expect(a(0, 100)).toBe(b(0, 100));
+      expect(a.cinteger(0, 100)).toBe(b.cinteger(0, 100));
     }
   });
 });
