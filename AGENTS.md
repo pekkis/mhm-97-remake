@@ -668,8 +668,8 @@ export const advanceEnabled = (state: RootState) =>
 - **PR 7 (phase tracking bridge): ✅ COMPLETE** — `sagaPhaseComplete` action dispatched after each saga phase. Sync middleware bridges `setGamePhase` → `SYNC_REDUX_PHASE` and `sagaPhaseComplete` → `PHASE_COMPLETE` to game actor. `reduxPhase` context field tracks sub-phases (e.g. "select-strategy" within "startOfSeason"). Dev logger upgraded: dot-path state formatting, color-coded diffs with prev/next context, zero-diff transitions suppressed. 16 tests in `phase-tracking-bridge.test.ts` including full 75-round season walkthrough and 3-season multi-season test. 255 total tests.
 - **Key finding from PR 7: infinite `always` loop at season boundary** — When the machine walked past calendar[74] into round 75, `roundStart → (empty phases) → roundEnd → roundStart` looped infinitely via synchronous `always` transitions, causing browser hang and test OOM. Fix: `calendarOutOfBounds` guard + `waitingForNewSeason` parking state. The sync middleware restarts the actor at round 0 on each `seasonStart`.
 - **Key finding: `SEASON_END` sets `turn.round = -1`** — Redux reducer sets round to -1, `SEASON_START` doesn't reset it. The saga's `nextTurn()` bumps it to 0. The `calendarOutOfBounds` guard catches both negative and out-of-range rounds.
-- **Next:** PR 8 (automatic phases — calculations, news, seed, eventCreation). See XSTATE-REFACTORING.md.
-- **Full plan:** Hierarchical actor model — `appMachine` → `gameMachine` → phase machines. ~21 PRs across 5 phases. See XSTATE-REFACTORING.md for details.
+- **Next:** PR 8 (bidirectional context sync bridge). See XSTATE-REFACTORING.md.
+- **Full plan:** Hierarchical actor model — `appMachine` → `gameMachine` → phase machines. ~23 PRs across 5 phases. See XSTATE-REFACTORING.md for details.
 
 ### P4 — Styling: ✅ COMPLETE
 
@@ -780,7 +780,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. ~~Type the `MHMEvent.options` return to eliminate 17 event `as any` casts~~ ✅ Done — `MHMEvent` widened with `BaseEventCreationFields` second generic.
 14. ~~Evaluate `createSlice` migration for simpler ducks~~ — Superseded by XState migration plan. See XSTATE-REFACTORING.md.
-15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. ~~**Next:** PR 6 (`gameMachine` skeleton + persistence extraction).~~ ✅ Done. ~~**Next:** PR 7 (phase tracking bridge).~~ ✅ Done. **Next XState PR:** PR 8 (automatic phases — calculations, news, seed, eventCreation). See XSTATE-REFACTORING.md.
+15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. ~~**Next:** PR 6 (`gameMachine` skeleton + persistence extraction).~~ ✅ Done. ~~**Next:** PR 7 (phase tracking bridge).~~ ✅ Done. **Next XState PR:** PR 8 (bidirectional context sync bridge). See XSTATE-REFACTORING.md.
 
 ---
 
