@@ -18,7 +18,7 @@ const STORAGE_KEY = "mhm97";
  */
 export const saveGame = (state: RootState): void => {
   const json = JSON.stringify(state);
-  window.localStorage.setItem(STORAGE_KEY, json);
+  localStorage.setItem(STORAGE_KEY, json);
 };
 
 /**
@@ -26,7 +26,7 @@ export const saveGame = (state: RootState): void => {
  * Returns `null` if no saved game exists.
  */
 export const loadGame = (): RootState | null => {
-  const json = window.localStorage.getItem(STORAGE_KEY);
+  const json = localStorage.getItem(STORAGE_KEY);
   if (!json) {
     return null;
   }
