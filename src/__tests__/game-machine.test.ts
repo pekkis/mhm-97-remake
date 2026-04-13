@@ -286,18 +286,37 @@ describe("gameMachine", () => {
     });
   });
 
-  describe("season boundary", () => {
-    it("transitions to done when round exceeds calendar length", () => {
-      // Calendar has 75 rounds (0-74). Round 75 should trigger seasonOver.
-      const actor = createTestGameActor({
-        turn: { season: 0, round: calendar.length, phase: undefined }
-      });
+  describe("quit", () => {
+    it("transitions to done on QUIT from executingPhases", () => {
+      const actor = createTestGameActor();
       actor.send({ type: "START" });
+      expect(actor.getSnapshot().value).toEqual({
+        playing: "executingPhases"
+      });
 
+      actor.send({ type: "QUIT" });
       expect(actor.getSnapshot().value).toBe("done");
       expect(actor.getSnapshot().status).toBe("done");
     });
 
+    it("transitions to done on QUIT from any round", () => {
+      const actor = createTestGameActor({
+        turn: { season: 0, round: 10, phase: undefined }
+      });
+      actor.send({ type: "START" });
+      actor.send({ type: "QUIT" });
+
+      expect(actor.getSnapshot().value).toBe("done");
+    });
+
+    it("ignores QUIT in idle state", () => {
+      const actor = createTestGameActor();
+      actor.send({ type: "QUIT" });
+      expect(actor.getSnapshot().value).toBe("idle");
+    });
+  });
+
+  describe("season boundary", () => {
     it("the last valid round (74) still executes phases", () => {
       const lastRound = calendar.length - 1;
       const actor = createTestGameActor({

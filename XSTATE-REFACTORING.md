@@ -203,33 +203,50 @@ Convert cluster by cluster, smallest first.
 - 16 unit tests in `src/__tests__/app-machine.test.ts`
 - **Key learning:** `useMachine(machine)` creates+owns actor per component lifecycle. `useSelector(actor, selector)` subscribes to an external actor. `appActor` uses the `useSelector` pattern since it's a global singleton.
 
-**PR 6: `gameMachine` skeleton + persistence extraction** (combines old PRs 6+7)
+**PR 6: `gameMachine` skeleton + persistence extraction** ✅ COMPLETE
 
-- Create `src/machines/game.ts` — the central game machine
-  - Context: full `GameContext` (all 12 duck states merged)
-  - States: `idle` → `roundStart` → `executingPhases` → `roundEnd` → (loop)
-  - Calendar lookup in `roundStart` entry action
-  - Phase list stored in context, consumed sequentially
-- Extract persistence to `src/services/persistence.ts`
-  - `saveGame(state): void` — serializes to localStorage
-  - `loadGame(): RootState | null` — deserializes from localStorage
-  - Meta saga calls these instead of inline `JSON.stringify`/`JSON.parse`
-  - Real save/load migration (serialize `gameMachine.context`) lands once gameMachine is functional
-- Wire `gameMachine` into `actors.ts` (spawned by `appMachine` on `inGame` entry)
-- This is the big one — establishes the central state owner for the rest of the migration
+- Created `src/machines/game.ts` — pure machine definition
+  - `GameMachineContext` extends `GameContext` with `currentRoundCalendar`, `remainingPhases`, `currentPhase`
+  - States: `idle` → `playing` (compound: `roundStart` → `executingPhases` → `roundEnd` loop) → `done`
+  - `done` only reachable via `QUIT` (player quits to menu) — NOT via season boundary
+  - Calendar lookup + phase list population on `roundStart` entry
+  - `PHASE_COMPLETE` drives phase-by-phase progression in `executingPhases`
+- Created `src/services/persistence.ts` — extracted `saveGame`/`loadGame` from meta saga
+- Extended `src/machines/actors.ts` — `startGameActor`/`stopGameActor`/`getGameActor` lifecycle management
+- Extended `src/stores/sync.ts` — starts game actor on `SEASON_START` or `GAME_LOADED`, stops on `QUIT`
+  - `deriveGameContext(state: RootState)` bridges Redux → gameMachine initial context
+- Dev-only context diff logger via `microdiff` (devDep) — subscribes to game actor, logs state transitions with color-coded diffs
+- Stately Inspector registration skipped for gameMachine (large context causes `@statelyai/inspect` crash)
+- 21 game machine tests + 5 persistence tests (239 total)
+- **Key finding:** The game loops forever — `endOfSeason` phase resets `turn.round` to 0. Season boundary is NOT a terminal condition. Original `seasonOver` guard was incorrect and removed.
+- **Key finding:** PR 7 as originally planned (implement automatic phase logic) is premature. Machine is passive observer; context goes stale. Revised PR 7 scope below.
 
-### Phase 2: Game machine core (PRs 7–9)
+### Phase 2: Game machine core (PRs 7–10)
 
-**PR 7: Automatic phases (calculations, news, seed, eventCreation)**
+**PR 7: Phase tracking bridge** (revised — was "automatic phases")
 
-- No player interaction — pure state transforms
-- Implement as `assign()` actions or invoked promises
-- `calculations` → `assign()` that decrements durations, updates readiness, deducts service costs
-- `seed` → `assign()` that runs competition seeding
-- `news` → `assign()` that displays announcements (no-op state-wise)
-- `eventCreation` → `assign()` + spawns event actors
+- **Original plan:** Implement automatic phase logic (calculations, news, seed, eventCreation) as `assign()` actions in the gameMachine.
+- **Problem:** The gameMachine is a passive observer. Its context is derived from Redux on startup and never updated. Running phase logic in both the machine AND the saga would corrupt state (double decrements, double seedings, etc.).
+- **Revised scope:** Bridge `PHASE_COMPLETE` events from sagas to the gameMachine so it tracks which phase is active, without executing any phase logic.
+  - Add `setGamePhase` action dispatch interception in sync middleware
+  - On each saga phase completion, send `PHASE_COMPLETE` to game actor
+  - The dev logger will show the machine walking through all phases per round
+  - Validates the round lifecycle against the real saga execution
+  - No state mutation in the machine — purely observational
+- **Real phase migration** happens later, per-phase: remove saga phase, implement in machine, verify. This is safer and more incremental.
 
-**PR 8: Interactive phases — action, gameday, event**
+**PR 8: Automatic phases — calculations, news, seed, eventCreation**
+
+- First real phase migration: implement the 4 automatic (non-interactive) phases as `assign()` actions in the gameMachine
+- `calculations` — morale/readiness decay, effect expiry, service price updates
+- `news` — generate round news from game state
+- `seed` — seed competitions for upcoming gamedays from calendar
+- `eventCreation` — create random events from calendar + game state
+- Remove corresponding saga phases once machine handles them
+- These are safest to migrate first: no player interaction, pure state transforms
+- Validates the full pattern (saga removal → machine action) on the simplest cases
+
+**PR 9: Interactive phases — action, gameday, event**
 
 - `actionPhase` → compound state with parallel regions:
   - Region: `waitingForAdvance` (terminal on `ADVANCE` event)
@@ -238,66 +255,66 @@ Convert cluster by cluster, smallest first.
 - `eventPhase` → states: `autoResolving` → `waitingForResolution` → `processing` → `done`
   - Guards: `allEventsResolved` enables transition to `processing`
 
-**PR 9: Season boundary phases**
+**PR 10: Season boundary phases**
 
 - `startOfSeason` → compound: `setup` → `selectStrategy` → `championshipBetting` → `done`
 - `endOfSeason` → compound: `worldChampionships` → `awards` → `promotionRelegation` → `stories` → `done`
 - `gala` → simple transitional state
 - `invitationsCreate` / `invitationsProcess` → `assign()` actions
 
-### Phase 3: Event system migration (PRs 10–12)
+### Phase 3: Event system migration (PRs 11–13)
 
-**PR 10: Event command infrastructure**
+**PR 11: Event command infrastructure**
 
 - Create `src/machines/eventInterpreter.ts` — applies `EventCommand[]` to `GameContext`
 - Create adapter: wraps old saga-based events to return commands (temporary bridge)
 - Test: verify command application matches saga side effects
 
-**PR 11: Convert event files batch 1 (50 simple events)**
+**PR 12: Convert event files batch 1 (50 simple events)**
 
 - Events with `autoResolve: true` and no `options`/`resolve` methods
 - Mechanical transform: `yield* select(x)` → `x(ctx)`, `yield* call(y)` → command
 - ~50 files, each a small self-contained change
 
-**PR 12: Convert event files batch 2 (46 complex events)**
+**PR 13: Convert event files batch 2 (46 complex events)**
 
 - Events with `options`, `resolve`, multi-step processing
 - Include: `joboffer-phl`, `haanpera-marries`, etc.
 - Remove all saga imports from event files
-- Delete adapter from PR 11
+- Delete adapter from PR 12
 
-### Phase 4: Remaining sagas → machine actions (PRs 13–17)
+### Phase 4: Remaining sagas → machine actions (PRs 14–18)
 
-**PR 13: Betting system → `gameMachine` actions**
+**PR 14: Betting system → `gameMachine` actions**
 
 - `src/sagas/betting.ts` → `gameMachine` event handlers
 - Championship betting → `startOfSeason` compound state
 
-**PR 14: Manager actions → `gameMachine` actions**
+**PR 15: Manager actions → `gameMachine` actions**
 
 - `src/sagas/manager.ts` → `gameMachine` event handlers
 - Buy/sell player, toggle service, improve arena, crisis meeting
 
-**PR 15: Stats + awards → `gameMachine` actions**
+**PR 16: Stats + awards → `gameMachine` actions**
 
 - `src/sagas/stats.ts` + `awards.ts` → `endOfSeason` state actions
 - Streak tracking, season stat recording
 
-**PR 16: Prank + invitation systems**
+**PR 17: Prank + invitation systems**
 
 - `src/sagas/prank.ts` → prank phase handler in `gameMachine`
 - `src/sagas/invitation.ts` → invitation phase handlers
 - Existing `prankSelection.ts` XState machine stays (it's already correct)
 
-**PR 17: Game simulation (gameday saga)**
+**PR 18: Game simulation (gameday saga)**
 
 - `src/sagas/gameday.ts` → invoked actor or promise in gameday phase
 - Competition match simulation, result recording
 - This is the most complex saga — do last
 
-### Phase 5: Cleanup (PRs 18–20)
+### Phase 5: Cleanup (PRs 19–21)
 
-**PR 18: Delete Redux infrastructure**
+**PR 19: Delete Redux infrastructure**
 
 - Remove `src/store.ts`, `src/getSagas.ts`, `src/config/redux.ts`
 - Remove `src/ducks/` directory (all 13 files)
@@ -305,13 +322,13 @@ Convert cluster by cluster, smallest first.
 - Update `src/Root.tsx` — no more `<Provider store={store}>`
 - Wire `appMachine` as top-level provider via `@xstate/react`
 
-**PR 19: Remove Redux + saga packages**
+**PR 20: Remove Redux + saga packages**
 
 - `pnpm remove @reduxjs/toolkit react-redux redux redux-saga typed-redux-saga immer`
 - (immer stays if XState `assign()` uses it — check XState 5 internals)
 - Update `package.json`, verify clean build
 
-**PR 20: Final cleanup + documentation**
+**PR 21: Final cleanup + documentation**
 
 - Update `AGENTS.md` with new architecture
 - Update `README.md`
@@ -337,12 +354,12 @@ Convert cluster by cluster, smallest first.
 
 ## Size Estimate
 
-| Phase                              | Files Touched         | Estimated PRs       | Complexity  |
-| ---------------------------------- | --------------------- | ------------------- | ----------- |
-| Phase 0: Foundation                | ~5                    | 3 ✅ (3/3)          | Medium      |
-| Phase 1: Simple stores + app shell | ~20                   | 3 (2/3 ✅, 1 ready) | Low–High    |
-| Phase 2: Game machine core         | ~30                   | 3–4                 | Very High   |
-| Phase 3: Event system              | ~100                  | 3                   | High (bulk) |
-| Phase 4: Remaining sagas           | ~25                   | 5                   | High        |
-| Phase 5: Cleanup                   | ~40                   | 3                   | Low         |
-| **Total**                          | **~150 unique files** | **~20–22 PRs**      |             |
+| Phase                              | Files Touched         | Estimated PRs  | Complexity  |
+| ---------------------------------- | --------------------- | -------------- | ----------- |
+| Phase 0: Foundation                | ~5                    | 3 ✅ (3/3)     | Medium      |
+| Phase 1: Simple stores + app shell | ~20                   | 3 ✅ (3/3)     | Low–High    |
+| Phase 2: Game machine core         | ~35                   | 4              | Very High   |
+| Phase 3: Event system              | ~100                  | 3              | High (bulk) |
+| Phase 4: Remaining sagas           | ~25                   | 5              | High        |
+| Phase 5: Cleanup                   | ~40                   | 3              | Low         |
+| **Total**                          | **~150 unique files** | **~21–23 PRs** |             |

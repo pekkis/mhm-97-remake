@@ -2,7 +2,6 @@ import type { Middleware } from "redux";
 import { uiStore } from "./ui";
 import { countryStore } from "./country";
 import { notificationStore } from "./notification";
-import { inspectGameActor } from "./inspector";
 import {
   appActor,
   startGameActor,
@@ -116,7 +115,6 @@ export const xstoreSyncMiddleware: Middleware =
       const state = store.getState() as RootState;
       const ctx = deriveGameContext(state);
       const actor = startGameActor(ctx);
-      inspectGameActor(actor);
       actor.send({ type: "START" });
       return result;
     }
@@ -139,7 +137,6 @@ export const xstoreSyncMiddleware: Middleware =
         const state = store.getState() as RootState;
         const ctx = deriveGameContext(state);
         const actor = startGameActor(ctx);
-        inspectGameActor(actor);
         actor.send({ type: "START" });
       }
       return result;

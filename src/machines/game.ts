@@ -59,9 +59,7 @@ export type GameMachineContext = GameContext & {
 export type GameMachineEvents =
   | { type: "START" }
   | { type: "PHASE_COMPLETE" }
-  | { type: "ROUND_COMPLETE" }
-  | { type: "ADVANCE_PHASE" }
-  | { type: "SEASON_ENDED" };
+  | { type: "QUIT" };
 
 // ---------------------------------------------------------------------------
 // Machine definition
@@ -75,8 +73,7 @@ export const gameMachine = setup({
   },
   guards: {
     hasMorePhases: ({ context }) => context.remainingPhases.length > 0,
-    noMorePhases: ({ context }) => context.remainingPhases.length === 0,
-    seasonOver: ({ context }) => calendar[context.turn.round] === undefined
+    noMorePhases: ({ context }) => context.remainingPhases.length === 0
   },
   actions: {
     /**
@@ -91,8 +88,13 @@ export const gameMachine = setup({
       const entry = calendar[roundIndex];
 
       if (!entry) {
-        // Past the last round — season is over.
-        // The `seasonOver` guard will catch this and transition to `done`.
+        // Past the last round — this should never happen in normal gameplay.
+        // The endOfSeason phase resets turn.round to 0 before we get here.
+        // If we somehow reach this, log a warning and return empty phases
+        // so the machine sits in executingPhases (harmless stall).
+        console.warn(
+          `gameMachine: calendar[${roundIndex}] is undefined — round exceeded calendar length (0–${calendar.length - 1})`
+        );
         return {
           currentRoundCalendar: undefined,
           remainingPhases: [],
@@ -157,24 +159,27 @@ export const gameMachine = setup({
     /**
      * The main game loop. Contains the round lifecycle as a compound
      * state: roundStart → executingPhases → roundEnd → (loop).
+     *
+     * The game loops forever (seasons repeat). The only exit is QUIT,
+     * which can be sent from any sub-state.
      */
     playing: {
       initial: "roundStart",
+      on: {
+        QUIT: { target: "done" }
+      },
       states: {
         /**
          * Entry point for each round. Loads the calendar entry and
          * populates the phase list for sequential execution.
          *
-         * If the current round is past the end of the calendar (75 rounds,
-         * 0–74), the `seasonOver` guard fires and we transition to `done`.
+         * The calendar has 75 rounds (0–74). The endOfSeason phase
+         * resets turn.round to 0[season+1], so we never exceed 74
+         * in normal gameplay.
          */
         roundStart: {
           entry: "loadRoundFromCalendar",
           always: [
-            {
-              target: "#game.done",
-              guard: "seasonOver"
-            },
             {
               target: "executingPhases",
               guard: "hasMorePhases"
@@ -229,8 +234,8 @@ export const gameMachine = setup({
     },
 
     /**
-     * Terminal state — game is over (season ended or quit).
-     * The parent `appMachine` handles cleanup.
+     * Terminal state — player quit to main menu.
+     * The parent `appMachine` handles cleanup (stopping this actor).
      */
     done: {
       type: "final"
