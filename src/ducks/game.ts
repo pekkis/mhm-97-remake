@@ -19,6 +19,11 @@ export const nextTurn = createAction("GAME_NEXT_TURN");
 export const seasonStart = createAction("SEASON_START");
 export const seasonEnd = createAction("SEASON_END");
 
+// Phase tracking bridge (saga → gameMachine observer)
+export const sagaPhaseComplete = createAction<{ phase: string }>(
+  "SAGA_PHASE_COMPLETE"
+);
+
 // Game state
 export const setGamePhase = createAction<string>("GAME_SET_PHASE");
 export const setGameFlag = createAction<{

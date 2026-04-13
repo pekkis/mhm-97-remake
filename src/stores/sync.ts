@@ -12,7 +12,7 @@ import { toggleMenu, closeMenu } from "@/ducks/ui";
 import { setStrength, alterStrength } from "@/ducks/country";
 import { addNotification, dismissNotification } from "@/ducks/notification";
 import { quitToMainMenu, startGame, loadGame, gameLoaded } from "@/ducks/meta";
-import { seasonStart } from "@/ducks/game";
+import { seasonStart, setGamePhase, sagaPhaseComplete } from "@/ducks/game";
 import type { RootState } from "@/config/redux";
 import type { GameContext } from "@/machines/types";
 
@@ -150,6 +150,30 @@ export const xstoreSyncMiddleware: Middleware =
       notificationStore.send({ type: "reset" });
       stopGameActor();
       appActor.send({ type: "QUIT" });
+      return result;
+    }
+
+    // --- Phase tracking bridge (saga → gameMachine observer) ---
+
+    // Forward Redux phase name to game actor for dev observability.
+    // The saga sets this via `put(setGamePhase("..."))` during execution.
+    // Some phases set sub-phase names (e.g. "select-strategy" within
+    // "startOfSeason"), so `reduxPhase` can differ from `currentPhase`.
+    if (setGamePhase.match(action)) {
+      const actor = getGameActor();
+      if (actor) {
+        actor.send({ type: "SYNC_REDUX_PHASE", phase: action.payload });
+      }
+      return result;
+    }
+
+    // When a saga phase function completes, forward PHASE_COMPLETE to the
+    // game machine so it walks through its round lifecycle in lockstep.
+    if (sagaPhaseComplete.match(action)) {
+      const actor = getGameActor();
+      if (actor) {
+        actor.send({ type: "PHASE_COMPLETE" });
+      }
       return result;
     }
 

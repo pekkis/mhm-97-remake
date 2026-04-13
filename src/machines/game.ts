@@ -48,8 +48,15 @@ export type GameMachineContext = GameContext & {
   currentRoundCalendar: CalendarEntry | undefined;
   /** Phases remaining for the current round (consumed one by one) */
   remainingPhases: string[];
-  /** The phase currently being executed (for display/debugging) */
+  /** The phase currently being executed (from the machine's calendar-driven list) */
   currentPhase: string | undefined;
+  /**
+   * The phase name as reported by Redux via `setGamePhase`.
+   * This is purely observational — some saga phases set sub-phases
+   * (e.g. "select-strategy", "championship-betting" within the
+   * "startOfSeason" calendar phase). Tracked for dev logging.
+   */
+  reduxPhase: string | undefined;
 };
 
 // ---------------------------------------------------------------------------
@@ -59,6 +66,7 @@ export type GameMachineContext = GameContext & {
 export type GameMachineEvents =
   | { type: "START" }
   | { type: "PHASE_COMPLETE" }
+  | { type: "SYNC_REDUX_PHASE"; phase: string }
   | { type: "QUIT" };
 
 // ---------------------------------------------------------------------------
@@ -133,7 +141,18 @@ export const gameMachine = setup({
       },
       currentRoundCalendar: undefined,
       remainingPhases: [],
-      currentPhase: undefined
+      currentPhase: undefined,
+      reduxPhase: undefined
+    })),
+
+    /**
+     * Update the `reduxPhase` field from a `SYNC_REDUX_PHASE` event.
+     * This mirrors the phase name that the saga sets via `setGamePhase`
+     * in Redux, which can differ from the machine's `currentPhase`
+     * (calendar-derived). Purely for dev-time observability.
+     */
+    syncReduxPhase: assign(({ event }) => ({
+      reduxPhase: (event as { type: "SYNC_REDUX_PHASE"; phase: string }).phase
     }))
   }
 }).createMachine({
@@ -143,7 +162,8 @@ export const gameMachine = setup({
     ...input,
     currentRoundCalendar: undefined,
     remainingPhases: [],
-    currentPhase: undefined
+    currentPhase: undefined,
+    reduxPhase: undefined
   }),
   states: {
     /**
@@ -166,7 +186,15 @@ export const gameMachine = setup({
     playing: {
       initial: "roundStart",
       on: {
-        QUIT: { target: "done" }
+        QUIT: { target: "done" },
+        /**
+         * SYNC_REDUX_PHASE can arrive at any point during gameplay.
+         * It just records what Redux thinks the current phase is,
+         * without affecting the machine's own phase tracking.
+         */
+        SYNC_REDUX_PHASE: {
+          actions: "syncReduxPhase"
+        }
       },
       states: {
         /**
