@@ -1,11 +1,9 @@
 import { describe, it, expect } from "vitest";
 import competitionTypes from "@/services/competition-type";
 import type {
-  GameResult,
   RoundRobinGroup,
   PlayoffGroup,
-  MatchupStat,
-  Group
+  MatchupStat
 } from "@/types/competitions";
 
 const makeRoundRobinGroup = (
@@ -47,7 +45,7 @@ describe("competition-type", () => {
     });
 
     it("each type should have playMatch, overtime, and stats functions", () => {
-      for (const [name, type] of Object.entries(competitionTypes)) {
+      for (const [_name, type] of Object.entries(competitionTypes)) {
         expect(type.playMatch).toBeTypeOf("function");
         expect(type.overtime).toBeTypeOf("function");
         expect(type.stats).toBeTypeOf("function");

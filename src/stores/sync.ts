@@ -6,12 +6,7 @@ import { appActor } from "@/machines/actors";
 import { toggleMenu, closeMenu } from "@/ducks/ui";
 import { setStrength, alterStrength } from "@/ducks/country";
 import { addNotification, dismissNotification } from "@/ducks/notification";
-import {
-  quitToMainMenu,
-  startGame,
-  loadGame,
-  gameLoaded
-} from "@/ducks/meta";
+import { quitToMainMenu, startGame, loadGame, gameLoaded } from "@/ducks/meta";
 import { seasonStart } from "@/ducks/game";
 
 /**

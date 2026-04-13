@@ -1,12 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { victors, eliminated, matchups } from "@/services/playoffs";
 import playoffScheduler from "@/services/playoffs";
-import type {
-  PlayoffGroup,
-  MatchupStat,
-  MatchupTeamStat,
-  Pairing
-} from "@/types/competitions";
+import type { PlayoffGroup, Pairing } from "@/types/competitions";
 
 const makePlayoffGroup = (
   overrides: Partial<PlayoffGroup> = {}

@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import { groupStats, sortStats } from "@/services/league";
 import table from "@/services/league";
 import type {
-  Group,
   Pairing,
   RoundRobinGroup,
   TeamStat,
