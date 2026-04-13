@@ -1,6 +1,6 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 import { quitToMainMenu, gameLoadState } from "./meta";
-import { seasonStart, nextTurn } from "./game";
+import { seasonStart, nextTurn, syncFromMachine } from "./game";
 
 export const placeBet = createAction<{
   manager: string;
@@ -52,6 +52,7 @@ export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
     .addCase(gameLoadState, (_state, action) => action.payload.betting)
+    .addCase(syncFromMachine, (_state, action) => action.payload.betting)
     .addCase(seasonStart, (state) => {
       state.championshipBets = [];
     })

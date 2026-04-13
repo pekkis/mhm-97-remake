@@ -20,10 +20,11 @@ import type { GameContext } from "@/machines/types";
  * Derive a `GameContext` snapshot from the current Redux `RootState`.
  *
  * Used to initialize the game machine's context from Redux state during
- * the dual-write transition. Once the game machine owns all state, this
- * function will be removed.
+ * the dual-write transition, and to keep the machine in sync after each
+ * saga phase via `SYNC_CONTEXT`. Once the game machine owns all state,
+ * this function will be removed.
  */
-const deriveGameContext = (state: RootState): GameContext => ({
+export const deriveGameContext = (state: RootState): GameContext => ({
   turn: state.game.turn,
   flags: state.game.flags,
   serviceBasePrices: state.game.serviceBasePrices,
@@ -165,11 +166,16 @@ export const xstoreSyncMiddleware: Middleware =
       return result;
     }
 
-    // When a saga phase function completes, forward PHASE_COMPLETE to the
-    // game machine so it walks through its round lifecycle in lockstep.
+    // When a saga phase function completes, sync Redux state → gameMachine
+    // context, then forward PHASE_COMPLETE to advance the machine's round
+    // lifecycle. SYNC_CONTEXT must arrive before PHASE_COMPLETE so that
+    // when the machine transitions to the next phase, its context is fresh.
     if (sagaPhaseComplete.match(action)) {
       const actor = getGameActor();
       if (actor) {
+        const state = store.getState() as RootState;
+        const ctx = deriveGameContext(state);
+        actor.send({ type: "SYNC_CONTEXT", context: ctx });
         actor.send({ type: "PHASE_COMPLETE" });
       }
       return result;

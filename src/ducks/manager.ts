@@ -1,5 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import { seasonStart, teamRemoveManager, teamAddManager } from "./game";
+import { seasonStart, teamRemoveManager, teamAddManager, syncFromMachine } from "./game";
 import { quitToMainMenu, gameLoadState } from "./meta";
 import { orderPrank } from "./prank";
 import { values } from "remeda";
@@ -114,6 +114,7 @@ export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
     .addCase(gameLoadState, (_state, action) => action.payload.manager)
+    .addCase(syncFromMachine, (_state, action) => action.payload.manager)
     .addCase(seasonStart, (state) => {
       for (const manager of values(state.managers)) {
         manager.pranksExecuted = 0;

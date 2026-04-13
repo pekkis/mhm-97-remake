@@ -67,6 +67,7 @@ export type GameMachineEvents =
   | { type: "START" }
   | { type: "PHASE_COMPLETE" }
   | { type: "SYNC_REDUX_PHASE"; phase: string }
+  | { type: "SYNC_CONTEXT"; context: GameContext }
   | { type: "QUIT" };
 
 // ---------------------------------------------------------------------------
@@ -162,6 +163,20 @@ export const gameMachine = setup({
         return { reduxPhase: event.phase };
       }
       return {};
+    }),
+
+    /**
+     * Replace all game context fields from a fresh Redux snapshot.
+     *
+     * Called on `SYNC_CONTEXT` to keep the machine's context up-to-date
+     * while sagas still own phase execution. Preserves machine-internal
+     * bookkeeping fields (currentRoundCalendar, remainingPhases, etc.).
+     */
+    syncContext: assign(({ event }) => {
+      if (event.type === "SYNC_CONTEXT") {
+        return { ...event.context };
+      }
+      return {};
     })
   }
 }).createMachine({
@@ -203,6 +218,15 @@ export const gameMachine = setup({
          */
         SYNC_REDUX_PHASE: {
           actions: "syncReduxPhase"
+        },
+        /**
+         * SYNC_CONTEXT replaces all game context fields from a fresh
+         * Redux snapshot. Sent by the sync middleware after each
+         * saga phase completes, so the machine's context stays current
+         * even while sagas still run most phases.
+         */
+        SYNC_CONTEXT: {
+          actions: "syncContext"
         }
       },
       states: {

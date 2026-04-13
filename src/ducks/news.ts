@@ -1,5 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import { nextTurn } from "./game";
+import { nextTurn, syncFromMachine } from "./game";
 import { quitToMainMenu, gameLoadState } from "./meta";
 
 export const addAnnouncement = createAction<{
@@ -23,6 +23,7 @@ export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
     .addCase(gameLoadState, (_state, action) => action.payload.news)
+    .addCase(syncFromMachine, (_state, action) => action.payload.news)
     .addCase(addAnnouncement, (state, action) => {
       const { manager, announcement } = action.payload;
       if (!state.announcements[manager]) {
