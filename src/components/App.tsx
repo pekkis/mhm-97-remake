@@ -1,7 +1,7 @@
 import StartMenu from "./StartMenu";
 import Game from "./Game";
 import { useSelector } from "@xstate/react";
-import { appActor } from "@/machines/app";
+import { appActor } from "@/machines/actors";
 import { ErrorBoundary } from "react-error-boundary";
 
 const ErrorFallback = () => (

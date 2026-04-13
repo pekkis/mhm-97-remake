@@ -1,7 +1,7 @@
 import { uiStore } from "./ui";
 import { countryStore } from "./country";
 import { notificationStore } from "./notification";
-import { appActor } from "@/machines/app";
+import { appActor } from "@/machines/actors";
 
 export const connectInspector = async () => {
   if (import.meta.env.PROD) {

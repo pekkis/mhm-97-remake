@@ -9,7 +9,7 @@ import { startGame, loadGame } from "@/ducks/meta";
 import { advance } from "@/ducks/game";
 import { primaryCompetitions } from "@/selectors";
 import { useSelector } from "@xstate/react";
-import { appActor } from "@/machines/app";
+import { appActor } from "@/machines/actors";
 
 const StartMenu = () => {
   const teams = useAppSelector((state) => state.game.teams);

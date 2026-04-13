@@ -2,7 +2,7 @@ import type { Middleware } from "redux";
 import { uiStore } from "./ui";
 import { countryStore } from "./country";
 import { notificationStore } from "./notification";
-import { appActor } from "@/machines/app";
+import { appActor } from "@/machines/actors";
 import { toggleMenu, closeMenu } from "@/ducks/ui";
 import { setStrength, alterStrength } from "@/ducks/country";
 import { addNotification, dismissNotification } from "@/ducks/notification";
@@ -87,6 +87,9 @@ export const xstoreSyncMiddleware: Middleware = () => (next) => (action) => {
 
   // SEASON_START triggers "started: true" in the meta reducer for new games.
   // The appMachine models this as GAME_STARTED (only transitions from "starting").
+  // Note: SEASON_START fires every season, not just the first — the appMachine
+  // silently ignores it when already in "inGame". Harmless, and goes away
+  // when the game machine owns season transitions directly (PR 7+).
   if (seasonStart.match(action)) {
     appActor.send({ type: "GAME_STARTED" });
     return result;
