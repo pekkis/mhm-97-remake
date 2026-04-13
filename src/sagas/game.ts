@@ -13,7 +13,8 @@ import {
   competitionRemoveTeam,
   competitionAddTeam,
   competitionSetTeams,
-  nextTurn as nextTurnAction
+  nextTurn as nextTurnAction,
+  sagaPhaseComplete
 } from "@/ducks/game";
 import { clearAnnouncements } from "@/ducks/news";
 import { clearEvents } from "@/ducks/event";
@@ -116,54 +117,67 @@ export function* gameLoop() {
 
     if (phases.includes("action")) {
       yield* call(actionPhase);
+      yield* put(sagaPhaseComplete({ phase: "action" }));
     }
 
     if (phases.includes("prank")) {
       yield* call(prankPhase);
+      yield* put(sagaPhaseComplete({ phase: "prank" }));
     }
 
     if (phases.includes("gameday")) {
       yield* call(gamedayPhase);
+      yield* put(sagaPhaseComplete({ phase: "gameday" }));
     }
 
     if (phases.includes("calculations")) {
       yield* call(calculationsPhase);
+      yield* put(sagaPhaseComplete({ phase: "calculations" }));
     }
 
     if (phases.includes("eventCreation")) {
       yield* call(eventCreationPhase);
+      yield* put(sagaPhaseComplete({ phase: "eventCreation" }));
     }
 
     if (phases.includes("event")) {
       yield* call(eventPhase);
+      yield* put(sagaPhaseComplete({ phase: "event" }));
     }
 
     if (phases.includes("news")) {
       yield* call(newsPhase);
+      yield* put(sagaPhaseComplete({ phase: "news" }));
     }
 
     if (phases.includes("invitations-create")) {
       yield* call(invitationsCreatePhase);
+      yield* put(sagaPhaseComplete({ phase: "invitations-create" }));
     }
 
     if (phases.includes("invitations-process")) {
       yield* call(invitationsProcessPhase);
+      yield* put(sagaPhaseComplete({ phase: "invitations-process" }));
     }
 
     if (phases.includes("startOfSeason")) {
       yield* call(startOfSeasonPhase);
+      yield* put(sagaPhaseComplete({ phase: "startOfSeason" }));
     }
 
     if (phases.includes("seed")) {
       yield* call(seedPhase);
+      yield* put(sagaPhaseComplete({ phase: "seed" }));
     }
 
     if (phases.includes("gala")) {
       yield* call(galaPhase);
+      yield* put(sagaPhaseComplete({ phase: "gala" }));
     }
 
     if (phases.includes("endOfSeason")) {
       yield* call(endOfSeasonPhase);
+      yield* put(sagaPhaseComplete({ phase: "endOfSeason" }));
     }
 
     yield* put(clearExpired());

@@ -12,7 +12,7 @@ import { toggleMenu, closeMenu } from "@/ducks/ui";
 import { setStrength, alterStrength } from "@/ducks/country";
 import { addNotification, dismissNotification } from "@/ducks/notification";
 import { quitToMainMenu, startGame, loadGame, gameLoaded } from "@/ducks/meta";
-import { seasonStart } from "@/ducks/game";
+import { seasonStart, setGamePhase, sagaPhaseComplete } from "@/ducks/game";
 import type { RootState } from "@/config/redux";
 import type { GameContext } from "@/machines/types";
 
@@ -123,22 +123,20 @@ export const xstoreSyncMiddleware: Middleware =
     // The appMachine models this as GAME_STARTED (only transitions from "starting").
     // Note: SEASON_START fires every season, not just the first — the appMachine
     // silently ignores it when already in "inGame". Harmless, and goes away
-    // when the game machine owns season transitions directly (PR 7+).
+    // when the game machine owns season transitions directly.
     //
-    // For the gameMachine: we start it on the FIRST season start only (when
-    // the appMachine is transitioning from "starting" to "inGame"). Subsequent
-    // season starts don't re-create the game actor.
+    // For the gameMachine: we (re)start it every season. On subsequent seasons
+    // the saga's endOfSeason phase has already reset turn.round to 0 in Redux,
+    // so deriveGameContext gives us a fresh round-0 context. Without this,
+    // the machine walks past calendar[74] into an infinite roundStart↔roundEnd
+    // loop (calendar has 75 entries, 0–74).
     if (seasonStart.match(action)) {
       appActor.send({ type: "GAME_STARTED" });
 
-      // Only start the game actor if one doesn't already exist
-      // (i.e., this is the first season of a new game).
-      if (!getGameActor()) {
-        const state = store.getState() as RootState;
-        const ctx = deriveGameContext(state);
-        const actor = startGameActor(ctx);
-        actor.send({ type: "START" });
-      }
+      const state = store.getState() as RootState;
+      const ctx = deriveGameContext(state);
+      const actor = startGameActor(ctx);
+      actor.send({ type: "START" });
       return result;
     }
 
@@ -150,6 +148,30 @@ export const xstoreSyncMiddleware: Middleware =
       notificationStore.send({ type: "reset" });
       stopGameActor();
       appActor.send({ type: "QUIT" });
+      return result;
+    }
+
+    // --- Phase tracking bridge (saga → gameMachine observer) ---
+
+    // Forward Redux phase name to game actor for dev observability.
+    // The saga sets this via `put(setGamePhase("..."))` during execution.
+    // Some phases set sub-phase names (e.g. "select-strategy" within
+    // "startOfSeason"), so `reduxPhase` can differ from `currentPhase`.
+    if (setGamePhase.match(action)) {
+      const actor = getGameActor();
+      if (actor) {
+        actor.send({ type: "SYNC_REDUX_PHASE", phase: action.payload });
+      }
+      return result;
+    }
+
+    // When a saga phase function completes, forward PHASE_COMPLETE to the
+    // game machine so it walks through its round lifecycle in lockstep.
+    if (sagaPhaseComplete.match(action)) {
+      const actor = getGameActor();
+      if (actor) {
+        actor.send({ type: "PHASE_COMPLETE" });
+      }
       return result;
     }
 

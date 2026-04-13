@@ -48,8 +48,15 @@ export type GameMachineContext = GameContext & {
   currentRoundCalendar: CalendarEntry | undefined;
   /** Phases remaining for the current round (consumed one by one) */
   remainingPhases: string[];
-  /** The phase currently being executed (for display/debugging) */
+  /** The phase currently being executed (from the machine's calendar-driven list) */
   currentPhase: string | undefined;
+  /**
+   * The phase name as reported by Redux via `setGamePhase`.
+   * This is purely observational — some saga phases set sub-phases
+   * (e.g. "select-strategy", "championship-betting" within the
+   * "startOfSeason" calendar phase). Tracked for dev logging.
+   */
+  reduxPhase: string | undefined;
 };
 
 // ---------------------------------------------------------------------------
@@ -59,6 +66,7 @@ export type GameMachineContext = GameContext & {
 export type GameMachineEvents =
   | { type: "START" }
   | { type: "PHASE_COMPLETE" }
+  | { type: "SYNC_REDUX_PHASE"; phase: string }
   | { type: "QUIT" };
 
 // ---------------------------------------------------------------------------
@@ -73,7 +81,13 @@ export const gameMachine = setup({
   },
   guards: {
     hasMorePhases: ({ context }) => context.remainingPhases.length > 0,
-    noMorePhases: ({ context }) => context.remainingPhases.length === 0
+    noMorePhases: ({ context }) => context.remainingPhases.length === 0,
+    /** True when the current round index is valid (0–74). */
+    hasCalendarEntry: ({ context }) =>
+      context.turn.round >= 0 && context.turn.round < calendar.length,
+    /** True when the round index is outside calendar bounds (< 0 or > 74). */
+    calendarOutOfBounds: ({ context }) =>
+      context.turn.round < 0 || context.turn.round >= calendar.length
   },
   actions: {
     /**
@@ -133,8 +147,22 @@ export const gameMachine = setup({
       },
       currentRoundCalendar: undefined,
       remainingPhases: [],
-      currentPhase: undefined
-    }))
+      currentPhase: undefined,
+      reduxPhase: undefined
+    })),
+
+    /**
+     * Update the `reduxPhase` field from a `SYNC_REDUX_PHASE` event.
+     * This mirrors the phase name that the saga sets via `setGamePhase`
+     * in Redux, which can differ from the machine's `currentPhase`
+     * (calendar-derived). Purely for dev-time observability.
+     */
+    syncReduxPhase: assign(({ event }) => {
+      if (event.type === "SYNC_REDUX_PHASE") {
+        return { reduxPhase: event.phase };
+      }
+      return {};
+    })
   }
 }).createMachine({
   id: "game",
@@ -143,7 +171,8 @@ export const gameMachine = setup({
     ...input,
     currentRoundCalendar: undefined,
     remainingPhases: [],
-    currentPhase: undefined
+    currentPhase: undefined,
+    reduxPhase: undefined
   }),
   states: {
     /**
@@ -166,7 +195,15 @@ export const gameMachine = setup({
     playing: {
       initial: "roundStart",
       on: {
-        QUIT: { target: "done" }
+        QUIT: { target: "done" },
+        /**
+         * SYNC_REDUX_PHASE can arrive at any point during gameplay.
+         * It just records what Redux thinks the current phase is,
+         * without affecting the machine's own phase tracking.
+         */
+        SYNC_REDUX_PHASE: {
+          actions: "syncReduxPhase"
+        }
       },
       states: {
         /**
@@ -183,6 +220,15 @@ export const gameMachine = setup({
             {
               target: "executingPhases",
               guard: "hasMorePhases"
+            },
+            {
+              // Calendar out of bounds (round -1 at season start, or
+              // round 75 after last round). Park here until the sync
+              // middleware restarts us at round 0 for the new season.
+              // Without this guard, empty phases → roundEnd → roundStart
+              // would loop infinitely via `always` transitions.
+              target: "waitingForNewSeason",
+              guard: "calendarOutOfBounds"
             },
             {
               // Edge case: round with no phases (shouldn't happen but be safe)
@@ -229,7 +275,21 @@ export const gameMachine = setup({
         roundEnd: {
           entry: "advanceTurn",
           always: { target: "roundStart" }
-        }
+        },
+
+        /**
+         * Parked state — the calendar is exhausted (round > 74).
+         *
+         * In production, the `endOfSeason` saga phase dispatches
+         * `seasonStart` which causes the sync middleware to stop
+         * this actor and start a fresh one at round 0. So the
+         * machine never stays here long — it gets replaced.
+         *
+         * This state prevents the infinite `roundStart ↔ roundEnd`
+         * loop that would otherwise occur with `always` transitions
+         * when no calendar entry exists.
+         */
+        waitingForNewSeason: {}
       }
     },
 
