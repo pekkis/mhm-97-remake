@@ -179,9 +179,7 @@ describe("phase tracking bridge", () => {
       expect(round5Phases).toEqual(["action", "gameday", "event", "news"]);
 
       for (let i = 0; i < round5Phases.length; i++) {
-        expect(actor.getSnapshot().context.currentPhase).toBe(
-          round5Phases[i]
-        );
+        expect(actor.getSnapshot().context.currentPhase).toBe(round5Phases[i]);
         actor.send({ type: "PHASE_COMPLETE" });
       }
 
@@ -293,6 +291,65 @@ describe("phase tracking bridge", () => {
       }
 
       expect(actor.getSnapshot().context.turn.round).toBe(10);
+    });
+
+    it("walks through all 75 rounds and parks at season end", () => {
+      const actor = createTestGameActor();
+      actor.send({ type: "START" });
+
+      for (let round = 0; round < calendar.length; round++) {
+        const phases = calendar[round].phases;
+        expect(actor.getSnapshot().context.turn.round).toBe(round);
+
+        for (let i = 0; i < phases.length; i++) {
+          expect(actor.getSnapshot().context.currentPhase).toBe(phases[i]);
+          actor.send({ type: "PHASE_COMPLETE" });
+        }
+      }
+
+      // Machine advanced past round 74, parked in waitingForNewSeason
+      expect(actor.getSnapshot().context.turn.round).toBe(calendar.length);
+      expect(actor.getSnapshot().value).toEqual({
+        playing: "waitingForNewSeason"
+      });
+      actor.stop();
+    });
+
+    it("walks through 3 full seasons via actor restart", () => {
+      for (let season = 0; season < 3; season++) {
+        const actor = createTestGameActor({
+          turn: { season, round: 0, phase: undefined }
+        });
+        actor.send({ type: "START" });
+
+        for (let round = 0; round < calendar.length; round++) {
+          for (let i = 0; i < calendar[round].phases.length; i++) {
+            actor.send({ type: "PHASE_COMPLETE" });
+          }
+        }
+
+        expect(actor.getSnapshot().context.turn.round, `season ${season}`).toBe(
+          calendar.length
+        );
+        expect(actor.getSnapshot().value).toEqual({
+          playing: "waitingForNewSeason"
+        });
+        actor.stop();
+      }
+    });
+
+    it("handles round -1 (season boundary) by parking", () => {
+      // SEASON_END sets turn.round = -1 in Redux. The sync middleware
+      // starts the actor with this value. The machine should park.
+      const actor = createTestGameActor({
+        turn: { season: 1, round: -1, phase: undefined }
+      });
+      actor.send({ type: "START" });
+
+      expect(actor.getSnapshot().value).toEqual({
+        playing: "waitingForNewSeason"
+      });
+      actor.stop();
     });
   });
 });

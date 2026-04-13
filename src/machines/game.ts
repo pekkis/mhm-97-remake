@@ -81,7 +81,13 @@ export const gameMachine = setup({
   },
   guards: {
     hasMorePhases: ({ context }) => context.remainingPhases.length > 0,
-    noMorePhases: ({ context }) => context.remainingPhases.length === 0
+    noMorePhases: ({ context }) => context.remainingPhases.length === 0,
+    /** True when the current round index is valid (0–74). */
+    hasCalendarEntry: ({ context }) =>
+      context.turn.round >= 0 && context.turn.round < calendar.length,
+    /** True when the round index is outside calendar bounds (< 0 or > 74). */
+    calendarOutOfBounds: ({ context }) =>
+      context.turn.round < 0 || context.turn.round >= calendar.length
   },
   actions: {
     /**
@@ -216,6 +222,15 @@ export const gameMachine = setup({
               guard: "hasMorePhases"
             },
             {
+              // Calendar out of bounds (round -1 at season start, or
+              // round 75 after last round). Park here until the sync
+              // middleware restarts us at round 0 for the new season.
+              // Without this guard, empty phases → roundEnd → roundStart
+              // would loop infinitely via `always` transitions.
+              target: "waitingForNewSeason",
+              guard: "calendarOutOfBounds"
+            },
+            {
               // Edge case: round with no phases (shouldn't happen but be safe)
               target: "roundEnd",
               guard: "noMorePhases"
@@ -260,7 +275,21 @@ export const gameMachine = setup({
         roundEnd: {
           entry: "advanceTurn",
           always: { target: "roundStart" }
-        }
+        },
+
+        /**
+         * Parked state — the calendar is exhausted (round > 74).
+         *
+         * In production, the `endOfSeason` saga phase dispatches
+         * `seasonStart` which causes the sync middleware to stop
+         * this actor and start a fresh one at round 0. So the
+         * machine never stays here long — it gets replaced.
+         *
+         * This state prevents the infinite `roundStart ↔ roundEnd`
+         * loop that would otherwise occur with `always` transitions
+         * when no calendar entry exists.
+         */
+        waitingForNewSeason: {}
       }
     },
 

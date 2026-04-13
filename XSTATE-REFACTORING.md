@@ -234,7 +234,10 @@ Convert cluster by cluster, smallest first.
   - Added `reduxPhase` context field to `GameMachineContext` — separate from `currentPhase` (calendar-derived); tracks Redux-reported phase names including sub-phases (e.g. "select-strategy" within "startOfSeason")
   - The dev logger (from PR 6) now shows the machine walking through all phases per round, validating the round lifecycle against real saga execution
   - No state mutation in the machine — purely observational
-  - 13 new tests (252 total)
+  - 16 tests in `phase-tracking-bridge.test.ts` including full 75-round season walkthrough and 3-season multi-season test (255 total)
+- **Key finding: infinite `always` loop at season boundary** — When the machine walked past calendar[74] into round 75, `roundStart → (empty phases) → roundEnd → roundStart` looped infinitely via synchronous `always` transitions, causing browser hang and test OOM. Fix: `calendarOutOfBounds` guard + `waitingForNewSeason` parking state. The sync middleware restarts the actor at round 0 on each `seasonStart`.
+- **Key finding: `SEASON_END` sets `turn.round = -1`** — Redux reducer sets round to -1, `SEASON_START` doesn't reset it. The saga's `nextTurn()` bumps it to 0. The `calendarOutOfBounds` guard catches both negative and out-of-range rounds.
+- **Dev logger upgraded** — dot-path state formatting (`playing.executingPhases`), color-coded diffs with prev/next context, `xstate.init` and zero-diff transitions suppressed.
 - **Real phase migration** happens later, per-phase: remove saga phase, implement in machine, verify. This is safer and more incremental.
 
 **PR 8: Automatic phases — calculations, news, seed, eventCreation**

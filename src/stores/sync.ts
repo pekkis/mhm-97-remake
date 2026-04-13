@@ -123,22 +123,20 @@ export const xstoreSyncMiddleware: Middleware =
     // The appMachine models this as GAME_STARTED (only transitions from "starting").
     // Note: SEASON_START fires every season, not just the first — the appMachine
     // silently ignores it when already in "inGame". Harmless, and goes away
-    // when the game machine owns season transitions directly (PR 7+).
+    // when the game machine owns season transitions directly.
     //
-    // For the gameMachine: we start it on the FIRST season start only (when
-    // the appMachine is transitioning from "starting" to "inGame"). Subsequent
-    // season starts don't re-create the game actor.
+    // For the gameMachine: we (re)start it every season. On subsequent seasons
+    // the saga's endOfSeason phase has already reset turn.round to 0 in Redux,
+    // so deriveGameContext gives us a fresh round-0 context. Without this,
+    // the machine walks past calendar[74] into an infinite roundStart↔roundEnd
+    // loop (calendar has 75 entries, 0–74).
     if (seasonStart.match(action)) {
       appActor.send({ type: "GAME_STARTED" });
 
-      // Only start the game actor if one doesn't already exist
-      // (i.e., this is the first season of a new game).
-      if (!getGameActor()) {
-        const state = store.getState() as RootState;
-        const ctx = deriveGameContext(state);
-        const actor = startGameActor(ctx);
-        actor.send({ type: "START" });
-      }
+      const state = store.getState() as RootState;
+      const ctx = deriveGameContext(state);
+      const actor = startGameActor(ctx);
+      actor.send({ type: "START" });
       return result;
     }
 
