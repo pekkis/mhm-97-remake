@@ -3,10 +3,18 @@ import { createActor } from "xstate";
 import { gameMachine } from "@/machines/game";
 import type { GameContext } from "@/machines/types";
 import type { Competition } from "@/types/competitions";
+import type { ManagerServices } from "@/ducks/manager";
 import calendar from "@/data/calendar";
 import { createTestStore } from "./helpers/createTestStore";
 import { syncFromMachine } from "@/ducks/game";
 import { deriveGameContext } from "@/stores/sync";
+
+const defaultServices: ManagerServices = {
+  coach: false,
+  insurance: false,
+  microphone: false,
+  cheer: false
+};
 
 /** Minimal stub for Competition fields */
 const stubCompetition: Competition = {
@@ -123,7 +131,7 @@ describe("bidirectional context sync bridge", () => {
               name: "Pier Paolo Pasolini",
               difficulty: 2,
               pranksExecuted: 0,
-              services: {},
+              services: defaultServices,
               balance: 50000,
               arena: { level: 1, name: "Studio Cinecittà" },
               extra: 0,
@@ -156,7 +164,7 @@ describe("bidirectional context sync bridge", () => {
       const updatedContext = createTestContext({
         betting: {
           bets: [
-            { manager: "pp", coupon: ["1", "x", "2"], amount: 100, round: 1 }
+            { manager: "pp", coupon: ["1", "x", "2"], amount: 100 }
           ],
           championshipBets: []
         },
@@ -164,11 +172,10 @@ describe("bidirectional context sync bridge", () => {
           events: {
             "evt-1": {
               id: "evt-1",
-              type: "manager",
+              eventId: "test-event",
+              manager: "pp",
               resolved: false,
-              processed: false,
-              autoResolve: false,
-              description: "test"
+              processed: false
             }
           }
         },
@@ -191,8 +198,7 @@ describe("bidirectional context sync bridge", () => {
               id: "inv-1",
               manager: "pp",
               tournament: 1,
-              duration: 3,
-              team: 5
+              duration: 3
             }
           ]
         },
@@ -246,7 +252,7 @@ describe("bidirectional context sync bridge", () => {
               name: "Pier Paolo Pasolini",
               difficulty: 2,
               pranksExecuted: 0,
-              services: {},
+              services: defaultServices,
               balance: 10000,
               arena: { level: 1, name: "Arena" },
               extra: 0,
@@ -287,7 +293,7 @@ describe("bidirectional context sync bridge", () => {
                 name: "Pier Paolo Pasolini",
                 difficulty: 2,
                 pranksExecuted: 0,
-                services: {},
+                services: defaultServices,
                 balance: 10000 + (i + 1) * 1000,
                 arena: { level: 1, name: "Arena" },
                 extra: 0,
@@ -351,7 +357,7 @@ describe("bidirectional context sync bridge", () => {
               name: "Pier Paolo Pasolini",
               difficulty: 2,
               pranksExecuted: 3,
-              services: { coach: true },
+              services: { coach: true, insurance: false, microphone: false, cheer: false },
               balance: 99999,
               arena: { level: 5, name: "Colosseum" },
               extra: 10,
@@ -377,11 +383,10 @@ describe("bidirectional context sync bridge", () => {
           events: {
             "e1": {
               id: "e1",
-              type: "manager",
+              eventId: "test-event",
+              manager: "pp",
               resolved: true,
-              processed: false,
-              autoResolve: false,
-              description: "test event"
+              processed: false
             }
           }
         }
@@ -454,9 +459,9 @@ describe("bidirectional context sync bridge", () => {
       const ctx = createTestContext({
         betting: {
           bets: [
-            { manager: "pp", coupon: ["1", "x"], amount: 500, round: 3 }
+            { manager: "pp", coupon: ["1", "x"], amount: 500 }
           ],
-          championshipBets: [{ manager: "pp", team: 5, amount: 1000 }]
+          championshipBets: [{ manager: "pp", team: 5, amount: 1000, odds: 3.5 }]
         }
       });
 
@@ -471,7 +476,7 @@ describe("bidirectional context sync bridge", () => {
       const ctx = createTestContext({
         invitation: {
           invitations: [
-            { id: "inv-1", manager: "pp", tournament: 2, duration: 5, team: 10 }
+            { id: "inv-1", manager: "pp", tournament: 2, duration: 5 }
           ]
         }
       });
