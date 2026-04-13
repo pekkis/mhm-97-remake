@@ -238,7 +238,14 @@ describe("gameMachine", () => {
     it("preserves game context fields across round transitions", () => {
       const actor = createTestGameActor({
         turn: { season: 2, round: 0, phase: undefined },
-        flags: { jarko: true, usa: false, canada: false, haanperaMarried: false, mauto: false, psycho: undefined }
+        flags: {
+          jarko: true,
+          usa: false,
+          canada: false,
+          haanperaMarried: false,
+          mauto: false,
+          psycho: undefined
+        }
       });
       actor.send({ type: "START" });
 
