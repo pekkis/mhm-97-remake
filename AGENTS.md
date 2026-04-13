@@ -14,7 +14,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 
 - Runtime / build tool: **Vite 8** (`pnpm dev`, `pnpm build`)
 - UI stack: React 19, React Router 7
-- State stack: Redux 5 + **RTK `createReducer`** + redux-saga + XState 5 + **`@xstate/store`** (ui, country, notification) + **`appMachine`** (menu ↔ game lifecycle) (Immutable.js fully removed 2026-04-08)
+- State stack: Redux 5 + **RTK `createReducer`** + redux-saga + XState 5 + **`@xstate/store`** (ui, country, notification) + **`appMachine`** (menu ↔ game lifecycle) + **`gameMachine`** (round/phase skeleton, passive observer) (Immutable.js fully removed 2026-04-08)
 - Language: **TypeScript only** — zero `.js`/`.jsx` in `src/` as of 2026-04-10
 - Lint/format stack: `oxlint` + `oxfmt` (ESLint/Prettier removed)
 - Styling stack: **Vanilla Extract** (zero-runtime CSS-in-TS) + **sprinkles** for utility props
@@ -662,8 +662,11 @@ export const advanceEnabled = (state: RootState) =>
 - **XState PR 4 (`@xstate/store` for leaf ducks): ✅ COMPLETE** — `src/stores/ui.ts`, `src/stores/country.ts`, `src/stores/notification.ts` created with `@xstate/store`. Sync middleware (`src/stores/sync.ts`) dual-writes Redux actions → XState stores using RTK `.match()` type guards. Components read from XState stores via `useSelector` from `@xstate/store-react`. Stately Inspector (`src/stores/inspector.ts`) added for dev-only visualization.
 - **XState PR 5 (`appMachine`): ✅ COMPLETE** — `src/machines/app.ts` exports pure machine definition (states: `menu`, `starting`, `loading`, `inGame`). `src/machines/actors.ts` is the central wiring point for all actor instantiation (machine definitions stay pure, actors live here). Sync middleware bridges Redux meta actions → machine events. `App.tsx` reads `state.matches("inGame")`, `StartMenu.tsx` reads `state.matches("starting")` via `useSelector(appActor, ...)` from `@xstate/react`. Note: `SEASON_START` fires every season (not just the first) — the machine silently ignores `GAME_STARTED` when already in `inGame`. Harmless, goes away when game machine owns season transitions.
 - **Architectural decision: machine files vs actor files** — Machine files (`src/machines/*.ts`) export only the machine definition + types. Actor instantiation lives in `src/machines/actors.ts`. This keeps machine files pure and side-effect-free, avoids module-level `createActor().start()` in machine files, and provides a single wiring point for all actors.
-- **PR 6 combines persistence extraction + gameMachine skeleton** — Original PR 6 (persistence) was too thin on its own. Now: `src/machines/game.ts` (central game machine with `GameContext`, round states, calendar lookup) + `src/services/persistence.ts` (extracted save/load). This is the big one.
-- **Next:** PR 6 (`gameMachine` skeleton + persistence — the big one). See XSTATE-REFACTORING.md.
+- **PR 6 (`gameMachine` skeleton + persistence): ✅ COMPLETE** — `src/machines/game.ts` (pure machine definition: `idle` → `playing` compound state with `roundStart` → `executingPhases` → `roundEnd` loop, `QUIT` exits to `done`). `GameMachineContext` extends `GameContext` with round-management fields (`currentRoundCalendar`, `remainingPhases`, `currentPhase`). `src/services/persistence.ts` (extracted `saveGame`/`loadGame`). `src/machines/actors.ts` manages game actor lifecycle (`startGameActor`/`stopGameActor`/`getGameActor`). Sync middleware starts game actor on `SEASON_START` (new game) or `GAME_LOADED` (load game), stops on `QUIT`. Dev-only context diff logger via `microdiff`. 21+5 new tests (239 total).
+- **Key finding from PR 6 review:** The `done` state is only reachable via `QUIT` (player quits to menu), NOT via season boundary. The game loops forever — `endOfSeason` phase resets `turn.round` to 0, so the calendar never runs past round 74. The original cloud agent had a `seasonOver` guard to `done` which was incorrect.
+- **Key finding: Stately Inspector + large context** — `@statelyai/inspect` throws `Cannot read properties of undefined (reading 'config')` when trying to inspect the game actor (large `GameContext`). Inspector registration skipped for gameMachine; works fine for appMachine and small `@xstate/store` instances.
+- **Key finding: PR 7 scope needs revision** — PR 7 as planned (implement automatic phase logic in machine) is premature. The machine is a passive observer; its context goes stale immediately. Running phase logic in both machine and saga would corrupt state. PR 7 should instead bridge `PHASE_COMPLETE` from sagas so the machine tracks phases without executing them. Real phase migration happens per-phase: remove saga, implement in machine, verify.
+- **Next:** PR 7 (phase tracking bridge — revised scope). See XSTATE-REFACTORING.md.
 - **Full plan:** Hierarchical actor model — `appMachine` → `gameMachine` → phase machines. ~20 PRs across 5 phases. See XSTATE-REFACTORING.md for details.
 
 ### P4 — Styling: ✅ COMPLETE
@@ -775,7 +778,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. ~~Type the `MHMEvent.options` return to eliminate 17 event `as any` casts~~ ✅ Done — `MHMEvent` widened with `BaseEventCreationFields` second generic.
 14. ~~Evaluate `createSlice` migration for simpler ducks~~ — Superseded by XState migration plan. See XSTATE-REFACTORING.md.
-15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. **Next XState PR:** PR 6 (`gameMachine` skeleton + persistence extraction). See XSTATE-REFACTORING.md.
+15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. ~~**Next:** PR 6 (`gameMachine` skeleton + persistence extraction).~~ ✅ Done. **Next XState PR:** PR 7 (phase tracking bridge — revised from "automatic phases"). See XSTATE-REFACTORING.md.
 
 ---
 
