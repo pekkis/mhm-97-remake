@@ -361,15 +361,15 @@ Convert cluster by cluster, smallest first.
 
 ## Risk Assessment
 
-| Risk                                        | Severity    | Mitigation                                                                                                                              |
-| ------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Phase sequencing breaks                     | 🔴 Critical | Regression tests (PR 1) catch ordering issues. Calendar-driven tests verify exact phase sequence per round.                             |
-| Event conversion introduces bugs            | 🟡 High     | Mechanical transform + command interpreter tests. Each event file gets a before/after comparison.                                       |
-| Save/load format change                     | 🟡 High     | Clean break decided. New format is just `JSON.stringify(gameMachine.context)`.                                                          |
-| Performance (96 event files importing ctx)  | 🟢 Low      | Events receive context snapshot, not subscription. No re-render cost. XState 5 batches context updates.                                 |
-| Circular dependencies in machine            | 🟢 Low      | `gameMachine` is single file with `setup()`. Event files import types only, not the machine.                                            |
-| Component migration volume (~38 components) | 🟡 Medium   | Components only change import path (`useAppSelector` → `useSelector` from `@xstate/react`). Selector function signatures are identical. |
-| Long-lived branch merge conflicts           | 🟡 High     | Small PRs, merge frequently, avoid parallel work on same files.                                                                         |
+| Risk                                        | Severity    | Mitigation                                                                                                                                   |
+| ------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Phase sequencing breaks                     | 🔴 Critical | Regression tests (PR 1) catch ordering issues. Calendar-driven tests verify exact phase sequence per round.                                  |
+| Event conversion introduces bugs            | 🟡 High     | Mechanical transform + command interpreter tests. Each event file gets a before/after comparison.                                            |
+| Save/load format change                     | 🟡 High     | Clean break decided. New format is just `JSON.stringify(gameMachine.context)`.                                                               |
+| Performance (96 event files importing ctx)  | 🟢 Low      | Events receive context snapshot, not subscription. No re-render cost. XState 5 batches context updates.                                      |
+| Circular dependencies in machine            | 🟢 Low      | `gameMachine` is single file with `setup()`. Event files import types only, not the machine.                                                 |
+| Component migration volume (~38 components) | 🟡 Medium   | Components only change import path (`useAppSelector` → `useSelector` from `@xstate/react`). Selector function signatures are identical.      |
+| Long-lived branch merge conflicts           | 🟡 High     | Small PRs, merge frequently, avoid parallel work on same files.                                                                              |
 | Bidirectional sync ordering                 | 🟡 High     | `syncFromMachine` must reach Redux before `sagaPhaseComplete` fires. Tests verify ordering. Temporary scaffolding — deleted when Redux dies. |
 
 ---

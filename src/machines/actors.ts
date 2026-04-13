@@ -53,7 +53,7 @@ const attachDevLogger = (actor: GameActor) => {
         `%c[game]%c  → ${state}  %c@ ${time}`,
         "color: #7c3aed; font-weight: bold",
         "color: #9ca3af; font-weight: normal",
-        "color: #6b7280; font-weight: normal",
+        "color: #6b7280; font-weight: normal"
       );
       console.log("state", snapshot.value);
       console.log("context", curr);
@@ -66,7 +66,7 @@ const attachDevLogger = (actor: GameActor) => {
           "color: #7c3aed; font-weight: bold",
           "color: #9ca3af; font-weight: normal",
           "color: #d97706; font-weight: normal",
-          "color: #6b7280; font-weight: normal",
+          "color: #6b7280; font-weight: normal"
         );
         for (const change of changes) {
           const path = change.path.join(".");
@@ -77,21 +77,21 @@ const attachDevLogger = (actor: GameActor) => {
               "color: #e5e7eb; font-weight: bold",
               "color: #ef4444; text-decoration: line-through",
               "color: inherit",
-              "color: #22c55e",
+              "color: #22c55e"
             );
           } else if (change.type === "CREATE") {
             console.log(
               `%c  + %c${path}  %c${JSON.stringify(change.value)}`,
               "color: #22c55e",
               "color: #e5e7eb; font-weight: bold",
-              "color: #22c55e",
+              "color: #22c55e"
             );
           } else if (change.type === "REMOVE") {
             console.log(
               `%c  − %c${path}  %c${JSON.stringify(change.oldValue)}`,
               "color: #ef4444",
               "color: #e5e7eb; font-weight: bold",
-              "color: #ef4444; text-decoration: line-through",
+              "color: #ef4444; text-decoration: line-through"
             );
           }
         }
@@ -140,7 +140,7 @@ export const startGameActor = (initialContext: GameContext): GameActor => {
     _gameActor.stop();
   }
   _gameActor = createActor(gameMachine, {
-    input: initialContext,
+    input: initialContext
   });
   // NOTE: Stately Inspector registration skipped for gameMachine — the large
   // GameContext causes @statelyai/inspect to throw "Cannot read properties of
