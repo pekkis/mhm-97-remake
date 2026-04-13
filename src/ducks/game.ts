@@ -28,9 +28,8 @@ export const sagaPhaseComplete = createAction<{ phase: string }>(
 // Dispatched by the sync middleware after the gameMachine completes a phase.
 // Each duck grabs its slice — same shape as gameLoadState but separate action
 // to avoid triggering load-specific saga side effects.
-export const syncFromMachine = createAction<import("@/machines/types").GameContext>(
-  "SYNC_FROM_MACHINE"
-);
+export const syncFromMachine =
+  createAction<import("@/machines/types").GameContext>("SYNC_FROM_MACHINE");
 
 // Game state
 export const setGamePhase = createAction<string>("GAME_SET_PHASE");

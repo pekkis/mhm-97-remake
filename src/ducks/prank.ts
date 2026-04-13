@@ -23,7 +23,9 @@ export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
     .addCase(gameLoadState, (_state, action) => action.payload.prank)
-    .addCase(syncFromMachine, (_state, action) => ({ pranks: action.payload.pranks }))
+    .addCase(syncFromMachine, (_state, action) => ({
+      pranks: action.payload.pranks
+    }))
     .addCase(addPrank, (state, action) => {
       state.pranks.push(action.payload);
     })

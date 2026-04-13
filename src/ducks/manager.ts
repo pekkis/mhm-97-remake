@@ -1,5 +1,10 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import { seasonStart, teamRemoveManager, teamAddManager, syncFromMachine } from "./game";
+import {
+  seasonStart,
+  teamRemoveManager,
+  teamAddManager,
+  syncFromMachine
+} from "./game";
 import { quitToMainMenu, gameLoadState } from "./meta";
 import { orderPrank } from "./prank";
 import { values } from "remeda";

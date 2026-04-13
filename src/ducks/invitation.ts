@@ -1,5 +1,10 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import { seasonStart, decrementDurations, clearExpired, syncFromMachine } from "./game";
+import {
+  seasonStart,
+  decrementDurations,
+  clearExpired,
+  syncFromMachine
+} from "./game";
 import { quitToMainMenu, gameLoadState } from "./meta";
 
 export type Invitation = {

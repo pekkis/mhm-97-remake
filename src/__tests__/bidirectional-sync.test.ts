@@ -163,9 +163,7 @@ describe("bidirectional context sync bridge", () => {
 
       const updatedContext = createTestContext({
         betting: {
-          bets: [
-            { manager: "pp", coupon: ["1", "x", "2"], amount: 100 }
-          ],
+          bets: [{ manager: "pp", coupon: ["1", "x", "2"], amount: 100 }],
           championshipBets: []
         },
         event: {
@@ -311,9 +309,9 @@ describe("bidirectional context sync bridge", () => {
       // Round ended, advanced to round 2
       expect(actor.getSnapshot().context.turn.round).toBe(2);
       // Last sync balance should persist
-      expect(
-        actor.getSnapshot().context.manager.managers["pp"].balance
-      ).toBe(10000 + round1Phases.length * 1000);
+      expect(actor.getSnapshot().context.manager.managers["pp"].balance).toBe(
+        10000 + round1Phases.length * 1000
+      );
     });
   });
 
@@ -357,7 +355,12 @@ describe("bidirectional context sync bridge", () => {
               name: "Pier Paolo Pasolini",
               difficulty: 2,
               pranksExecuted: 3,
-              services: { coach: true, insurance: false, microphone: false, cheer: false },
+              services: {
+                coach: true,
+                insurance: false,
+                microphone: false,
+                cheer: false
+              },
               balance: 99999,
               arena: { level: 5, name: "Colosseum" },
               extra: 10,
@@ -381,7 +384,7 @@ describe("bidirectional context sync bridge", () => {
       const ctx = createTestContext({
         event: {
           events: {
-            "e1": {
+            e1: {
               id: "e1",
               eventId: "test-event",
               manager: "pp",
@@ -458,10 +461,10 @@ describe("bidirectional context sync bridge", () => {
       const store = createTestStore();
       const ctx = createTestContext({
         betting: {
-          bets: [
-            { manager: "pp", coupon: ["1", "x"], amount: 500 }
-          ],
-          championshipBets: [{ manager: "pp", team: 5, amount: 1000, odds: 3.5 }]
+          bets: [{ manager: "pp", coupon: ["1", "x"], amount: 500 }],
+          championshipBets: [
+            { manager: "pp", team: 5, amount: 1000, odds: 3.5 }
+          ]
         }
       });
 
