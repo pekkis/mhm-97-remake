@@ -4,19 +4,19 @@ import playoffScheduler from "@/services/playoffs";
 import type { PlayoffGroup, Pairing } from "@/types/competitions";
 
 const makePlayoffGroup = (
-  overrides: Partial<PlayoffGroup> = {},
+  overrides: Partial<PlayoffGroup> = {}
 ): PlayoffGroup => ({
   type: "playoffs",
   round: 0,
   teams: [0, 1, 2, 3],
   matchups: [
     [0, 1],
-    [2, 3],
+    [2, 3]
   ],
   winsToAdvance: 2,
   schedule: [],
   stats: [],
-  ...overrides,
+  ...overrides
 });
 
 describe("playoffs", () => {
@@ -24,7 +24,7 @@ describe("playoffs", () => {
     it("should generate correct number of rounds for best-of-3 (winsToAdvance=2)", () => {
       const matchupList: [number, number][] = [
         [0, 1],
-        [2, 3],
+        [2, 3]
       ];
       const rounds = playoffScheduler(matchupList, 2);
       // winsToAdvance=2, max games = 2*2 - 1 = 3 rounds
@@ -53,7 +53,7 @@ describe("playoffs", () => {
     it("should handle multiple matchups in parallel", () => {
       const matchupList: [number, number][] = [
         [0, 3],
-        [1, 2],
+        [1, 2]
       ];
       const rounds = playoffScheduler(matchupList, 2);
 
@@ -81,13 +81,13 @@ describe("playoffs", () => {
         stats: [
           {
             home: { index: 0, id: 10, wins: 2, losses: 1 },
-            away: { index: 1, id: 20, wins: 1, losses: 2 },
+            away: { index: 1, id: 20, wins: 1, losses: 2 }
           },
           {
             home: { index: 2, id: 30, wins: 0, losses: 2 },
-            away: { index: 3, id: 40, wins: 2, losses: 0 },
-          },
-        ],
+            away: { index: 3, id: 40, wins: 2, losses: 0 }
+          }
+        ]
       });
 
       const result = victors(group);
@@ -101,9 +101,9 @@ describe("playoffs", () => {
         stats: [
           {
             home: { index: 0, id: 10, wins: 1, losses: 1 },
-            away: { index: 1, id: 20, wins: 1, losses: 1 },
-          },
-        ],
+            away: { index: 1, id: 20, wins: 1, losses: 1 }
+          }
+        ]
       });
 
       expect(victors(group)).toHaveLength(0);
@@ -115,13 +115,13 @@ describe("playoffs", () => {
         stats: [
           {
             home: { index: 3, id: 40, wins: 2, losses: 0 },
-            away: { index: 0, id: 10, wins: 0, losses: 2 },
+            away: { index: 0, id: 10, wins: 0, losses: 2 }
           },
           {
             home: { index: 2, id: 30, wins: 2, losses: 1 },
-            away: { index: 1, id: 20, wins: 1, losses: 2 },
-          },
-        ],
+            away: { index: 1, id: 20, wins: 1, losses: 2 }
+          }
+        ]
       });
 
       const result = victors(group);
@@ -136,13 +136,13 @@ describe("playoffs", () => {
         stats: [
           {
             home: { index: 0, id: 10, wins: 2, losses: 1 },
-            away: { index: 1, id: 20, wins: 1, losses: 2 },
+            away: { index: 1, id: 20, wins: 1, losses: 2 }
           },
           {
             home: { index: 2, id: 30, wins: 0, losses: 2 },
-            away: { index: 3, id: 40, wins: 2, losses: 0 },
-          },
-        ],
+            away: { index: 3, id: 40, wins: 2, losses: 0 }
+          }
+        ]
       });
 
       const result = eliminated(group);
@@ -156,9 +156,9 @@ describe("playoffs", () => {
         stats: [
           {
             home: { index: 0, id: 10, wins: 1, losses: 2 },
-            away: { index: 1, id: 20, wins: 2, losses: 1 },
-          },
-        ],
+            away: { index: 1, id: 20, wins: 2, losses: 1 }
+          }
+        ]
       });
 
       expect(eliminated(group)).toHaveLength(0);
@@ -170,14 +170,14 @@ describe("playoffs", () => {
       const schedule: Pairing[][] = [
         [{ home: 0, away: 1, result: { home: 3, away: 1, overtime: false } }],
         [{ home: 1, away: 0, result: { home: 2, away: 4, overtime: false } }],
-        [{ home: 0, away: 1, result: { home: 1, away: 2, overtime: false } }],
+        [{ home: 0, away: 1, result: { home: 1, away: 2, overtime: false } }]
       ];
 
       const group = makePlayoffGroup({
         teams: [10, 20],
         matchups: [[0, 1]],
         winsToAdvance: 2,
-        schedule,
+        schedule
       });
 
       const result = matchups(group);
@@ -188,28 +188,28 @@ describe("playoffs", () => {
         index: 0,
         id: 10,
         wins: 2,
-        losses: 1,
+        losses: 1
       });
       // Team index 1 (id 20): lost game 1, lost game 2, won game 3 → 1W 2L
       expect(result[0].away).toMatchObject({
         index: 1,
         id: 20,
         wins: 1,
-        losses: 2,
+        losses: 2
       });
     });
 
     it("should handle games without results (not yet played)", () => {
       const schedule: Pairing[][] = [
         [{ home: 0, away: 1, result: { home: 2, away: 1, overtime: false } }],
-        [{ home: 1, away: 0 }], // not played yet
+        [{ home: 1, away: 0 }] // not played yet
       ];
 
       const group = makePlayoffGroup({
         teams: [10, 20],
         matchups: [[0, 1]],
         winsToAdvance: 2,
-        schedule,
+        schedule
       });
 
       const result = matchups(group);
@@ -222,18 +222,18 @@ describe("playoffs", () => {
       const schedule: Pairing[][] = [
         [
           { home: 0, away: 1, result: { home: 3, away: 0, overtime: false } },
-          { home: 2, away: 3, result: { home: 1, away: 2, overtime: false } },
-        ],
+          { home: 2, away: 3, result: { home: 1, away: 2, overtime: false } }
+        ]
       ];
 
       const group = makePlayoffGroup({
         teams: [10, 20, 30, 40],
         matchups: [
           [0, 1],
-          [2, 3],
+          [2, 3]
         ],
         winsToAdvance: 2,
-        schedule,
+        schedule
       });
 
       const result = matchups(group);

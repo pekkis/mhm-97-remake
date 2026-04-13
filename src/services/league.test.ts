@@ -5,11 +5,11 @@ import type {
   Pairing,
   RoundRobinGroup,
   TeamStat,
-  Penalty,
+  Penalty
 } from "@/types/competitions";
 
 const makeGroup = (
-  overrides: Partial<RoundRobinGroup> = {},
+  overrides: Partial<RoundRobinGroup> = {}
 ): RoundRobinGroup => ({
   type: "round-robin",
   round: 0,
@@ -19,17 +19,17 @@ const makeGroup = (
   stats: [],
   penalties: [],
   colors: [],
-  ...overrides,
+  ...overrides
 });
 
 const makePairing = (
   home: number,
   away: number,
-  result?: { home: number; away: number; overtime: boolean },
+  result?: { home: number; away: number; overtime: boolean }
 ): Pairing => ({
   home,
   away,
-  result,
+  result
 });
 
 describe("league", () => {
@@ -62,7 +62,7 @@ describe("league", () => {
     it("should award 2 points for a win", () => {
       const group = makeGroup({
         teams: [0, 1],
-        schedule: [[makePairing(0, 1, { home: 3, away: 1, overtime: false })]],
+        schedule: [[makePairing(0, 1, { home: 3, away: 1, overtime: false })]]
       });
       const stats = groupStats(group);
 
@@ -76,7 +76,7 @@ describe("league", () => {
     it("should award 1 point each for a draw", () => {
       const group = makeGroup({
         teams: [0, 1],
-        schedule: [[makePairing(0, 1, { home: 2, away: 2, overtime: false })]],
+        schedule: [[makePairing(0, 1, { home: 2, away: 2, overtime: false })]]
       });
       const stats = groupStats(group);
 
@@ -89,7 +89,7 @@ describe("league", () => {
     it("should award 0 points for a loss", () => {
       const group = makeGroup({
         teams: [0, 1],
-        schedule: [[makePairing(0, 1, { home: 0, away: 5, overtime: false })]],
+        schedule: [[makePairing(0, 1, { home: 0, away: 5, overtime: false })]]
       });
       const stats = groupStats(group);
 
@@ -101,7 +101,7 @@ describe("league", () => {
     it("should skip games without results", () => {
       const group = makeGroup({
         teams: [0, 1],
-        schedule: [[makePairing(0, 1)]], // no result
+        schedule: [[makePairing(0, 1)]] // no result
       });
       const stats = groupStats(group);
 
@@ -115,10 +115,10 @@ describe("league", () => {
         schedule: [
           [
             makePairing(0, 1, { home: 3, away: 1, overtime: false }),
-            makePairing(2, 0, { home: 0, away: 2, overtime: false }),
+            makePairing(2, 0, { home: 0, away: 2, overtime: false })
           ],
-          [makePairing(1, 2, { home: 4, away: 0, overtime: false })],
-        ],
+          [makePairing(1, 2, { home: 4, away: 0, overtime: false })]
+        ]
       });
       const stats = groupStats(group);
 
@@ -135,7 +135,7 @@ describe("league", () => {
       const group = makeGroup({
         teams: [0, 1],
         schedule: [[makePairing(0, 1, { home: 3, away: 1, overtime: false })]],
-        penalties: [{ team: 0, penalty: -4 }],
+        penalties: [{ team: 0, penalty: -4 }]
       });
       const stats = groupStats(group);
 
@@ -147,12 +147,12 @@ describe("league", () => {
     it("should apply multiple penalties to the same team", () => {
       const penalties: Penalty[] = [
         { team: 0, penalty: -2 },
-        { team: 0, penalty: -3 },
+        { team: 0, penalty: -3 }
       ];
       const group = makeGroup({
         teams: [0, 1],
         schedule: [],
-        penalties,
+        penalties
       });
       const stats = groupStats(group);
 
@@ -172,14 +172,14 @@ describe("league", () => {
       goalsFor: 0,
       goalsAgainst: 0,
       points: 0,
-      ...overrides,
+      ...overrides
     });
 
     it("should sort by points descending", () => {
       const stats = [
         makeStat({ id: 1, points: 4 }),
         makeStat({ id: 2, points: 8 }),
-        makeStat({ id: 3, points: 6 }),
+        makeStat({ id: 3, points: 6 })
       ];
       const sorted = sortStats(stats);
       expect(sorted.map((s) => s.id)).toEqual([2, 3, 1]);
@@ -189,7 +189,7 @@ describe("league", () => {
       const stats = [
         makeStat({ id: 1, points: 6, goalsFor: 10, goalsAgainst: 8 }), // +2
         makeStat({ id: 2, points: 6, goalsFor: 15, goalsAgainst: 5 }), // +10
-        makeStat({ id: 3, points: 6, goalsFor: 8, goalsAgainst: 3 }), // +5
+        makeStat({ id: 3, points: 6, goalsFor: 8, goalsAgainst: 3 }) // +5
       ];
       const sorted = sortStats(stats);
       expect(sorted.map((s) => s.id)).toEqual([2, 3, 1]);
@@ -198,7 +198,7 @@ describe("league", () => {
     it("should break further ties by goals scored descending", () => {
       const stats = [
         makeStat({ id: 1, points: 6, goalsFor: 8, goalsAgainst: 3 }), // +5, 8 GF
-        makeStat({ id: 2, points: 6, goalsFor: 10, goalsAgainst: 5 }), // +5, 10 GF
+        makeStat({ id: 2, points: 6, goalsFor: 10, goalsAgainst: 5 }) // +5, 10 GF
       ];
       const sorted = sortStats(stats);
       expect(sorted.map((s) => s.id)).toEqual([2, 1]);
@@ -211,15 +211,15 @@ describe("league", () => {
           points: 6,
           goalsFor: 10,
           goalsAgainst: 5,
-          wins: 2,
+          wins: 2
         }),
         makeStat({
           id: 2,
           points: 6,
           goalsFor: 10,
           goalsAgainst: 5,
-          wins: 3,
-        }),
+          wins: 3
+        })
       ];
       const sorted = sortStats(stats);
       expect(sorted.map((s) => s.id)).toEqual([2, 1]);
@@ -228,7 +228,7 @@ describe("league", () => {
     it("should use id as stable tiebreaker when all else is equal", () => {
       const stats = [
         makeStat({ id: 5, points: 6, goalsFor: 10, goalsAgainst: 5, wins: 3 }),
-        makeStat({ id: 2, points: 6, goalsFor: 10, goalsAgainst: 5, wins: 3 }),
+        makeStat({ id: 2, points: 6, goalsFor: 10, goalsAgainst: 5, wins: 3 })
       ];
       const sorted = sortStats(stats);
       // Lower id first (stable sort)
@@ -238,7 +238,7 @@ describe("league", () => {
     it("should not mutate the original array", () => {
       const stats = [
         makeStat({ id: 3, points: 2 }),
-        makeStat({ id: 1, points: 8 }),
+        makeStat({ id: 1, points: 8 })
       ];
       const original = [...stats];
       sortStats(stats);
@@ -252,16 +252,16 @@ describe("league", () => {
         teams: [10, 20, 30],
         schedule: [
           [
-            makePairing(0, 1, { home: 3, away: 1, overtime: false }), // 10 beats 20
+            makePairing(0, 1, { home: 3, away: 1, overtime: false }) // 10 beats 20
             // team 2 (id 30) has bye
           ],
           [
-            makePairing(1, 2, { home: 0, away: 2, overtime: false }), // 30 beats 20
+            makePairing(1, 2, { home: 0, away: 2, overtime: false }) // 30 beats 20
           ],
           [
-            makePairing(0, 2, { home: 1, away: 1, overtime: false }), // 10 draws 30
-          ],
-        ],
+            makePairing(0, 2, { home: 1, away: 1, overtime: false }) // 10 draws 30
+          ]
+        ]
       });
 
       const result = table(group);

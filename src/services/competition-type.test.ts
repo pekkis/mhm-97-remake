@@ -3,11 +3,11 @@ import competitionTypes from "@/services/competition-type";
 import type {
   RoundRobinGroup,
   PlayoffGroup,
-  MatchupStat,
+  MatchupStat
 } from "@/types/competitions";
 
 const makeRoundRobinGroup = (
-  overrides: Partial<RoundRobinGroup> = {},
+  overrides: Partial<RoundRobinGroup> = {}
 ): RoundRobinGroup => ({
   type: "round-robin",
   round: 0,
@@ -17,23 +17,23 @@ const makeRoundRobinGroup = (
   stats: [],
   penalties: [],
   colors: [],
-  ...overrides,
+  ...overrides
 });
 
 const makePlayoffGroup = (
-  overrides: Partial<PlayoffGroup> = {},
+  overrides: Partial<PlayoffGroup> = {}
 ): PlayoffGroup => ({
   type: "playoffs",
   round: 0,
   teams: [0, 1, 2, 3],
   matchups: [
     [0, 1],
-    [2, 3],
+    [2, 3]
   ],
   winsToAdvance: 3,
   schedule: [],
   stats: [],
-  ...overrides,
+  ...overrides
 });
 
 describe("competition-type", () => {
@@ -75,10 +75,10 @@ describe("competition-type", () => {
             {
               home: 0,
               away: 1,
-              result: { home: 3, away: 1, overtime: false },
-            },
-          ],
-        ],
+              result: { home: 3, away: 1, overtime: false }
+            }
+          ]
+        ]
       });
       const result = rr.stats(group);
       expect(Array.isArray(result)).toBe(true);
@@ -98,7 +98,7 @@ describe("competition-type", () => {
 
     it("overtime should always return false", () => {
       expect(tourney.overtime({ home: 1, away: 1, overtime: false })).toBe(
-        false,
+        false
       );
     });
 
@@ -127,13 +127,13 @@ describe("competition-type", () => {
         stats: [
           {
             home: { index: 0, id: 0, wins: 1, losses: 1 },
-            away: { index: 1, id: 1, wins: 1, losses: 1 },
+            away: { index: 1, id: 1, wins: 1, losses: 1 }
           },
           {
             home: { index: 2, id: 2, wins: 0, losses: 0 },
-            away: { index: 3, id: 3, wins: 0, losses: 0 },
-          },
-        ] as MatchupStat[],
+            away: { index: 3, id: 3, wins: 0, losses: 0 }
+          }
+        ] as MatchupStat[]
       });
 
       expect(po.playMatch(group, 0, 0)).toBe(true);
@@ -145,9 +145,9 @@ describe("competition-type", () => {
         stats: [
           {
             home: { index: 0, id: 0, wins: 3, losses: 1 },
-            away: { index: 1, id: 1, wins: 1, losses: 3 },
-          },
-        ] as MatchupStat[],
+            away: { index: 1, id: 1, wins: 1, losses: 3 }
+          }
+        ] as MatchupStat[]
       });
 
       expect(po.playMatch(group, 0, 0)).toBe(false);
@@ -159,9 +159,9 @@ describe("competition-type", () => {
         stats: [
           {
             home: { index: 0, id: 0, wins: 0, losses: 3 },
-            away: { index: 1, id: 1, wins: 3, losses: 0 },
-          },
-        ] as MatchupStat[],
+            away: { index: 1, id: 1, wins: 3, losses: 0 }
+          }
+        ] as MatchupStat[]
       });
 
       expect(po.playMatch(group, 0, 0)).toBe(false);
@@ -173,13 +173,13 @@ describe("competition-type", () => {
         stats: [
           {
             home: { index: 0, id: 0, wins: 2, losses: 0 },
-            away: { index: 1, id: 1, wins: 0, losses: 2 },
+            away: { index: 1, id: 1, wins: 0, losses: 2 }
           },
           {
             home: { index: 2, id: 2, wins: 1, losses: 0 },
-            away: { index: 3, id: 3, wins: 0, losses: 1 },
-          },
-        ] as MatchupStat[],
+            away: { index: 3, id: 3, wins: 0, losses: 1 }
+          }
+        ] as MatchupStat[]
       });
 
       // Matchup 0 is decided
