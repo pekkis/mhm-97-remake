@@ -5,27 +5,27 @@ import { managerAdd, managerSetActive } from "@/ducks/manager";
 import { nextTurn, setGamePhase, teamIncrementStrength } from "@/ducks/game";
 
 // Provide a localStorage stub for Node.js environment
-let store: Record<string, string> = {};
+let storageData: Record<string, string> = {};
 
 const localStorageMock = {
-  getItem: vi.fn((key: string) => store[key] ?? null),
+  getItem: vi.fn((key: string) => storageData[key] ?? null),
   setItem: vi.fn((key: string, value: string) => {
-    store[key] = value;
+    storageData[key] = value;
   }),
   removeItem: vi.fn((key: string) => {
-    delete store[key];
+    delete storageData[key];
   }),
   clear: vi.fn(() => {
-    store = {};
+    storageData = {};
   }),
   get length() {
-    return Object.keys(store).length;
+    return Object.keys(storageData).length;
   },
-  key: vi.fn((index: number) => Object.keys(store)[index] ?? null)
+  key: vi.fn((index: number) => Object.keys(storageData)[index] ?? null)
 };
 
 beforeEach(() => {
-  store = {};
+  storageData = {};
   localStorageMock.getItem.mockClear();
   localStorageMock.setItem.mockClear();
   (globalThis as any).localStorage = localStorageMock;

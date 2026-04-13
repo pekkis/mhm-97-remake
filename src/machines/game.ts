@@ -75,7 +75,8 @@ export const gameMachine = setup({
   },
   guards: {
     hasMorePhases: ({ context }) => context.remainingPhases.length > 0,
-    noMorePhases: ({ context }) => context.remainingPhases.length === 0
+    noMorePhases: ({ context }) => context.remainingPhases.length === 0,
+    seasonOver: ({ context }) => calendar[context.turn.round] === undefined
   },
   actions: {
     /**
@@ -90,8 +91,8 @@ export const gameMachine = setup({
       const entry = calendar[roundIndex];
 
       if (!entry) {
-        // Past the last round — this shouldn't happen in normal play,
-        // but guard against it for safety.
+        // Past the last round — season is over.
+        // The `seasonOver` guard will catch this and transition to `done`.
         return {
           currentRoundCalendar: undefined,
           remainingPhases: [],
@@ -163,10 +164,17 @@ export const gameMachine = setup({
         /**
          * Entry point for each round. Loads the calendar entry and
          * populates the phase list for sequential execution.
+         *
+         * If the current round is past the end of the calendar (75 rounds,
+         * 0–74), the `seasonOver` guard fires and we transition to `done`.
          */
         roundStart: {
           entry: "loadRoundFromCalendar",
           always: [
+            {
+              target: "#game.done",
+              guard: "seasonOver"
+            },
             {
               target: "executingPhases",
               guard: "hasMorePhases"

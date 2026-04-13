@@ -238,7 +238,7 @@ describe("gameMachine", () => {
     it("preserves game context fields across round transitions", () => {
       const actor = createTestGameActor({
         turn: { season: 2, round: 0, phase: undefined },
-        flags: { jarko: true, usa: false, canada: false, haanperaMarried: false, mauto: false, psycho: 3 }
+        flags: { jarko: true, usa: false, canada: false, haanperaMarried: false, mauto: false, psycho: undefined }
       });
       actor.send({ type: "START" });
 
@@ -254,7 +254,7 @@ describe("gameMachine", () => {
       expect(ctx.turn.season).toBe(2);
       // Flags should be preserved
       expect(ctx.flags.jarko).toBe(true);
-      expect(ctx.flags.psycho).toBe(3);
+      expect(ctx.flags.psycho).toBeUndefined();
     });
   });
 
@@ -276,6 +276,35 @@ describe("gameMachine", () => {
       // Sending to a stopped actor should not throw
       actor.send({ type: "PHASE_COMPLETE" });
       expect(actor.getSnapshot().status).toBe("stopped");
+    });
+  });
+
+  describe("season boundary", () => {
+    it("transitions to done when round exceeds calendar length", () => {
+      // Calendar has 75 rounds (0-74). Round 75 should trigger seasonOver.
+      const actor = createTestGameActor({
+        turn: { season: 0, round: calendar.length, phase: undefined }
+      });
+      actor.send({ type: "START" });
+
+      expect(actor.getSnapshot().value).toBe("done");
+      expect(actor.getSnapshot().status).toBe("done");
+    });
+
+    it("the last valid round (74) still executes phases", () => {
+      const lastRound = calendar.length - 1;
+      const actor = createTestGameActor({
+        turn: { season: 0, round: lastRound, phase: undefined }
+      });
+      actor.send({ type: "START" });
+
+      // Should be in executingPhases, not done
+      expect(actor.getSnapshot().value).toEqual({
+        playing: "executingPhases"
+      });
+      expect(actor.getSnapshot().context.currentRoundCalendar).toEqual(
+        calendar[lastRound]
+      );
     });
   });
 });
