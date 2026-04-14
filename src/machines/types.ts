@@ -41,7 +41,8 @@ export type {
   GameRecord
 } from "@/ducks/stats";
 export type { UiState } from "@/ducks/ui";
-export type { Country } from "@/ducks/country";
+export type { Country, CountryState } from "@/ducks/country";
+export type { PrankState } from "@/ducks/prank";
 export type { PrankInstance } from "@/game/pranks";
 export type { ManagerDefinition } from "@/data/managers";
 
@@ -71,8 +72,8 @@ import type { InvitationState } from "@/ducks/invitation";
 import type { NewsState } from "@/ducks/news";
 import type { NotificationState } from "@/ducks/notification";
 import type { StatsState } from "@/ducks/stats";
-import type { Country } from "@/ducks/country";
-import type { PrankInstance } from "@/game/pranks";
+import type { CountryState } from "@/ducks/country";
+import type { PrankState } from "@/ducks/prank";
 import type { ManagerDefinition } from "@/data/managers";
 import type { Competition, CompetitionId } from "@/types/competitions";
 
@@ -111,7 +112,7 @@ export type GameContext = {
   notification: NotificationState;
 
   // --- From prank duck ---
-  pranks: PrankInstance[];
+  prank: PrankState;
 
   // --- From stats duck ---
   stats: StatsState;
@@ -120,5 +121,5 @@ export type GameContext = {
   invitation: InvitationState;
 
   // --- From country duck ---
-  country: Record<string, Country>;
+  country: CountryState;
 };

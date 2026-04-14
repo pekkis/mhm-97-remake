@@ -1,6 +1,6 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 import { quitToMainMenu, gameLoadState } from "./meta";
-import { seasonStart, seasonEnd } from "./game";
+import { seasonStart, seasonEnd, syncFromMachine } from "./game";
 
 export const updateFromFacts = createAction<{
   team: string;
@@ -90,6 +90,7 @@ export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
     .addCase(gameLoadState, (_state, action) => action.payload.stats)
+    .addCase(syncFromMachine, (_state, action) => action.payload.stats)
     .addCase(seasonStart, (state) => {
       state.currentSeason = { ...emptySeasonStats, stories: {} };
     })

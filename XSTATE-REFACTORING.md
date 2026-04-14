@@ -53,11 +53,11 @@ appMachine (root)
             ├── manager: ManagerState
             ├── betting: BettingState
             ├── news: NewsState
-            ├── events: EventState
-            ├── pranks: PrankInstance[]
-            ├── invitations: InvitationState
+            ├── event: EventState
+            ├── prank: PrankState
+            ├── invitation: InvitationState
             ├── stats: StatsState
-            ├── notifications: NotificationState
+            ├── notification: NotificationState
             ├── country: CountryState
             └── serviceBasePrices: Record<string, number>
 ```
@@ -240,14 +240,17 @@ Convert cluster by cluster, smallest first.
 - **Dev logger upgraded** — dot-path state formatting (`playing.executingPhases`), color-coded diffs with prev/next context, `xstate.init` and zero-diff transitions suppressed.
 - **Real phase migration** happens later, per-phase: remove saga phase, implement in machine, verify. This is safer and more incremental.
 
-**PR 8: Bidirectional context sync bridge**
+**PR 8: Bidirectional context sync bridge** ✅ COMPLETE
 
 - **Purpose:** Enable incremental phase migration by keeping Redux and XState in sync between phases. Without this, the machine's context goes stale and migrated phases would operate on outdated data.
-- **Redux → XState (before machine phase):** On each `sagaPhaseComplete`, also send `SYNC_CONTEXT` to the game actor with a fresh `deriveGameContext(store.getState())`. The machine replaces its context fields, staying current even while sagas still run some phases.
-- **XState → Redux (after machine phase):** Create `syncFromMachine(context: GameContext)` action. Each duck's reducer grabs its slice — 12 one-liners, same shape as game load but separate action to avoid triggering load-specific saga side effects. Machine dispatches this after completing a phase via `assign()`.
-- **Ordering invariant:** `syncFromMachine` must reach Redux **before** `sagaPhaseComplete` is dispatched, so the next saga phase sees updated state.
-- **Temporary scaffolding:** Both sync directions get deleted when Redux dies. Redux→XState is unnecessary once all phases live in the machine. XState→Redux dies when Redux is removed entirely.
-- **No phase migration in this PR** — just the plumbing. Proves the round-trip with tests.
+- **Redux → XState (before machine phase):** On each `sagaPhaseComplete`, sync middleware sends `SYNC_CONTEXT` to the game actor with a fresh `deriveGameContext(store.getState())`. XState's `assign()` shallow merge replaces `GameContext` fields while preserving machine-internal fields (`currentRoundCalendar`, `remainingPhases`, `currentPhase`, `reduxPhase`).
+- **XState → Redux (after machine phase):** `syncFromMachine(context: GameContext)` action. Each of 10 ducks grabs its slice — same shape as game load but separate action to avoid triggering load-specific saga side effects. Game duck handler explicitly picks its 7 fields (typed — `tsc` catches missing fields if `GameState` grows).
+- **Ordering invariant:** In sync middleware, `SYNC_CONTEXT` is sent before `PHASE_COMPLETE` so the machine's context is fresh when it transitions to the next phase.
+- **GameContext shape harmonized:** `pranks: PrankInstance[]` → `prank: PrankState`, `country: Record<string, Country>` → `country: CountryState`. All `GameContext` fields now mirror the exact Redux duck state shapes — `deriveGameContext` and duck `syncFromMachine` handlers are straight pass-throughs (no wrapping/unwrapping). Exported `PrankState` and `CountryState` from their ducks.
+- **`deriveGameContext` exported** for test use.
+- **Temporary scaffolding:** Both sync directions get deleted when Redux dies.
+- 23 new tests in `bidirectional-sync.test.ts` (672 lines) — context round-trip, ordering invariant, all duck slices, `deriveGameContext` mapping. 278 total tests.
+- 13 files changed, 759 additions, 10 deletions.
 
 **PR 9: First phase migration — `calculations`**
 
@@ -380,7 +383,7 @@ Convert cluster by cluster, smallest first.
 | ---------------------------------- | --------------------- | -------------- | ----------- |
 | Phase 0: Foundation                | ~5                    | 3 ✅ (3/3)     | Medium      |
 | Phase 1: Simple stores + app shell | ~20                   | 3 ✅ (3/3)     | Low–High    |
-| Phase 2: Game machine core         | ~40                   | 7 (1/7)        | Very High   |
+| Phase 2: Game machine core         | ~40                   | 7 (2/7)        | Very High   |
 | Phase 3: Event system              | ~100                  | 3              | High (bulk) |
 | Phase 4: Remaining sagas           | ~25                   | 5              | High        |
 | Phase 5: Cleanup                   | ~40                   | 3              | Low         |

@@ -43,7 +43,7 @@ const createTestContext = (
   event: { events: {} },
   news: { news: [], announcements: {} },
   notification: { notifications: [] },
-  pranks: [],
+  prank: { pranks: [] },
   stats: {
     managers: {},
     currentSeason: undefined,
@@ -51,7 +51,7 @@ const createTestContext = (
     streaks: { team: {}, manager: {} }
   },
   invitation: { invitations: [] },
-  country: {},
+  country: { countries: {} },
   ...overrides
 });
 

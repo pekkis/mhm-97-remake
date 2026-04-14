@@ -1,5 +1,10 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import { seasonStart, decrementDurations, clearExpired } from "./game";
+import {
+  seasonStart,
+  decrementDurations,
+  clearExpired,
+  syncFromMachine
+} from "./game";
 import { quitToMainMenu, gameLoadState } from "./meta";
 
 export type Invitation = {
@@ -38,6 +43,7 @@ export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
     .addCase(gameLoadState, (_state, action) => action.payload.invitation)
+    .addCase(syncFromMachine, (_state, action) => action.payload.invitation)
     .addCase(addInvitation, (state, action) => {
       state.invitations.push({
         ...action.payload,

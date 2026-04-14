@@ -67,6 +67,7 @@ export type GameMachineEvents =
   | { type: "START" }
   | { type: "PHASE_COMPLETE" }
   | { type: "SYNC_REDUX_PHASE"; phase: string }
+  | { type: "SYNC_CONTEXT"; context: GameContext }
   | { type: "QUIT" };
 
 // ---------------------------------------------------------------------------
@@ -162,6 +163,24 @@ export const gameMachine = setup({
         return { reduxPhase: event.phase };
       }
       return {};
+    }),
+
+    /**
+     * Replace all game context fields from a fresh Redux snapshot.
+     *
+     * Called on `SYNC_CONTEXT` to keep the machine's context up-to-date
+     * while sagas still own phase execution. XState's `assign()` does a
+     * shallow merge — only the keys present in the returned object are
+     * updated. Since `event.context` is typed as `GameContext` (not
+     * `GameMachineContext`), machine-internal fields (`currentRoundCalendar`,
+     * `remainingPhases`, `currentPhase`, `reduxPhase`) are absent and
+     * therefore preserved.
+     */
+    syncContext: assign(({ event }) => {
+      if (event.type === "SYNC_CONTEXT") {
+        return { ...event.context };
+      }
+      return {};
     })
   }
 }).createMachine({
@@ -203,6 +222,15 @@ export const gameMachine = setup({
          */
         SYNC_REDUX_PHASE: {
           actions: "syncReduxPhase"
+        },
+        /**
+         * SYNC_CONTEXT replaces all game context fields from a fresh
+         * Redux snapshot. Sent by the sync middleware after each
+         * saga phase completes, so the machine's context stays current
+         * even while sagas still run most phases.
+         */
+        SYNC_CONTEXT: {
+          actions: "syncContext"
         }
       },
       states: {
