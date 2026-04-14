@@ -10,7 +10,7 @@ export type Country = {
   strength: number | undefined;
 };
 
-type CountryState = {
+export type CountryState = {
   countries: Record<string, Country>;
 };
 
@@ -40,9 +40,7 @@ export const setStrength = createAction<{
 export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
-    .addCase(syncFromMachine, (_state, action) => ({
-      countries: action.payload.country
-    }))
+    .addCase(syncFromMachine, (_state, action) => action.payload.country)
     .addCase(setStrength, (state, action) => {
       if (state.countries[action.payload.country]) {
         state.countries[action.payload.country].strength =

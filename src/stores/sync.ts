@@ -37,10 +37,10 @@ export const deriveGameContext = (state: RootState): GameContext => ({
   event: state.event,
   news: state.news,
   notification: state.notification,
-  pranks: state.prank.pranks,
+  prank: state.prank,
   stats: state.stats,
   invitation: state.invitation,
-  country: state.country.countries
+  country: state.country
 });
 
 /**

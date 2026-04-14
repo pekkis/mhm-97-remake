@@ -54,7 +54,7 @@ const createTestContext = (
   event: { events: {} },
   news: { news: [], announcements: {} },
   notification: { notifications: [] },
-  pranks: [],
+  prank: { pranks: [] },
   stats: {
     managers: {},
     currentSeason: undefined,
@@ -62,7 +62,7 @@ const createTestContext = (
     streaks: { team: {}, manager: {} }
   },
   invitation: { invitations: [] },
-  country: {},
+  country: { countries: {} },
   ...overrides
 });
 
@@ -183,7 +183,7 @@ describe("bidirectional context sync bridge", () => {
             { id: "n1", manager: "pp", message: "Hello", type: "info" }
           ]
         },
-        pranks: [{ manager: "pp", type: "spy", victim: 3 }],
+        prank: { pranks: [{ manager: "pp", type: "spy", victim: 3 }] },
         stats: {
           managers: {},
           currentSeason: undefined,
@@ -200,7 +200,9 @@ describe("bidirectional context sync bridge", () => {
             }
           ]
         },
-        country: { fi: { iso: "fi", name: "Finland", strength: 99 } }
+        country: {
+          countries: { fi: { iso: "fi", name: "Finland", strength: 99 } }
+        }
       });
 
       actor.send({ type: "SYNC_CONTEXT", context: updatedContext });
@@ -210,10 +212,10 @@ describe("bidirectional context sync bridge", () => {
       expect(ctx.event.events["evt-1"]).toBeDefined();
       expect(ctx.news.news).toEqual(["Big news!"]);
       expect(ctx.notification.notifications).toHaveLength(1);
-      expect(ctx.pranks).toHaveLength(1);
+      expect(ctx.prank.pranks).toHaveLength(1);
       expect(ctx.stats.streaks.manager).toEqual({ pp: { games: 10 } });
       expect(ctx.invitation.invitations).toHaveLength(1);
-      expect(ctx.country.fi.strength).toBe(99);
+      expect(ctx.country.countries.fi.strength).toBe(99);
     });
 
     it("is ignored in idle state (not playing)", () => {
@@ -421,10 +423,12 @@ describe("bidirectional context sync bridge", () => {
     it("updates the prank duck slice", () => {
       const store = createTestStore();
       const ctx = createTestContext({
-        pranks: [
-          { manager: "pp", type: "spy", victim: 7 },
-          { manager: "pp", type: "doping", victim: 3 }
-        ]
+        prank: {
+          pranks: [
+            { manager: "pp", type: "spy", victim: 7 },
+            { manager: "pp", type: "doping", victim: 3 }
+          ]
+        }
       });
 
       store.dispatch(syncFromMachine(ctx));
@@ -494,8 +498,10 @@ describe("bidirectional context sync bridge", () => {
       const store = createTestStore();
       const ctx = createTestContext({
         country: {
-          fi: { iso: "fi", name: "Finland", strength: 88 },
-          se: { iso: "se", name: "Sweden", strength: 92 }
+          countries: {
+            fi: { iso: "fi", name: "Finland", strength: 88 },
+            se: { iso: "se", name: "Sweden", strength: 92 }
+          }
         }
       });
 
@@ -572,7 +578,7 @@ describe("bidirectional context sync bridge", () => {
         event: machineCtx.event,
         news: machineCtx.news,
         notification: machineCtx.notification,
-        pranks: machineCtx.pranks,
+        prank: machineCtx.prank,
         stats: machineCtx.stats,
         invitation: machineCtx.invitation,
         country: machineCtx.country
@@ -594,7 +600,7 @@ describe("bidirectional context sync bridge", () => {
       expect(roundTripped.event).toEqual(ctx.event);
       expect(roundTripped.news).toEqual(ctx.news);
       expect(roundTripped.notification).toEqual(ctx.notification);
-      expect(roundTripped.pranks).toEqual(ctx.pranks);
+      expect(roundTripped.prank).toEqual(ctx.prank);
       expect(roundTripped.stats).toEqual(ctx.stats);
       expect(roundTripped.invitation).toEqual(ctx.invitation);
 
@@ -649,24 +655,24 @@ describe("bidirectional context sync bridge", () => {
       expect(ctx.event).toBeDefined();
       expect(ctx.news).toBeDefined();
       expect(ctx.notification).toBeDefined();
-      expect(ctx.pranks).toBeDefined();
+      expect(ctx.prank).toBeDefined();
       expect(ctx.stats).toBeDefined();
       expect(ctx.invitation).toBeDefined();
       expect(ctx.country).toBeDefined();
     });
 
-    it("maps prank duck shape correctly (state.prank.pranks → pranks)", () => {
+    it("maps prank duck shape directly (state.prank → prank)", () => {
       const store = createTestStore();
       const ctx = deriveGameContext(store.getState());
-      expect(ctx.pranks).toEqual([]);
+      expect(ctx.prank).toEqual({ pranks: [] });
     });
 
-    it("maps country duck shape correctly (state.country.countries → country)", () => {
+    it("maps country duck shape directly (state.country → country)", () => {
       const store = createTestStore();
       const ctx = deriveGameContext(store.getState());
-      expect(typeof ctx.country).toBe("object");
+      expect(ctx.country.countries).toBeDefined();
       // Should have country entries from the initial country data
-      expect(Object.keys(ctx.country).length).toBeGreaterThan(0);
+      expect(Object.keys(ctx.country.countries).length).toBeGreaterThan(0);
     });
   });
 });

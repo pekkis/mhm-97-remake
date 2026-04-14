@@ -10,7 +10,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 
 ---
 
-## Current Reality (as of 2026-04-13)
+## Current Reality (as of 2026-04-14)
 
 - Runtime / build tool: **Vite 8** (`pnpm dev`, `pnpm build`)
 - UI stack: React 19, React Router 7
@@ -33,7 +33,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - Tournament eligibility: `src/sagas/tournament-eligibility.ts` (extracted from `data/tournaments.ts`)
 - Competition saga registry: `src/sagas/competition-registry.ts` (moved from `data/competition-sagas.ts`)
 - `src/data/` now contains **only pure data** — zero `typed-redux-saga` imports
-- **Regression tests:** 255 vitest tests across 19 test files
+- **Regression tests:** 278 vitest tests across 20 test files
 - **TypeScript check: ZERO errors** (as of 2026-04-12)
 - Dev tooling: **Stately Inspector** (`@statelyai/inspect`) for XState store visualization (dev-only, tree-shaken in prod)
 - **Bundle: 674.25kB JS (gzip 215kB), 7.08kB CSS (gzip 1.94kB)** — down from ~806kB JS + runtime CSS
@@ -669,7 +669,10 @@ export const advanceEnabled = (state: RootState) =>
 - **Key finding from PR 7: infinite `always` loop at season boundary** — When the machine walked past calendar[74] into round 75, `roundStart → (empty phases) → roundEnd → roundStart` looped infinitely via synchronous `always` transitions, causing browser hang and test OOM. Fix: `calendarOutOfBounds` guard + `waitingForNewSeason` parking state. The sync middleware restarts the actor at round 0 on each `seasonStart`.
 - **Key finding: `SEASON_END` sets `turn.round = -1`** — Redux reducer sets round to -1, `SEASON_START` doesn't reset it. The saga's `nextTurn()` bumps it to 0. The `calendarOutOfBounds` guard catches both negative and out-of-range rounds.
 - **Next:** PR 8 (bidirectional context sync bridge). See XSTATE-REFACTORING.md.
-- **Full plan:** Hierarchical actor model — `appMachine` → `gameMachine` → phase machines. ~23 PRs across 5 phases. See XSTATE-REFACTORING.md for details.
+- **PR 8 (bidirectional context sync bridge): ✅ COMPLETE** — `syncFromMachine(GameContext)` action for XState→Redux sync. `SYNC_CONTEXT` event for Redux→XState sync. Sync middleware sends `SYNC_CONTEXT` before `PHASE_COMPLETE` (ordering invariant). Each of 10 ducks has `addCase(syncFromMachine)` grabbing its slice as straight pass-through. Game duck explicitly picks 7 fields (typed — `tsc` catches if `GameState` grows). `deriveGameContext` exported. GameContext shape harmonized: `pranks: PrankInstance[]` → `prank: PrankState`, `country: Record<string, Country>` → `country: CountryState` — all fields now mirror exact duck state shapes. `PrankState` and `CountryState` exported from their ducks. 23 new tests in `bidirectional-sync.test.ts`. 278 total tests.
+- **Key finding from PR 8: harmonize GameContext with duck shapes** — Original implementation had `pranks` (flat `PrankInstance[]`) and `country` (flat `Record<string, Country>`) requiring wrapping/unwrapping in `deriveGameContext` and duck `syncFromMachine` handlers. Harmonizing to match exact duck shapes (`PrankState`, `CountryState`) eliminated all wrapping — every duck handler is now a straight `action.payload.X` pass-through. One less shape mismatch to worry about.
+- **Key finding from PR 8: game duck picks fields explicitly** — `syncFromMachine` handler in `game.ts` returns `{ turn, flags, teams, ... }` explicitly rather than spreading from `GameContext` (which contains non-game fields). This is type-safe: if `GameState` gains a field, `tsc` will flag the incomplete return.
+- **Next:** PR 9 (first phase migration — `calculations`). See XSTATE-REFACTORING.md.
 
 ### P4 — Styling: ✅ COMPLETE
 
@@ -780,7 +783,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. ~~Type the `MHMEvent.options` return to eliminate 17 event `as any` casts~~ ✅ Done — `MHMEvent` widened with `BaseEventCreationFields` second generic.
 14. ~~Evaluate `createSlice` migration for simpler ducks~~ — Superseded by XState migration plan. See XSTATE-REFACTORING.md.
-15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. ~~**Next:** PR 6 (`gameMachine` skeleton + persistence extraction).~~ ✅ Done. ~~**Next:** PR 7 (phase tracking bridge).~~ ✅ Done. **Next XState PR:** PR 8 (bidirectional context sync bridge). See XSTATE-REFACTORING.md.
+15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. ~~**Next:** PR 6 (`gameMachine` skeleton + persistence extraction).~~ ✅ Done. ~~**Next:** PR 7 (phase tracking bridge).~~ ✅ Done. ~~**Next:** PR 8 (bidirectional context sync bridge).~~ ✅ Done. **Next XState PR:** PR 9 (first phase migration — `calculations`). See XSTATE-REFACTORING.md.
 
 ---
 
