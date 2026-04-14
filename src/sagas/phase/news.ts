@@ -13,6 +13,6 @@ export default function* newsPhase() {
   // transitions to the next phase. We wait for that transition here.
   const actor = getGameActor()!;
   yield* call(() =>
-    waitFor(actor, (snap) => snap.context.currentPhase !== "news"),
+    waitFor(actor, (snap) => snap.context.currentPhase !== "news")
   );
 }

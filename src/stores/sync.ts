@@ -6,7 +6,7 @@ import {
   appActor,
   startGameActor,
   stopGameActor,
-  getGameActor,
+  getGameActor
 } from "@/machines/actors";
 import { toggleMenu, closeMenu } from "@/ducks/ui";
 import { setStrength, alterStrength } from "@/ducks/country";
@@ -17,7 +17,7 @@ import {
   setGamePhase,
   sagaPhaseComplete,
   syncFromMachine,
-  advance,
+  advance
 } from "@/ducks/game";
 import type { RootState } from "@/config/redux";
 import type { GameContext } from "@/machines/types";
@@ -63,7 +63,7 @@ const extractGameContext = (ctx: GameMachineContext): GameContext => ({
   prank: ctx.prank,
   stats: ctx.stats,
   invitation: ctx.invitation,
-  country: ctx.country,
+  country: ctx.country
 });
 
 /**
@@ -90,7 +90,7 @@ export const deriveGameContext = (state: RootState): GameContext => ({
   prank: state.prank,
   stats: state.stats,
   invitation: state.invitation,
-  country: state.country,
+  country: state.country
 });
 
 /**
@@ -135,7 +135,7 @@ export const xstoreSyncMiddleware: Middleware =
     if (addNotification.match(action)) {
       notificationStore.send({
         type: "addNotification",
-        notification: action.payload,
+        notification: action.payload
       });
       return result;
     }
@@ -143,7 +143,7 @@ export const xstoreSyncMiddleware: Middleware =
     if (dismissNotification.match(action)) {
       notificationStore.send({
         type: "dismissNotification",
-        id: action.payload,
+        id: action.payload
       });
       return result;
     }

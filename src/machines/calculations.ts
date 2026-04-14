@@ -29,7 +29,7 @@ import type { GameContext } from "./types";
  * Uses immer for safe nested mutations without spread gymnastics.
  */
 export function executeCalculationsPhase(
-  ctx: GameContext,
+  ctx: GameContext
 ): Partial<GameContext> {
   const teams = produce(ctx.teams, (draft) => {
     for (const team of draft) {
@@ -51,7 +51,7 @@ export function executeCalculationsPhase(
           (total, [serviceId]) =>
             total +
             services[serviceId].price(ctx.serviceBasePrices[serviceId], mgr),
-          0,
+          0
         );
 
       if (serviceCosts !== 0) {

@@ -33,7 +33,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - Tournament eligibility: `src/sagas/tournament-eligibility.ts` (extracted from `data/tournaments.ts`)
 - Competition saga registry: `src/sagas/competition-registry.ts` (moved from `data/competition-sagas.ts`)
 - `src/data/` now contains **only pure data** — zero `typed-redux-saga` imports
-- **Regression tests:** 299 vitest tests across 21 test files
+- **Regression tests:** 305 vitest tests across 22 test files
 - **TypeScript check: ZERO errors** (as of 2026-04-12)
 - Dev tooling: **Stately Inspector** (`@statelyai/inspect`) for XState store visualization (dev-only, tree-shaken in prod)
 - **Bundle: 674.25kB JS (gzip 215kB), 7.08kB CSS (gzip 1.94kB)** — down from ~806kB JS + runtime CSS
@@ -677,7 +677,13 @@ export const advanceEnabled = (state: RootState) =>
 - **Convention from PR 9: explicit field picking over rest-destructuring** — `extractGameContext` uses explicit field listing (16 fields) instead of rest-destructuring with `_`-prefixed exclusions. Type-safe: `tsc` catches missing fields if `GameMachineContext` or `GameContext` changes. Same pattern as game duck's `syncFromMachine`.
 - **Convention from PR 9: `MACHINE_OWNED_PHASES` set** — Determines sync direction per phase. Updated as phases migrate from saga → machine. Saga-owned: Redux → machine (`SYNC_CONTEXT`). Machine-owned: machine → Redux (`syncFromMachine`).
 - **Key finding: sub-phases are not calendar phases** — `"results"`, `"select-strategy"`, etc. are UI states within a calendar phase, tracked via `setGamePhase()` → `SYNC_REDUX_PHASE` → `reduxPhase` context field. They are NOT entries in the calendar's `phases` array. They will become proper XState states when their parent phases are migrated to actors (e.g. `"results"` becomes a state in the future gameday actor).
-- **Next:** PR 10 (remaining automatic phases — news, seed, eventCreation). See XSTATE-REFACTORING.md.
+- **PR 10 (interactive phase pattern — `news`): ✅ COMPLETE** — New migration pattern: **wait-for-user**. The machine gates progression by waiting for `ADVANCE` from the user. Saga blocks via `waitFor(actor)` instead of `take(advance)`. `MACHINE_OWNED_PHASES` split into `MACHINE_COMPUTED_PHASES` (calculations) and `MACHINE_INTERACTIVE_PHASES` (news). `advance()` → `ADVANCE` bridge gated by `MACHINE_INTERACTIVE_PHASES.has(currentPhase)`. `sagaPhaseComplete` handler now has 3 branches: computed, interactive, saga-owned. `src/sagas/phase/news.ts` rewritten from `take(advance)` to `waitFor(actor, snap => snap.context.currentPhase !== "news")`. 6 new tests, 305 total across 22 test files.
+- **Key finding from PR 10: gate all Redux→XState bridges on machine state** — The `advance()` bridge initially fired unconditionally, sending `ADVANCE` on every advance click regardless of phase. This caused the machine to silently advance past "news" before the saga reached it. Fix: only forward when `currentPhase` is in `MACHINE_INTERACTIVE_PHASES`. Lesson: any Redux action bridged to the game actor must check the machine's current state first.
+- **Three migration patterns established (PR 9 + 10):**
+  - **Auto-compute** (`MACHINE_COMPUTED_PHASES`): machine runs `assign()` on entry, saga signals `sagaPhaseComplete` only
+  - **Wait-for-user** (`MACHINE_INTERACTIVE_PHASES`): machine waits for `ADVANCE`, saga uses `waitFor(actor)`
+  - **Saga-owned** (everything else): machine passively observes via `PHASE_COMPLETE`
+- **Next:** PR 11 (game setup machine — `pickingManager` in appMachine). Then PR 12 (selectStrategy + championshipBetting). Then PR 13 (de-sagaize seasonStart). See XSTATE-REFACTORING.md.
 
 ### P4 — Styling: ✅ COMPLETE
 
@@ -788,7 +794,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. ~~Type the `MHMEvent.options` return to eliminate 17 event `as any` casts~~ ✅ Done — `MHMEvent` widened with `BaseEventCreationFields` second generic.
 14. ~~Evaluate `createSlice` migration for simpler ducks~~ — Superseded by XState migration plan. See XSTATE-REFACTORING.md.
-15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. ~~**Next:** PR 6 (`gameMachine` skeleton + persistence extraction).~~ ✅ Done. ~~**Next:** PR 7 (phase tracking bridge).~~ ✅ Done. ~~**Next:** PR 8 (bidirectional context sync bridge).~~ ✅ Done. ~~**Next:** PR 9 (first phase migration — `calculations`).~~ ✅ Done. **Next XState PR:** PR 10 (remaining automatic phases — news, seed, eventCreation). See XSTATE-REFACTORING.md.
+15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. ~~**Next:** PR 6 (`gameMachine` skeleton + persistence extraction).~~ ✅ Done. ~~**Next:** PR 7 (phase tracking bridge).~~ ✅ Done. ~~**Next:** PR 8 (bidirectional context sync bridge).~~ ✅ Done. ~~**Next:** PR 9 (first phase migration — `calculations`).~~ ✅ Done. ~~**Next:** PR 10 (interactive phase pattern — `news`).~~ ✅ Done. **Next XState PR:** PR 11 (game setup machine — `pickingManager` in appMachine). See XSTATE-REFACTORING.md.
 
 ---
 

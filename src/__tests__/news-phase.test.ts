@@ -12,11 +12,11 @@ const stubCompetition: Competition = {
   weight: 1,
   phase: -1,
   teams: [],
-  phases: [],
+  phases: []
 };
 
 const createTestContext = (
-  overrides: Partial<GameContext> = {},
+  overrides: Partial<GameContext> = {}
 ): GameContext => ({
   turn: { season: 0, round: 0, phase: undefined },
   flags: {
@@ -25,7 +25,7 @@ const createTestContext = (
     canada: false,
     haanperaMarried: false,
     mauto: false,
-    psycho: undefined,
+    psycho: undefined
   },
   serviceBasePrices: {},
   managers: [],
@@ -33,7 +33,7 @@ const createTestContext = (
     phl: stubCompetition,
     division: stubCompetition,
     ehl: stubCompetition,
-    tournaments: stubCompetition,
+    tournaments: stubCompetition
   },
   teams: [],
   worldChampionshipResults: undefined,
@@ -47,11 +47,11 @@ const createTestContext = (
     managers: {},
     currentSeason: undefined,
     seasons: [],
-    streaks: { team: {}, manager: {} },
+    streaks: { team: {}, manager: {} }
   },
   invitation: { invitations: [] },
   country: { countries: {} },
-  ...overrides,
+  ...overrides
 });
 
 const createTestGameActor = (overrides: Partial<GameContext> = {}) => {
@@ -87,7 +87,7 @@ const findRoundWithNewsPrecededByOtherPhase = () => {
     }
   }
   throw new Error(
-    "No round with 'news' preceded by another phase found in calendar",
+    "No round with 'news' preceded by another phase found in calendar"
   );
 };
 
@@ -96,7 +96,7 @@ describe("news phase — ADVANCE event on gameMachine", () => {
     it("ADVANCE transitions from executingPhases like PHASE_COMPLETE", () => {
       const { round, phases } = findRoundWithNews();
       const actor = createTestGameActor({
-        turn: { season: 0, round, phase: undefined },
+        turn: { season: 0, round, phase: undefined }
       });
       actor.send({ type: "START" });
 
@@ -129,7 +129,7 @@ describe("news phase — ADVANCE event on gameMachine", () => {
       }
 
       const actor = createTestGameActor({
-        turn: { season: 0, round, phase: undefined },
+        turn: { season: 0, round, phase: undefined }
       });
       actor.send({ type: "START" });
 
@@ -143,7 +143,7 @@ describe("news phase — ADVANCE event on gameMachine", () => {
       // Should still be executing phases (the next one)
       expect(actor.getSnapshot().value).toEqual({ playing: "executingPhases" });
       expect(actor.getSnapshot().context.currentPhase).toBe(
-        phases[newsIdx + 1],
+        phases[newsIdx + 1]
       );
     });
 
@@ -164,7 +164,7 @@ describe("news phase — ADVANCE event on gameMachine", () => {
       }
 
       const actor = createTestGameActor({
-        turn: { season: 0, round: lastNewsRound.round, phase: undefined },
+        turn: { season: 0, round: lastNewsRound.round, phase: undefined }
       });
       actor.send({ type: "START" });
 
@@ -179,7 +179,7 @@ describe("news phase — ADVANCE event on gameMachine", () => {
 
       // Should have advanced to next round
       expect(actor.getSnapshot().context.turn.round).toBe(
-        lastNewsRound.round + 1,
+        lastNewsRound.round + 1
       );
     });
   });
@@ -191,7 +191,7 @@ describe("news phase — ADVANCE event on gameMachine", () => {
       // ADVANCE comes from user interaction, PHASE_COMPLETE from saga bridge.
       // The machine doesn't care which one fires.
       const actor = createTestGameActor({
-        turn: { season: 0, round: 0, phase: undefined },
+        turn: { season: 0, round: 0, phase: undefined }
       });
       actor.send({ type: "START" });
 
@@ -207,7 +207,7 @@ describe("news phase — ADVANCE event on gameMachine", () => {
     it("can mix ADVANCE and PHASE_COMPLETE in the same round", () => {
       const { round, phases } = findRoundWithNewsPrecededByOtherPhase();
       const actor = createTestGameActor({
-        turn: { season: 0, round, phase: undefined },
+        turn: { season: 0, round, phase: undefined }
       });
       actor.send({ type: "START" });
 
@@ -235,7 +235,7 @@ describe("news phase — ADVANCE event on gameMachine", () => {
     it("currentPhase changes from 'news' after ADVANCE", async () => {
       const { round, phases } = findRoundWithNews();
       const actor = createTestGameActor({
-        turn: { season: 0, round, phase: undefined },
+        turn: { season: 0, round, phase: undefined }
       });
       actor.send({ type: "START" });
 
@@ -251,7 +251,7 @@ describe("news phase — ADVANCE event on gameMachine", () => {
       const { waitFor } = await import("xstate");
       const waitPromise = waitFor(
         actor,
-        (snap) => snap.context.currentPhase !== "news",
+        (snap) => snap.context.currentPhase !== "news"
       );
 
       // User clicks advance
