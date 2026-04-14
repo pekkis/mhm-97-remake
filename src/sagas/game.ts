@@ -35,8 +35,6 @@ import seedPhase from "./phase/seed";
 import endOfSeasonPhase from "./phase/end-of-season";
 import startOfSeasonPhase from "./phase/start-of-season";
 import galaPhase from "./phase/gala";
-
-import calculationsPhase from "./phase/calculations";
 import calendar from "@/data/calendar";
 import difficultyLevels from "@/data/difficulty-levels";
 
@@ -131,7 +129,9 @@ export function* gameLoop() {
     }
 
     if (phases.includes("calculations")) {
-      yield* call(calculationsPhase);
+      // Machine-owned phase: the gameMachine executes calculations on entry
+      // via assign(). We just signal completion so the sync middleware can
+      // push machine context → Redux and advance the machine.
       yield* put(sagaPhaseComplete({ phase: "calculations" }));
     }
 
