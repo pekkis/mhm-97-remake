@@ -33,7 +33,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - Tournament eligibility: `src/sagas/tournament-eligibility.ts` (extracted from `data/tournaments.ts`)
 - Competition saga registry: `src/sagas/competition-registry.ts` (moved from `data/competition-sagas.ts`)
 - `src/data/` now contains **only pure data** — zero `typed-redux-saga` imports
-- **Regression tests:** 305 vitest tests across 22 test files
+- **Regression tests:** 316 vitest tests across 22 test files
 - **TypeScript check: ZERO errors** (as of 2026-04-12)
 - Dev tooling: **Stately Inspector** (`@statelyai/inspect`) for XState store visualization (dev-only, tree-shaken in prod)
 - **Bundle: 674.25kB JS (gzip 215kB), 7.08kB CSS (gzip 1.94kB)** — down from ~806kB JS + runtime CSS
@@ -684,6 +684,10 @@ export const advanceEnabled = (state: RootState) =>
   - **Wait-for-user** (`MACHINE_INTERACTIVE_PHASES`): machine waits for `ADVANCE`, saga uses `waitFor(actor)`
   - **Saga-owned** (everything else): machine passively observes via `PHASE_COMPLETE`
 - **Next:** PR 11 (game setup machine — `pickingManager` in appMachine). Then PR 12 (selectStrategy + championshipBetting). Then PR 13 (de-sagaize seasonStart). See XSTATE-REFACTORING.md.
+- **PR 11 (game setup machine — `pickingManager` in appMachine): ✅ COMPLETE** — `starting` becomes compound state: `pickingManager` → (on `SUBMIT_MANAGER`) → `submitted` → (on `GAME_STARTED`) → `inGame`. `AppMachineContext` added with `managerFormValues: ManagerFormValues | undefined`. Sync middleware gates `advance()` → `SUBMIT_MANAGER` on `appActor.matches({ starting: "pickingManager" })` — same gating lesson from PR 10. Meta saga's `gameStart()` uses `waitFor(appActor, snap => snap.matches({ starting: "submitted" }))` instead of `take(advance)`, reads form values from `appActor.getSnapshot().context.managerFormValues`. `StartMenu.tsx` reads `state.matches({ starting: "pickingManager" })`. `AddManagerDetails.team` widened to `string | number` for type compatibility. 11 new tests, 316 total across 22 test files.
+- **Key finding from PR 11: XState 5 compound state `.matches()` uses object form** — `snap.matches("starting.submitted")` is a type error. Must use `snap.matches({ starting: "submitted" })`. String dot-paths are not supported.
+- **Key finding from PR 11: `advance()` dual-purpose bridge** — The `advance()` Redux action is used both for manager form submission (appMachine) and in-game phase progression (gameMachine). The sync middleware handles this with a two-layer gate: first check appMachine state for `SUBMIT_MANAGER`, then fall through to gameMachine's `ADVANCE` bridge. Order matters — appMachine check must come first and `return result` to prevent the gameMachine from also receiving it.
+- **Next:** PR 12 (selectStrategy + championshipBetting). Then PR 13 (de-sagaize seasonStart). See XSTATE-REFACTORING.md.
 
 ### P4 — Styling: ✅ COMPLETE
 
@@ -794,7 +798,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. ~~Type the `MHMEvent.options` return to eliminate 17 event `as any` casts~~ ✅ Done — `MHMEvent` widened with `BaseEventCreationFields` second generic.
 14. ~~Evaluate `createSlice` migration for simpler ducks~~ — Superseded by XState migration plan. See XSTATE-REFACTORING.md.
-15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. ~~**Next:** PR 6 (`gameMachine` skeleton + persistence extraction).~~ ✅ Done. ~~**Next:** PR 7 (phase tracking bridge).~~ ✅ Done. ~~**Next:** PR 8 (bidirectional context sync bridge).~~ ✅ Done. ~~**Next:** PR 9 (first phase migration — `calculations`).~~ ✅ Done. ~~**Next:** PR 10 (interactive phase pattern — `news`).~~ ✅ Done. **Next XState PR:** PR 11 (game setup machine — `pickingManager` in appMachine). See XSTATE-REFACTORING.md.
+15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. ~~**Next:** PR 6 (`gameMachine` skeleton + persistence extraction).~~ ✅ Done. ~~**Next:** PR 7 (phase tracking bridge).~~ ✅ Done. ~~**Next:** PR 8 (bidirectional context sync bridge).~~ ✅ Done. ~~**Next:** PR 9 (first phase migration — `calculations`).~~ ✅ Done. ~~**Next:** PR 10 (interactive phase pattern — `news`).~~ ✅ Done. ~~**Next XState PR:** PR 11 (game setup machine — `pickingManager` in appMachine).~~ ✅ Done. **Next XState PR:** PR 12 (selectStrategy + championshipBetting). See XSTATE-REFACTORING.md.
 
 ---
 

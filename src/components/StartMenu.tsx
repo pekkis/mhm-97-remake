@@ -15,7 +15,9 @@ const StartMenu = () => {
   const teams = useAppSelector((state) => state.game.teams);
   const competitions = useAppSelector(primaryCompetitions);
 
-  const starting = useSelector(appActor, (state) => state.matches("starting"));
+  const starting = useSelector(appActor, (state) =>
+    state.matches({ starting: "pickingManager" })
+  );
   const dispatch = useAppDispatch();
 
   return (
