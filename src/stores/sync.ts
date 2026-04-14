@@ -12,9 +12,34 @@ import { toggleMenu, closeMenu } from "@/ducks/ui";
 import { setStrength, alterStrength } from "@/ducks/country";
 import { addNotification, dismissNotification } from "@/ducks/notification";
 import { quitToMainMenu, startGame, loadGame, gameLoaded } from "@/ducks/meta";
-import { seasonStart, setGamePhase, sagaPhaseComplete } from "@/ducks/game";
+import { seasonStart, setGamePhase, sagaPhaseComplete, syncFromMachine } from "@/ducks/game";
 import type { RootState } from "@/config/redux";
 import type { GameContext } from "@/machines/types";
+import type { GameMachineContext } from "@/machines/game";
+
+/**
+ * Phases that the gameMachine executes directly via `assign()` actions.
+ * For these phases, the sync direction is reversed: machine → Redux
+ * (instead of Redux → machine for saga-owned phases).
+ *
+ * Updated as phases are migrated from sagas to the machine.
+ */
+const MACHINE_OWNED_PHASES = new Set(["calculations"]);
+
+/**
+ * Extract `GameContext` from the machine's `GameMachineContext` by
+ * stripping machine-internal bookkeeping fields.
+ *
+ * Used to push machine state → Redux via `syncFromMachine` after
+ * the machine executes a phase.
+ */
+const extractGameContext = ({
+  currentRoundCalendar: _crc,
+  remainingPhases: _rp,
+  currentPhase: _cp,
+  reduxPhase: _rdp,
+  ...gameCtx
+}: GameMachineContext): GameContext => gameCtx;
 
 /**
  * Derive a `GameContext` snapshot from the current Redux `RootState`.
@@ -166,16 +191,35 @@ export const xstoreSyncMiddleware: Middleware =
       return result;
     }
 
-    // When a saga phase function completes, sync Redux state → gameMachine
-    // context, then forward PHASE_COMPLETE to advance the machine's round
-    // lifecycle. SYNC_CONTEXT must arrive before PHASE_COMPLETE so that
-    // when the machine transitions to the next phase, its context is fresh.
+    // When a saga phase function completes, sync state between Redux and
+    // the gameMachine, then forward PHASE_COMPLETE to advance the machine's
+    // round lifecycle.
+    //
+    // For saga-owned phases: Redux → machine (SYNC_CONTEXT with fresh Redux
+    // state, so the machine's context stays current).
+    //
+    // For machine-owned phases: machine → Redux (syncFromMachine pushes
+    // the machine's context — which already contains the phase's result —
+    // into Redux so that subsequent saga phases see the updated state).
+    //
+    // In both cases, the sync happens before PHASE_COMPLETE so the machine
+    // transitions to the next phase with a consistent context.
     if (sagaPhaseComplete.match(action)) {
       const actor = getGameActor();
       if (actor) {
-        const state = store.getState() as RootState;
-        const ctx = deriveGameContext(state);
-        actor.send({ type: "SYNC_CONTEXT", context: ctx });
+        const phase = action.payload.phase;
+
+        if (MACHINE_OWNED_PHASES.has(phase)) {
+          // Machine already executed this phase — push machine → Redux
+          const machineCtx = extractGameContext(actor.getSnapshot().context);
+          store.dispatch(syncFromMachine(machineCtx));
+        } else {
+          // Saga executed this phase — push Redux → machine
+          const state = store.getState() as RootState;
+          const ctx = deriveGameContext(state);
+          actor.send({ type: "SYNC_CONTEXT", context: ctx });
+        }
+
         actor.send({ type: "PHASE_COMPLETE" });
       }
       return result;

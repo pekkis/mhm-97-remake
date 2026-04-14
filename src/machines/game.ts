@@ -34,6 +34,7 @@ import { setup, assign } from "xstate";
 import calendar from "@/data/calendar";
 import type { CalendarEntry } from "@/data/calendar";
 import type { GameContext } from "./types";
+import { executeCalculationsPhase } from "./calculations";
 
 // ---------------------------------------------------------------------------
 // Machine context — extends GameContext with round-management fields
@@ -135,6 +136,28 @@ export const gameMachine = setup({
         currentPhase: next,
         remainingPhases: rest
       };
+    }),
+
+    /**
+     * Execute the current phase if it is machine-owned.
+     *
+     * Runs after `advanceToNextPhase` in the entry action array, so
+     * `context.currentPhase` is already set. For machine-owned phases
+     * (currently: "calculations"), this action applies the phase's pure
+     * logic directly to the machine's context via `assign()`.
+     *
+     * For saga-owned phases this is a no-op (returns `{}`).
+     *
+     * The machine still waits for `PHASE_COMPLETE` from the saga even
+     * for machine-owned phases — the saga dispatches `sagaPhaseComplete`
+     * without running the phase logic, and the sync middleware reverses
+     * the sync direction (machine → Redux instead of Redux → machine).
+     */
+    executeMachinePhase: assign(({ context }) => {
+      if (context.currentPhase === "calculations") {
+        return executeCalculationsPhase(context);
+      }
+      return {};
     }),
 
     /**
@@ -280,7 +303,7 @@ export const gameMachine = setup({
          *   4. If no more phases → transition to roundEnd
          */
         executingPhases: {
-          entry: "advanceToNextPhase",
+          entry: ["advanceToNextPhase", "executeMachinePhase"],
           on: {
             PHASE_COMPLETE: [
               {
