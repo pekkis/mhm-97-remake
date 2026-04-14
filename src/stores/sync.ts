@@ -6,25 +6,39 @@ import {
   appActor,
   startGameActor,
   stopGameActor,
-  getGameActor
+  getGameActor,
 } from "@/machines/actors";
 import { toggleMenu, closeMenu } from "@/ducks/ui";
 import { setStrength, alterStrength } from "@/ducks/country";
 import { addNotification, dismissNotification } from "@/ducks/notification";
 import { quitToMainMenu, startGame, loadGame, gameLoaded } from "@/ducks/meta";
-import { seasonStart, setGamePhase, sagaPhaseComplete, syncFromMachine } from "@/ducks/game";
+import {
+  seasonStart,
+  setGamePhase,
+  sagaPhaseComplete,
+  syncFromMachine,
+  advance,
+} from "@/ducks/game";
 import type { RootState } from "@/config/redux";
 import type { GameContext } from "@/machines/types";
 import type { GameMachineContext } from "@/machines/game";
 
 /**
- * Phases that the gameMachine executes directly via `assign()` actions.
- * For these phases, the sync direction is reversed: machine → Redux
- * (instead of Redux → machine for saga-owned phases).
- *
- * Updated as phases are migrated from sagas to the machine.
+ * Phases where the gameMachine executes logic via `assign()` actions.
+ * Sync direction: machine → Redux (via `syncFromMachine`).
+ * The saga signals `sagaPhaseComplete` without running phase logic,
+ * and the middleware pushes machine context to Redux + sends `PHASE_COMPLETE`.
  */
-const MACHINE_OWNED_PHASES = new Set(["calculations"]);
+const MACHINE_COMPUTED_PHASES = new Set(["calculations"]);
+
+/**
+ * Phases where the gameMachine waits for user interaction (e.g. ADVANCE).
+ * No state mutation occurs — the machine just gates progression.
+ * The saga waits for the machine to advance past the phase (via `waitFor`),
+ * then signals `sagaPhaseComplete`. The middleware does NOT send
+ * `PHASE_COMPLETE` (the machine already advanced via the user's ADVANCE).
+ */
+const MACHINE_INTERACTIVE_PHASES = new Set(["news"]);
 
 /**
  * Extract `GameContext` from the machine's `GameMachineContext` by
@@ -33,13 +47,24 @@ const MACHINE_OWNED_PHASES = new Set(["calculations"]);
  * Used to push machine state → Redux via `syncFromMachine` after
  * the machine executes a phase.
  */
-const extractGameContext = ({
-  currentRoundCalendar: _crc,
-  remainingPhases: _rp,
-  currentPhase: _cp,
-  reduxPhase: _rdp,
-  ...gameCtx
-}: GameMachineContext): GameContext => gameCtx;
+const extractGameContext = (ctx: GameMachineContext): GameContext => ({
+  turn: ctx.turn,
+  flags: ctx.flags,
+  serviceBasePrices: ctx.serviceBasePrices,
+  managers: ctx.managers,
+  competitions: ctx.competitions,
+  teams: ctx.teams,
+  worldChampionshipResults: ctx.worldChampionshipResults,
+  manager: ctx.manager,
+  betting: ctx.betting,
+  event: ctx.event,
+  news: ctx.news,
+  notification: ctx.notification,
+  prank: ctx.prank,
+  stats: ctx.stats,
+  invitation: ctx.invitation,
+  country: ctx.country,
+});
 
 /**
  * Derive a `GameContext` snapshot from the current Redux `RootState`.
@@ -65,7 +90,7 @@ export const deriveGameContext = (state: RootState): GameContext => ({
   prank: state.prank,
   stats: state.stats,
   invitation: state.invitation,
-  country: state.country
+  country: state.country,
 });
 
 /**
@@ -110,7 +135,7 @@ export const xstoreSyncMiddleware: Middleware =
     if (addNotification.match(action)) {
       notificationStore.send({
         type: "addNotification",
-        notification: action.payload
+        notification: action.payload,
       });
       return result;
     }
@@ -118,7 +143,7 @@ export const xstoreSyncMiddleware: Middleware =
     if (dismissNotification.match(action)) {
       notificationStore.send({
         type: "dismissNotification",
-        id: action.payload
+        id: action.payload,
       });
       return result;
     }
@@ -179,6 +204,23 @@ export const xstoreSyncMiddleware: Middleware =
 
     // --- Phase tracking bridge (saga → gameMachine observer) ---
 
+    // Bridge user advance button → ADVANCE on game actor.
+    // Only forward when the machine is on a machine-interactive phase
+    // (e.g. "news"). For saga-owned phases, advance() flows through
+    // Redux normally and the saga's `take(advance)` handles it.
+    // Without this guard, advance clicks during saga-owned phases
+    // (event, gameday, etc.) would double-advance the machine.
+    if (advance.match(action)) {
+      const actor = getGameActor();
+      if (actor) {
+        const { currentPhase } = actor.getSnapshot().context;
+        if (currentPhase && MACHINE_INTERACTIVE_PHASES.has(currentPhase)) {
+          actor.send({ type: "ADVANCE" });
+        }
+      }
+      return result;
+    }
+
     // Forward Redux phase name to game actor for dev observability.
     // The saga sets this via `put(setGamePhase("..."))` during execution.
     // Some phases set sub-phase names (e.g. "select-strategy" within
@@ -195,32 +237,43 @@ export const xstoreSyncMiddleware: Middleware =
     // the gameMachine, then forward PHASE_COMPLETE to advance the machine's
     // round lifecycle.
     //
-    // For saga-owned phases: Redux → machine (SYNC_CONTEXT with fresh Redux
-    // state, so the machine's context stays current).
+    // Three categories of phases:
     //
-    // For machine-owned phases: machine → Redux (syncFromMachine pushes
-    // the machine's context — which already contains the phase's result —
-    // into Redux so that subsequent saga phases see the updated state).
+    // 1. Machine-computed phases (e.g. "calculations"):
+    //    Machine already ran logic via assign(). Push machine → Redux
+    //    (syncFromMachine), then send PHASE_COMPLETE to advance.
     //
-    // In both cases, the sync happens before PHASE_COMPLETE so the machine
-    // transitions to the next phase with a consistent context.
+    // 2. Machine-interactive phases (e.g. "news"):
+    //    Machine already advanced via user's ADVANCE event. No state
+    //    mutation occurred. Just sync Redux → machine for consistency.
+    //    Do NOT send PHASE_COMPLETE (machine already moved on).
+    //
+    // 3. Saga-owned phases (everything else):
+    //    Saga ran the logic. Push Redux → machine (SYNC_CONTEXT),
+    //    then send PHASE_COMPLETE to advance.
     if (sagaPhaseComplete.match(action)) {
       const actor = getGameActor();
       if (actor) {
         const phase = action.payload.phase;
 
-        if (MACHINE_OWNED_PHASES.has(phase)) {
+        if (MACHINE_COMPUTED_PHASES.has(phase)) {
           // Machine already executed this phase — push machine → Redux
           const machineCtx = extractGameContext(actor.getSnapshot().context);
           store.dispatch(syncFromMachine(machineCtx));
+          actor.send({ type: "PHASE_COMPLETE" });
+        } else if (MACHINE_INTERACTIVE_PHASES.has(phase)) {
+          // Machine already advanced via ADVANCE — just sync Redux → machine
+          // for context consistency. Do NOT send PHASE_COMPLETE.
+          const state = store.getState() as RootState;
+          const ctx = deriveGameContext(state);
+          actor.send({ type: "SYNC_CONTEXT", context: ctx });
         } else {
           // Saga executed this phase — push Redux → machine
           const state = store.getState() as RootState;
           const ctx = deriveGameContext(state);
           actor.send({ type: "SYNC_CONTEXT", context: ctx });
+          actor.send({ type: "PHASE_COMPLETE" });
         }
-
-        actor.send({ type: "PHASE_COMPLETE" });
       }
       return result;
     }

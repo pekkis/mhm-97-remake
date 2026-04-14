@@ -252,15 +252,20 @@ Convert cluster by cluster, smallest first.
 - 23 new tests in `bidirectional-sync.test.ts` (672 lines) — context round-trip, ordering invariant, all duck slices, `deriveGameContext` mapping. 278 total tests.
 - 13 files changed, 759 additions, 10 deletions.
 
-**PR 9: First phase migration — `calculations`**
+**PR 9: First phase migration — `calculations`** ✅ COMPLETE
 
-- First real phase migration: move `calculations` from saga to `assign()` action in the gameMachine
-- `calculations` — morale/readiness decay, effect expiry, service price updates
-- Simplest automatic phase: no player interaction, no random events, pure deterministic state transforms
-- Remove `calculationsPhase` from saga, add `assign()` action in machine
-- After machine executes: dispatch `syncFromMachine` → `sagaPhaseComplete` → saga continues with next phase
-- Validates the full round-trip pattern (machine execute → sync to Redux → saga resumes) on the simplest case
-- If this works, remaining automatic phases (news, seed, eventCreation) follow the same pattern in PR 10
+- First real phase migrated from saga to `assign()` action in the gameMachine
+- `src/machines/calculations.ts` — pure function `executeCalculationsPhase(ctx: GameContext): Partial<GameContext>` using immer `produce()` for safe nested mutations
+- `executeMachinePhase` assign action in gameMachine — conditionally calls phase function when `currentPhase === "calculations"`; runs on `executingPhases` entry alongside `advanceToNextPhase`
+- Saga side reduced to signal-only: `src/sagas/game.ts` dispatches `sagaPhaseComplete({ phase: "calculations" })` without executing any phase logic
+- `MACHINE_OWNED_PHASES` set in `src/stores/sync.ts` — determines sync direction per phase. Machine-owned phases push machine → Redux (`syncFromMachine`), saga-owned push Redux → machine (`SYNC_CONTEXT`)
+- `src/sagas/phase/calculations.ts` deleted (dead code — saga no longer calls it)
+- **Conventions established:**
+  - **immer `produce()` for phase functions:** No nested spreading. Use `produce()` for safe nested mutations — half the lines, no risk of missing a spread level.
+  - **Explicit field picking over rest-destructuring:** `extractGameContext` uses explicit listing (16 fields) instead of rest-destructuring with `_`-prefixed exclusions. Type-safe: `tsc` catches missing fields.
+  - **`MACHINE_OWNED_PHASES` set:** Updated as phases migrate. Determines reverse sync direction in `sagaPhaseComplete` handler.
+  - **Sub-phases are not calendar phases:** `"results"`, `"select-strategy"`, etc. are UI states within a calendar phase, tracked via `reduxPhase` context field. NOT entries in the calendar's `phases` array.
+- 21 new tests (`calculations-phase.test.ts`), 299 total across 21 test files
 
 **PR 10: Remaining automatic phases — news, seed, eventCreation**
 
@@ -383,7 +388,7 @@ Convert cluster by cluster, smallest first.
 | ---------------------------------- | --------------------- | -------------- | ----------- |
 | Phase 0: Foundation                | ~5                    | 3 ✅ (3/3)     | Medium      |
 | Phase 1: Simple stores + app shell | ~20                   | 3 ✅ (3/3)     | Low–High    |
-| Phase 2: Game machine core         | ~40                   | 7 (2/7)        | Very High   |
+| Phase 2: Game machine core         | ~40                   | 7 (3/7)        | Very High   |
 | Phase 3: Event system              | ~100                  | 3              | High (bulk) |
 | Phase 4: Remaining sagas           | ~25                   | 5              | High        |
 | Phase 5: Cleanup                   | ~40                   | 3              | Low         |

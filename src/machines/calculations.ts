@@ -16,6 +16,7 @@
 import strategies from "@/data/strategies";
 import services from "@/data/services";
 import { entries } from "remeda";
+import { produce } from "immer";
 import type { GameContext } from "./types";
 
 /**
@@ -25,55 +26,39 @@ import type { GameContext } from "./types";
  *   - teams: readiness adjusted + effect durations decremented
  *   - manager: balances adjusted for service costs
  *
- * The returned object is spread into the machine's context via `assign()`.
+ * Uses immer for safe nested mutations without spread gymnastics.
  */
 export function executeCalculationsPhase(
-  ctx: GameContext
+  ctx: GameContext,
 ): Partial<GameContext> {
-  const { turn, teams, manager, serviceBasePrices } = ctx;
-
-  // 1. Increment readiness based on strategy
-  // 2. Decrement all effect/opponentEffect durations by 1
-  const updatedTeams = teams.map((team) => {
-    const increment = strategies[team.strategy].incrementReadiness(turn);
-
-    return {
-      ...team,
-      readiness: team.readiness + increment,
-      effects: team.effects.map((e) => ({ ...e, duration: e.duration - 1 })),
-      opponentEffects: team.opponentEffects.map((e) => ({
-        ...e,
-        duration: e.duration - 1
-      }))
-    };
+  const teams = produce(ctx.teams, (draft) => {
+    for (const team of draft) {
+      team.readiness += strategies[team.strategy].incrementReadiness(ctx.turn);
+      for (const e of team.effects) {
+        e.duration -= 1;
+      }
+      for (const e of team.opponentEffects) {
+        e.duration -= 1;
+      }
+    }
   });
 
-  // 3. Decrement manager balances for active service costs
-  const updatedManagers = { ...manager.managers };
-  for (const [managerId, mgr] of entries(manager.managers)) {
-    const activeServices = entries(mgr.services)
-      .filter(([, active]) => active)
-      .map(([k]) => [k, services[k]] as const);
+  const manager = produce(ctx.manager, (draft) => {
+    for (const [managerId, mgr] of entries(ctx.manager.managers)) {
+      const serviceCosts = entries(mgr.services)
+        .filter(([, active]) => active)
+        .reduce(
+          (total, [serviceId]) =>
+            total +
+            services[serviceId].price(ctx.serviceBasePrices[serviceId], mgr),
+          0,
+        );
 
-    const serviceCosts = activeServices.reduce(
-      (total, [serviceId, svc]) =>
-        total + svc.price(serviceBasePrices[serviceId], mgr),
-      0
-    );
-
-    if (serviceCosts !== 0) {
-      updatedManagers[managerId] = {
-        ...mgr,
-        balance: mgr.balance - serviceCosts
-      };
+      if (serviceCosts !== 0) {
+        draft.managers[managerId].balance -= serviceCosts;
+      }
     }
-  }
+  });
 
-  return {
-    teams: updatedTeams,
-    manager: {
-      ...manager,
-      managers: updatedManagers
-    }
-  };
+  return { teams, manager };
 }

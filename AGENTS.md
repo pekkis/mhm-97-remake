@@ -33,7 +33,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - Tournament eligibility: `src/sagas/tournament-eligibility.ts` (extracted from `data/tournaments.ts`)
 - Competition saga registry: `src/sagas/competition-registry.ts` (moved from `data/competition-sagas.ts`)
 - `src/data/` now contains **only pure data** — zero `typed-redux-saga` imports
-- **Regression tests:** 278 vitest tests across 20 test files
+- **Regression tests:** 299 vitest tests across 21 test files
 - **TypeScript check: ZERO errors** (as of 2026-04-12)
 - Dev tooling: **Stately Inspector** (`@statelyai/inspect`) for XState store visualization (dev-only, tree-shaken in prod)
 - **Bundle: 674.25kB JS (gzip 215kB), 7.08kB CSS (gzip 1.94kB)** — down from ~806kB JS + runtime CSS
@@ -672,7 +672,12 @@ export const advanceEnabled = (state: RootState) =>
 - **PR 8 (bidirectional context sync bridge): ✅ COMPLETE** — `syncFromMachine(GameContext)` action for XState→Redux sync. `SYNC_CONTEXT` event for Redux→XState sync. Sync middleware sends `SYNC_CONTEXT` before `PHASE_COMPLETE` (ordering invariant). Each of 10 ducks has `addCase(syncFromMachine)` grabbing its slice as straight pass-through. Game duck explicitly picks 7 fields (typed — `tsc` catches if `GameState` grows). `deriveGameContext` exported. GameContext shape harmonized: `pranks: PrankInstance[]` → `prank: PrankState`, `country: Record<string, Country>` → `country: CountryState` — all fields now mirror exact duck state shapes. `PrankState` and `CountryState` exported from their ducks. 23 new tests in `bidirectional-sync.test.ts`. 278 total tests.
 - **Key finding from PR 8: harmonize GameContext with duck shapes** — Original implementation had `pranks` (flat `PrankInstance[]`) and `country` (flat `Record<string, Country>`) requiring wrapping/unwrapping in `deriveGameContext` and duck `syncFromMachine` handlers. Harmonizing to match exact duck shapes (`PrankState`, `CountryState`) eliminated all wrapping — every duck handler is now a straight `action.payload.X` pass-through. One less shape mismatch to worry about.
 - **Key finding from PR 8: game duck picks fields explicitly** — `syncFromMachine` handler in `game.ts` returns `{ turn, flags, teams, ... }` explicitly rather than spreading from `GameContext` (which contains non-game fields). This is type-safe: if `GameState` gains a field, `tsc` will flag the incomplete return.
-- **Next:** PR 9 (first phase migration — `calculations`). See XSTATE-REFACTORING.md.
+- **PR 9 (first phase migration — `calculations`): ✅ COMPLETE** — First real phase migrated from saga to machine. `src/machines/calculations.ts` exports `executeCalculationsPhase(ctx: GameContext): Partial<GameContext>` — pure function using immer `produce()`. `executeMachinePhase` assign action in gameMachine conditionally calls it when `currentPhase === "calculations"`. Saga side reduced to signal-only: just dispatches `sagaPhaseComplete`. `MACHINE_OWNED_PHASES` set in sync middleware determines reverse sync direction (machine → Redux). `src/sagas/phase/calculations.ts` deleted (dead code). 21 new tests, 299 total across 21 test files.
+- **Convention from PR 9: immer `produce()` for phase functions** — Phase functions must not use nested spreading. Use immer `produce()` for safe nested mutations — half the lines, no spread gymnastics, no risk of forgetting to spread a nested level.
+- **Convention from PR 9: explicit field picking over rest-destructuring** — `extractGameContext` uses explicit field listing (16 fields) instead of rest-destructuring with `_`-prefixed exclusions. Type-safe: `tsc` catches missing fields if `GameMachineContext` or `GameContext` changes. Same pattern as game duck's `syncFromMachine`.
+- **Convention from PR 9: `MACHINE_OWNED_PHASES` set** — Determines sync direction per phase. Updated as phases migrate from saga → machine. Saga-owned: Redux → machine (`SYNC_CONTEXT`). Machine-owned: machine → Redux (`syncFromMachine`).
+- **Key finding: sub-phases are not calendar phases** — `"results"`, `"select-strategy"`, etc. are UI states within a calendar phase, tracked via `setGamePhase()` → `SYNC_REDUX_PHASE` → `reduxPhase` context field. They are NOT entries in the calendar's `phases` array. They will become proper XState states when their parent phases are migrated to actors (e.g. `"results"` becomes a state in the future gameday actor).
+- **Next:** PR 10 (remaining automatic phases — news, seed, eventCreation). See XSTATE-REFACTORING.md.
 
 ### P4 — Styling: ✅ COMPLETE
 
@@ -731,7 +736,7 @@ When touching these areas:
 
 ### During coding
 
-- **Never use `npx`.** Use `pnpm run <script>` or `pnpm exec <binary>` instead.
+- **Never use `npm` or `npx`.** This is a **pnpm-only** project. Use `pnpm run <script>`, `pnpm exec <binary>`, or `pnpm add <package>` instead. Running `npm install` or `npx` will generate a stray `package-lock.json` (gitignored) and may corrupt `node_modules`. If you see a `package-lock.json`, delete it immediately.
 - Prefer extensionless imports unless build requires explicit extension.
 - Match existing style in each file; do not run mass formatting unrelated to task.
 - Keep user-visible strings/language unchanged unless requested.
@@ -783,7 +788,7 @@ If one check is known-broken for unrelated reasons, state that explicitly and st
 12. Fix last string-pattern `takeEvery("META_GAME_SAVE_REQUEST")` in `phase/action.ts` — trivial, use `saveGame` from `meta.ts`.
 13. ~~Type the `MHMEvent.options` return to eliminate 17 event `as any` casts~~ ✅ Done — `MHMEvent` widened with `BaseEventCreationFields` second generic.
 14. ~~Evaluate `createSlice` migration for simpler ducks~~ — Superseded by XState migration plan. See XSTATE-REFACTORING.md.
-15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. ~~**Next:** PR 6 (`gameMachine` skeleton + persistence extraction).~~ ✅ Done. ~~**Next:** PR 7 (phase tracking bridge).~~ ✅ Done. ~~**Next:** PR 8 (bidirectional context sync bridge).~~ ✅ Done. **Next XState PR:** PR 9 (first phase migration — `calculations`). See XSTATE-REFACTORING.md.
+15. ~~**Next XState PR:** PR 3 (type foundations) — `GameContext` type, `EventCommand` union, context-based selectors.~~ ✅ Done. ~~**Next:** PR 4 (`@xstate/store` for ui, country, notification).~~ ✅ Done. ~~**Next:** PR 5 (meta/app lifecycle — `appMachine`).~~ ✅ Done. ~~**Next:** PR 6 (`gameMachine` skeleton + persistence extraction).~~ ✅ Done. ~~**Next:** PR 7 (phase tracking bridge).~~ ✅ Done. ~~**Next:** PR 8 (bidirectional context sync bridge).~~ ✅ Done. ~~**Next:** PR 9 (first phase migration — `calculations`).~~ ✅ Done. **Next XState PR:** PR 10 (remaining automatic phases — news, seed, eventCreation). See XSTATE-REFACTORING.md.
 
 ---
 

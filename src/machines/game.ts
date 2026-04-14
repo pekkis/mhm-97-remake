@@ -67,6 +67,7 @@ export type GameMachineContext = GameContext & {
 export type GameMachineEvents =
   | { type: "START" }
   | { type: "PHASE_COMPLETE" }
+  | { type: "ADVANCE" }
   | { type: "SYNC_REDUX_PHASE"; phase: string }
   | { type: "SYNC_CONTEXT"; context: GameContext }
   | { type: "QUIT" };
@@ -79,7 +80,7 @@ export const gameMachine = setup({
   types: {
     context: {} as GameMachineContext,
     events: {} as GameMachineEvents,
-    input: {} as GameContext
+    input: {} as GameContext,
   },
   guards: {
     hasMorePhases: ({ context }) => context.remainingPhases.length > 0,
@@ -89,7 +90,7 @@ export const gameMachine = setup({
       context.turn.round >= 0 && context.turn.round < calendar.length,
     /** True when the round index is outside calendar bounds (< 0 or > 74). */
     calendarOutOfBounds: ({ context }) =>
-      context.turn.round < 0 || context.turn.round >= calendar.length
+      context.turn.round < 0 || context.turn.round >= calendar.length,
   },
   actions: {
     /**
@@ -109,19 +110,19 @@ export const gameMachine = setup({
         // If we somehow reach this, log a warning and return empty phases
         // so the machine sits in executingPhases (harmless stall).
         console.warn(
-          `gameMachine: calendar[${roundIndex}] is undefined — round exceeded calendar length (0–${calendar.length - 1})`
+          `gameMachine: calendar[${roundIndex}] is undefined — round exceeded calendar length (0–${calendar.length - 1})`,
         );
         return {
           currentRoundCalendar: undefined,
           remainingPhases: [],
-          currentPhase: undefined
+          currentPhase: undefined,
         };
       }
 
       return {
         currentRoundCalendar: entry,
         remainingPhases: [...entry.phases],
-        currentPhase: undefined
+        currentPhase: undefined,
       };
     }),
 
@@ -134,7 +135,7 @@ export const gameMachine = setup({
       const [next, ...rest] = context.remainingPhases;
       return {
         currentPhase: next,
-        remainingPhases: rest
+        remainingPhases: rest,
       };
     }),
 
@@ -167,12 +168,12 @@ export const gameMachine = setup({
     advanceTurn: assign(({ context }) => ({
       turn: {
         ...context.turn,
-        round: context.turn.round + 1
+        round: context.turn.round + 1,
       },
       currentRoundCalendar: undefined,
       remainingPhases: [],
       currentPhase: undefined,
-      reduxPhase: undefined
+      reduxPhase: undefined,
     })),
 
     /**
@@ -204,8 +205,8 @@ export const gameMachine = setup({
         return { ...event.context };
       }
       return {};
-    })
-  }
+    }),
+  },
 }).createMachine({
   id: "game",
   initial: "idle",
@@ -214,7 +215,7 @@ export const gameMachine = setup({
     currentRoundCalendar: undefined,
     remainingPhases: [],
     currentPhase: undefined,
-    reduxPhase: undefined
+    reduxPhase: undefined,
   }),
   states: {
     /**
@@ -223,8 +224,8 @@ export const gameMachine = setup({
      */
     idle: {
       on: {
-        START: { target: "playing" }
-      }
+        START: { target: "playing" },
+      },
     },
 
     /**
@@ -244,7 +245,7 @@ export const gameMachine = setup({
          * without affecting the machine's own phase tracking.
          */
         SYNC_REDUX_PHASE: {
-          actions: "syncReduxPhase"
+          actions: "syncReduxPhase",
         },
         /**
          * SYNC_CONTEXT replaces all game context fields from a fresh
@@ -253,8 +254,8 @@ export const gameMachine = setup({
          * even while sagas still run most phases.
          */
         SYNC_CONTEXT: {
-          actions: "syncContext"
-        }
+          actions: "syncContext",
+        },
       },
       states: {
         /**
@@ -270,7 +271,7 @@ export const gameMachine = setup({
           always: [
             {
               target: "executingPhases",
-              guard: "hasMorePhases"
+              guard: "hasMorePhases",
             },
             {
               // Calendar out of bounds (round -1 at season start, or
@@ -279,14 +280,14 @@ export const gameMachine = setup({
               // Without this guard, empty phases → roundEnd → roundStart
               // would loop infinitely via `always` transitions.
               target: "waitingForNewSeason",
-              guard: "calendarOutOfBounds"
+              guard: "calendarOutOfBounds",
             },
             {
               // Edge case: round with no phases (shouldn't happen but be safe)
               target: "roundEnd",
-              guard: "noMorePhases"
-            }
-          ]
+              guard: "noMorePhases",
+            },
+          ],
         },
 
         /**
@@ -309,14 +310,35 @@ export const gameMachine = setup({
               {
                 target: "executingPhases",
                 guard: "hasMorePhases",
-                reenter: true
+                reenter: true,
               },
               {
                 target: "roundEnd",
-                guard: "noMorePhases"
-              }
-            ]
-          }
+                guard: "noMorePhases",
+              },
+            ],
+            /**
+             * ADVANCE is sent by the user (via the advance button) for
+             * interactive machine-owned phases like "news". It does the
+             * same thing as PHASE_COMPLETE — advances to the next phase.
+             *
+             * The distinction exists because PHASE_COMPLETE comes from
+             * the saga bridge (sagaPhaseComplete → sync middleware),
+             * while ADVANCE comes from user interaction (advance() Redux
+             * action → sync middleware).
+             */
+            ADVANCE: [
+              {
+                target: "executingPhases",
+                guard: "hasMorePhases",
+                reenter: true,
+              },
+              {
+                target: "roundEnd",
+                guard: "noMorePhases",
+              },
+            ],
+          },
         },
 
         /**
@@ -325,7 +347,7 @@ export const gameMachine = setup({
          */
         roundEnd: {
           entry: "advanceTurn",
-          always: { target: "roundStart" }
+          always: { target: "roundStart" },
         },
 
         /**
@@ -340,8 +362,8 @@ export const gameMachine = setup({
          * loop that would otherwise occur with `always` transitions
          * when no calendar entry exists.
          */
-        waitingForNewSeason: {}
-      }
+        waitingForNewSeason: {},
+      },
     },
 
     /**
@@ -349,7 +371,7 @@ export const gameMachine = setup({
      * The parent `appMachine` handles cleanup (stopping this actor).
      */
     done: {
-      type: "final"
-    }
-  }
+      type: "final",
+    },
+  },
 });

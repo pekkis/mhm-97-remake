@@ -327,7 +327,7 @@ describe("executeCalculationsPhase (pure function)", () => {
                 cheer: false
               }
             }),
-            "franco": createTestManager({
+            franco: createTestManager({
               id: "franco",
               name: "Franco Nero",
               balance: 80000,
@@ -344,9 +344,7 @@ describe("executeCalculationsPhase (pure function)", () => {
 
       const result = executeCalculationsPhase(ctx);
 
-      expect(result.manager!.managers["pier-paolo"].balance).toBe(
-        50000 - 3200
-      );
+      expect(result.manager!.managers["pier-paolo"].balance).toBe(50000 - 3200);
       expect(result.manager!.managers["franco"].balance).toBe(80000 - 500);
     });
   });
