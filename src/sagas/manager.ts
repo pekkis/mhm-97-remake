@@ -43,13 +43,13 @@ import { entries } from "remeda";
 
 type AddManagerDetails = {
   name: string;
-  team: string;
+  team: string | number;
   difficulty: string;
   arena: string;
 };
 
 export function* addManager(details: AddManagerDetails) {
-  const teamId = parseInt(details.team, 10);
+  const teamId = Number(details.team);
   const mainCompetition = yield* select(teamsMainCompetition(teamId));
 
   const manager = {

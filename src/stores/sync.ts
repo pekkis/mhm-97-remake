@@ -160,6 +160,18 @@ export const xstoreSyncMiddleware: Middleware =
       return result;
     }
 
+    // Bridge advance(formValues) → SUBMIT_MANAGER on appMachine.
+    // Only forward when the machine is in starting.pickingManager —
+    // advance() is dispatched during many game phases, and forwarding
+    // it blindly would corrupt the machine state.
+    if (advance.match(action)) {
+      const snap = appActor.getSnapshot();
+      if (snap.matches({ starting: "pickingManager" })) {
+        appActor.send({ type: "SUBMIT_MANAGER", values: action.payload });
+        return result;
+      }
+    }
+
     // GAME_LOADED: transition appMachine + start gameMachine with loaded state
     if (gameLoaded.match(action)) {
       appActor.send({ type: "GAME_LOADED" });

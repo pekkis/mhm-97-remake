@@ -1,7 +1,6 @@
 import { addManager } from "./manager";
 import { gameLoop } from "./game";
 import { addNotification } from "./notification";
-import { advance } from "@/ducks/game";
 import {
   quitToMainMenu,
   loadGame,
@@ -25,13 +24,21 @@ import {
   fork,
   cancel
 } from "typed-redux-saga";
+import { waitFor } from "xstate";
+import { appActor } from "@/machines/actors";
 import type { RootState } from "@/config/redux";
 import type { Task } from "redux-saga";
 
 function* gameStart() {
-  const action = yield* take(advance);
+  // Wait for the appMachine to enter "starting.submitted" —
+  // the user has filled in the manager form and SUBMIT_MANAGER stored
+  // the form values in machine context.
+  yield* call(() =>
+    waitFor(appActor, (snap) => snap.matches({ starting: "submitted" }))
+  );
 
-  yield* call(addManager, action.payload);
+  const { managerFormValues } = appActor.getSnapshot().context;
+  yield* call(addManager, managerFormValues!);
 
   yield* put(gameStartAction());
 }
