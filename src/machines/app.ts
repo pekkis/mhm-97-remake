@@ -205,7 +205,9 @@ export const appMachine = setup({
       ({ context }, params: { manager: string; strategy: number }) =>
         produce(context, (draft) => {
           const team = draft.manager.managers[params.manager]?.team;
-          if (team === undefined) return;
+          if (team === undefined) {
+            return;
+          }
           draft.teams[team].strategy = params.strategy;
           draft.teams[team].readiness =
             strategies[params.strategy].initialReadiness();
