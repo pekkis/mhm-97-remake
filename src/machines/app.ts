@@ -17,6 +17,7 @@ import calendar from "@/data/calendar";
 import strategies from "@/data/strategies";
 import random from "@/services/random";
 import { notificationsMachine } from "@/machines/notifications";
+import type { NotificationData } from "@/machines/notification";
 import { values } from "remeda";
 
 /**
@@ -251,19 +252,15 @@ export const appMachine = setup({
     ),
 
     /**
-     * Side-effect half of `betChampion()` — the toast.
+     * Generic notification dispatcher — forwards a fully-formed notification
+     * to the invoked `notifications` child machine. Call sites build the
+     * message; this action only handles the delivery + id assignment.
      */
-    notifyBetPlaced: sendTo(
+    notify: sendTo(
       "notifications",
-      (_, params: { manager: string }) => ({
+      (_, params: { notification: Omit<NotificationData, "id"> }) => ({
         type: "PUSH",
-        notification: {
-          id: crypto.randomUUID(),
-          manager: params.manager,
-          message:
-            "Kiikutat mestarusveikkauskuponkisi S-kioskille. Olkoon onni myötä!",
-          type: "info"
-        }
+        notification: { id: crypto.randomUUID(), ...params.notification }
       })
     )
   },
@@ -277,11 +274,13 @@ export const appMachine = setup({
   id: "app",
   initial: "main_menu",
   context: () => createDefaultGameContext(),
-  invoke: {
-    src: "notifications",
-    id: "notifications",
-    systemId: "notifications"
-  },
+  invoke: [
+    {
+      src: "notifications",
+      id: "notifications",
+      systemId: "notifications"
+    }
+  ],
   on: {
     DISMISS_NOTIFICATION: {
       actions: sendTo("notifications", ({ event }) => ({
@@ -506,9 +505,14 @@ export const appMachine = setup({
                           params: ({ event }) => event.payload
                         },
                         {
-                          type: "notifyBetPlaced",
+                          type: "notify",
                           params: ({ event }) => ({
-                            manager: event.payload.manager
+                            notification: {
+                              manager: event.payload.manager,
+                              message:
+                                "Kiikutat mestarusveikkauskuponkisi S-kioskille. Olkoon onni myötä!",
+                              type: "info"
+                            }
                           })
                         }
                       ],
