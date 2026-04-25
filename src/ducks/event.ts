@@ -4,7 +4,7 @@ import { quitToMainMenu, gameLoadState } from "./meta";
 import { syncFromMachine } from "./game";
 
 const defaultState: EventState = {
-  events: {}
+  events: {},
 };
 
 export const addEventAction = createAction<{

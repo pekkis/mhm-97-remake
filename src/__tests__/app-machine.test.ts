@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { createActor } from "xstate";
 import { appMachine } from "@/machines/app";
+import { createDefaultGameContext } from "@/state";
 
 const createTestActor = () => {
   const actor = createActor(appMachine);
@@ -33,7 +34,7 @@ describe("appMachine", () => {
     it("ignores GAME_LOADED while in starting state", () => {
       const actor = createTestActor();
       actor.send({ type: "START_GAME" });
-      actor.send({ type: "GAME_LOADED" });
+      actor.send({ type: "GAME_LOADED", context: createDefaultGameContext() });
       expect(actor.getSnapshot().value).toBe("starting");
     });
 
@@ -55,7 +56,7 @@ describe("appMachine", () => {
     it("transitions to inGame on GAME_LOADED from loading", () => {
       const actor = createTestActor();
       actor.send({ type: "LOAD_GAME" });
-      actor.send({ type: "GAME_LOADED" });
+      actor.send({ type: "GAME_LOADED", context: createDefaultGameContext() });
       expect(actor.getSnapshot().value).toBe("inGame");
     });
 
@@ -95,7 +96,7 @@ describe("appMachine", () => {
 
       // Second game
       actor.send({ type: "LOAD_GAME" });
-      actor.send({ type: "GAME_LOADED" });
+      actor.send({ type: "GAME_LOADED", context: createDefaultGameContext() });
       expect(actor.getSnapshot().value).toBe("inGame");
     });
   });
@@ -109,7 +110,7 @@ describe("appMachine", () => {
 
     it("ignores GAME_LOADED in menu state", () => {
       const actor = createTestActor();
-      actor.send({ type: "GAME_LOADED" });
+      actor.send({ type: "GAME_LOADED", context: createDefaultGameContext() });
       expect(actor.getSnapshot().value).toBe("menu");
     });
 

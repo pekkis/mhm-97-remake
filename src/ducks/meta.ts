@@ -18,8 +18,8 @@ const defaultState: MetaState = {
     name: "Gaylord Lohiposki",
     arena: "MasoSports Areena",
     difficulty: "2",
-    team: 12
-  }
+    team: 12,
+  },
 };
 
 export default createReducer(defaultState, (builder) => {
@@ -34,6 +34,6 @@ export default createReducer(defaultState, (builder) => {
       (state) => {
         state.started = true;
         state.loading = false;
-      }
+      },
     );
 });

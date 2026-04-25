@@ -3,7 +3,7 @@ import type { RootState } from "@/config/redux";
 import {
   addEventAction,
   resolveEventAction,
-  setEventProcessed
+  setEventProcessed,
 } from "@/ducks/event";
 import type { StoredEvent } from "@/state/event";
 
@@ -28,14 +28,14 @@ export function* resolvedEvent(eventData: StoredEvent) {
   yield* put(
     resolveEventAction({
       id: eventData.id,
-      event: eventData
-    })
+      event: eventData,
+    }),
   );
 }
 
 export function* processEvents() {
   const eventsToProcess = yield* select((state: RootState) =>
-    values(state.event.events).filter((e) => e.resolved && !e.processed)
+    values(state.event.events).filter((e) => e.resolved && !e.processed),
   );
 
   for (const event of eventsToProcess) {

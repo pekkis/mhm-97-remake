@@ -8,7 +8,7 @@ import { quitToMainMenu, gameLoadState } from "./meta";
 import type {
   GameState,
   TeamEffect,
-  WorldChampionshipEntry
+  WorldChampionshipEntry,
 } from "@/state/game";
 import type { Competition, CompetitionId } from "@/types/competitions";
 import { entries, values } from "remeda";
@@ -25,7 +25,7 @@ export const seasonEnd = createAction("SEASON_END");
 
 // Phase tracking bridge (saga → gameMachine observer)
 export const sagaPhaseComplete = createAction<{ phase: string }>(
-  "SAGA_PHASE_COMPLETE"
+  "SAGA_PHASE_COMPLETE",
 );
 
 // Bidirectional context sync bridge (XState → Redux)
@@ -80,7 +80,7 @@ export const competitionAddTeam = createAction<{
   team: number;
 }>("COMPETITION_ADD_TEAM");
 export const competitionUpdateStats = createAction<any>(
-  "COMPETITION_UPDATE_STATS"
+  "COMPETITION_UPDATE_STATS",
 );
 export const competitionSetTeams = createAction<{
   competition: string;
@@ -167,17 +167,17 @@ const defaultState: GameState = {
     canada: false,
     haanperaMarried: false,
     mauto: false,
-    psycho: undefined
+    psycho: undefined,
   },
   serviceBasePrices: {
     insurance: 1000,
     coach: 3200,
     microphone: 500,
-    cheer: 3000
+    cheer: 3000,
   },
   managers,
   competitions: Object.fromEntries(
-    entries(competitionList).map(([key, def]) => [key, { ...def.data }])
+    entries(competitionList).map(([key, def]) => [key, { ...def.data }]),
   ) as Record<CompetitionId, Competition>,
   teams: teamDefs.map((t) => ({
     id: t.id,
@@ -188,9 +188,9 @@ const defaultState: GameState = {
     strategy: 2,
     readiness: 0,
     effects: [],
-    opponentEffects: []
+    opponentEffects: [],
   })),
-  worldChampionshipResults: undefined
+  worldChampionshipResults: undefined,
 };
 
 export default createReducer(defaultState, (builder) => {
@@ -204,7 +204,7 @@ export default createReducer(defaultState, (builder) => {
       managers: action.payload.managers,
       competitions: action.payload.competitions,
       teams: action.payload.teams,
-      worldChampionshipResults: action.payload.worldChampionshipResults
+      worldChampionshipResults: action.payload.worldChampionshipResults,
     }))
     .addCase(competitionRemoveTeam, (state, action) => {
       const comp = state.competitions[action.payload.competition];
@@ -212,7 +212,7 @@ export default createReducer(defaultState, (builder) => {
     })
     .addCase(competitionAddTeam, (state, action) => {
       state.competitions[action.payload.competition].teams.push(
-        action.payload.team
+        action.payload.team,
       );
     })
     .addCase(competitionUpdateStats, (state, action) => {
@@ -271,13 +271,13 @@ export default createReducer(defaultState, (builder) => {
       const t = state.teams[action.payload.team];
       t.morale = Math.min(
         action.payload.max,
-        Math.max(action.payload.min, t.morale + action.payload.amount)
+        Math.max(action.payload.min, t.morale + action.payload.amount),
       );
     })
     .addCase(teamSetMorale, (state, action) => {
       state.teams[action.payload.team].morale = Math.min(
         action.payload.max,
-        Math.max(action.payload.min, action.payload.morale)
+        Math.max(action.payload.min, action.payload.morale),
       );
     })
     .addCase(teamSetStrategy, (state, action) => {
@@ -295,7 +295,7 @@ export default createReducer(defaultState, (builder) => {
       if (group.type === "round-robin") {
         group.penalties.push({
           team: action.payload.team,
-          penalty: action.payload.penalty
+          penalty: action.payload.penalty,
         });
       }
     })
@@ -324,7 +324,7 @@ export default createReducer(defaultState, (builder) => {
     })
     .addCase(teamAddOpponentEffect, (state, action) => {
       state.teams[action.payload.team].opponentEffects.push(
-        action.payload.effect
+        action.payload.effect,
       );
     })
     .addCase(teamRemoveManager, (state, action) => {
@@ -347,7 +347,7 @@ export default createReducer(defaultState, (builder) => {
       for (const team of state.teams) {
         team.effects = team.effects.filter((e) => e.duration > 0);
         team.opponentEffects = team.opponentEffects.filter(
-          (e) => e.duration > 0
+          (e) => e.duration > 0,
         );
       }
     })

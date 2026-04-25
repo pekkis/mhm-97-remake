@@ -10,12 +10,12 @@ const defaultState: CountryState = {
     (acc, country) => {
       acc[country.iso] = {
         ...country,
-        strength: country.strength()
+        strength: country.strength(),
       };
       return acc;
     },
-    {} as Record<string, Country>
-  )
+    {} as Record<string, Country>,
+  ),
 };
 
 export const alterStrength = createAction<{

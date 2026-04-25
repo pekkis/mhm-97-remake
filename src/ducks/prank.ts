@@ -5,7 +5,7 @@ import { quitToMainMenu, gameLoadState } from "./meta";
 import { syncFromMachine } from "./game";
 
 const defaultState: PrankState = {
-  pranks: []
+  pranks: [],
 };
 
 export const orderPrank = createAction<{

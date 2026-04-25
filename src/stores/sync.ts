@@ -162,9 +162,9 @@ export const xstoreSyncMiddleware: Middleware =
 
     // GAME_LOADED: transition appMachine + start gameMachine with loaded state
     if (gameLoaded.match(action)) {
-      appActor.send({ type: "GAME_LOADED" });
       const state = store.getState() as RootState;
       const ctx = deriveGameContext(state);
+      appActor.send({ type: "GAME_LOADED", context: ctx });
       const actor = startGameActor(ctx);
       actor.send({ type: "START" });
       return result;

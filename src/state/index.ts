@@ -11,13 +11,13 @@ export type {
   TeamEffect,
   GameFlags,
   WorldChampionshipEntry,
-  GameState
+  GameState,
 } from "./game";
 export type {
   Manager,
   ManagerArena,
   ManagerServices,
-  ManagerState
+  ManagerState,
 } from "./manager";
 export type { Bet, ChampionshipBet, BettingState } from "./betting";
 export type { StoredEvent, EventState } from "./event";
@@ -26,11 +26,9 @@ export type { MetaManager, MetaState } from "./meta";
 export type { NewsState } from "./news";
 export type { Notification, NotificationState } from "./notification";
 export type { PrankState } from "./prank";
-export type {
-  Streak,
-  GameRecord,
-  SeasonStats,
-  StatsState
-} from "./stats";
+export type { Streak, GameRecord, SeasonStats, StatsState } from "./stats";
 export type { UiState } from "./ui";
 export type { Country, CountryState } from "./country";
+
+export type { GameContext } from "./game-context";
+export { createDefaultGameContext } from "./defaults";
