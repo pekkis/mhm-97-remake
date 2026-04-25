@@ -100,26 +100,36 @@ describe("appMachine", () => {
   });
 
   describe("in_game phase walk", () => {
-    it("settles in start_of_season on round 0 (first phase in calendar)", () => {
+    it("settles in start_of_season.select_strategy on round 0 (setup auto-advances)", () => {
       const actor = createTestActor();
       actor.send({ type: "START_GAME" });
       actor.send({ type: "ADD_MANAGER", payload: submission });
 
       // Round 0 calendar: ["start_of_season", "seed"].
-      // The machine cascades through earlier phase checks and parks at start_of_season.
+      // Machine cascades through earlier phase checks, enters start_of_season,
+      // setup auto-advances, parks at select_strategy.
       expect(
         actor.getSnapshot().matches({
-          in_game: { executing_phases: "start_of_season" }
+          in_game: { executing_phases: { start_of_season: "select_strategy" } }
         })
       ).toBe(true);
     });
 
-    it("ADVANCE walks from start_of_season to seed within round 0", () => {
+    it("ADVANCE walks start_of_season sub-states then exits to seed", () => {
       const actor = createTestActor();
       actor.send({ type: "START_GAME" });
       actor.send({ type: "ADD_MANAGER", payload: submission });
 
-      actor.send({ type: "ADVANCE" });
+      actor.send({ type: "ADVANCE" }); // select_strategy -> championship_betting
+      expect(
+        actor.getSnapshot().matches({
+          in_game: {
+            executing_phases: { start_of_season: "championship_betting" }
+          }
+        })
+      ).toBe(true);
+
+      actor.send({ type: "ADVANCE" }); // championship_betting -> done -> seed_check -> seed
       expect(
         actor.getSnapshot().matches({
           in_game: { executing_phases: "seed" }
@@ -132,7 +142,8 @@ describe("appMachine", () => {
       actor.send({ type: "START_GAME" });
       actor.send({ type: "ADD_MANAGER", payload: submission });
 
-      actor.send({ type: "ADVANCE" }); // start_of_season -> seed
+      actor.send({ type: "ADVANCE" }); // select_strategy -> championship_betting
+      actor.send({ type: "ADVANCE" }); // championship_betting -> done -> seed
       actor.send({ type: "ADVANCE" }); // seed -> round_end -> action_check -> action
 
       const snap = actor.getSnapshot();

@@ -310,7 +310,24 @@ export const appMachine = setup({
               ]
             },
             start_of_season: {
-              on: { ADVANCE: "seed_check" }
+              initial: "setup",
+              onDone: "seed_check",
+              states: {
+                setup: {
+                  // TODO migrate seasonStart() saga: re-strength European
+                  // teams, start competitions, deduct salaries (season > 0),
+                  // adjust insurance extras, reset extras, dispatch
+                  // seasonStart action.
+                  always: "select_strategy"
+                },
+                select_strategy: {
+                  on: { ADVANCE: "championship_betting" }
+                },
+                championship_betting: {
+                  on: { ADVANCE: "done" }
+                },
+                done: { type: "final" }
+              }
             },
 
             seed_check: {
