@@ -14,6 +14,7 @@ import {
 import difficultyLevels from "@/data/difficulty-levels";
 import teamData from "@/data/teams";
 import calendar from "@/data/calendar";
+import random from "@/services/random";
 import { values } from "remeda";
 
 /**
@@ -107,15 +108,13 @@ export const appMachine = setup({
       })
     ),
 
-    /**
-     * start_of_season setup phase — the non-interactive bulk of the legacy
-     * `seasonStart()` saga. Re-rolls European team strengths, deducts manager
-     * salaries (skipped on season 0), adjusts insurance extras, and resets
-     * each manager's per-season `extra` budget.
+    /**fully replaces the legacy `seasonStart()`
+     * saga + the per-competition `start()` sagas + the `seasonStart` reducer.
      *
-     * TODO: still missing the `competitionStart()` per-competition saga
-     * dispatches — those run nested sagas (e.g. seeding) and need separate
-     * migration. They land here once the seed phase is migrated.
+     * Per-team and per-manager bookkeeping plus competition reset. The
+     * competition-specific bits (PHL/division do nothing; tournaments clear
+     * teams; EHL picks medalists+foreign and shuffles) are inlined here —
+     * this is MHM 97 game logic, not something competitions should own.
      */
     seasonStartSetup: assign(({ context }) =>
       produce(context, (draft) => {
@@ -125,6 +124,38 @@ export const appMachine = setup({
         for (let i = 24; i < draft.teams.length; i++) {
           draft.teams[i].strength = teamData[draft.teams[i].id].strength();
         }
+
+        // Reset per-team season state.
+        for (const t of draft.teams) {
+          t.effects = [];
+          t.opponentEffects = [];
+          t.morale = 0;
+          t.strategy = 2;
+          t.readiness = 0;
+        }
+
+        draft.flags.jarko = false;
+
+        // Reset every competition.
+        for (const comp of values(draft.competitions)) {
+          comp.phase = -1;
+          comp.phases = [];
+        }
+
+        // Tournaments: start with no teams; the seed phase fills them in.
+        draft.competitions.tournaments.teams = [];
+
+        // EHL: previous season's medalists (or the seeded default first season)
+        // plus 17 foreign teams, shuffled.
+        const ehlSeeds = context.stats.seasons[season - 1]?.medalists ?? [
+          2, 3, 5
+        ];
+        const foreignIds = draft.teams.slice(24, 24 + 17).map((t) => t.id);
+        draft.competitions.ehl.teams = [...ehlSeeds, ...foreignIds].toSorted(
+          () => random.real(1, 10000) - 5000
+        );
+
+        // Per-manager: salary, insurance extra (skipped season 0), reset extra.        }
 
         for (const manager of values(draft.manager.managers)) {
           if (season > 0) {
