@@ -28,7 +28,72 @@ import { AppMachineContext } from "@/context/app-machine-context";
 import type { FC } from "react";
 
 type PhaseProps = {
-  phase: string;
+  phase: string | undefined;
+};
+
+const useUiPhase = (): string | undefined => {
+  return AppMachineContext.useSelector((state) => {
+    if (state.matches({ in_game: { executing_phases: "action" } })) {
+      return "action";
+    }
+    if (state.matches({ in_game: { executing_phases: "prank" } })) {
+      return "prank";
+    }
+    if (state.matches({ in_game: { executing_phases: "gameday" } })) {
+      return "gameday";
+    }
+    if (state.matches({ in_game: { executing_phases: "calculations" } })) {
+      return "calculations";
+    }
+    if (state.matches({ in_game: { executing_phases: "event_creation" } })) {
+      return "event_creation";
+    }
+    if (state.matches({ in_game: { executing_phases: "event" } })) {
+      return "event";
+    }
+    if (state.matches({ in_game: { executing_phases: "news" } })) {
+      return "news";
+    }
+    if (
+      state.matches({ in_game: { executing_phases: "invitations_create" } })
+    ) {
+      return "invitations_create";
+    }
+    if (
+      state.matches({ in_game: { executing_phases: "invitations_process" } })
+    ) {
+      return "invitations_process";
+    }
+    if (
+      state.matches({
+        in_game: {
+          executing_phases: { start_of_season: "select_strategy" }
+        }
+      })
+    ) {
+      return "select_strategy";
+    }
+    if (
+      state.matches({
+        in_game: {
+          executing_phases: { start_of_season: "championship_betting" }
+        }
+      })
+    ) {
+      return "championship_betting";
+    }
+    if (state.matches({ in_game: { executing_phases: "seed" } })) {
+      return "seed";
+    }
+    if (state.matches({ in_game: { executing_phases: "gala" } })) {
+      return "gala";
+    }
+    if (state.matches({ in_game: { executing_phases: "end_of_season" } })) {
+      return "end_of_season";
+    }
+
+    return undefined;
+  });
 };
 
 const Phase: FC<PhaseProps> = ({ phase }) => {
@@ -87,12 +152,12 @@ const Game: FC = () => {
 
   console.log("MENU", menu);
 
-  const turn = AppMachineContext.useSelector((state) => state.context.turn);
+  const phase = useUiPhase();
 
   return (
     <div>
       {menu && <ModalMenu />}
-      <Phase turn={turn} />
+      <Phase phase={phase} />
       <Notifications />
     </div>
   );
