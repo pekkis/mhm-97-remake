@@ -1,4 +1,4 @@
-import { setup, assign, fromPromise } from "xstate";
+import { setup, assign, fromPromise, sendTo } from "xstate";
 import { produce } from "immer";
 
 import {
@@ -16,7 +16,7 @@ import teamData from "@/data/teams";
 import calendar from "@/data/calendar";
 import strategies from "@/data/strategies";
 import random from "@/services/random";
-import { pushNotification } from "@/stores/notification";
+import { notificationsMachine } from "@/machines/notifications";
 import { values } from "remeda";
 
 /**
@@ -66,7 +66,8 @@ export type AppMachineEvents =
         amount: number;
         odds: number;
       };
-    };
+    }
+  | { type: "DISMISS_NOTIFICATION"; id: string };
 
 const buildManager = (sub: ManagerSubmission, ctx: GameContext) => {
   const difficulty = parseInt(sub.difficulty, 10);
@@ -106,7 +107,8 @@ export const appMachine = setup({
         throw new Error("no saved game");
       }
       return loaded;
-    })
+    }),
+    notifications: notificationsMachine
   },
 
   actions: {
@@ -251,15 +253,19 @@ export const appMachine = setup({
     /**
      * Side-effect half of `betChampion()` — the toast.
      */
-    notifyBetPlaced: (_, params: { manager: string }) => {
-      pushNotification({
-        id: crypto.randomUUID(),
-        manager: params.manager,
-        message:
-          "Kiikutat mestarusveikkauskuponkisi S-kioskille. Olkoon onni myötä!",
-        type: "info"
-      });
-    }
+    notifyBetPlaced: sendTo(
+      "notifications",
+      (_, params: { manager: string }) => ({
+        type: "PUSH",
+        notification: {
+          id: crypto.randomUUID(),
+          manager: params.manager,
+          message:
+            "Kiikutat mestarusveikkauskuponkisi S-kioskille. Olkoon onni myötä!",
+          type: "info"
+        }
+      })
+    )
   },
 
   guards: {
@@ -271,6 +277,19 @@ export const appMachine = setup({
   id: "app",
   initial: "main_menu",
   context: () => createDefaultGameContext(),
+  invoke: {
+    src: "notifications",
+    id: "notifications",
+    systemId: "notifications"
+  },
+  on: {
+    DISMISS_NOTIFICATION: {
+      actions: sendTo("notifications", ({ event }) => ({
+        type: "DISMISS",
+        id: event.id
+      }))
+    }
+  },
   states: {
     main_menu: {
       on: {

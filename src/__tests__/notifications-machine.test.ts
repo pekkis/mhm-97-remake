@@ -16,9 +16,7 @@ const createTestActor = () => {
   return actor;
 };
 
-const ids = (
-  actor: ReturnType<typeof createTestActor>
-): string[] =>
+const ids = (actor: ReturnType<typeof createTestActor>): string[] =>
   actor
     .getSnapshot()
     .context.notifications.map((r) => r.getSnapshot().context.id);
