@@ -1,23 +1,21 @@
 import * as styles from "./Notifications.css";
 import Notification from "./Notification";
-import { useSelector } from "@xstate/store-react";
-import { notificationStore } from "@/stores/notification";
+import { useSelector } from "@xstate/react";
+import { notificationsActor, dismissNotification } from "@/stores/notification";
 
 const Notifications = () => {
   const notifications = useSelector(
-    notificationStore,
+    notificationsActor,
     (s) => s.context.notifications
   );
 
   return (
     <div className={styles.notifications}>
-      {notifications.toReversed().map((n) => (
+      {notifications.toReversed().map((ref) => (
         <Notification
-          key={n.id}
-          dismiss={(id) =>
-            notificationStore.send({ type: "dismissNotification", id })
-          }
-          notification={n}
+          key={ref.id}
+          actorRef={ref}
+          dismiss={dismissNotification}
         />
       ))}
     </div>

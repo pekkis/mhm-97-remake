@@ -2,19 +2,21 @@ import { amount } from "@/services/format";
 import { getEffective } from "@/services/effects";
 import Box from "./styled-system/Box";
 import TurnIndicator from "./game/TurnIndicator";
-import { useAppSelector } from "@/config/redux";
+import { AppMachineContext } from "@/context/app-machine-context";
+import { activeManager } from "@/machines/selectors";
 
 import * as styles from "./ManagerInfo.css";
-import { activeManager } from "@/selectors";
 
 type ManagerInfoProps = {
   details?: boolean;
 };
 
 const ManagerInfo = ({ details = false }: ManagerInfoProps) => {
-  const manager = useAppSelector(activeManager);
-  const teams = useAppSelector((state) => state.game.teams);
-  const turn = useAppSelector((state) => state.game.turn);
+  const manager = AppMachineContext.useSelector((state) =>
+    activeManager(state.context)
+  );
+  const teams = AppMachineContext.useSelector((state) => state.context.teams);
+  const turn = AppMachineContext.useSelector((state) => state.context.turn);
 
   const team = getEffective(teams[manager.team!]);
 

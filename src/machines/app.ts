@@ -16,6 +16,7 @@ import teamData from "@/data/teams";
 import calendar from "@/data/calendar";
 import strategies from "@/data/strategies";
 import random from "@/services/random";
+import { pushNotification } from "@/stores/notification";
 import { values } from "remeda";
 
 /**
@@ -56,6 +57,15 @@ export type AppMachineEvents =
   | {
       type: "SELECT_STRATEGY";
       payload: { manager: string; strategy: number };
+    }
+  | {
+      type: "PLACE_CHAMPION_BET";
+      payload: {
+        manager: string;
+        team: number;
+        amount: number;
+        odds: number;
+      };
     };
 
 const buildManager = (sub: ManagerSubmission, ctx: GameContext) => {
@@ -64,6 +74,7 @@ const buildManager = (sub: ManagerSubmission, ctx: GameContext) => {
   const manager: Manager = {
     id: crypto.randomUUID(),
     name: sub.name,
+    team: sub.team,
     difficulty,
     pranksExecuted: 0,
     services: {
@@ -212,7 +223,43 @@ export const appMachine = setup({
           draft.teams[team].readiness =
             strategies[params.strategy].initialReadiness();
         })
-    )
+    ),
+
+    /**
+     * championship_betting — record the bet and pay the stake. 1-1 port of
+     * the legacy `betChampion()` saga (data half).
+     */
+    placeChampionBet: assign(
+      (
+        { context },
+        params: { manager: string; team: number; amount: number; odds: number }
+      ) =>
+        produce(context, (draft) => {
+          draft.betting.championshipBets.push({
+            manager: params.manager,
+            team: params.team,
+            amount: params.amount,
+            odds: params.odds
+          });
+          const m = draft.manager.managers[params.manager];
+          if (m) {
+            m.balance -= params.amount;
+          }
+        })
+    ),
+
+    /**
+     * Side-effect half of `betChampion()` — the toast.
+     */
+    notifyBetPlaced: (_, params: { manager: string }) => {
+      pushNotification({
+        id: crypto.randomUUID(),
+        manager: params.manager,
+        message:
+          "Kiikutat mestarusveikkauskuponkisi S-kioskille. Olkoon onni myötä!",
+        type: "info"
+      });
+    }
   },
 
   guards: {
@@ -432,7 +479,24 @@ export const appMachine = setup({
                   }
                 },
                 championship_betting: {
-                  on: { ADVANCE: "done" }
+                  on: {
+                    PLACE_CHAMPION_BET: {
+                      actions: [
+                        {
+                          type: "placeChampionBet",
+                          params: ({ event }) => event.payload
+                        },
+                        {
+                          type: "notifyBetPlaced",
+                          params: ({ event }) => ({
+                            manager: event.payload.manager
+                          })
+                        }
+                      ],
+                      target: "done"
+                    },
+                    ADVANCE: "done"
+                  }
                 },
                 done: { type: "final" }
               }

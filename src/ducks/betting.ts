@@ -19,13 +19,6 @@ export const placeChampionBet = createAction<ChampionshipBet>(
   "BETTING_BET_CHAMPION"
 );
 
-export const requestChampionBet = createAction<{
-  manager: string;
-  team: number;
-  amount: number;
-  odds: number;
-}>("BETTING_BET_CHAMPION_REQUEST");
-
 const defaultState: BettingState = {
   championshipBets: [],
   bets: []

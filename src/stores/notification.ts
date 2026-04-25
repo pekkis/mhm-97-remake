@@ -1,35 +1,21 @@
-import { createStore } from "@xstate/store";
+import { createActor } from "xstate";
+import { notificationsMachine } from "@/machines/notifications";
+import type { NotificationData } from "@/machines/notification";
 
-export type Notification = {
-  id: string;
-  manager: string;
-  message: string;
-  type: string;
+export type Notification = NotificationData;
+
+/**
+ * Singleton notifications actor. Each notification is its own
+ * `notificationMachine` child with a 7-second `after` transition to
+ * `expired` — see `src/machines/notification.ts`.
+ */
+export const notificationsActor = createActor(notificationsMachine);
+notificationsActor.start();
+
+export const pushNotification = (notification: NotificationData) => {
+  notificationsActor.send({ type: "PUSH", notification });
 };
 
-export type NotificationStoreContext = {
-  notifications: Notification[];
+export const dismissNotification = (id: string) => {
+  notificationsActor.send({ type: "DISMISS", id });
 };
-
-const MAX_NOTIFICATIONS = 3;
-
-export const notificationStore = createStore({
-  context: {
-    notifications: [] as Notification[]
-  },
-  on: {
-    addNotification: (context, event: { notification: Notification }) => ({
-      ...context,
-      notifications: [...context.notifications, event.notification].slice(
-        -MAX_NOTIFICATIONS
-      )
-    }),
-    dismissNotification: (context, event: { id: string }) => ({
-      ...context,
-      notifications: context.notifications.filter((n) => n.id !== event.id)
-    }),
-    reset: () => ({
-      notifications: [] as Notification[]
-    })
-  }
-});

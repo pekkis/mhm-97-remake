@@ -3,20 +3,22 @@ import HeaderedPage from "./ui/HeaderedPage";
 import Button from "./form/Button";
 import BettingForm from "./championship-betting/BettingForm";
 import Box from "./styled-system/Box";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { advance } from "@/ducks/game";
-import { requestChampionBet } from "@/ducks/betting";
-import { activeManager } from "@/selectors";
+import { AppMachineContext } from "@/context/app-machine-context";
+import { activeManager } from "@/machines/selectors";
 
 const ChampionshipBetting = () => {
-  const manager = useAppSelector(activeManager);
-  const teams = useAppSelector((state) => state.game.teams);
-  const competitions = useAppSelector((state) => state.game.competitions);
-  const dispatch = useAppDispatch();
+  const manager = AppMachineContext.useSelector((state) =>
+    activeManager(state.context)
+  );
+  const teams = AppMachineContext.useSelector((state) => state.context.teams);
+  const competitions = AppMachineContext.useSelector(
+    (state) => state.context.competitions
+  );
+  const actor = AppMachineContext.useActorRef();
 
   return (
     <HeaderedPage>
-      <ManagerInfo />
+      <ManagerInfo details />
 
       <Box p={1}>
         <h2>Mestariveikkaus</h2>
@@ -34,20 +36,21 @@ const ChampionshipBetting = () => {
             amount: number,
             odds: number
           ) =>
-            dispatch(
-              requestChampionBet({
+            actor.send({
+              type: "PLACE_CHAMPION_BET",
+              payload: {
                 manager: managerId,
                 team: teamId,
                 amount,
                 odds
-              })
-            )
+              }
+            })
           }
           competition={competitions.phl}
           teams={teams}
         />
 
-        <Button secondary block onClick={() => dispatch(advance(undefined))}>
+        <Button secondary block onClick={() => actor.send({ type: "ADVANCE" })}>
           En halua veikata
         </Button>
       </Box>

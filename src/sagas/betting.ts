@@ -1,5 +1,5 @@
 import { put, all, call, select } from "typed-redux-saga";
-import { placeBet, placeChampionBet } from "@/ducks/betting";
+import { placeBet } from "@/ducks/betting";
 import type { SeasonStats } from "@/state/stats";
 import type { RootState } from "@/config/redux";
 import type { Pairing } from "@/types/competitions";
@@ -99,30 +99,6 @@ export function* bet(manager: string, coupon: string[], amount: number) {
         manager,
         coupon,
         amount
-      })
-    ),
-    call(decrementBalance, manager, amount)
-  ]);
-}
-
-export function* betChampion(
-  manager: string,
-  team: number,
-  amount: number,
-  odds: number
-) {
-  yield* all([
-    call(
-      addNotification,
-      manager,
-      "Kiikutat mestarusveikkauskuponkisi S-kioskille. Olkoon onni myötä!"
-    ),
-    put(
-      placeChampionBet({
-        manager,
-        team,
-        amount,
-        odds
       })
     ),
     call(decrementBalance, manager, amount)
