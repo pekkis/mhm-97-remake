@@ -1,4 +1,5 @@
 import { setup, assign, fromPromise } from "xstate";
+import { produce } from "immer";
 
 import {
   createDefaultGameContext,
@@ -6,9 +7,14 @@ import {
   type Manager
 } from "@/state";
 import { loadGame } from "@/services/persistence";
-import { teamsMainCompetition } from "@/machines/selectors";
+import {
+  teamsMainCompetition,
+  managersMainCompetition
+} from "@/machines/selectors";
 import difficultyLevels from "@/data/difficulty-levels";
+import teamData from "@/data/teams";
 import calendar from "@/data/calendar";
+import { values } from "remeda";
 
 /**
  * Application lifecycle machine.
@@ -89,14 +95,56 @@ export const appMachine = setup({
   actions: {
     resetContext: assign(() => createDefaultGameContext()),
 
-    advanceRound: assign(({ context }) => ({
-      teams: context.teams.map((t) => ({
-        ...t,
-        effects: t.effects.filter((e) => e.duration > 0),
-        opponentEffects: t.opponentEffects.filter((e) => e.duration > 0)
-      })),
-      turn: { ...context.turn, round: context.turn.round + 1 }
-    })),
+    advanceRound: assign(({ context }) =>
+      produce(context, (draft) => {
+        for (const team of draft.teams) {
+          team.effects = team.effects.filter((e) => e.duration > 0);
+          team.opponentEffects = team.opponentEffects.filter(
+            (e) => e.duration > 0
+          );
+        }
+        draft.turn.round += 1;
+      })
+    ),
+
+    /**
+     * start_of_season setup phase — the non-interactive bulk of the legacy
+     * `seasonStart()` saga. Re-rolls European team strengths, deducts manager
+     * salaries (skipped on season 0), adjusts insurance extras, and resets
+     * each manager's per-season `extra` budget.
+     *
+     * TODO: still missing the `competitionStart()` per-competition saga
+     * dispatches — those run nested sagas (e.g. seeding) and need separate
+     * migration. They land here once the seed phase is migrated.
+     */
+    seasonStartSetup: assign(({ context }) =>
+      produce(context, (draft) => {
+        const season = draft.turn.season;
+
+        // Re-strength European teams (indices 24+).
+        for (let i = 24; i < draft.teams.length; i++) {
+          draft.teams[i].strength = teamData[draft.teams[i].id].strength();
+        }
+
+        for (const manager of values(draft.manager.managers)) {
+          if (season > 0) {
+            const team = draft.teams[manager.team!];
+            const mainCompetition = managersMainCompetition(manager.id)(
+              context
+            );
+            const salaryPerStrength =
+              difficultyLevels[manager.difficulty].salary(mainCompetition);
+            manager.balance -= salaryPerStrength * team.strength;
+
+            if (manager.services.insurance) {
+              manager.insuranceExtra -= 50 * manager.arena.level;
+            }
+          }
+
+          manager.extra = difficultyLevels[manager.difficulty].extra;
+        }
+      })
+    ),
 
     assignManager: assign(
       ({ context }, params: { manager: ManagerSubmission }) => {
@@ -314,10 +362,7 @@ export const appMachine = setup({
               onDone: "seed_check",
               states: {
                 setup: {
-                  // TODO migrate seasonStart() saga: re-strength European
-                  // teams, start competitions, deduct salaries (season > 0),
-                  // adjust insurance extras, reset extras, dispatch
-                  // seasonStart action.
+                  entry: "seasonStartSetup",
                   always: "select_strategy"
                 },
                 select_strategy: {
