@@ -1,5 +1,5 @@
 import { amount as a } from "@/services/format";
-import type { Manager, ManagerServices } from "@/ducks/manager";
+import type { Manager, ManagerServices } from "@/state/manager";
 
 export type ServiceDefinition = {
   name: string;

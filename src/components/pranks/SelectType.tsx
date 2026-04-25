@@ -3,7 +3,7 @@ import Button from "@/components/form/Button";
 import ButtonContainer from "@/components/ui/ButtonContainer";
 import pranks from "@/game/pranks";
 import { currency as c } from "@/services/format";
-import type { Manager } from "@/ducks/manager";
+import type { Manager } from "@/state/manager";
 import { entries } from "remeda";
 
 type SelectTypeProps = {

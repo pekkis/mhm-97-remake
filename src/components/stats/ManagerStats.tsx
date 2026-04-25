@@ -2,9 +2,9 @@ import { useState, type FC } from "react";
 import Tabs from "@/components/ui/Tabs";
 import Tab from "@/components/ui/Tab";
 import Story from "./Story";
-import type { Team } from "@/ducks/game";
-import type { Manager } from "@/ducks/manager";
-import type { StatsState } from "@/ducks/stats";
+import type { Team } from "@/state/game";
+import type { Manager } from "@/state/manager";
+import type { StatsState } from "@/state/stats";
 import type { Competition } from "@/types/competitions";
 
 type ManagerStatsProps = {

@@ -2,8 +2,8 @@ import type { FC } from "react";
 import ButtonContainer from "@/components/ui/ButtonContainer";
 import Button from "@/components/form/Button";
 import pranks from "@/game/pranks";
-import type { Team } from "@/ducks/game";
-import type { Manager } from "@/ducks/manager";
+import type { Team } from "@/state/game";
+import type { Manager } from "@/state/manager";
 
 type ConfirmPrankProps = {
   cancel: () => void;

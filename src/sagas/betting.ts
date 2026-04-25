@@ -1,6 +1,6 @@
 import { put, all, call, select } from "typed-redux-saga";
 import { placeBet, placeChampionBet } from "@/ducks/betting";
-import type { SeasonStats } from "@/ducks/stats";
+import type { SeasonStats } from "@/state/stats";
 import type { RootState } from "@/config/redux";
 import type { Pairing } from "@/types/competitions";
 import { decrementBalance, incrementBalance } from "./manager";

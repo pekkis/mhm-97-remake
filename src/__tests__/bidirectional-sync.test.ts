@@ -3,7 +3,7 @@ import { createActor } from "xstate";
 import { gameMachine } from "@/machines/game";
 import type { GameContext } from "@/machines/types";
 import type { Competition } from "@/types/competitions";
-import type { ManagerServices } from "@/ducks/manager";
+import type { ManagerServices } from "@/state/manager";
 import calendar from "@/data/calendar";
 import { createTestStore } from "./helpers/createTestStore";
 import { syncFromMachine } from "@/ducks/game";

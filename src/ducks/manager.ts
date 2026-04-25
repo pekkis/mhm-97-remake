@@ -1,4 +1,9 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import type {
+  Manager,
+  ManagerServices,
+  ManagerState
+} from "@/state/manager";
 import {
   seasonStart,
   teamRemoveManager,
@@ -8,37 +13,6 @@ import {
 import { quitToMainMenu, gameLoadState } from "./meta";
 import { orderPrank } from "./prank";
 import { values } from "remeda";
-
-export type ManagerArena = {
-  name: string;
-  level: number;
-};
-
-export type ManagerServices = {
-  coach: boolean;
-  insurance: boolean;
-  microphone: boolean;
-  cheer: boolean;
-};
-
-export type Manager = {
-  id: string;
-  name: string;
-  difficulty: number;
-  pranksExecuted: number;
-  services: ManagerServices;
-  balance: number;
-  arena: ManagerArena;
-  extra: number;
-  insuranceExtra: number;
-  flags: Record<string, boolean>;
-  team?: number;
-};
-
-export type ManagerState = {
-  active: string | undefined;
-  managers: Record<string, Manager>;
-};
 
 const defaultState: ManagerState = {
   active: undefined,

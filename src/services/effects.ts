@@ -1,5 +1,5 @@
 import namedEffects from "@/data/named-effects";
-import type { Team, TeamEffect } from "@/ducks/game";
+import type { Team, TeamEffect } from "@/state/game";
 
 const affect = (
   target: Team,

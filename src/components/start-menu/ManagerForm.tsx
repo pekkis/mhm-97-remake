@@ -7,7 +7,7 @@ import Label from "@/components/form/Label";
 import LabelDiv from "@/components/form/LabelDiv";
 import Field from "@/components/form/Field";
 import difficultyLevels from "@/data/difficulty-levels";
-import type { Team } from "@/ducks/game";
+import type { Team } from "@/state/game";
 import type { Competition } from "@/types/competitions";
 import { values } from "remeda";
 

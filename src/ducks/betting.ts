@@ -1,4 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import type { BettingState, ChampionshipBet } from "@/state/betting";
 import { quitToMainMenu, gameLoadState } from "./meta";
 import { seasonStart, nextTurn, syncFromMachine } from "./game";
 
@@ -24,24 +25,6 @@ export const requestChampionBet = createAction<{
   amount: number;
   odds: number;
 }>("BETTING_BET_CHAMPION_REQUEST");
-
-export type ChampionshipBet = {
-  manager: string;
-  team: number;
-  amount: number;
-  odds: number;
-};
-
-export type Bet = {
-  manager: string;
-  coupon: string[];
-  amount: number;
-};
-
-export type BettingState = {
-  championshipBets: ChampionshipBet[];
-  bets: Bet[];
-};
 
 const defaultState: BettingState = {
   championshipBets: [],

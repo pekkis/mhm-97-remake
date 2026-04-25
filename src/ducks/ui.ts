@@ -1,9 +1,6 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import type { UiState } from "@/state/ui";
 import { quitToMainMenu } from "./meta";
-
-export type UiState = {
-  menu: boolean;
-};
 
 const defaultState: UiState = {
   menu: false

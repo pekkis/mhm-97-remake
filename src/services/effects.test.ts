@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { getEffective, getEffectiveOpponent } from "@/services/effects";
-import type { Team, TeamEffect } from "@/ducks/game";
+import type { Team, TeamEffect } from "@/state/game";
 
 const makeTeam = (overrides: Partial<Team> = {}): Team => ({
   id: 0,

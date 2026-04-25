@@ -3,8 +3,8 @@ import clsx from "clsx";
 import * as styles from "./Table.css";
 import RTable from "@/components/responsive-table/Table";
 
-import type { Team } from "@/ducks/game";
-import type { Manager } from "@/ducks/manager";
+import type { Team } from "@/state/game";
+import type { Manager } from "@/state/manager";
 import type { Group, TeamStat } from "@/types/competitions";
 import { values } from "remeda";
 

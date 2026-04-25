@@ -1,5 +1,5 @@
 import { CRISIS_COST } from "@/data/constants";
-import type { Team } from "@/ducks/game";
+import type { Team } from "@/state/game";
 import type { Competition } from "@/types/competitions";
 
 type CrisisResult = {

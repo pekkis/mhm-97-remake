@@ -3,13 +3,13 @@ import type { RandomService } from "./random";
 import { entries, pipe } from "remeda";
 import { getEffective, getEffectiveOpponent } from "@/services/effects";
 import services from "@/data/services";
-import type { Team } from "@/ducks/game";
+import type { Team } from "@/state/game";
 import type {
   GameResult,
   GameFacts,
   GamedayAdvantage
 } from "@/types/competitions";
-import type { Manager } from "@/ducks/manager";
+import type { Manager } from "@/state/manager";
 
 export type GameInput = {
   home: Team;

@@ -1,8 +1,8 @@
 import type { FC } from "react";
 import Button from "@/components/form/Button";
 import ButtonContainer from "@/components/ui/ButtonContainer";
-import type { Team } from "@/ducks/game";
-import type { Manager } from "@/ducks/manager";
+import type { Team } from "@/state/game";
+import type { Manager } from "@/state/manager";
 import type { Competition } from "@/types/competitions";
 
 type SelectVictimProps = {

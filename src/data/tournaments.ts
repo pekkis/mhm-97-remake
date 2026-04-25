@@ -1,5 +1,5 @@
 import { amount as a } from "@/services/format";
-import type { Team } from "@/ducks/game";
+import type { Team } from "@/state/game";
 import type { CompetitionId } from "@/types/competitions";
 
 type Tournament = {

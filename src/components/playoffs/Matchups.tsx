@@ -1,6 +1,6 @@
 import type { FC } from "react";
-import type { Team } from "@/ducks/game";
-import type { Manager } from "@/ducks/manager";
+import type { Team } from "@/state/game";
+import type { Manager } from "@/state/manager";
 import type { PlayoffGroup, MatchupStat } from "@/types/competitions";
 
 type MatchupsProps = {

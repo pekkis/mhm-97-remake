@@ -4,8 +4,8 @@ import Slider from "@/components/form/Slider";
 import { amount as a } from "@/services/format";
 import Button from "@/components/form/Button";
 import TeamName from "@/components/team/Name";
-import type { Team } from "@/ducks/game";
-import type { Manager } from "@/ducks/manager";
+import type { Team } from "@/state/game";
+import type { Manager } from "@/state/manager";
 import type { Competition } from "@/types/competitions";
 import { entries } from "remeda";
 

@@ -1,13 +1,7 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import type { BaseEventFields } from "@/types/base";
+import type { EventState, StoredEvent } from "@/state/event";
 import { quitToMainMenu, gameLoadState } from "./meta";
 import { syncFromMachine } from "./game";
-
-export type StoredEvent = BaseEventFields & Record<string, unknown>;
-
-export type EventState = {
-  events: Record<string, StoredEvent>;
-};
 
 const defaultState: EventState = {
   events: {}

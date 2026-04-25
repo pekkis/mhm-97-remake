@@ -4,8 +4,8 @@ import { gameMachine } from "@/machines/game";
 import { executeCalculationsPhase } from "@/machines/calculations";
 import type { GameContext } from "@/machines/types";
 import type { Competition } from "@/types/competitions";
-import type { Manager } from "@/ducks/manager";
-import type { Team } from "@/ducks/game";
+import type { Manager } from "@/state/manager";
+import type { Team } from "@/state/game";
 import calendar from "@/data/calendar";
 
 /** Minimal stub for Competition fields */

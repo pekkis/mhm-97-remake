@@ -1,11 +1,8 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import type { PrankState } from "@/state/prank";
 import type { PrankInstance } from "@/game/pranks";
 import { quitToMainMenu, gameLoadState } from "./meta";
 import { syncFromMachine } from "./game";
-
-export type PrankState = {
-  pranks: PrankInstance[];
-};
 
 const defaultState: PrankState = {
   pranks: []

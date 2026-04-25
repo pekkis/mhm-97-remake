@@ -5,7 +5,7 @@ import ResponsiveTable from "@/components/responsive-table/ResponsiveTable";
 import Table from "@/components/responsive-table/Table";
 import Td from "@/components/responsive-table/Td";
 import Box from "@/components/styled-system/Box";
-import type { Team } from "@/ducks/game";
+import type { Team } from "@/state/game";
 import type { Competition } from "@/types/competitions";
 
 type StoryProps = {

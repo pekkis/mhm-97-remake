@@ -3,7 +3,7 @@ import { addEvent } from "@/sagas/event";
 import { addEffect } from "@/sagas/team";
 import { randomTeamOrNullFrom, randomManager } from "@/selectors";
 import type { MHMEvent } from "@/types/base";
-import type { Team } from "@/ducks/game";
+import type { Team } from "@/state/game";
 
 /*
 xx = 1000

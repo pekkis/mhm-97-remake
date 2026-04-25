@@ -1,4 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import type { InvitationState } from "@/state/invitation";
 import {
   seasonStart,
   decrementDurations,
@@ -6,18 +7,6 @@ import {
   syncFromMachine
 } from "./game";
 import { quitToMainMenu, gameLoadState } from "./meta";
-
-export type Invitation = {
-  id: string;
-  manager: string;
-  tournament: number;
-  duration: number;
-  participate?: boolean;
-};
-
-export type InvitationState = {
-  invitations: Invitation[];
-};
 
 const defaultState: InvitationState = {
   invitations: []

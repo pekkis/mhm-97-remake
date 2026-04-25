@@ -1,4 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import type { NewsState } from "@/state/news";
 import { nextTurn, syncFromMachine } from "./game";
 import { quitToMainMenu, gameLoadState } from "./meta";
 
@@ -8,11 +9,6 @@ export const addAnnouncement = createAction<{
 }>("NEWS_ANNOUNCEMENT_ADD");
 export const clearAnnouncements = createAction("NEWS_ANNOUNCEMENTS_CLEAR");
 export const addNews = createAction<string>("NEWS_ADD");
-
-export type NewsState = {
-  news: string[];
-  announcements: Record<string, string[]>;
-};
 
 const defaultState: NewsState = {
   news: [],

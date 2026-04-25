@@ -3,9 +3,9 @@ import type { RootState } from "@/config/redux";
 import {
   addEventAction,
   resolveEventAction,
-  setEventProcessed,
-  type StoredEvent
+  setEventProcessed
 } from "@/ducks/event";
+import type { StoredEvent } from "@/state/event";
 
 import events from "@/game/events";
 import { values } from "remeda";

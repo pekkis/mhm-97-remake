@@ -14,7 +14,7 @@ import r from "@/services/random";
 import { incrementStrength } from "./team";
 import { incrementBalance } from "./manager";
 import { addNews } from "./news";
-import type { Team } from "@/ducks/game";
+import type { Team } from "@/state/game";
 import type { RootState } from "@/config/redux";
 
 type AwardData = {

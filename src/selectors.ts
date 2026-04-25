@@ -1,8 +1,8 @@
 import r from "@/services/random";
 import { victors } from "@/services/playoffs";
 import type { RootState } from "@/config/redux";
-import type { GameFlags, Team } from "@/ducks/game";
-import type { Manager, ManagerServices } from "@/ducks/manager";
+import type { GameFlags, Team } from "@/state/game";
+import type { Manager, ManagerServices } from "@/state/manager";
 import type {
   CompetitionId,
   PlayoffGroup,

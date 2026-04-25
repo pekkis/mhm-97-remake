@@ -1,12 +1,12 @@
-import type { Team } from "@/ducks/game";
+import type { Team } from "@/state/game";
 import type {
   Competition,
   CompetitionDefinition,
   TournamentGroup
 } from "@/types/competitions";
 import tournamentScheduler from "@/services/tournament";
-import type { Manager } from "@/ducks/manager";
-import type { Invitation } from "@/ducks/invitation";
+import type { Manager } from "@/state/manager";
+import type { Invitation } from "@/state/invitation";
 import tournamentList from "@/data/tournaments";
 import random from "@/services/random";
 

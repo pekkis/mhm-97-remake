@@ -8,7 +8,7 @@ import {
 } from "@/selectors";
 import { cinteger } from "@/services/random";
 import type { MHMEvent } from "@/types/base";
-import type { Team } from "@/ducks/game";
+import type { Team } from "@/state/game";
 
 const eventId = "moneyTroubles";
 

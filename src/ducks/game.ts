@@ -2,10 +2,14 @@ import { createAction, createReducer } from "@reduxjs/toolkit";
 
 import teamDefs from "@/data/teams";
 import managers from "@/data/managers";
-import type { ManagerDefinition } from "@/data/managers";
 
 import competitionList from "@/data/competitions";
 import { quitToMainMenu, gameLoadState } from "./meta";
+import type {
+  GameState,
+  TeamEffect,
+  WorldChampionshipEntry
+} from "@/state/game";
 import type { Competition, CompetitionId } from "@/types/competitions";
 import { entries, values } from "remeda";
 
@@ -154,53 +158,6 @@ export const teamAddManager = createAction<{
   team: number;
   manager: string;
 }>("TEAM_ADD_MANAGER");
-
-export type TeamEffect = {
-  parameter: string[];
-  amount: number | string;
-  duration: number;
-  extra?: Record<string, unknown>;
-};
-
-export type Team = {
-  id: number;
-  name: string;
-  strength: number;
-  domestic: boolean;
-  morale: number;
-  strategy: number;
-  readiness: number;
-  effects: TeamEffect[];
-  opponentEffects: TeamEffect[];
-  manager?: string;
-};
-
-export type GameFlags = {
-  jarko: boolean;
-  usa: boolean;
-  canada: boolean;
-  haanperaMarried: boolean;
-  mauto: boolean;
-  psycho: number | undefined;
-};
-
-export type WorldChampionshipEntry = {
-  id: string;
-  name: string;
-  strength: number;
-  luck: number;
-  random: number;
-};
-
-type GameState = {
-  turn: { season: number; round: number; phase: string | undefined };
-  flags: GameFlags;
-  serviceBasePrices: Record<string, number>;
-  managers: ManagerDefinition[];
-  competitions: Record<CompetitionId, Competition>;
-  teams: Team[];
-  worldChampionshipResults: WorldChampionshipEntry[] | undefined;
-};
 
 const defaultState: GameState = {
   turn: { season: 0, round: 0, phase: undefined },

@@ -2,7 +2,7 @@ import { put, call, select } from "typed-redux-saga";
 import { teamsManager } from "@/selectors";
 import difficultyLevels from "@/data/difficulty-levels";
 import { calculateGroupStats } from "./stats";
-import type { Manager } from "@/ducks/manager";
+import type { Manager } from "@/state/manager";
 import {
   teamIncurPenalty,
   teamSetStrategy,

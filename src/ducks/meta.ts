@@ -1,4 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import type { MetaState } from "@/state/meta";
 
 export const quitToMainMenu = createAction("META_QUIT_TO_MAIN_MENU");
 export const startGame = createAction("META_GAME_START_REQUEST");
@@ -7,21 +8,6 @@ export const loadGame = createAction("META_GAME_LOAD_REQUEST");
 export const gameLoadState = createAction<any>("META_GAME_LOAD_STATE");
 export const gameLoaded = createAction("META_GAME_LOADED");
 export const gameStart = createAction("GAME_START");
-
-export type MetaManager = {
-  name: string;
-  arena: string;
-  difficulty: string;
-  team: number;
-};
-
-export type MetaState = {
-  started: boolean;
-  loading: boolean;
-  saving: boolean;
-  starting: boolean;
-  manager: MetaManager;
-};
 
 const defaultState: MetaState = {
   started: false,

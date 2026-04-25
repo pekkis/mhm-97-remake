@@ -27,9 +27,9 @@ import {
   managerIncrementInsuranceExtra,
   managerSetService,
   managerBuyPlayer,
-  managerSellPlayer,
-  type ManagerServices
+  managerSellPlayer
 } from "@/ducks/manager";
+import type { ManagerServices } from "@/state/manager";
 import difficultyLevels from "@/data/difficulty-levels";
 import arenas from "@/data/arenas";
 import { incrementStrength, decrementStrength } from "./team";

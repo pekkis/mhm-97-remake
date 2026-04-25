@@ -14,35 +14,9 @@
  * homes so that a single import gives access to the full vocabulary.
  */
 
-// --- Re-exports from ducks/types (canonical locations) ---
+// --- Re-exports of state-shape types (canonical home: @/state) ---
 
-export type {
-  Team,
-  TeamEffect,
-  GameFlags,
-  WorldChampionshipEntry
-} from "@/ducks/game";
-export type {
-  Manager,
-  ManagerArena,
-  ManagerServices,
-  ManagerState
-} from "@/ducks/manager";
-export type { BettingState, Bet, ChampionshipBet } from "@/ducks/betting";
-export type { EventState, StoredEvent } from "@/ducks/event";
-export type { InvitationState, Invitation } from "@/ducks/invitation";
-export type { MetaState, MetaManager } from "@/ducks/meta";
-export type { NewsState } from "@/ducks/news";
-export type { NotificationState, Notification } from "@/ducks/notification";
-export type {
-  StatsState,
-  SeasonStats,
-  Streak,
-  GameRecord
-} from "@/ducks/stats";
-export type { UiState } from "@/ducks/ui";
-export type { Country, CountryState } from "@/ducks/country";
-export type { PrankState } from "@/ducks/prank";
+export type * from "@/state";
 export type { PrankInstance } from "@/game/pranks";
 export type { ManagerDefinition } from "@/data/managers";
 
@@ -64,16 +38,16 @@ export type {
 
 // --- GameContext ---
 
-import type { Team, GameFlags, WorldChampionshipEntry } from "@/ducks/game";
-import type { ManagerState } from "@/ducks/manager";
-import type { BettingState } from "@/ducks/betting";
-import type { EventState } from "@/ducks/event";
-import type { InvitationState } from "@/ducks/invitation";
-import type { NewsState } from "@/ducks/news";
-import type { NotificationState } from "@/ducks/notification";
-import type { StatsState } from "@/ducks/stats";
-import type { CountryState } from "@/ducks/country";
-import type { PrankState } from "@/ducks/prank";
+import type { Team, GameFlags, WorldChampionshipEntry } from "@/state/game";
+import type { ManagerState } from "@/state/manager";
+import type { BettingState } from "@/state/betting";
+import type { EventState } from "@/state/event";
+import type { InvitationState } from "@/state/invitation";
+import type { NewsState } from "@/state/news";
+import type { NotificationState } from "@/state/notification";
+import type { StatsState } from "@/state/stats";
+import type { CountryState } from "@/state/country";
+import type { PrankState } from "@/state/prank";
 import type { ManagerDefinition } from "@/data/managers";
 import type { Competition, CompetitionId } from "@/types/competitions";
 

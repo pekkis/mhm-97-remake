@@ -4,8 +4,8 @@ import ResponsiveTable from "@/components/responsive-table/ResponsiveTable";
 import Matchups from "@/components/playoffs/Matchups";
 import Games from "@/components/gameday/Games";
 import Streaks from "@/components/Streaks";
-import type { Team } from "@/ducks/game";
-import type { Manager } from "@/ducks/manager";
+import type { Team } from "@/state/game";
+import type { Manager } from "@/state/manager";
 import type { Competition, PlayoffGroup } from "@/types/competitions";
 
 type SituationProps = {

@@ -3,8 +3,8 @@ import { resultFacts, gameFacts } from "@/services/game";
 import { createGameService } from "@/services/game";
 import { createRandom } from "@/services/random";
 import type { GameInput } from "@/services/game";
-import type { Team } from "@/ducks/game";
-import type { Manager } from "@/ducks/manager";
+import type { Team } from "@/state/game";
+import type { Manager } from "@/state/manager";
 import type { GameResult } from "@/types/competitions";
 
 const makeTeam = (overrides: Partial<Team> = {}): Team => ({

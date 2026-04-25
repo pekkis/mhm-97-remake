@@ -1,18 +1,9 @@
 import { countries as countryList } from "@/data/countries";
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import type { Country, CountryState } from "@/state/country";
 import { quitToMainMenu } from "./meta";
 import { syncFromMachine } from "./game";
 import { values } from "remeda";
-
-export type Country = {
-  iso: string;
-  name: string;
-  strength: number | undefined;
-};
-
-export type CountryState = {
-  countries: Record<string, Country>;
-};
 
 const defaultState: CountryState = {
   countries: values(countryList).reduce(

@@ -1,8 +1,8 @@
 import type { FC } from "react";
 import * as styles from "./Game.css";
 import TeamName from "@/components/team/Name";
-import type { Team } from "@/ducks/game";
-import type { Manager } from "@/ducks/manager";
+import type { Team } from "@/state/game";
+import type { Manager } from "@/state/manager";
 import type { Group, Pairing } from "@/types/competitions";
 
 type GameProps = {

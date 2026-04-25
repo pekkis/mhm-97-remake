@@ -1,17 +1,7 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import type { Notification, NotificationState } from "@/state/notification";
 import { quitToMainMenu } from "./meta";
 import { syncFromMachine } from "./game";
-
-export type Notification = {
-  id: string;
-  manager: string;
-  message: string;
-  type: string;
-};
-
-export type NotificationState = {
-  notifications: Notification[];
-};
 
 const defaultState: NotificationState = {
   notifications: []
