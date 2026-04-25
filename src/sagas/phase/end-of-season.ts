@@ -44,7 +44,7 @@ function* definePekkalandiaStrength() {
 }
 
 function* worldChampionships() {
-  yield* call(setPhase, "world-championships");
+  yield* call(setPhase, "world_championships");
   yield* call(definePekkalandiaStrength);
 
   const countries: Record<string, Country> = yield* select(
@@ -86,11 +86,11 @@ function* worldChampionships() {
 export default function* endOfSeasonPhase() {
   yield* call(worldChampionships);
 
-  yield* call(setPhase, "end-of-season");
+  yield* call(setPhase, "end_of_season");
 
   yield* call(awards);
 
-  yield* call(setPhase, "end-of-season");
+  yield* call(setPhase, "end_of_season");
 
   const division: Competition = yield* select(
     (state: RootState) => state.game.competitions.division

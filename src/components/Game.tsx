@@ -25,37 +25,42 @@ import Gala from "./Gala";
 import { useSelector } from "@xstate/store-react";
 import { uiStore } from "@/stores/ui";
 import { AppMachineContext } from "@/context/app-machine-context";
+import type { FC } from "react";
 
-const Phase = ({ turn }: { turn: { phase: string | undefined } }) => {
+type PhaseProps = {
+  phase: string;
+};
+
+const Phase: FC<PhaseProps> = ({ phase }) => {
   switch (true) {
-    case turn.phase === "select-strategy":
+    case phase === "select_strategy":
       return <SelectStrategy />;
 
-    case turn.phase === "championship-betting":
+    case phase === "championship_betting":
       return <ChampionshipBetting />;
 
-    case turn.phase === "event":
+    case phase === "event":
       return <Events />;
 
-    case turn.phase === "gala":
+    case phase === "gala":
       return <Gala />;
 
-    case turn.phase === "news":
+    case phase === "news":
       return <News />;
 
-    case turn.phase === "gameday":
+    case phase === "gameday":
       return <Gameday />;
 
-    case turn.phase === "world-championships":
+    case phase === "world_championships":
       return <WorldChampionships />;
 
-    case turn.phase === "end-of-season":
+    case phase === "end_of_season":
       return <EndOfSeason />;
 
-    case turn.phase === "results":
+    case phase === "results":
       return <GamedayResults />;
 
-    case turn.phase === "action":
+    case phase === "action":
       return (
         <Routes>
           <Route path="/" element={<MainMenu />} />
@@ -77,14 +82,12 @@ const Phase = ({ turn }: { turn: { phase: string | undefined } }) => {
   }
 };
 
-const Game = () => {
+const Game: FC = () => {
   const menu = useSelector(uiStore, (s) => s.context.menu);
 
   console.log("MENU", menu);
 
   const turn = AppMachineContext.useSelector((state) => state.context.turn);
-
-  console.log("TURN", turn);
 
   return (
     <div>

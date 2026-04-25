@@ -155,7 +155,7 @@ const getEventId = (predefined?: string): string | undefined => {
 };
 
 export default function* eventCreationPhase() {
-  yield* call(setPhase, "event-creation");
+  yield* call(setPhase, "event_creation");
 
   const managers = yield* select((state: RootState) => state.manager.managers);
   const round = yield* select((state: RootState) => state.game.turn.round);

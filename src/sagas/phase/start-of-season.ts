@@ -18,7 +18,7 @@ function* selectStrategy() {
   const managers = yield* select((state: RootState) => state.manager.managers);
   yield* call(setActiveManager, values(managers)[0].id);
 
-  yield* put(setGamePhase("select-strategy"));
+  yield* put(setGamePhase("select_strategy"));
 
   const action = yield* take(managerSelectStrategy);
   const { payload } = action;
@@ -44,7 +44,7 @@ function* selectStrategy() {
 }
 
 function* championshipBetting() {
-  yield* put(setGamePhase("championship-betting"));
+  yield* put(setGamePhase("championship_betting"));
 
   const { bet } = yield* race({
     bet: take(requestChampionBet),

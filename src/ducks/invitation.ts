@@ -1,10 +1,6 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 import type { InvitationState } from "@/state/invitation";
-import {
-  seasonStart,
-  decrementDurations,
-  clearExpired
-} from "./game";
+import { seasonStart, decrementDurations, clearExpired } from "./game";
 import { quitToMainMenu } from "./meta";
 
 const defaultState: InvitationState = {
