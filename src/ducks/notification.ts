@@ -4,7 +4,7 @@ import { quitToMainMenu } from "./meta";
 import { syncFromMachine } from "./game";
 
 const defaultState: NotificationState = {
-  notifications: [],
+  notifications: []
 };
 
 export const addNotification = createAction<Notification>("NOTIFICATION_ADD");
@@ -22,7 +22,7 @@ export default createReducer(defaultState, (builder) => {
     })
     .addCase(dismissNotification, (state, action) => {
       state.notifications = state.notifications.filter(
-        (n) => n.id !== action.payload,
+        (n) => n.id !== action.payload
       );
     });
 });

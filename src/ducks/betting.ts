@@ -16,7 +16,7 @@ export const requestBet = createAction<{
 }>("BETTING_BET_REQUEST");
 
 export const placeChampionBet = createAction<ChampionshipBet>(
-  "BETTING_BET_CHAMPION",
+  "BETTING_BET_CHAMPION"
 );
 
 export const requestChampionBet = createAction<{
@@ -28,7 +28,7 @@ export const requestChampionBet = createAction<{
 
 const defaultState: BettingState = {
   championshipBets: [],
-  bets: [],
+  bets: []
 };
 
 export default createReducer(defaultState, (builder) => {

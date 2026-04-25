@@ -11,13 +11,13 @@ export type {
   TeamEffect,
   GameFlags,
   WorldChampionshipEntry,
-  GameState,
+  GameState
 } from "./game";
 export type {
   Manager,
   ManagerArena,
   ManagerServices,
-  ManagerState,
+  ManagerState
 } from "./manager";
 export type { Bet, ChampionshipBet, BettingState } from "./betting";
 export type { StoredEvent, EventState } from "./event";

@@ -4,7 +4,7 @@ import {
   seasonStart,
   teamRemoveManager,
   teamAddManager,
-  syncFromMachine,
+  syncFromMachine
 } from "./game";
 import { quitToMainMenu, gameLoadState } from "./meta";
 import { orderPrank } from "./prank";
@@ -12,7 +12,7 @@ import { values } from "remeda";
 
 const defaultState: ManagerState = {
   active: undefined,
-  managers: {},
+  managers: {}
 };
 
 // State-changing actions (hit reducer)
@@ -35,7 +35,7 @@ export const managerDecrementBalance = createAction<{
   amount: number;
 }>("MANAGER_DECREMENT_BALANCE");
 export const managerSetExtra = createAction<{ manager: string; extra: number }>(
-  "MANAGER_SET_EXTRA",
+  "MANAGER_SET_EXTRA"
 );
 export const managerSetFlag = createAction<{
   manager: string;
@@ -75,14 +75,14 @@ export const managerSelectStrategy = createAction<{
   strategy: number;
 }>("MANAGER_SELECT_STRATEGY");
 export const managerImproveArena = createAction<{ manager: string }>(
-  "MANAGER_IMPROVE_ARENA",
+  "MANAGER_IMPROVE_ARENA"
 );
 export const managerSellPlayer = createAction<{
   manager: string;
   playerType: string;
 }>("MANAGER_SELL_PLAYER");
 export const managerCrisisMeeting = createAction<{ manager: string }>(
-  "MANAGER_CRISIS_MEETING",
+  "MANAGER_CRISIS_MEETING"
 );
 
 export default createReducer(defaultState, (builder) => {
@@ -115,7 +115,7 @@ export default createReducer(defaultState, (builder) => {
     })
     .addCase(teamRemoveManager, (state, action) => {
       const mgr = values(state.managers).find(
-        (m) => m.team === action.payload.team,
+        (m) => m.team === action.payload.team
       );
       if (mgr) {
         delete mgr.team;

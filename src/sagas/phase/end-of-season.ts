@@ -48,7 +48,7 @@ function* worldChampionships() {
   yield* call(definePekkalandiaStrength);
 
   const countries: Record<string, Country> = yield* select(
-    (state: RootState) => state.country.countries,
+    (state: RootState) => state.country.countries
   );
 
   const rawEntries = values(countries)
@@ -57,14 +57,14 @@ function* worldChampionships() {
       name: c.name,
       strength: c.strength ?? 0,
       luck: getLuck(),
-      random: cinteger(0, 20) - cinteger(0, 10),
+      random: cinteger(0, 20) - cinteger(0, 10)
     }))
     .sort(
       (a, b) =>
         (a.strength ?? 0) +
         a.luck +
         a.random -
-        ((b.strength ?? 0) + b.luck + b.random),
+        ((b.strength ?? 0) + b.luck + b.random)
     )
     .reverse();
 
@@ -77,7 +77,7 @@ function* worldChampionships() {
   yield* call(
     setSeasonStat,
     ["worldChampionships"],
-    entries.map((e) => e.id),
+    entries.map((e) => e.id)
   );
 
   yield* take(advance);
@@ -93,15 +93,15 @@ export default function* endOfSeasonPhase() {
   yield* call(setPhase, "end-of-season");
 
   const division: Competition = yield* select(
-    (state: RootState) => state.game.competitions.division,
+    (state: RootState) => state.game.competitions.division
   );
 
   const phl: Competition = yield* select(
-    (state: RootState) => state.game.competitions.phl,
+    (state: RootState) => state.game.competitions.phl
   );
 
   const divisionVictor = victors(
-    division.phases[3].groups[0] as PlayoffGroup,
+    division.phases[3].groups[0] as PlayoffGroup
   )[0].id;
 
   const presidentsTrophy = (phl.phases[0].groups[0].stats[0] as TeamStat).id;
@@ -117,7 +117,7 @@ export default function* endOfSeasonPhase() {
   const medalists = [
     phlVictors[0],
     phlLosers[0],
-    phlVictors[phlVictors.length - 1],
+    phlVictors[phlVictors.length - 1]
   ].map((e) => e.id);
 
   yield* call(setSeasonStat, ["medalists"], medalists);
@@ -138,7 +138,7 @@ export default function* endOfSeasonPhase() {
   if (divisionVictor !== phlLoser) {
     yield* all([
       promote("division", divisionVictor),
-      relegate("phl", phlLoser),
+      relegate("phl", phlLoser)
     ]);
   }
 

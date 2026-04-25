@@ -12,7 +12,7 @@ export const addNews = createAction<string>("NEWS_ADD");
 
 const defaultState: NewsState = {
   news: [],
-  announcements: {},
+  announcements: {}
 };
 
 export default createReducer(defaultState, (builder) => {

@@ -30,17 +30,17 @@ export const createDefaultGameContext = (): GameContext => ({
     canada: false,
     haanperaMarried: false,
     mauto: false,
-    psycho: undefined,
+    psycho: undefined
   },
   serviceBasePrices: {
     insurance: 1000,
     coach: 3200,
     microphone: 500,
-    cheer: 3000,
+    cheer: 3000
   },
   managers: managerDefs,
   competitions: Object.fromEntries(
-    entries(competitionList).map(([key, def]) => [key, { ...def.data }]),
+    entries(competitionList).map(([key, def]) => [key, { ...def.data }])
   ) as Record<CompetitionId, Competition>,
   teams: teamDefs.map((t) => ({
     id: t.id,
@@ -51,7 +51,7 @@ export const createDefaultGameContext = (): GameContext => ({
     strategy: 2,
     readiness: 0,
     effects: [],
-    opponentEffects: [],
+    opponentEffects: []
   })),
   worldChampionshipResults: undefined,
 
@@ -78,7 +78,7 @@ export const createDefaultGameContext = (): GameContext => ({
     managers: {},
     currentSeason: undefined,
     seasons: [],
-    streaks: { team: {}, manager: {} },
+    streaks: { team: {}, manager: {} }
   },
 
   // invitation
@@ -91,11 +91,11 @@ export const createDefaultGameContext = (): GameContext => ({
         acc[country.iso] = {
           iso: country.iso,
           name: country.name,
-          strength: country.strength(),
+          strength: country.strength()
         };
         return acc;
       },
-      {} as Record<string, Country>,
-    ),
-  },
+      {} as Record<string, Country>
+    )
+  }
 });

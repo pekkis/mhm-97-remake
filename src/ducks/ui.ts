@@ -3,7 +3,7 @@ import type { UiState } from "@/state/ui";
 import { quitToMainMenu } from "./meta";
 
 const defaultState: UiState = {
-  menu: false,
+  menu: false
 };
 
 export const toggleMenu = createAction("UI_MENU_TOGGLE");

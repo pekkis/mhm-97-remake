@@ -4,12 +4,12 @@ import {
   seasonStart,
   decrementDurations,
   clearExpired,
-  syncFromMachine,
+  syncFromMachine
 } from "./game";
 import { quitToMainMenu, gameLoadState } from "./meta";
 
 const defaultState: InvitationState = {
-  invitations: [],
+  invitations: []
 };
 
 export const addInvitation = createAction<{
@@ -36,19 +36,19 @@ export default createReducer(defaultState, (builder) => {
     .addCase(addInvitation, (state, action) => {
       state.invitations.push({
         ...action.payload,
-        id: crypto.randomUUID(),
+        id: crypto.randomUUID()
       });
     })
     .addCase(acceptInvitationAction, (state, action) => {
       const { manager, id } = action.payload;
       const idx = state.invitations.findIndex(
-        (i) => i.manager === manager && i.id === id,
+        (i) => i.manager === manager && i.id === id
       );
       if (idx !== -1) {
         state.invitations[idx].participate = true;
       }
       state.invitations = state.invitations.filter(
-        (i) => i.manager !== manager || i.participate,
+        (i) => i.manager !== manager || i.participate
       );
     })
     .addCase(seasonStart, (state) => {
@@ -63,7 +63,7 @@ export default createReducer(defaultState, (builder) => {
     })
     .addCase(clearExpired, (state) => {
       state.invitations = state.invitations.filter(
-        (i) => i.participate || i.duration > 0,
+        (i) => i.participate || i.duration > 0
       );
     });
 });

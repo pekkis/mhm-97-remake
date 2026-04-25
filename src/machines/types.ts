@@ -33,7 +33,7 @@ export type {
   TeamStat,
   MatchupStat,
   MatchupTeamStat,
-  Penalty,
+  Penalty
 } from "@/types/competitions";
 
 // --- GameContext lives in @/state and is re-exported via the barrel above. ---

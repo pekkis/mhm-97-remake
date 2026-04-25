@@ -9,7 +9,7 @@ import {
   managerCompetesIn,
   managersArena,
   managerHasService,
-  teamsMainCompetition,
+  teamsMainCompetition
 } from "@/selectors";
 import { incrementMorale, incrementReadiness, incurPenalty } from "./team";
 import { addNotification } from "./notification";
@@ -27,7 +27,7 @@ import {
   managerIncrementInsuranceExtra,
   managerSetService,
   managerBuyPlayer,
-  managerSellPlayer,
+  managerSellPlayer
 } from "@/ducks/manager";
 import type { ManagerServices } from "@/state/manager";
 import difficultyLevels from "@/data/difficulty-levels";
@@ -61,16 +61,16 @@ export function* addManager(details: AddManagerDetails) {
       coach: false,
       insurance: false,
       microphone: false,
-      cheer: false,
+      cheer: false
     },
     balance: difficultyLevels[parseInt(details.difficulty, 10)].startBalance,
     arena: {
       name: details.arena,
-      level: mainCompetition === "phl" ? 3 : 0,
+      level: mainCompetition === "phl" ? 3 : 0
     },
     extra: 0,
     insuranceExtra: 0,
-    flags: {},
+    flags: {}
   };
 
   yield* put(managerAdd({ manager }));
@@ -84,22 +84,22 @@ export function* setActiveManager(managerId: string) {
 
 export function* hireManager(managerId: string, teamId: number) {
   const managersCurrentTeam = yield* select(
-    (state: RootState) => state.manager.managers[managerId]?.team,
+    (state: RootState) => state.manager.managers[managerId]?.team
   );
 
   if (managersCurrentTeam) {
     yield* put(
       teamRemoveManager({
-        team: managersCurrentTeam,
-      }),
+        team: managersCurrentTeam
+      })
     );
   }
 
   yield* put(
     teamAddManager({
       team: teamId,
-      manager: managerId,
-    }),
+      manager: managerId
+    })
   );
 }
 
@@ -113,7 +113,7 @@ export function* renameArena(managerId: string, name: string) {
 
 export function* incrementBalance(managerId: string, amount: number) {
   const manager = yield* select(
-    (state: RootState) => state.manager.managers[managerId],
+    (state: RootState) => state.manager.managers[managerId]
   );
   if (!manager) {
     throw new Error(`INVALID MANAGER ${managerId} ${amount}`);
@@ -140,7 +140,7 @@ export function* crisisMeeting(action: { payload: { manager: string } }) {
   const difficulty = yield* select(managersDifficulty(payload.manager));
   const team = yield* select(managersTeam(payload.manager));
   const competitions = yield* select(
-    (state: RootState) => state.game.competitions,
+    (state: RootState) => state.game.competitions
   );
 
   const moraleBoost = difficultyLevels[difficulty].moraleBoost;
@@ -155,7 +155,7 @@ export function* crisisMeeting(action: { payload: { manager: string } }) {
   yield* call(
     addNotification,
     payload.manager,
-    `Psykologi valaa yhdessä managerin kanssa uskoa pelaajien mieliin. Moraali paranee (+${moraleGain}), ja joukkue keskittyy tuleviin haasteisiin uudella innolla!`,
+    `Psykologi valaa yhdessä managerin kanssa uskoa pelaajien mieliin. Moraali paranee (+${moraleGain}), ja joukkue keskittyy tuleviin haasteisiin uudella innolla!`
   );
 }
 
@@ -163,7 +163,7 @@ export function* buyPlayer(action: ReturnType<typeof managerBuyPlayer>) {
   const { payload } = action;
 
   const manager = yield* select(
-    (state: RootState) => state.manager.managers[payload.manager],
+    (state: RootState) => state.manager.managers[payload.manager]
   );
 
   const playerType = playerTypes[payload.playerType];
@@ -175,19 +175,19 @@ export function* buyPlayer(action: ReturnType<typeof managerBuyPlayer>) {
   yield* call(
     addNotification,
     payload.manager,
-    `Ostamasi pelaaja tuo ${skillGain} lisää voimaa joukkueeseen!`,
+    `Ostamasi pelaaja tuo ${skillGain} lisää voimaa joukkueeseen!`
   );
 }
 
 export function* setArenaLevel(manager: string, level: number) {
   yield* put(
-    managerSetArenaLevel({ manager, level: Math.max(0, Math.min(9, level)) }),
+    managerSetArenaLevel({ manager, level: Math.max(0, Math.min(9, level)) })
   );
 }
 
 export function* improveArena(action: { payload: { manager: string } }) {
   const {
-    payload: { manager },
+    payload: { manager }
   } = action;
 
   const currentArena = yield* select(managersArena(manager));
@@ -202,13 +202,13 @@ export function* improveArena(action: { payload: { manager: string } }) {
   yield* call(
     addNotification,
     manager,
-    `Työmiehet käyttävät vallankumoukselllisia kvanttityövälineitä, ja rakennusurakka valmistuu alta aikayksikön!`,
+    `Työmiehet käyttävät vallankumoukselllisia kvanttityövälineitä, ja rakennusurakka valmistuu alta aikayksikön!`
   );
 }
 
 export function* sellPlayer(action: ReturnType<typeof managerSellPlayer>) {
   const {
-    payload: { manager: managerId, playerType },
+    payload: { manager: managerId, playerType }
   } = action;
 
   console.log(managerId, playerType, "fihdh");
@@ -224,7 +224,7 @@ export function* sellPlayer(action: ReturnType<typeof managerSellPlayer>) {
       addNotification,
       managerId,
       "Johtokunnan mielestä pelaajien myynti ei ole ratkaisu tämänhetkisiin ongelmiimme. Myyntilupa evätty.",
-      "error",
+      "error"
     );
   }
 
@@ -237,7 +237,7 @@ export function* sellPlayer(action: ReturnType<typeof managerSellPlayer>) {
   yield* call(
     addNotification,
     managerId,
-    `Myymäsi pelaaja vie ${skillGain} voimaa mukanaan!`,
+    `Myymäsi pelaaja vie ${skillGain} voimaa mukanaan!`
   );
 }
 
@@ -257,7 +257,7 @@ export function* toggleService(action: {
   payload: { manager: string; service: keyof ManagerServices };
 }) {
   const {
-    payload: { manager, service },
+    payload: { manager, service }
   } = action;
 
   const currentService = yield* select(managerHasService(manager, service));
@@ -269,13 +269,13 @@ export function* afterGameday(
   competition: CompetitionId,
   phase: number,
   groupId: number,
-  round: number,
+  round: number
 ) {
   const managers = yield* select((state: RootState) => state.manager.managers);
 
   const group = yield* select(
     (state: RootState) =>
-      state.game.competitions[competition].phases[phase].groups[groupId],
+      state.game.competitions[competition].phases[phase].groups[groupId]
   );
 
   for (const [managerId, manager] of entries(managers)) {
@@ -298,7 +298,7 @@ export function* afterGameday(
     }
 
     const hasMicrophone = yield* select(
-      managerHasService(managerId, "microphone"),
+      managerHasService(managerId, "microphone")
     );
 
     if (hasMicrophone) {
@@ -312,18 +312,11 @@ export function* afterGameday(
               addAnnouncement,
               managerId,
               `"Salainen" mikrofonisi vastustajan vaihtoaitiossa on paljastunut. Teidät tuomitaan __${a(
-                amount,
-              )}__ pekan sakkoihin ja __${pointDeduction}__ pisteen menetykseen.`,
+                amount
+              )}__ pekan sakkoihin ja __${pointDeduction}__ pisteen menetykseen.`
             ),
             call(decrementBalance, managerId, amount),
-            call(
-              incurPenalty,
-              competition,
-              0,
-              0,
-              manager.team!,
-              pointDeduction,
-            ),
+            call(incurPenalty, competition, 0, 0, manager.team!, pointDeduction)
           ]);
         }
       }
@@ -357,6 +350,6 @@ export function* afterGameday(
 export function* watchTransferMarket() {
   yield* all([
     takeEvery(managerBuyPlayer, buyPlayer),
-    takeEvery(managerSellPlayer, sellPlayer),
+    takeEvery(managerSellPlayer, sellPlayer)
   ]);
 }

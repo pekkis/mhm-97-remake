@@ -3,7 +3,7 @@ import type {
   GameRecord,
   SeasonStats,
   StatsState,
-  Streak,
+  Streak
 } from "@/state/stats";
 import { quitToMainMenu, gameLoadState } from "./meta";
 import { seasonStart, seasonEnd, syncFromMachine } from "./game";
@@ -26,7 +26,7 @@ const emptyStreak: Streak = {
   draw: 0,
   loss: 0,
   noLoss: 0,
-  noWin: 0,
+  noWin: 0
 };
 
 const emptySeasonStats: SeasonStats = {
@@ -36,13 +36,13 @@ const emptySeasonStats: SeasonStats = {
   worldChampionships: undefined,
   promoted: undefined,
   relegated: undefined,
-  stories: {},
+  stories: {}
 };
 
 const emptyGameRecord: GameRecord = {
   win: 0,
   draw: 0,
-  loss: 0,
+  loss: 0
 };
 
 const defaultState: StatsState = {
@@ -51,8 +51,8 @@ const defaultState: StatsState = {
   seasons: [],
   streaks: {
     team: {},
-    manager: {},
-  },
+    manager: {}
+  }
 };
 
 export default createReducer(defaultState, (builder) => {
@@ -109,7 +109,7 @@ export default createReducer(defaultState, (builder) => {
         }
         if (!state.managers[manager].games[competition][phase]) {
           state.managers[manager].games[competition][phase] = {
-            ...emptyGameRecord,
+            ...emptyGameRecord
           };
         }
         const record = state.managers[manager].games[competition][phase];

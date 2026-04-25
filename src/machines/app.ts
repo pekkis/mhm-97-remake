@@ -31,15 +31,17 @@ export type AppMachineEvents =
 export const appMachine = setup({
   types: {
     context: {} as GameContext,
-    events: {} as AppMachineEvents,
+    events: {} as AppMachineEvents
   },
   actions: {
     resetContext: assign(() => createDefaultGameContext()),
     loadContext: assign(({ event }) => {
-      if (event.type !== "GAME_LOADED") return {};
+      if (event.type !== "GAME_LOADED") {
+        return {};
+      }
       return event.context;
-    }),
-  },
+    })
+  }
 }).createMachine({
   id: "app",
   initial: "menu",
@@ -48,25 +50,25 @@ export const appMachine = setup({
     menu: {
       on: {
         START_GAME: { target: "starting" },
-        LOAD_GAME: { target: "loading" },
-      },
+        LOAD_GAME: { target: "loading" }
+      }
     },
     starting: {
       on: {
         GAME_STARTED: { target: "inGame" },
-        QUIT: { target: "menu", actions: "resetContext" },
-      },
+        QUIT: { target: "menu", actions: "resetContext" }
+      }
     },
     loading: {
       on: {
         GAME_LOADED: { target: "inGame", actions: "loadContext" },
-        QUIT: { target: "menu", actions: "resetContext" },
-      },
+        QUIT: { target: "menu", actions: "resetContext" }
+      }
     },
     inGame: {
       on: {
-        QUIT: { target: "menu", actions: "resetContext" },
-      },
-    },
-  },
+        QUIT: { target: "menu", actions: "resetContext" }
+      }
+    }
+  }
 });
