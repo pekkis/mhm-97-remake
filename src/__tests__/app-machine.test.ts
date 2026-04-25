@@ -120,7 +120,11 @@ describe("appMachine", () => {
       actor.send({ type: "START_GAME" });
       actor.send({ type: "ADD_MANAGER", payload: submission });
 
-      actor.send({ type: "ADVANCE" }); // select_strategy -> championship_betting
+      const activeId = actor.getSnapshot().context.manager.active!;
+      actor.send({
+        type: "SELECT_STRATEGY",
+        payload: { manager: activeId, strategy: 2 }
+      });
       expect(
         actor.getSnapshot().matches({
           in_game: {
@@ -142,7 +146,11 @@ describe("appMachine", () => {
       actor.send({ type: "START_GAME" });
       actor.send({ type: "ADD_MANAGER", payload: submission });
 
-      actor.send({ type: "ADVANCE" }); // select_strategy -> championship_betting
+      const activeId = actor.getSnapshot().context.manager.active!;
+      actor.send({
+        type: "SELECT_STRATEGY",
+        payload: { manager: activeId, strategy: 2 }
+      });
       actor.send({ type: "ADVANCE" }); // championship_betting -> done -> seed
       actor.send({ type: "ADVANCE" }); // seed -> round_end -> action_check -> action
 

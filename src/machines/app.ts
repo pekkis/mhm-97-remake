@@ -14,6 +14,7 @@ import {
 import difficultyLevels from "@/data/difficulty-levels";
 import teamData from "@/data/teams";
 import calendar from "@/data/calendar";
+import strategies from "@/data/strategies";
 import random from "@/services/random";
 import { values } from "remeda";
 
@@ -51,6 +52,10 @@ export type AppMachineEvents =
   | {
       type: "ADD_MANAGER";
       payload: ManagerSubmission;
+    }
+  | {
+      type: "SELECT_STRATEGY";
+      payload: { manager: string; strategy: number };
     };
 
 const buildManager = (sub: ManagerSubmission, ctx: GameContext) => {
@@ -190,6 +195,21 @@ export const appMachine = setup({
           )
         };
       }
+    ),
+
+    /**
+     * select_strategy — sets the chosen strategy and rolls initial readiness
+     * for the manager's team. 1-1 port of the legacy `selectStrategy()` saga.
+     */
+    selectStrategy: assign(
+      ({ context }, params: { manager: string; strategy: number }) =>
+        produce(context, (draft) => {
+          const team = draft.manager.managers[params.manager]?.team;
+          if (team === undefined) return;
+          draft.teams[team].strategy = params.strategy;
+          draft.teams[team].readiness =
+            strategies[params.strategy].initialReadiness();
+        })
     )
   },
 
@@ -397,7 +417,17 @@ export const appMachine = setup({
                   always: "select_strategy"
                 },
                 select_strategy: {
-                  on: { ADVANCE: "championship_betting" }
+                  on: {
+                    SELECT_STRATEGY: {
+                      actions: [
+                        {
+                          type: "selectStrategy",
+                          params: ({ event }) => event.payload
+                        }
+                      ],
+                      target: "championship_betting"
+                    }
+                  }
                 },
                 championship_betting: {
                   on: { ADVANCE: "done" }

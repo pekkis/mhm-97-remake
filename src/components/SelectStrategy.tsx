@@ -1,13 +1,14 @@
 import strategies from "@/data/strategies";
 import Button from "./form/Button";
 import Box from "./styled-system/Box";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { managerSelectStrategy } from "@/ducks/manager";
-import { activeManager } from "@/selectors";
+import { AppMachineContext } from "@/context/app-machine-context";
+import { activeManager } from "@/machines/selectors";
 
 const SelectStrategy = () => {
-  const manager = useAppSelector(activeManager);
-  const dispatch = useAppDispatch();
+  const manager = AppMachineContext.useSelector((state) =>
+    activeManager(state.context)
+  );
+  const actor = AppMachineContext.useActorRef();
 
   return (
     <Box p={1}>
@@ -29,12 +30,13 @@ const SelectStrategy = () => {
               <Button
                 block
                 onClick={() =>
-                  dispatch(
-                    managerSelectStrategy({
+                  actor.send({
+                    type: "SELECT_STRATEGY",
+                    payload: {
                       manager: manager.id,
                       strategy: strategy.id
-                    })
-                  )
+                    }
+                  })
                 }
               >
                 Valitse strategia "{strategy.name}"
