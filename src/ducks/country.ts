@@ -2,7 +2,6 @@ import { countries as countryList } from "@/data/countries";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 import type { Country, CountryState } from "@/state/country";
 import { quitToMainMenu } from "./meta";
-import { syncFromMachine } from "./game";
 import { values } from "remeda";
 
 const defaultState: CountryState = {
@@ -31,7 +30,6 @@ export const setStrength = createAction<{
 export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
-    .addCase(syncFromMachine, (_state, action) => action.payload.country)
     .addCase(setStrength, (state, action) => {
       if (state.countries[action.payload.country]) {
         state.countries[action.payload.country].strength =

@@ -3,8 +3,7 @@ import type { InvitationState } from "@/state/invitation";
 import {
   seasonStart,
   decrementDurations,
-  clearExpired,
-  syncFromMachine
+  clearExpired
 } from "./game";
 import { quitToMainMenu, gameLoadState } from "./meta";
 
@@ -32,7 +31,6 @@ export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
     .addCase(gameLoadState, (_state, action) => action.payload.invitation)
-    .addCase(syncFromMachine, (_state, action) => action.payload.invitation)
     .addCase(addInvitation, (state, action) => {
       state.invitations.push({
         ...action.payload,

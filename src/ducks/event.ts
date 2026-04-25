@@ -1,7 +1,6 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 import type { EventState, StoredEvent } from "@/state/event";
 import { quitToMainMenu, gameLoadState } from "./meta";
-import { syncFromMachine } from "./game";
 
 const defaultState: EventState = {
   events: {}
@@ -31,7 +30,6 @@ export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
     .addCase(gameLoadState, (_state, action) => action.payload.event)
-    .addCase(syncFromMachine, (_state, action) => action.payload.event)
     .addCase(addEventAction, (state, action) => {
       const id = crypto.randomUUID();
       state.events[id] = { ...action.payload.event, id } as StoredEvent;

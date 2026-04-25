@@ -38,9 +38,26 @@ export const createDefaultGameContext = (): GameContext => ({
     microphone: 500,
     cheer: 3000
   },
-  managers: managerDefs,
+
+  // ⚠️ MUST be a fresh array reference (spread/slice), NOT the imported
+  // singleton `managerDefs`. Stately Inspector dedupes shared object refs
+  // across the snapshot — when it encounters the same array a second time
+  // it stubs items as `"[...]"` and the UI breaks with "invalid state".
+  // Empirically: any of `[...managerDefs]`, `managerDefs.slice()` works;
+  // bare `managerDefs` does not. Position in the context object also
+  // matters with the bare ref (last is least-bad), but a fresh ref makes
+  // position irrelevant. See AGENTS.md for the bisect.
+  managers: [...managerDefs],
+
   competitions: Object.fromEntries(
-    entries(competitionList).map(([key, def]) => [key, { ...def.data }])
+    entries(competitionList).map(([key, def]) => [
+      key,
+      // structuredClone (vs `{ ...def.data }`) gives a deep copy so that
+      // nested arrays like `teams: number[]` are fresh refs, not aliases
+      // back to the imported singleton. Same Stately Inspector dedup
+      // gotcha as `managers` above — kill it preemptively.
+      structuredClone(def.data)
+    ])
   ) as Record<CompetitionId, Competition>,
   teams: teamDefs.map((t) => ({
     id: t.id,
@@ -53,9 +70,9 @@ export const createDefaultGameContext = (): GameContext => ({
     effects: [],
     opponentEffects: []
   })),
+
   worldChampionshipResults: undefined,
 
-  // manager
   manager: { active: undefined, managers: {} },
 
   // betting
@@ -99,3 +116,5 @@ export const createDefaultGameContext = (): GameContext => ({
     )
   }
 });
+
+//

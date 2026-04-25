@@ -1,9 +1,10 @@
 import App from "./components/App";
-import { Provider } from "react-redux";
+import { Provider as ReduxProvider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import "./styles/global.css";
 import type { Store } from "redux";
 import type { FC } from "react";
+import { AppMachineContext } from "@/context/app-machine-context";
 
 type Props = {
   store: Store;
@@ -12,11 +13,13 @@ type Props = {
 const Root: FC<Props> = ({ store }) => {
   return (
     <>
-      <Provider store={store}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </Provider>
+      <AppMachineContext.Provider>
+        <ReduxProvider store={store}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ReduxProvider>
+      </AppMachineContext.Provider>
     </>
   );
 };

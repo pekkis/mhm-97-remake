@@ -23,18 +23,6 @@ export const nextTurn = createAction("GAME_NEXT_TURN");
 export const seasonStart = createAction("SEASON_START");
 export const seasonEnd = createAction("SEASON_END");
 
-// Phase tracking bridge (saga → gameMachine observer)
-export const sagaPhaseComplete = createAction<{ phase: string }>(
-  "SAGA_PHASE_COMPLETE"
-);
-
-// Bidirectional context sync bridge (XState → Redux)
-// Dispatched by the sync middleware after the gameMachine completes a phase.
-// Each duck grabs its slice — same shape as gameLoadState but separate action
-// to avoid triggering load-specific saga side effects.
-export const syncFromMachine =
-  createAction<import("@/machines/types").GameContext>("SYNC_FROM_MACHINE");
-
 // Game state
 export const setGamePhase = createAction<string>("GAME_SET_PHASE");
 export const setGameFlag = createAction<{
@@ -197,15 +185,6 @@ export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
     .addCase(gameLoadState, (_state, action) => action.payload.game)
-    .addCase(syncFromMachine, (_state, action) => ({
-      turn: action.payload.turn,
-      flags: action.payload.flags,
-      serviceBasePrices: action.payload.serviceBasePrices,
-      managers: action.payload.managers,
-      competitions: action.payload.competitions,
-      teams: action.payload.teams,
-      worldChampionshipResults: action.payload.worldChampionshipResults
-    }))
     .addCase(competitionRemoveTeam, (state, action) => {
       const comp = state.competitions[action.payload.competition];
       comp.teams = comp.teams.filter((t) => t !== action.payload.team);

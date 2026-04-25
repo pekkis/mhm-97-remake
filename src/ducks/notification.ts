@@ -1,7 +1,6 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 import type { Notification, NotificationState } from "@/state/notification";
 import { quitToMainMenu } from "./meta";
-import { syncFromMachine } from "./game";
 
 const defaultState: NotificationState = {
   notifications: []
@@ -13,7 +12,6 @@ export const dismissNotification = createAction<string>("NOTIFICATION_DISMISS");
 export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
-    .addCase(syncFromMachine, (_state, action) => action.payload.notification)
     .addCase(addNotification, (state, action) => {
       state.notifications.push(action.payload);
       if (state.notifications.length > 3) {

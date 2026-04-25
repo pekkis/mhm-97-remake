@@ -1,8 +1,8 @@
 import StartMenu from "./StartMenu";
 import Game from "./Game";
-import { useSelector } from "@xstate/react";
-import { appActor } from "@/machines/actors";
 import { ErrorBoundary } from "react-error-boundary";
+import { AppMachineContext } from "@/context/app-machine-context";
+import type { FC } from "react";
 
 const ErrorFallback = () => (
   <div>
@@ -15,8 +15,10 @@ const ErrorFallback = () => (
   </div>
 );
 
-const App = () => {
-  const started = useSelector(appActor, (state) => state.matches("inGame"));
+const App: FC = () => {
+  const started = AppMachineContext.useSelector((state) => {
+    return state.matches("inGame");
+  });
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>

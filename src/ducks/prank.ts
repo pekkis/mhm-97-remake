@@ -2,7 +2,6 @@ import { createAction, createReducer } from "@reduxjs/toolkit";
 import type { PrankState } from "@/state/prank";
 import type { PrankInstance } from "@/game/pranks";
 import { quitToMainMenu, gameLoadState } from "./meta";
-import { syncFromMachine } from "./game";
 
 const defaultState: PrankState = {
   pranks: []
@@ -20,7 +19,6 @@ export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
     .addCase(gameLoadState, (_state, action) => action.payload.prank)
-    .addCase(syncFromMachine, (_state, action) => action.payload.prank)
     .addCase(addPrank, (state, action) => {
       state.pranks.push(action.payload);
     })
