@@ -8,6 +8,7 @@ import {
 import { loadGame } from "@/services/persistence";
 import { teamsMainCompetition } from "@/machines/selectors";
 import difficultyLevels from "@/data/difficulty-levels";
+import calendar from "@/data/calendar";
 
 /**
  * Application lifecycle machine.
@@ -39,6 +40,7 @@ export type AppMachineEvents =
   | { type: "START_GAME" }
   | { type: "LOAD_GAME" }
   | { type: "QUIT" }
+  | { type: "ADVANCE" }
   | {
       type: "ADD_MANAGER";
       payload: ManagerSubmission;
@@ -87,6 +89,15 @@ export const appMachine = setup({
   actions: {
     resetContext: assign(() => createDefaultGameContext()),
 
+    advanceRound: assign(({ context }) => ({
+      teams: context.teams.map((t) => ({
+        ...t,
+        effects: t.effects.filter((e) => e.duration > 0),
+        opponentEffects: t.opponentEffects.filter((e) => e.duration > 0)
+      })),
+      turn: { ...context.turn, round: context.turn.round + 1 }
+    })),
+
     assignManager: assign(
       ({ context }, params: { manager: ManagerSubmission }) => {
         const { manager, teamId } = buildManager(params.manager, context);
@@ -101,6 +112,12 @@ export const appMachine = setup({
         };
       }
     )
+  },
+
+  guards: {
+    has_phase: ({ context }, params: { phase: string }) =>
+      calendar[context.turn.round]?.phases.includes(params.phase) ?? false,
+    calendar_in_bounds: ({ context }) => context.turn.round < calendar.length
   }
 }).createMachine({
   id: "app",
@@ -143,8 +160,215 @@ export const appMachine = setup({
       }
     },
     in_game: {
+      initial: "executing_phases",
       on: {
         QUIT: { target: "main_menu", actions: "resetContext" }
+      },
+      states: {
+        executing_phases: {
+          initial: "action_check",
+          states: {
+            action_check: {
+              always: [
+                {
+                  guard: { type: "has_phase", params: { phase: "action" } },
+                  target: "action"
+                },
+                { target: "prank_check" }
+              ]
+            },
+            action: {
+              on: { ADVANCE: "prank_check" }
+            },
+
+            prank_check: {
+              always: [
+                {
+                  guard: { type: "has_phase", params: { phase: "prank" } },
+                  target: "prank"
+                },
+                { target: "gameday_check" }
+              ]
+            },
+            prank: {
+              on: { ADVANCE: "gameday_check" }
+            },
+
+            gameday_check: {
+              always: [
+                {
+                  guard: { type: "has_phase", params: { phase: "gameday" } },
+                  target: "gameday"
+                },
+                { target: "calculations_check" }
+              ]
+            },
+            gameday: {
+              on: { ADVANCE: "calculations_check" }
+            },
+
+            calculations_check: {
+              always: [
+                {
+                  guard: {
+                    type: "has_phase",
+                    params: { phase: "calculations" }
+                  },
+                  target: "calculations"
+                },
+                { target: "event_creation_check" }
+              ]
+            },
+            calculations: {
+              on: { ADVANCE: "event_creation_check" }
+            },
+
+            event_creation_check: {
+              always: [
+                {
+                  guard: {
+                    type: "has_phase",
+                    params: { phase: "event_creation" }
+                  },
+                  target: "event_creation"
+                },
+                { target: "event_check" }
+              ]
+            },
+            event_creation: {
+              on: { ADVANCE: "event_check" }
+            },
+
+            event_check: {
+              always: [
+                {
+                  guard: { type: "has_phase", params: { phase: "event" } },
+                  target: "event"
+                },
+                { target: "news_check" }
+              ]
+            },
+            event: {
+              on: { ADVANCE: "news_check" }
+            },
+
+            news_check: {
+              always: [
+                {
+                  guard: { type: "has_phase", params: { phase: "news" } },
+                  target: "news"
+                },
+                { target: "invitations_create_check" }
+              ]
+            },
+            news: {
+              on: { ADVANCE: "invitations_create_check" }
+            },
+
+            invitations_create_check: {
+              always: [
+                {
+                  guard: {
+                    type: "has_phase",
+                    params: { phase: "invitations_create" }
+                  },
+                  target: "invitations_create"
+                },
+                { target: "invitations_process_check" }
+              ]
+            },
+            invitations_create: {
+              on: { ADVANCE: "invitations_process_check" }
+            },
+
+            invitations_process_check: {
+              always: [
+                {
+                  guard: {
+                    type: "has_phase",
+                    params: { phase: "invitations_process" }
+                  },
+                  target: "invitations_process"
+                },
+                { target: "start_of_season_check" }
+              ]
+            },
+            invitations_process: {
+              on: { ADVANCE: "start_of_season_check" }
+            },
+
+            start_of_season_check: {
+              always: [
+                {
+                  guard: {
+                    type: "has_phase",
+                    params: { phase: "start_of_season" }
+                  },
+                  target: "start_of_season"
+                },
+                { target: "seed_check" }
+              ]
+            },
+            start_of_season: {
+              on: { ADVANCE: "seed_check" }
+            },
+
+            seed_check: {
+              always: [
+                {
+                  guard: { type: "has_phase", params: { phase: "seed" } },
+                  target: "seed"
+                },
+                { target: "gala_check" }
+              ]
+            },
+            seed: {
+              on: { ADVANCE: "gala_check" }
+            },
+
+            gala_check: {
+              always: [
+                {
+                  guard: { type: "has_phase", params: { phase: "gala" } },
+                  target: "gala"
+                },
+                { target: "end_of_season_check" }
+              ]
+            },
+            gala: {
+              on: { ADVANCE: "end_of_season_check" }
+            },
+
+            end_of_season_check: {
+              always: [
+                {
+                  guard: {
+                    type: "has_phase",
+                    params: { phase: "end_of_season" }
+                  },
+                  target: "end_of_season"
+                },
+                { target: "round_end" }
+              ]
+            },
+            end_of_season: {
+              on: { ADVANCE: "round_end" }
+            },
+
+            round_end: {
+              entry: "advanceRound",
+              always: [
+                { guard: "calendar_in_bounds", target: "action_check" },
+                { target: "season_done" }
+              ]
+            },
+
+            // Parking state for "ran off the calendar". Real season-boundary
+            // logic (reset round, bump season) lands when end_of_season is
+            // migrated.
+            season_done: {}
+          }
+        }
       }
     }
   }

@@ -46,7 +46,7 @@ describe("appMachine", () => {
       actor.send({ type: "ADD_MANAGER", payload: submission });
 
       const snap = actor.getSnapshot();
-      expect(snap.value).toBe("in_game");
+      expect(snap.matches("in_game")).toBe(true);
 
       const activeId = snap.context.manager.active;
       expect(activeId).toBeDefined();
@@ -76,7 +76,7 @@ describe("appMachine", () => {
       vi.mocked(loadGame).mockReturnValue(createDefaultGameContext());
       const actor = createTestActor();
       actor.send({ type: "LOAD_GAME" });
-      await waitFor(actor, (snap) => snap.value === "in_game");
+      await waitFor(actor, (snap) => snap.matches("in_game"));
     });
 
     it("loading falls back to main_menu when no saved game exists", async () => {
@@ -92,10 +92,54 @@ describe("appMachine", () => {
       const actor = createTestActor();
       actor.send({ type: "START_GAME" });
       actor.send({ type: "ADD_MANAGER", payload: submission });
-      expect(actor.getSnapshot().value).toBe("in_game");
+      expect(actor.getSnapshot().matches("in_game")).toBe(true);
 
       actor.send({ type: "QUIT" });
       expect(actor.getSnapshot().value).toBe("main_menu");
+    });
+  });
+
+  describe("in_game phase walk", () => {
+    it("settles in start_of_season on round 0 (first phase in calendar)", () => {
+      const actor = createTestActor();
+      actor.send({ type: "START_GAME" });
+      actor.send({ type: "ADD_MANAGER", payload: submission });
+
+      // Round 0 calendar: ["start_of_season", "seed"].
+      // The machine cascades through earlier phase checks and parks at start_of_season.
+      expect(
+        actor.getSnapshot().matches({
+          in_game: { executing_phases: "start_of_season" }
+        })
+      ).toBe(true);
+    });
+
+    it("ADVANCE walks from start_of_season to seed within round 0", () => {
+      const actor = createTestActor();
+      actor.send({ type: "START_GAME" });
+      actor.send({ type: "ADD_MANAGER", payload: submission });
+
+      actor.send({ type: "ADVANCE" });
+      expect(
+        actor.getSnapshot().matches({
+          in_game: { executing_phases: "seed" }
+        })
+      ).toBe(true);
+    });
+
+    it("ADVANCE through round 0 lands in round 1's first phase (action) and bumps turn.round", () => {
+      const actor = createTestActor();
+      actor.send({ type: "START_GAME" });
+      actor.send({ type: "ADD_MANAGER", payload: submission });
+
+      actor.send({ type: "ADVANCE" }); // start_of_season -> seed
+      actor.send({ type: "ADVANCE" }); // seed -> round_end -> action_check -> action
+
+      const snap = actor.getSnapshot();
+      expect(snap.context.turn.round).toBe(1);
+      expect(snap.matches({ in_game: { executing_phases: "action" } })).toBe(
+        true
+      );
     });
   });
 });
