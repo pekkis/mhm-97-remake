@@ -17,7 +17,7 @@ const ErrorFallback = () => (
 
 const App: FC = () => {
   const started = AppMachineContext.useSelector((state) => {
-    return state.matches("inGame");
+    return state.matches("in_game");
   });
 
   return (

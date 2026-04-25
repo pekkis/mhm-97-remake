@@ -4,20 +4,19 @@ import Box from "./styled-system/Box";
 import ManagerForm from "./start-menu/ManagerForm";
 import * as styles from "./StartMenu.css";
 import title from "./start-menu/title.png";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { startGame, loadGame } from "@/ducks/meta";
-import { advance } from "@/ducks/game";
-import { primaryCompetitions } from "@/selectors";
 import { AppMachineContext } from "@/context/app-machine-context";
 
 const StartMenu = () => {
-  const teams = useAppSelector((state) => state.game.teams);
-  const competitions = useAppSelector(primaryCompetitions);
+  const teams = AppMachineContext.useSelector((state) => state.context.teams);
+  const competitions = AppMachineContext.useSelector(
+    (state) => state.context.competitions
+  );
+
+  const { send } = AppMachineContext.useActorRef();
 
   const starting = AppMachineContext.useSelector((state) =>
     state.matches("starting")
   );
-  const dispatch = useAppDispatch();
 
   return (
     <div className={styles.startMenu}>
@@ -36,10 +35,18 @@ const StartMenu = () => {
             <Box p={1}>
               <div className={styles.centerer}>
                 <ButtonRow>
-                  <Button onClick={() => dispatch(startGame())}>
+                  <Button
+                    onClick={() => {
+                      send({ type: "START_GAME" });
+                    }}
+                  >
                     Uusi peli
                   </Button>
-                  <Button onClick={() => dispatch(loadGame())}>
+                  <Button
+                    onClick={() => {
+                      send({ type: "LOAD_GAME" });
+                    }}
+                  >
                     Lataa peli
                   </Button>
                 </ButtonRow>
@@ -88,7 +95,9 @@ const StartMenu = () => {
               <ManagerForm
                 teams={teams}
                 competitions={competitions}
-                advance={(payload: any) => dispatch(advance(payload))}
+                advance={(payload) => {
+                  send({ type: "ADD_MANAGER", payload });
+                }}
               />
             </Box>
           )}

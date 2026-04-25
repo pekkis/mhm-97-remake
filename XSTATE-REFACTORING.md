@@ -22,7 +22,7 @@ appMachine (root)
 ├── state: menu
 │   └── handles: startGame, loadGame, settings
 │
-└── state: inGame
+└── state: "in_game"
     └── spawns: gameMachine (owns all game state in context)
         │
         ├── spawns: phaseMachine (per-round, sequences phases from calendar)
@@ -187,7 +187,7 @@ Convert cluster by cluster, smallest first.
 **PR 5: `appMachine` — menu ↔ game lifecycle** ✅ COMPLETE
 
 - Created `src/machines/app.ts` — pure machine definition (no side effects, no actor creation)
-  - States: `menu` → `starting`/`loading` → `inGame`
+  - States: `menu` → `starting`/`loading` → `"in_game"`
   - Events: `START_GAME`, `LOAD_GAME`, `GAME_STARTED`, `GAME_LOADED`, `QUIT`
   - Exported: `appMachine` definition + `AppMachineEvents` type
 - Created `src/machines/actors.ts` — centralized actor instantiation point
@@ -195,9 +195,9 @@ Convert cluster by cluster, smallest first.
   - Future machines will have their actors created here too
 - Extended `src/stores/sync.ts` — bridges Redux meta actions → machine events
   - `startGame` → `START_GAME`, `loadGame` → `LOAD_GAME`, `gameLoaded` → `GAME_LOADED`
-  - `seasonStart` → `GAME_STARTED` (fires every season, not just first — machine silently ignores in `inGame`)
+  - `seasonStart` → `GAME_STARTED` (fires every season, not just first — machine silently ignores in `"in_game"`)
   - `quitToMainMenu` → `QUIT`
-- `App.tsx` reads `state.matches("inGame")` via `useSelector(appActor, ...)` from `@xstate/react`
+- `App.tsx` reads `state.matches("in_game")` via `useSelector(appActor, ...)` from `@xstate/react`
 - `StartMenu.tsx` reads `state.matches("starting")` via `useSelector(appActor, ...)`
 - `inspector.ts` registers `appActor` via `appActor.system.inspect(inspect)` (machine actors use system, not direct)
 - 16 unit tests in `src/__tests__/app-machine.test.ts`
@@ -312,7 +312,7 @@ After PRs 9–10 the dual-write Redux↔XState bridge was on track to grow witho
 
 ### What was kept
 
-- `appMachine` in `src/machines/app.ts` — lifecycle (menu / starting / loading / inGame). Holds default `GameContext`. Now THE master machine.
+- `appMachine` in `src/machines/app.ts` — lifecycle (menu / starting / loading / "in_game"). Holds default `GameContext`. Now THE master machine.
 - `appActor` singleton in `src/machines/actors.ts`
 - `@xstate/store` instances for `ui`, `country`, `notification` (small, isolated, no overlap with the bridge mess)
 - Stately Inspector wiring (`src/stores/inspector.ts`) — works for `appActor` and the small stores
@@ -323,13 +323,13 @@ After PRs 9–10 the dual-write Redux↔XState bridge was on track to grow witho
 
 ### What changed in approach
 
-| Old plan                                                                  | New plan                                                                                              |
-| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Two machines: `appMachine` (lifecycle) + `gameMachine` (round/phase)      | **One machine: `appMachine`.** The game IS the app. Round/phase becomes nested states under `inGame`. |
-| Dual-write Redux + XState in lockstep, sync middleware bridges both ways  | Redux dies progressively. XState owns context as features migrate. No bridge.                         |
-| Migrate phase-by-phase while game stays playable                          | Game breaks during migration; bring it back up feature-by-feature on top of XState.                   |
-| `GameContext` type lives in `src/machines/types.ts`                       | `GameContext` lives in `src/state/` (one slice file per duck shape, single barrel)                    |
-| 96 event files: command-returning functions interpreted by command runner | Same target, but integrated directly into `appMachine` actions — no Redux side                        |
+| Old plan                                                                  | New plan                                                                                                 |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Two machines: `appMachine` (lifecycle) + `gameMachine` (round/phase)      | **One machine: `appMachine`.** The game IS the app. Round/phase becomes nested states under `"in_game"`. |
+| Dual-write Redux + XState in lockstep, sync middleware bridges both ways  | Redux dies progressively. XState owns context as features migrate. No bridge.                            |
+| Migrate phase-by-phase while game stays playable                          | Game breaks during migration; bring it back up feature-by-feature on top of XState.                      |
+| `GameContext` type lives in `src/machines/types.ts`                       | `GameContext` lives in `src/state/` (one slice file per duck shape, single barrel)                       |
+| 96 event files: command-returning functions interpreted by command runner | Same target, but integrated directly into `appMachine` actions — no Redux side                           |
 
 ---
 
@@ -342,7 +342,7 @@ appMachine (THE machine, holds full GameContext)
 ├── menu            ← splash, no game in progress
 ├── starting        ← compound: pickingManager → ready
 ├── loading         ← restoring from localStorage
-└── inGame          ← compound (round/phase loop)
+└── "in_game"          ← compound (round/phase loop)
     ├── roundStart      ← look up calendar entry, populate phase queue
     ├── executingPhases ← compound (one state per phase type)
     │   ├── action          ← wait-for-user (player commands)
@@ -384,7 +384,7 @@ PR numbers below are sequential markers, not commitments. Each step ends with `p
 
 #### PR P2: New game setup — `starting.pickingManager`
 
-- `starting` becomes compound: `pickingManager` (initial) → `ready` → exits to `inGame` via `GAME_STARTED`.
+- `starting` becomes compound: `pickingManager` (initial) → `ready` → exits to `"in_game"` via `GAME_STARTED`.
 - `pickingManager` waits for `SUBMIT_MANAGER { managerData }`. The action mutates context (`manager.active`, `manager.managers[id]`, team's `manager` field) directly via `assign + produce`.
 - `ManagerForm.tsx` calls `appActor.send({ type: "SUBMIT_MANAGER", ... })` instead of `dispatch(advance(formValues))`.
 - **Removes:** the Redux meta saga's "wait for advance after startGame" branch, the `addManager` saga helper, the `gameStartAction()` chain.
@@ -392,7 +392,7 @@ PR numbers below are sequential markers, not commitments. Each step ends with `p
 
 #### PR P3: First in-game phase on the machine — `roundStart` + `news` (proof of concept)
 
-- Extend `inGame` with the round/phase compound state shown in the architecture diagram.
+- Extend `"in_game"` with the round/phase compound state shown in the architecture diagram.
 - Wire `roundStart` to look up `calendar[turn.round]`, store `remainingPhases`, and transition to `executingPhases.<first phase>`.
 - Implement only `news` first (simplest interactive phase): on entry it consumes one news item, transitions on `ADVANCE`.
 - Components: `News.tsx` reads from `useSelector(appActor, …)` + sends `ADVANCE`. No Redux involvement.
@@ -459,7 +459,7 @@ PR numbers below are sequential markers, not commitments. Each step ends with `p
 
 ## What "the game does not work for a while" means concretely
 
-After the bridge purge (today), the game's lifecycle (menu / new-game form / load) still works because `appMachine` owns it and Redux never owned it cleanly. **Once gameplay starts (`inGame`), the saga gameLoop runs but is no longer observed by any machine** — Redux is the only source of truth for game state. UI components still read from Redux via `useAppSelector`, so visually the game continues to work.
+After the bridge purge (today), the game's lifecycle (menu / new-game form / load) still works because `appMachine` owns it and Redux never owned it cleanly. **Once gameplay starts (`"in_game"`), the saga gameLoop runs but is no longer observed by any machine** — Redux is the only source of truth for game state. UI components still read from Redux via `useAppSelector`, so visually the game continues to work.
 
 The breakage starts at PR P3, when we move the first in-game phase (`news`) onto the machine. From there until PR P9 finishes, **some phases will be machine-driven, others saga-driven, with no synchronization between them**. Expect:
 

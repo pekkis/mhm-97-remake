@@ -25,6 +25,7 @@ import Gala from "./Gala";
 import { useAppSelector } from "@/config/redux";
 import { useSelector } from "@xstate/store-react";
 import { uiStore } from "@/stores/ui";
+import { AppMachineContext } from "@/context/app-machine-context";
 
 const Phase = ({ turn }: { turn: { phase: string | undefined } }) => {
   switch (true) {
@@ -78,8 +79,14 @@ const Phase = ({ turn }: { turn: { phase: string | undefined } }) => {
 };
 
 const Game = () => {
-  const turn = useAppSelector((state) => state.game.turn);
   const menu = useSelector(uiStore, (s) => s.context.menu);
+
+  console.log("MENU", menu);
+
+  const turn = AppMachineContext.useSelector((state) => state.context.turn);
+
+  console.log("TURN", turn);
+
   return (
     <div>
       {menu && <ModalMenu />}

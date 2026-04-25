@@ -10,6 +10,7 @@
  */
 
 import type { RootState } from "@/config/redux";
+import type { GameContext } from "@/state";
 
 const STORAGE_KEY = "mhm97";
 
@@ -25,7 +26,7 @@ export const saveGame = (state: RootState): void => {
  * Load game state from localStorage.
  * Returns `null` if no saved game exists.
  */
-export const loadGame = (): RootState | null => {
+export const loadGame = (): GameContext | null => {
   const json = localStorage.getItem(STORAGE_KEY);
   if (!json) {
     return null;
