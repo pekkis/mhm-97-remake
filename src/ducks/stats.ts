@@ -5,7 +5,7 @@ import type {
   StatsState,
   Streak
 } from "@/state/stats";
-import { quitToMainMenu, gameLoadState } from "./meta";
+import { quitToMainMenu } from "./meta";
 import { seasonStart, seasonEnd } from "./game";
 
 export const updateFromFacts = createAction<{
@@ -58,7 +58,6 @@ const defaultState: StatsState = {
 export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
-    .addCase(gameLoadState, (_state, action) => action.payload.stats)
     .addCase(seasonStart, (state) => {
       state.currentSeason = { ...emptySeasonStats, stories: {} };
     })

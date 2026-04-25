@@ -34,7 +34,7 @@ const defaultPhases = [
   "prank",
   "gameday",
   "calculations",
-  "eventCreation",
+  "event_creation",
   "event",
   "news",
   "seed"
@@ -62,7 +62,7 @@ const repeat = (entry: RawEntry, n: number): RawEntry[] =>
 const raw: RawEntry[] = [
   // Round 0: start of season
   {
-    phases: ["startOfSeason", "seed"],
+    phases: ["start_of_season", "seed"],
     seed: [
       { competition: "phl", phase: 0 },
       { competition: "division", phase: 0 },
@@ -93,7 +93,7 @@ const raw: RawEntry[] = [
   phlDiv(),
 
   // Round 13: invitations
-  phlDiv([...defaultPhases, "invitations-create"]),
+  phlDiv([...defaultPhases, "invitations_create"]),
 
   // Round 14
   phlDiv(),
@@ -200,7 +200,7 @@ const raw: RawEntry[] = [
   // World championships
   {
     title: "Maailmanmestaruuskisat",
-    phases: ["action", "endOfSeason"]
+    phases: ["action", "end_of_season"]
   }
 ];
 

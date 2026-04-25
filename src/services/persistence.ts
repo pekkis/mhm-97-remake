@@ -9,7 +9,6 @@
  * owns all game state, this will serialize `GameContext` instead.
  */
 
-import type { RootState } from "@/config/redux";
 import type { GameContext } from "@/state";
 
 const STORAGE_KEY = "mhm97";
@@ -17,8 +16,8 @@ const STORAGE_KEY = "mhm97";
 /**
  * Save the full game state to localStorage.
  */
-export const saveGame = (state: RootState): void => {
-  const json = JSON.stringify(state);
+export const saveGame = (context: GameContext): void => {
+  const json = JSON.stringify(context);
   localStorage.setItem(STORAGE_KEY, json);
 };
 

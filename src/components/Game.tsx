@@ -22,7 +22,6 @@ import WorldChampionships from "./WorldChampionships";
 import Stats from "./Stats";
 import Invitations from "./Invitations";
 import Gala from "./Gala";
-import { useAppSelector } from "@/config/redux";
 import { useSelector } from "@xstate/store-react";
 import { uiStore } from "@/stores/ui";
 import { AppMachineContext } from "@/context/app-machine-context";

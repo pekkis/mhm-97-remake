@@ -38,8 +38,6 @@ export type ManagerSubmission = {
 export type AppMachineEvents =
   | { type: "START_GAME" }
   | { type: "LOAD_GAME" }
-  | { type: "GAME_STARTED" }
-  | { type: "GAME_LOADED"; payload: GameContext }
   | { type: "QUIT" }
   | {
       type: "ADD_MANAGER";
@@ -88,12 +86,6 @@ export const appMachine = setup({
 
   actions: {
     resetContext: assign(() => createDefaultGameContext()),
-    loadContext: assign(({ event }) => {
-      if (event.type !== "GAME_LOADED") {
-        return {};
-      }
-      return event.payload;
-    }),
 
     assignManager: assign(
       ({ context }, params: { manager: ManagerSubmission }) => {
@@ -142,7 +134,8 @@ export const appMachine = setup({
       invoke: {
         src: "load_from_storage",
         onDone: {
-          target: "in_game"
+          target: "in_game",
+          actions: assign(({ event }) => event.output)
         },
         onError: {
           target: "main_menu"

@@ -96,9 +96,9 @@ describe("game simulation integration", () => {
   });
 
   describe("phase sequence verification", () => {
-    it("round 0 should execute startOfSeason + seed", () => {
+    it("round 0 should execute start_of_season + seed", () => {
       const entry = calendar[0];
-      expect(entry.phases).toEqual(["startOfSeason", "seed"]);
+      expect(entry.phases).toEqual(["start_of_season", "seed"]);
     });
 
     it("each round should have a defined phase sequence", () => {
@@ -112,14 +112,14 @@ describe("game simulation integration", () => {
           "prank",
           "gameday",
           "calculations",
-          "eventCreation",
+          "event_creation",
           "event",
           "news",
           "seed",
-          "invitations-create",
-          "invitations-process",
-          "startOfSeason",
-          "endOfSeason",
+          "invitations_create",
+          "invitations_process",
+          "start_of_season",
+          "end_of_season",
           "gala"
         ];
 

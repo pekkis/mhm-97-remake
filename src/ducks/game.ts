@@ -4,7 +4,7 @@ import teamDefs from "@/data/teams";
 import managers from "@/data/managers";
 
 import competitionList from "@/data/competitions";
-import { quitToMainMenu, gameLoadState } from "./meta";
+import { quitToMainMenu } from "./meta";
 import type {
   GameState,
   TeamEffect,
@@ -184,7 +184,6 @@ const defaultState: GameState = {
 export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
-    .addCase(gameLoadState, (_state, action) => action.payload.game)
     .addCase(competitionRemoveTeam, (state, action) => {
       const comp = state.competitions[action.payload.competition];
       comp.teams = comp.teams.filter((t) => t !== action.payload.team);

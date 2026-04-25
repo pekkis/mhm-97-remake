@@ -17,7 +17,7 @@ import {
   teamAddManager,
   teamRemoveManager
 } from "../ducks/game";
-import { gameLoadState, quitToMainMenu, startGame } from "../ducks/meta";
+import { quitToMainMenu, startGame } from "../ducks/meta";
 import { managerAdd } from "../ducks/manager";
 import { addEventAction, clearEvents } from "../ducks/event";
 import { addNotification, dismissNotification } from "../ducks/notification";
@@ -355,28 +355,6 @@ describe("reducer unit tests", () => {
 
       store.dispatch(nextTurn());
       expect(store.getState().news.news).toHaveLength(0);
-    });
-  });
-
-  describe("gameLoadState: full state replacement", () => {
-    it("should replace game, manager, event, news, prank, betting, stats, invitation slices", () => {
-      // First modify some state
-      store.dispatch(nextTurn());
-      store.dispatch(nextTurn());
-      store.dispatch(nextTurn());
-      expect(store.getState().game.turn.round).toBe(3);
-
-      // Create a "saved" state with round 10
-      const savedState = JSON.parse(JSON.stringify(store.getState()));
-      savedState.game.turn.round = 10;
-      savedState.game.turn.season = 2;
-
-      // Load it
-      store.dispatch(gameLoadState(savedState));
-
-      // Game state should be replaced
-      expect(store.getState().game.turn.round).toBe(10);
-      expect(store.getState().game.turn.season).toBe(2);
     });
   });
 });

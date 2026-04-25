@@ -5,7 +5,7 @@ import {
   teamRemoveManager,
   teamAddManager
 } from "./game";
-import { quitToMainMenu, gameLoadState } from "./meta";
+import { quitToMainMenu } from "./meta";
 import { orderPrank } from "./prank";
 import { values } from "remeda";
 
@@ -87,7 +87,6 @@ export const managerCrisisMeeting = createAction<{ manager: string }>(
 export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
-    .addCase(gameLoadState, (_state, action) => action.payload.manager)
     .addCase(seasonStart, (state) => {
       for (const manager of values(state.managers)) {
         manager.pranksExecuted = 0;

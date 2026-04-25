@@ -1,6 +1,6 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 import type { BettingState, ChampionshipBet } from "@/state/betting";
-import { quitToMainMenu, gameLoadState } from "./meta";
+import { quitToMainMenu } from "./meta";
 import { seasonStart, nextTurn } from "./game";
 
 export const placeBet = createAction<{
@@ -34,7 +34,6 @@ const defaultState: BettingState = {
 export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
-    .addCase(gameLoadState, (_state, action) => action.payload.betting)
     .addCase(seasonStart, (state) => {
       state.championshipBets = [];
     })

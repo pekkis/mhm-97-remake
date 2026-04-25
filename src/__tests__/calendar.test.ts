@@ -13,9 +13,9 @@ describe("calendar", () => {
   });
 
   describe("round 0: start of season", () => {
-    it("should include startOfSeason and seed phases", () => {
+    it("should include start_of_season and seed phases", () => {
       const entry = calendar[0];
-      expect(entry.phases).toContain("startOfSeason");
+      expect(entry.phases).toContain("start_of_season");
       expect(entry.phases).toContain("seed");
     });
 
@@ -41,7 +41,7 @@ describe("calendar", () => {
         "prank",
         "gameday",
         "calculations",
-        "eventCreation",
+        "event_creation",
         "event",
         "news",
         "seed"
@@ -72,8 +72,8 @@ describe("calendar", () => {
   });
 
   describe("round 13: invitations", () => {
-    it("should include invitations-create phase", () => {
-      expect(calendar[13].phases).toContain("invitations-create");
+    it("should include invitations_create phase", () => {
+      expect(calendar[13].phases).toContain("invitations_create");
     });
   });
 
@@ -88,10 +88,10 @@ describe("calendar", () => {
   });
 
   describe("final round (74): world championships", () => {
-    it("should include action and endOfSeason phases", () => {
+    it("should include action and end_of_season phases", () => {
       const entry = calendar[74];
       expect(entry.phases).toContain("action");
-      expect(entry.phases).toContain("endOfSeason");
+      expect(entry.phases).toContain("end_of_season");
     });
 
     it("should have title 'Maailmanmestaruuskisat'", () => {

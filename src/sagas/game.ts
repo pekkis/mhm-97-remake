@@ -129,7 +129,7 @@ export function* gameLoop() {
       yield* call(calculationsPhase);
     }
 
-    if (phases.includes("eventCreation")) {
+    if (phases.includes("event_creation")) {
       yield* call(eventCreationPhase);
     }
 
@@ -141,15 +141,15 @@ export function* gameLoop() {
       yield* call(newsPhase);
     }
 
-    if (phases.includes("invitations-create")) {
+    if (phases.includes("invitations_create")) {
       yield* call(invitationsCreatePhase);
     }
 
-    if (phases.includes("invitations-process")) {
+    if (phases.includes("invitations_process")) {
       yield* call(invitationsProcessPhase);
     }
 
-    if (phases.includes("startOfSeason")) {
+    if (phases.includes("start_of_season")) {
       yield* call(startOfSeasonPhase);
     }
 
@@ -161,7 +161,7 @@ export function* gameLoop() {
       yield* call(galaPhase);
     }
 
-    if (phases.includes("endOfSeason")) {
+    if (phases.includes("end_of_season")) {
       yield* call(endOfSeasonPhase);
     }
 

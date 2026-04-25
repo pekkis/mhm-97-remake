@@ -5,7 +5,7 @@ import {
   decrementDurations,
   clearExpired
 } from "./game";
-import { quitToMainMenu, gameLoadState } from "./meta";
+import { quitToMainMenu } from "./meta";
 
 const defaultState: InvitationState = {
   invitations: []
@@ -30,7 +30,6 @@ export const requestAcceptInvitation = createAction<{
 export default createReducer(defaultState, (builder) => {
   builder
     .addCase(quitToMainMenu, () => defaultState)
-    .addCase(gameLoadState, (_state, action) => action.payload.invitation)
     .addCase(addInvitation, (state, action) => {
       state.invitations.push({
         ...action.payload,
