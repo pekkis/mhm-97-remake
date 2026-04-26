@@ -443,11 +443,11 @@ Second generic types the **creation seed**. Prank-spawned events take `PrankInst
 
 #### Three event archetypes
 
-| Archetype       | `resolved` at create | `options` | `resolve` | Use when                                                                                  |
-| --------------- | -------------------- | --------- | --------- | ----------------------------------------------------------------------------------------- |
-| Pre-resolved    | `true` (literal)     | —         | —         | Outcome is fully determined by `(ctx, seed)` at create time (e.g. `bazookaStrike`)        |
-| Auto-resolve    | `false`              | —         | required  | Random roll determines outcome; no UI input (e.g. `sellNarcotics`, `protest`, `kasino`)   |
-| Interactive     | `false`              | required  | required  | Player chooses from `options()`, `resolve(ctx, data, value)` snapshots the choice         |
+| Archetype    | `resolved` at create | `options` | `resolve` | Use when                                                                                |
+| ------------ | -------------------- | --------- | --------- | --------------------------------------------------------------------------------------- |
+| Pre-resolved | `true` (literal)     | —         | —         | Outcome is fully determined by `(ctx, seed)` at create time (e.g. `bazookaStrike`)      |
+| Auto-resolve | `false`              | —         | required  | Random roll determines outcome; no UI input (e.g. `sellNarcotics`, `protest`, `kasino`) |
+| Interactive  | `false`              | required  | required  | Player chooses from `options()`, `resolve(ctx, data, value)` snapshots the choice       |
 
 #### Walker discipline (event-phase `entry`)
 

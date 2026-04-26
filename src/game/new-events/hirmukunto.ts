@@ -3,12 +3,11 @@ import {
   randomTeamFrom,
   teamsStrength
 } from "@/machines/selectors";
-import random from "@/services/random";
 import type { DeclarativeEvent } from "@/types/event";
 
-const eventId = "abcd";
+const eventId = "hirmukunto";
 
-export type AbcdData = {
+export type HirmukuntoData = {
   id: string;
   eventId: typeof eventId;
   manager: string;
@@ -20,33 +19,31 @@ export type AbcdData = {
 };
 
 /**
- * Abcd — pre-resolved. A wizard-manager has psyched a PHL team to
- * incomprehensible form via the "ABCD program". Affected team gets
- * a +25% strength buff for `duration` rounds.
+ * Hirmukunto — pre-resolved. Random division team gets a
+ * permanent strength buff equal to half their current strength.
  *
- * 1-1 port of `@/game/events/abcd.ts`.
+ * 1-1 port of `@/game/events/hirmukunto.ts`.
  */
-const abcd: DeclarativeEvent<AbcdData> = {
+const hirmukunto: DeclarativeEvent<HirmukuntoData> = {
   type: "manager",
 
   create: (ctx, { manager }) => {
-    const team = randomTeamFrom(["phl"], false, [])(ctx);
-    const r = randomManager()(ctx);
+    const team = randomTeamFrom(["division"], false, [])(ctx);
     return {
       eventId,
       manager,
       resolved: true,
-      duration: random.cinteger(0, 6) + 3,
+      duration: 1000,
       team: team.id,
       teamName: team.name,
-      managerName: r.name
+      managerName: randomManager()(ctx).name
     };
   },
 
   render: (data) => [
-    `Liigasta:
+    `Divisioonasta:
 
-Managerivelho ${data.managerName} on saanut psyykattua ${data.teamName}:n käsittämättömään vireeseen! Hänen nk. "ABCD-ohjelmansa" puree!`
+__${data.teamName}__ on päättänyt manageriguru ${data.managerName}:n johdolla nousta liigaan! He ovat _hirmukunnossa!_`
   ],
 
   process: (ctx, data) => {
@@ -57,7 +54,7 @@ Managerivelho ${data.managerName} on saanut psyykattua ${data.teamName}:n käsit
         team: data.team,
         effect: {
           parameter: ["strength"],
-          amount: Math.round(strength / 4),
+          amount: Math.round(strength / 2),
           duration: data.duration
         }
       }
@@ -65,4 +62,4 @@ Managerivelho ${data.managerName} on saanut psyykattua ${data.teamName}:n käsit
   }
 };
 
-export default abcd;
+export default hirmukunto;
