@@ -9,7 +9,6 @@ import {
   setGameFlag,
   setServiceBasePrice,
   setGamePhase,
-  competitionSeed,
   competitionRemoveTeam,
   competitionAddTeam,
   competitionSetTeams,
@@ -31,7 +30,6 @@ import prankPhase from "./phase/prank";
 import gamedayPhase from "./phase/gameday";
 import invitationsCreatePhase from "./phase/invitations-create";
 import invitationsProcessPhase from "./phase/invitations-process";
-import seedPhase from "./phase/seed";
 import endOfSeasonPhase from "./phase/end-of-season";
 import startOfSeasonPhase from "./phase/start-of-season";
 import galaPhase from "./phase/gala";
@@ -151,10 +149,6 @@ export function* gameLoop() {
 
     if (phases.includes("start_of_season")) {
       yield* call(startOfSeasonPhase);
-    }
-
-    if (phases.includes("seed")) {
-      yield* call(seedPhase);
     }
 
     if (phases.includes("gala")) {
@@ -301,34 +295,6 @@ function* nextTurn() {
 
 export function* setPhase(phase: string) {
   yield* put(setGamePhase(phase));
-}
-
-export function* seedCompetition(competitionId: CompetitionId, phase: number) {
-  const competitions = yield* select(
-    (state: RootState) => state.game.competitions
-  );
-  const competitionObj = competitionData[competitionId];
-
-  const empty = () => [() => {}, undefined] as const;
-
-  const contextSagaGetter =
-    competitionSagas[competitionId]?.seedContext?.[phase] || empty;
-
-  const [callback, context] = yield* call(contextSagaGetter);
-
-  const seeder = competitionObj.seed[phase];
-
-  const seed = yield* call(seeder, competitions, context);
-
-  yield* call(callback, seed);
-
-  yield* put(
-    competitionSeed({
-      competition: competitionId,
-      phase,
-      seed
-    })
-  );
 }
 
 export function* removeTeamFromCompetition(competition: string, team: number) {

@@ -1,5 +1,5 @@
-import type { CallEffect } from "redux-saga/effects";
 import type { Team } from "@/state/game";
+import type { GameContext } from "@/state";
 
 // --- Game result ---
 
@@ -145,22 +145,16 @@ export type CompetitionDefinition = {
   seed: Array<
     (competitions: Record<CompetitionId, Competition>, context?: any) => Phase
   >;
-  // | ((...args: any[]) => Generator<any, any, any>)
-  // seed: (...args: any[]) => Generator<any, any, any>;
-  // start?: (...args: any[]) => Generator<any, any, any>;
-  // groupEnd?: (phase: number, group: number) => Generator;
+  /**
+   * Optional pure context-builders for `seed[phase]`. Indexed by phase.
+   * Each function reads `GameContext` and returns whatever shape the
+   * matching seeder expects as its `context` argument. Phases that don't
+   * need extra context can be left undefined / sparse.
+   */
+  seedContext?: Array<((ctx: GameContext) => unknown) | undefined>;
 };
 
 export type CompetitionSagaDefinition = {
-  seedContext?: [
-    (
-      ...args: any[]
-    ) => Generator<
-      any,
-      [(phase: Phase) => Generator<CallEffect<void>, void, any>, unknown],
-      any
-    >
-  ];
   start?: (...args: any[]) => Generator<any, any, any>;
   groupEnd?: (phase: number, group: number) => Generator;
 };

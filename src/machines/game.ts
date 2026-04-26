@@ -6,6 +6,7 @@ import { managersMainCompetition } from "@/machines/selectors";
 import difficultyLevels from "@/data/difficulty-levels";
 import teamData from "@/data/teams";
 import calendar from "@/data/calendar";
+import competitionData from "@/data/competitions";
 import strategies from "@/data/strategies";
 import random from "@/services/random";
 import { notificationsMachine } from "@/machines/notifications";
@@ -179,6 +180,35 @@ export const gameMachine = setup({
             m.balance -= params.amount;
           }
         })
+    ),
+
+    /**
+     * seed phase — for every `{ competition, phase }` entry in the current
+     * round's calendar, run that competition's pure `seed[phase]` builder
+     * and append the resulting `Phase` onto `competitions[id].phases`.
+     *
+     * 1-1 port of `sagas/phase/seed.ts` + `seedCompetition()` in
+     * `sagas/game.ts`. The legacy saga had a callback indirection (the
+     * tournaments saga returned a `setCompetitionTeams` saga to be invoked
+     * after the seeder ran); here we do that mirroring unconditionally —
+     * `comp.teams = phase.teams` is a no-op for competitions whose phase
+     * teams already match `comp.teams` (PHL/division/EHL), and matches the
+     * tournaments behavior. If a future competition needs different
+     * mirroring, revisit.
+     */
+    executeSeedPhase: assign(({ context }) =>
+      produce(context, (draft) => {
+        const seeds = calendar[draft.turn.round]?.seed ?? [];
+        for (const { competition, phase } of seeds) {
+          const def = competitionData[competition];
+          const ctxFn = def.seedContext?.[phase];
+          const seederContext = ctxFn ? ctxFn(context) : undefined;
+          const newPhase = def.seed[phase](draft.competitions, seederContext);
+          draft.competitions[competition].phases.push(newPhase);
+          draft.competitions[competition].phase = phase;
+          draft.competitions[competition].teams = newPhase.teams;
+        }
+      })
     ),
 
     /**
@@ -433,7 +463,8 @@ export const gameMachine = setup({
               ]
             },
             seed: {
-              on: { ADVANCE: "gala_check" }
+              entry: "executeSeedPhase",
+              always: { target: "gala_check" }
             },
 
             gala_check: {

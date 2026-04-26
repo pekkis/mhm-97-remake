@@ -1,5 +1,4 @@
 import type { RootState } from "@/config/redux";
-import { foreignTeams } from "@/selectors";
 import tournamentList from "@/data/tournaments";
 import { setCompetitionTeams } from "@/sagas/game";
 import { incrementBalance } from "@/sagas/manager";
@@ -8,7 +7,6 @@ import { incrementReadiness } from "@/sagas/team";
 import { amount } from "@/services/format";
 import type {
   CompetitionSagaDefinition,
-  Phase,
   TeamStat
 } from "@/types/competitions";
 import { all, call, select } from "typed-redux-saga";
@@ -50,29 +48,5 @@ export const tournamentsSagas: CompetitionSagaDefinition = {
         }
       }
     }
-  },
-  seedContext: [
-    function* () {
-      const teams = yield* select(foreignTeams);
-
-      const managers = yield* select(
-        (state: RootState) => state.manager.managers
-      );
-
-      const invitations = yield* select((state: RootState) =>
-        state.invitation.invitations.filter((i) => i.participate)
-      );
-
-      return [
-        function* (phase: Phase) {
-          yield* call(setCompetitionTeams, "tournaments", phase.teams);
-        },
-        {
-          teams,
-          managers,
-          invitations
-        }
-      ];
-    }
-  ]
+  }
 };

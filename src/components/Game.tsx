@@ -153,13 +153,13 @@ const Phase: FC<PhaseProps> = ({ phase }) => {
 const Game: FC = () => {
   const menu = useSelector(uiStore, (s) => s.context.menu);
 
-  console.log("MENU", menu);
-
   const phase = useUiPhase();
-  const appActor = GameMachineContext.useActorRef();
-  const notificationsActor = appActor.system.get(
+  const gameActor = GameMachineContext.useActorRef();
+  const notificationsActor = gameActor.system.get(
     "notifications"
   ) as ActorRefFrom<typeof notificationsMachine>;
+
+  console.log("GAME", gameActor);
 
   return (
     <div>

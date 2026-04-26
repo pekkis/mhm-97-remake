@@ -7,6 +7,7 @@ import type {
 import tournamentScheduler from "@/services/tournament";
 import type { Manager } from "@/state/manager";
 import type { Invitation } from "@/state/invitation";
+import { foreignTeams } from "@/machines/selectors";
 import tournamentList from "@/data/tournaments";
 import random from "@/services/random";
 
@@ -120,6 +121,14 @@ const tournaments: CompetitionDefinition = {
         groups
       };
     }
+  ],
+
+  seedContext: [
+    (ctx) => ({
+      teams: foreignTeams(ctx),
+      managers: ctx.manager.managers,
+      invitations: ctx.invitation.invitations.filter((i) => i.participate)
+    })
   ]
 };
 

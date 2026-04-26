@@ -62,7 +62,7 @@ describe("gameMachine", () => {
       ).toBe(true);
     });
 
-    it("ADVANCE walks start_of_season sub-states then exits to seed", () => {
+    it("ADVANCE past championship_betting auto-runs seed and lands in round 1's action", () => {
       const actor = createTestActor();
       const activeId = actor.getSnapshot().context.manager.active!;
       actor.send({
@@ -77,29 +77,33 @@ describe("gameMachine", () => {
         })
       ).toBe(true);
 
-      actor.send({ type: "ADVANCE" }); // championship_betting -> done -> seed_check -> seed
-      expect(
-        actor.getSnapshot().matches({
-          in_game: { executing_phases: "seed" }
-        })
-      ).toBe(true);
-    });
-
-    it("ADVANCE through round 0 lands in round 1's first phase (action) and bumps turn.round", () => {
-      const actor = createTestActor();
-      const activeId = actor.getSnapshot().context.manager.active!;
-      actor.send({
-        type: "SELECT_STRATEGY",
-        payload: { manager: activeId, strategy: 2 }
-      });
-      actor.send({ type: "ADVANCE" }); // championship_betting -> done -> seed
-      actor.send({ type: "ADVANCE" }); // seed -> round_end -> action_check -> action
+      // championship_betting → done → seed (auto-compute) → gala_check
+      // → end_of_season_check → round_end → next round → action.
+      actor.send({ type: "ADVANCE" });
 
       const snap = actor.getSnapshot();
       expect(snap.context.turn.round).toBe(1);
       expect(snap.matches({ in_game: { executing_phases: "action" } })).toBe(
         true
       );
+    });
+
+    it("seed phase populates competitions[*].phases", () => {
+      const actor = createTestActor();
+      const activeId = actor.getSnapshot().context.manager.active!;
+      actor.send({
+        type: "SELECT_STRATEGY",
+        payload: { manager: activeId, strategy: 2 }
+      });
+      // championship_betting → ADVANCE walks through seed.
+      actor.send({ type: "ADVANCE" });
+
+      const { competitions } = actor.getSnapshot().context;
+      // Round 0 seeds phl, division, ehl per calendar (tournaments seed
+      // happens mid-season).
+      expect(competitions.phl.phases.length).toBeGreaterThan(0);
+      expect(competitions.division.phases.length).toBeGreaterThan(0);
+      expect(competitions.ehl.phases.length).toBeGreaterThan(0);
     });
   });
 });
