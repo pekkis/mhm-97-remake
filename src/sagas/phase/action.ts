@@ -9,7 +9,6 @@ import {
   select
 } from "typed-redux-saga";
 import {
-  watchTransferMarket,
   crisisMeeting,
   toggleService,
   setActiveManager
@@ -33,7 +32,6 @@ export default function* actionPhase() {
 
   const task = yield* fork(function* () {
     yield* all([
-      fork(watchTransferMarket),
       takeEvery(managerCrisisMeeting, crisisMeeting),
       takeEvery(managerToggleService, toggleService),
       takeEvery(requestAcceptInvitation, function* (action) {

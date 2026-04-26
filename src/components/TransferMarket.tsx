@@ -10,14 +10,16 @@ import ManagerInfo from "./ManagerInfo";
 import Box from "./styled-system/Box";
 import Tabs from "./ui/Tabs";
 import Tab from "./ui/Tab";
-import { useAppDispatch } from "@/config/redux";
-import { useGameContext } from "@/context/game-machine-context";
-import { managerBuyPlayer, managerSellPlayer } from "@/ducks/manager";
-import { activeManager } from "@/machines/selectors";
+import {
+  GameMachineContext,
+  useGameContext
+} from "@/context/game-machine-context";
+import { activeManager, canSellPlayer } from "@/machines/selectors";
 
 const TransferMarket = () => {
   const manager = useGameContext(activeManager);
-  const dispatch = useAppDispatch();
+  const canSell = useGameContext(canSellPlayer(manager.id));
+  const gameActor = GameMachineContext.useActorRef();
 
   const balance = manager.balance;
   const [tab, setTab] = useState(0);
@@ -48,12 +50,13 @@ const TransferMarket = () => {
                     <Button
                       key={index}
                       onClick={() =>
-                        dispatch(
-                          managerBuyPlayer({
+                        gameActor.send({
+                          type: "BUY_PLAYER",
+                          payload: {
                             manager: manager.id,
-                            playerType: index.toString()
-                          })
-                        )
+                            playerType: index
+                          }
+                        })
                       }
                       block
                       disabled={balance < playerType.buy}
@@ -74,14 +77,16 @@ const TransferMarket = () => {
                     <Button
                       key={index}
                       onClick={() =>
-                        dispatch(
-                          managerSellPlayer({
+                        gameActor.send({
+                          type: "SELL_PLAYER",
+                          payload: {
                             manager: manager.id,
-                            playerType: index.toString()
-                          })
-                        )
+                            playerType: index
+                          }
+                        })
                       }
                       block
+                      disabled={!canSell}
                     >
                       <div>{playerType.description}</div>
                       <div>

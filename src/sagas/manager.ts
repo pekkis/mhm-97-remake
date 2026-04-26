@@ -1,12 +1,10 @@
-import { select, put, call, all, takeEvery } from "typed-redux-saga";
+import { select, put, call, all } from "typed-redux-saga";
 import { gameFacts } from "@/services/game";
 import competitionList from "@/data/competitions";
-import playerTypes from "@/data/transfer-market";
 import {
   managersTeam,
   managersTeamId,
   managersDifficulty,
-  managerCompetesIn,
   managerHasService,
   teamsMainCompetition
 } from "@/selectors";
@@ -24,13 +22,10 @@ import {
   managerSetArenaLevel,
   managerSetInsuranceExtra,
   managerIncrementInsuranceExtra,
-  managerSetService,
-  managerBuyPlayer,
-  managerSellPlayer
+  managerSetService
 } from "@/ducks/manager";
 import type { ManagerServices } from "@/state/manager";
 import difficultyLevels from "@/data/difficulty-levels";
-import { incrementStrength, decrementStrength } from "./team";
 import r from "@/services/random";
 import { addAnnouncement } from "./news";
 import { amount as a } from "@/services/format";
@@ -157,64 +152,9 @@ export function* crisisMeeting(action: { payload: { manager: string } }) {
   );
 }
 
-export function* buyPlayer(action: ReturnType<typeof managerBuyPlayer>) {
-  const { payload } = action;
-
-  const manager = yield* select(
-    (state: RootState) => state.manager.managers[payload.manager]
-  );
-
-  const playerType = playerTypes[payload.playerType];
-  yield* call(decrementBalance, manager.id, playerType.buy);
-
-  const skillGain = playerType.skill();
-  yield* call(incrementStrength, manager.team!, skillGain);
-
-  yield* call(
-    addNotification,
-    payload.manager,
-    `Ostamasi pelaaja tuo ${skillGain} lisää voimaa joukkueeseen!`
-  );
-}
-
 export function* setArenaLevel(manager: string, level: number) {
   yield* put(
     managerSetArenaLevel({ manager, level: Math.max(0, Math.min(9, level)) })
-  );
-}
-
-export function* sellPlayer(action: ReturnType<typeof managerSellPlayer>) {
-  const {
-    payload: { manager: managerId, playerType }
-  } = action;
-
-  console.log(managerId, playerType, "fihdh");
-
-  const competesInPhl = yield* select(managerCompetesIn(managerId, "phl"));
-
-  const minStrength = competesInPhl ? 130 : 50;
-
-  const team = yield* select(managersTeam(managerId));
-
-  if (team.strength <= minStrength) {
-    return yield* call(
-      addNotification,
-      managerId,
-      "Johtokunnan mielestä pelaajien myynti ei ole ratkaisu tämänhetkisiin ongelmiimme. Myyntilupa evätty.",
-      "error"
-    );
-  }
-
-  const playerDefinition = playerTypes[playerType];
-  yield* call(incrementBalance, managerId, playerDefinition.sell);
-
-  const skillGain = playerDefinition.skill();
-  yield* call(decrementStrength, team.id, skillGain);
-
-  yield* call(
-    addNotification,
-    managerId,
-    `Myymäsi pelaaja vie ${skillGain} voimaa mukanaan!`
   );
 }
 
@@ -322,11 +262,4 @@ export function* afterGameday(
       yield* call(incrementBalance, manager.id, amount);
     }
   }
-}
-
-export function* watchTransferMarket() {
-  yield* all([
-    takeEvery(managerBuyPlayer, buyPlayer),
-    takeEvery(managerSellPlayer, sellPlayer)
-  ]);
 }

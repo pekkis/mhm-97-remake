@@ -1,4 +1,4 @@
-import { setup, assign, sendTo } from "xstate";
+import { setup, assign, sendTo, enqueueActions } from "xstate";
 import { produce } from "immer";
 
 import type { GameContext } from "@/state";
@@ -6,7 +6,9 @@ import {
   managersMainCompetition,
   managerCompetesIn,
   canImproveArena,
-  canOrderPrank
+  canOrderPrank,
+  canBuyPlayer,
+  canSellPlayer
 } from "@/machines/selectors";
 import difficultyLevels from "@/data/difficulty-levels";
 import teamData from "@/data/teams";
@@ -16,6 +18,7 @@ import { computeStats } from "@/services/competition-type";
 import strategies from "@/data/strategies";
 import prankTypes from "@/game/pranks";
 import arenas from "@/data/arenas";
+import playerTypes from "@/data/transfer-market";
 import random from "@/services/random";
 import { notificationsMachine } from "@/machines/notifications";
 import type { NotificationData } from "@/machines/notification";
@@ -63,6 +66,14 @@ export type GameMachineEvents =
   | {
       type: "IMPROVE_ARENA";
       payload: { manager: string };
+    }
+  | {
+      type: "BUY_PLAYER";
+      payload: { manager: string; playerType: number };
+    }
+  | {
+      type: "SELL_PLAYER";
+      payload: { manager: string; playerType: number };
     }
   | {
       type: "TEAM_INCUR_PENALTY";
@@ -305,6 +316,81 @@ export const gameMachine = setup({
     ),
 
     /**
+     * Buy a player from the transfer market: debit the manager and bump
+     * their team's strength by a randomized skill amount. 1-1 port of the
+     * legacy `buyPlayer()` saga.
+     *
+     * Lives outside the on-handler's `actions` array because the random
+     * roll has to happen once — the assign and the notify both reference
+     * the same `skillGain`. `enqueueActions` lets us do both with built-in
+     * primitives (no dev-mode warning).
+     */
+    executeBuyPlayer: enqueueActions(
+      (
+        { context, enqueue },
+        params: { manager: string; playerType: number }
+      ) => {
+        const playerType = playerTypes[params.playerType];
+        const skillGain = playerType.skill();
+        enqueue.assign(
+          produce(context, (draft) => {
+            const m = draft.manager.managers[params.manager];
+            if (!m || m.team === undefined) {
+              return;
+            }
+            m.balance -= playerType.buy;
+            draft.teams[m.team].strength += skillGain;
+          })
+        );
+        enqueue.sendTo("notifications", {
+          type: "PUSH" as const,
+          notification: {
+            id: crypto.randomUUID(),
+            manager: params.manager,
+            message: `Ostamasi pelaaja tuo ${skillGain} lisää voimaa joukkueeseen!`,
+            type: "info" as const
+          }
+        });
+      }
+    ),
+
+    /**
+     * Sell a player to the transfer market: credit the manager and drop
+     * their team's strength by a randomized skill amount. 1-1 port of the
+     * legacy `sellPlayer()` saga. The strength-floor check lives in the
+     * `canSellPlayer` guard upstream; the failure-path notification is
+     * emitted from the on-handler's else branch.
+     */
+    executeSellPlayer: enqueueActions(
+      (
+        { context, enqueue },
+        params: { manager: string; playerType: number }
+      ) => {
+        const playerType = playerTypes[params.playerType];
+        const skillLoss = playerType.skill();
+        enqueue.assign(
+          produce(context, (draft) => {
+            const m = draft.manager.managers[params.manager];
+            if (!m || m.team === undefined) {
+              return;
+            }
+            m.balance += playerType.sell;
+            draft.teams[m.team].strength -= skillLoss;
+          })
+        );
+        enqueue.sendTo("notifications", {
+          type: "PUSH" as const,
+          notification: {
+            id: crypto.randomUUID(),
+            manager: params.manager,
+            message: `Myymäsi pelaaja vie ${skillLoss} voimaa mukanaan!`,
+            type: "info" as const
+          }
+        });
+      }
+    ),
+
+    /**
      * Apply a points penalty to a team in a round-robin group, then
      * recompute that group's stats so the standings reflect it
      * immediately. 1-1 port of the legacy `incurPenalty()` saga (which
@@ -445,6 +531,44 @@ export const gameMachine = setup({
         }
       ]
     },
+    BUY_PLAYER: {
+      // UI button (TransferMarket.tsx) is already disabled when the
+      // manager can't pay; this guard catches stray sends from elsewhere.
+      guard: ({ context, event }) => {
+        const playerType = playerTypes[event.payload.playerType];
+        return canBuyPlayer(event.payload.manager, playerType.buy)(context);
+      },
+      actions: {
+        type: "executeBuyPlayer",
+        params: ({ event }) => event.payload
+      }
+    },
+    SELL_PLAYER: [
+      // Happy path: team can spare the strength.
+      {
+        guard: ({ context, event }) =>
+          canSellPlayer(event.payload.manager)(context),
+        actions: {
+          type: "executeSellPlayer",
+          params: ({ event }) => event.payload
+        }
+      },
+      // Failure path: preserve the legacy "myyntilupa evätty" feedback
+      // instead of silently swallowing the click.
+      {
+        actions: {
+          type: "notify",
+          params: ({ event }) => ({
+            notification: {
+              manager: event.payload.manager,
+              message:
+                "Johtokunnan mielestä pelaajien myynti ei ole ratkaisu tämänhetkisiin ongelmiimme. Myyntilupa evätty.",
+              type: "error"
+            }
+          })
+        }
+      }
+    ],
     TEAM_INCUR_PENALTY: {
       actions: {
         type: "executeIncurPenalty",

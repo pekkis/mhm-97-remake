@@ -348,6 +348,44 @@ export const canOrderPrank =
     return true;
   };
 
+/**
+ * True iff `manager` can afford the given player price. Same shape as
+ * `canOrderPrank` — caller passes the resolved price (the `playerTypes`
+ * registry would create the same circular dep that `pranks` would).
+ */
+export const canBuyPlayer =
+  (manager: string, price?: number): ContextSelector<boolean> =>
+  (ctx) => {
+    const m = ctx.manager.managers[manager];
+    if (!m) {
+      return false;
+    }
+    if (price !== undefined && m.balance < price) {
+      return false;
+    }
+    return true;
+  };
+
+/**
+ * True iff `manager`'s team can stand to lose more strength: PHL teams
+ * must stay above 130, division teams above 50. Mirrors the legacy
+ * `sellPlayer()` saga's "Myyntilupa evätty" check (which the machine
+ * still emits as a notification on the failure path — this selector is
+ * purely for proactive UI gating).
+ */
+export const canSellPlayer =
+  (manager: string): ContextSelector<boolean> =>
+  (ctx) => {
+    const m = ctx.manager.managers[manager];
+    if (!m || m.team === undefined) {
+      return false;
+    }
+    const team = ctx.teams[m.team];
+    const competesInPHL = managerCompetesIn(manager, "phl")(ctx);
+    const minStrength = competesInPHL ? 130 : 50;
+    return team.strength > minStrength;
+  };
+
 export const managerWithId =
   (id: string): ContextSelector<Manager | undefined> =>
   (ctx) =>

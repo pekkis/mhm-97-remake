@@ -60,14 +60,6 @@ export const managerToggleService = createAction<{
   service: keyof ManagerServices;
 }>("MANAGER_TOGGLE_SERVICE");
 
-export const managerBuyPlayer = createAction<{
-  manager: string;
-  playerType: string;
-}>("MANAGER_BUY_PLAYER");
-export const managerSellPlayer = createAction<{
-  manager: string;
-  playerType: string;
-}>("MANAGER_SELL_PLAYER");
 export const managerCrisisMeeting = createAction<{ manager: string }>(
   "MANAGER_CRISIS_MEETING"
 );
