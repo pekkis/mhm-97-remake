@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import calendar from "../data/calendar";
+import calendar from "./calendar";
 
 describe("calendar", () => {
   it("should have 75 rounds (0-74)", () => {
