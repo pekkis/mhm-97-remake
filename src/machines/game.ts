@@ -896,8 +896,8 @@ export const gameMachine = setup({
      * and push it into `event.events`. If not yet ported, the roll
      * silently no-ops (the legacy generator-based path is gone).
      *
-     * 1-1 port of `eventCreationPhase()` in
-     * `src/sagas/phase/event-creation.ts` (REFERENCE-ONLY post-pivot),
+     * 1-1 port of the deleted `eventCreationPhase()` from
+     * `src/sagas/phase/event-creation.ts`,
      * minus the `createRandomEvent` calendar gate — entry to this state
      * is already guarded by `has_phase("event_creation")`, so the gate
      * is redundant.
@@ -929,9 +929,9 @@ export const gameMachine = setup({
      *   - unresolved + has `options()` → skip; interactive, wait for
      *     `RESOLVE_EVENT`.
      *
-     * Mirrors the saga's two-pass approach (auto-resolve loop in
-     * `phase/event.ts` + `processEvents()` in `event.ts`,
-     * REFERENCE-ONLY post-pivot) collapsed into a single walk.
+     * Mirrors the deleted saga's two-pass approach (auto-resolve loop in
+     * `phase/event.ts` + `processEvents()` in `event.ts`)
+     * collapsed into a single walk.
      * "Auto-resolve?" is now a property of the event definition (no
      * `options`) rather than an `autoResolve` flag baked into each
      * payload by the create function.
@@ -960,8 +960,8 @@ export const gameMachine = setup({
      * `resolve` (which may roll random — that's where rolls live in
      * the new system), apply effects from `process`, mark processed.
      *
-     * 1-1 port of the `requestResolveEvent` → `resolveEvent` flow in
-     * `src/sagas/event.ts` (REFERENCE-ONLY post-pivot).
+     * 1-1 port of the deleted `requestResolveEvent` → `resolveEvent` flow
+     * in `src/sagas/event.ts`.
      */
     executeResolveEvent: assign(
       ({ context }, params: { id: string; value: string }) =>

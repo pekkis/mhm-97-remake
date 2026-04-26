@@ -23,8 +23,6 @@ import { all, call, put, select, takeEvery, fork } from "typed-redux-saga";
 
 import actionPhase from "./phase/action";
 import calculationsPhase from "./phase/calculations";
-import eventCreationPhase from "./phase/event-creation";
-import eventPhase from "./phase/event";
 import newsPhase from "./phase/news";
 import gamedayPhase from "./phase/gameday";
 import invitationsCreatePhase from "./phase/invitations-create";
@@ -45,7 +43,6 @@ import {
   managerHasService,
   managersArena
 } from "@/selectors";
-import events from "@/game/events";
 import type { RootState } from "@/config/redux";
 import type { CompetitionId, Group, TeamStat } from "@/types/competitions";
 import { competitionSagas } from "./competition-registry";
@@ -87,13 +84,7 @@ export function* beforeGame(action: ReturnType<typeof gameBegin>) {
       return;
     }
 
-    const event = events["topGame"];
-
-    for (const manager of humansInGame) {
-      yield* call(event.create, {
-        manager
-      });
-    }
+    // topGame event creation lives on the machine side post-pivot.
   }
 
   return;
@@ -120,14 +111,6 @@ export function* gameLoop() {
 
     if (phases.includes("calculations")) {
       yield* call(calculationsPhase);
-    }
-
-    if (phases.includes("event_creation")) {
-      yield* call(eventCreationPhase);
-    }
-
-    if (phases.includes("event")) {
-      yield* call(eventPhase);
     }
 
     if (phases.includes("news")) {
