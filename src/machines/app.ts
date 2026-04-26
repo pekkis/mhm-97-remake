@@ -1,4 +1,4 @@
-import { setup, assign, fromPromise } from "xstate";
+import { setup, assign, fromPromise, stopChild } from "xstate";
 import type { ActorRefFrom } from "xstate";
 
 import {
@@ -134,11 +134,23 @@ export const appMachine = setup({
       }
     },
     playing: {
-      entry: assign({
-        gameRef: ({ context, spawn }) =>
-          spawn("game", { systemId: "game", input: context.pending! })
-      }),
-      exit: assign({ pending: undefined, gameRef: undefined }),
+      // Hand `pending` straight to the spawned game and immediately drop
+      // app's reference. While `playing`, the game owns the context — app
+      // holding a parallel copy in `pending` makes Stately Inspector's
+      // shared-reference dedup walk two structurally-identical trees and
+      // crash trying to write `[Circular]` into the frozen second copy
+      // (Cannot assign to read only property of [object Array]).
+      entry: assign(({ context, spawn }) => ({
+        pending: undefined,
+        gameRef: spawn("game", {
+          systemId: "game",
+          input: context.pending!
+        })
+      })),
+      exit: [
+        stopChild(({ context }) => context.gameRef!),
+        assign({ pending: undefined, gameRef: undefined })
+      ],
       on: {
         QUIT: { target: "menu" }
       }
