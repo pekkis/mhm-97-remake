@@ -189,7 +189,7 @@ Convert cluster by cluster, smallest first.
 - Created `src/machines/app.ts` — pure machine definition (no side effects, no actor creation)
   - States: `menu` → `starting`/`loading` → `"in_game"`
   - Events: `START_GAME`, `LOAD_GAME`, `GAME_STARTED`, `GAME_LOADED`, `QUIT`
-  - Exported: `appMachine` definition + `AppMachineEvents` type
+  - Exported: `appMachine` definition + `GameMachineEvents` type
 - Created `src/machines/actors.ts` — centralized actor instantiation point
   - Pattern: machine files export pure definitions, `actors.ts` creates and starts singleton actors
   - Future machines will have their actors created here too
@@ -200,7 +200,7 @@ Convert cluster by cluster, smallest first.
 - `App.tsx` reads `state.matches("in_game")` via `useSelector(appActor, ...)` from `@xstate/react`
 - `StartMenu.tsx` reads `state.matches("starting")` via `useSelector(appActor, ...)`
 - `inspector.ts` registers `appActor` via `appActor.system.inspect(inspect)` (machine actors use system, not direct)
-- 16 unit tests in `src/__tests__/app-machine.test.ts`
+- 16 unit tests in `src/__tests__/game-machine.test.ts`
 - **Key learning:** `useMachine(machine)` creates+owns actor per component lifecycle. `useSelector(actor, selector)` subscribes to an external actor. `appActor` uses the `useSelector` pattern since it's a global singleton.
 
 **PR 6: `gameMachine` skeleton + persistence extraction** ✅ COMPLETE

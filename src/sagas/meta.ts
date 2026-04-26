@@ -38,7 +38,7 @@ export function* gameSave() {
     (state: RootState) => state.manager.managers[state.manager.active!]
   );
   const state = yield* select((state: RootState) => state);
-  // TODO post-pivot: saga path is dead — appMachine owns persistence.
+  // TODO post-pivot: saga path is dead — gameMachine owns persistence.
   // Cast to satisfy GameContext signature until this saga is removed.
   yield* call(saveGame, state as any);
   yield* call(addNotification, manager.id, "Peli tallennettiin.");

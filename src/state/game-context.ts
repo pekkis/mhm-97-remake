@@ -2,7 +2,7 @@
  * `GameContext` — the canonical shape of the game's full state.
  *
  * Lives in `@/state` so it can be consumed equally by the XState machines
- * (where it is `appMachine.context`) and any remaining Redux/legacy code
+ * (where it is `gameMachine.context`) and any remaining Redux/legacy code
  * during the transition.
  */
 

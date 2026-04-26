@@ -2,7 +2,7 @@
  * Default factory for a fresh `GameContext`.
  *
  * Mirrors the per-duck `defaultState` values currently scattered across
- * `src/ducks/*`. Used as the initial `context` of `appMachine` and as
+ * `src/ducks/*`. Used as the initial `context` of `gameMachine` and as
  * the reset target on quit-to-menu.
  *
  * Some defaults call into pure functions that read `RandomService` (team

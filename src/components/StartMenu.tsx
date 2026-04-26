@@ -4,17 +4,17 @@ import Box from "./styled-system/Box";
 import ManagerForm from "./start-menu/ManagerForm";
 import * as styles from "./StartMenu.css";
 import title from "./start-menu/title.png";
-import { AppMachineContext } from "@/context/app-machine-context";
+import { GameMachineContext } from "@/context/game-machine-context";
 
 const StartMenu = () => {
-  const teams = AppMachineContext.useSelector((state) => state.context.teams);
-  const competitions = AppMachineContext.useSelector(
+  const teams = GameMachineContext.useSelector((state) => state.context.teams);
+  const competitions = GameMachineContext.useSelector(
     (state) => state.context.competitions
   );
 
-  const { send } = AppMachineContext.useActorRef();
+  const { send } = GameMachineContext.useActorRef();
 
-  const starting = AppMachineContext.useSelector((state) =>
+  const starting = GameMachineContext.useSelector((state) =>
     state.matches("starting")
   );
 

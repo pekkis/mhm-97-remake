@@ -1,8 +1,8 @@
 import { createActorContext } from "@xstate/react";
-import { appMachine } from "@/machines/app";
+import { gameMachine } from "@/machines/game";
 import { inspector } from "@/stores/inspector";
 
-export const AppMachineContext = createActorContext(appMachine, {
+export const GameMachineContext = createActorContext(gameMachine, {
   id: "mhm97",
   inspect: inspector.inspect
 });

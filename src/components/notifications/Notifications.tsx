@@ -1,10 +1,10 @@
 import * as styles from "./Notifications.css";
 import Notification from "./Notification";
-import { AppMachineContext } from "@/context/app-machine-context";
+import { GameMachineContext } from "@/context/game-machine-context";
 import { NotificationsContext } from "@/context/notifications-context";
 
 const Notifications = () => {
-  const appActor = AppMachineContext.useActorRef();
+  const appActor = GameMachineContext.useActorRef();
   const notifications = NotificationsContext.useSelector(
     (s) => s.context.notifications
   );

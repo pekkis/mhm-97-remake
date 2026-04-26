@@ -1,14 +1,14 @@
 import strategies from "@/data/strategies";
 import Button from "./form/Button";
 import Box from "./styled-system/Box";
-import { AppMachineContext } from "@/context/app-machine-context";
+import { GameMachineContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
 
 const SelectStrategy = () => {
-  const manager = AppMachineContext.useSelector((state) =>
+  const manager = GameMachineContext.useSelector((state) =>
     activeManager(state.context)
   );
-  const actor = AppMachineContext.useActorRef();
+  const actor = GameMachineContext.useActorRef();
 
   return (
     <Box p={1}>

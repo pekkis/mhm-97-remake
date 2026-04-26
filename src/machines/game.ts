@@ -46,7 +46,7 @@ export type ManagerSubmission = {
   team: number;
 };
 
-export type AppMachineEvents =
+export type GameMachineEvents =
   | { type: "START_GAME" }
   | { type: "LOAD_GAME" }
   | { type: "QUIT" }
@@ -95,10 +95,10 @@ const buildManager = (sub: ManagerSubmission, ctx: GameContext) => {
   return { manager, teamId: sub.team };
 };
 
-export const appMachine = setup({
+export const gameMachine = setup({
   types: {
     context: {} as GameContext,
-    events: {} as AppMachineEvents
+    events: {} as GameMachineEvents
   },
 
   actors: {

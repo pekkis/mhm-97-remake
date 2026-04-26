@@ -1,7 +1,7 @@
 import StartMenu from "./StartMenu";
 import Game from "./Game";
 import { ErrorBoundary } from "react-error-boundary";
-import { AppMachineContext } from "@/context/app-machine-context";
+import { GameMachineContext } from "@/context/game-machine-context";
 import type { FC } from "react";
 
 const ErrorFallback = () => (
@@ -16,7 +16,7 @@ const ErrorFallback = () => (
 );
 
 const App: FC = () => {
-  const started = AppMachineContext.useSelector((state) => {
+  const started = GameMachineContext.useSelector((state) => {
     return state.matches("in_game");
   });
 

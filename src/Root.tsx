@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import "./styles/global.css";
 import type { Store } from "redux";
 import type { FC } from "react";
-import { AppMachineContext } from "@/context/app-machine-context";
+import { GameMachineContext } from "@/context/game-machine-context";
 
 type Props = {
   store: Store;
@@ -13,13 +13,13 @@ type Props = {
 const Root: FC<Props> = ({ store }) => {
   return (
     <>
-      <AppMachineContext.Provider>
+      <GameMachineContext.Provider>
         <ReduxProvider store={store}>
           <BrowserRouter>
             <App />
           </BrowserRouter>
         </ReduxProvider>
-      </AppMachineContext.Provider>
+      </GameMachineContext.Provider>
     </>
   );
 };

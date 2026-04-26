@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createActor, waitFor } from "xstate";
-import { appMachine, type ManagerSubmission } from "@/machines/app";
+import { gameMachine, type ManagerSubmission } from "@/machines/game";
 import { createDefaultGameContext } from "@/state";
 import { loadGame } from "@/services/persistence";
 
@@ -17,7 +17,7 @@ const submission: ManagerSubmission = {
 };
 
 const createTestActor = () => {
-  const actor = createActor(appMachine);
+  const actor = createActor(gameMachine);
   actor.start();
   return actor;
 };
@@ -26,7 +26,7 @@ beforeEach(() => {
   vi.mocked(loadGame).mockReset();
 });
 
-describe("appMachine", () => {
+describe("gameMachine", () => {
   describe("initial state", () => {
     it("starts in main_menu", () => {
       expect(createTestActor().getSnapshot().value).toBe("main_menu");

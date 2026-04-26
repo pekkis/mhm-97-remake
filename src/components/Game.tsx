@@ -24,7 +24,7 @@ import Invitations from "./Invitations";
 import Gala from "./Gala";
 import { useSelector } from "@xstate/store-react";
 import { uiStore } from "@/stores/ui";
-import { AppMachineContext } from "@/context/app-machine-context";
+import { GameMachineContext } from "@/context/game-machine-context";
 import { NotificationsContext } from "@/context/notifications-context";
 import type { ActorRefFrom } from "xstate";
 import type { notificationsMachine } from "@/machines/notifications";
@@ -35,7 +35,7 @@ type PhaseProps = {
 };
 
 const useUiPhase = (): string | undefined => {
-  return AppMachineContext.useSelector((state) => {
+  return GameMachineContext.useSelector((state) => {
     if (state.matches({ in_game: { executing_phases: "action" } })) {
       return "action";
     }
@@ -156,7 +156,7 @@ const Game: FC = () => {
   console.log("MENU", menu);
 
   const phase = useUiPhase();
-  const appActor = AppMachineContext.useActorRef();
+  const appActor = GameMachineContext.useActorRef();
   const notificationsActor = appActor.system.get(
     "notifications"
   ) as ActorRefFrom<typeof notificationsMachine>;

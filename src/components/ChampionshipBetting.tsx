@@ -3,18 +3,18 @@ import HeaderedPage from "./ui/HeaderedPage";
 import Button from "./form/Button";
 import BettingForm from "./championship-betting/BettingForm";
 import Box from "./styled-system/Box";
-import { AppMachineContext } from "@/context/app-machine-context";
+import { GameMachineContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
 
 const ChampionshipBetting = () => {
-  const manager = AppMachineContext.useSelector((state) =>
+  const manager = GameMachineContext.useSelector((state) =>
     activeManager(state.context)
   );
-  const teams = AppMachineContext.useSelector((state) => state.context.teams);
-  const competitions = AppMachineContext.useSelector(
+  const teams = GameMachineContext.useSelector((state) => state.context.teams);
+  const competitions = GameMachineContext.useSelector(
     (state) => state.context.competitions
   );
-  const actor = AppMachineContext.useActorRef();
+  const actor = GameMachineContext.useActorRef();
 
   return (
     <HeaderedPage>
