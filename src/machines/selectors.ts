@@ -27,6 +27,8 @@ import { entries, keys, pick, values } from "remeda";
 import arenas from "@/data/arenas";
 import difficultyLevels from "@/data/difficulty-levels";
 import calendar from "@/data/calendar";
+import type { SnapshotFrom } from "xstate";
+import type { gameMachine } from "./game";
 import type {
   GameContext,
   Manager,
@@ -43,10 +45,19 @@ import type {
 } from "@/types/competitions";
 
 // ---------------------------------------------------------------------------
-// Helper type — a selector is just a function from context to value
+// Helper types
 // ---------------------------------------------------------------------------
 
+/** Pure selector over `GameContext`. Most selectors are this shape. */
 export type ContextSelector<T> = (ctx: GameContext) => T;
+
+/**
+ * Selector over the full game-machine snapshot. Use when the derived
+ * value depends on machine state (`snap.matches(...)`), not just
+ * context. Components consume these directly via
+ * `GameMachineContext.useSelector(snapshotSelector)`.
+ */
+export type SnapshotSelector<T> = (snap: SnapshotFrom<typeof gameMachine>) => T;
 
 // ---------------------------------------------------------------------------
 // Competitions
@@ -62,12 +73,29 @@ export const competition =
     ctx.competitions[id];
 
 // ---------------------------------------------------------------------------
-// Advance enabled (derived from phase + events)
+// Advance enabled (derived from machine state + events)
 // ---------------------------------------------------------------------------
 
-export const advanceEnabled: ContextSelector<boolean> = (ctx) =>
-  ctx.turn.phase !== "event" ||
+/**
+ * True iff every stored event has been resolved by the player (or
+ * auto-resolved on entry to the event phase). Shared between the
+ * machine guard on `event → news_check` and the snapshot selector
+ * `advanceEnabled` consumed by the UI.
+ */
+export const allEventsResolved: ContextSelector<boolean> = (ctx) =>
   !values(ctx.event.events).some((e) => !e.resolved);
+
+/**
+ * Advance is enabled unless we're parked on the event phase with at
+ * least one unresolved event. This is a `SnapshotSelector` because
+ * the gating predicate needs to know which machine state we're in,
+ * not just the context. Read with
+ * `GameMachineContext.useSelector(advanceEnabled)`, NOT
+ * `useGameContext(advanceEnabled)`.
+ */
+export const advanceEnabled: SnapshotSelector<boolean> = (snap) =>
+  !snap.matches({ in_game: { executing_phases: "event" } }) ||
+  allEventsResolved(snap.context);
 
 // ---------------------------------------------------------------------------
 // Teams

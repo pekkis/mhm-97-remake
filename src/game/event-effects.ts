@@ -3,7 +3,22 @@ import type { Draft } from "immer";
 import type { GameContext } from "@/state";
 import type { GameFlags, TeamEffect } from "@/state/game";
 import type { CompetitionId } from "@/types/competitions";
+import type { BaseEventCreationFields } from "@/types/base";
 import { computeStats } from "@/services/competition-type";
+
+/**
+ * Spawn-event injection point. The interpreter doesn't know about the
+ * event registry (cycle: registry imports `EventEffect`). The machine
+ * layer provides this function when calling `applyEffects` so the
+ * `spawnEvent` effect can resolve to a real `event.create(ctx, seed)`
+ * + push into `draft.event.events`. Pranks rely on this to fire
+ * follow-up events (`protest`, `bazookaStrike`, …).
+ */
+export type SpawnEventFn = (
+  draft: Draft<GameContext>,
+  eventId: string,
+  seed: BaseEventCreationFields
+) => void;
 
 /**
  * Declarative effect descriptors.
@@ -77,7 +92,18 @@ export type EventEffect =
   | { type: "incrementServiceBasePrice"; service: string; amount: number }
 
   // ── News (events sometimes push announcements during process) ──
-  | { type: "addAnnouncement"; manager: string; text: string };
+  | { type: "addAnnouncement"; manager: string; text: string }
+
+  // ── Spawn another event ──
+  // Resolved by the machine-layer `SpawnEventFn` (see top of file). The
+  // interpreter delegates because the event registry can't be imported
+  // here without forming a cycle. Used by pranks (`protest`,
+  // `bazookaStrike`, …) and any future event that wants to chain.
+  | {
+      type: "spawnEvent";
+      eventId: string;
+      seed: BaseEventCreationFields;
+    };
 
 /**
  * Apply a single effect to a game-context draft. Pure mutation —
@@ -85,11 +111,13 @@ export type EventEffect =
  * event's `process` function and be encoded into the descriptor).
  *
  * Use from inside an `assign(({context}) => produce(context, draft => …))`
- * pass: walk the effect list, call `applyEffect(draft, effect)` for each.
+ * pass: walk the effect list, call `applyEffect(draft, effect, spawn)`
+ * for each.
  */
 export function applyEffect(
   draft: Draft<GameContext>,
-  effect: EventEffect
+  effect: EventEffect,
+  spawn: SpawnEventFn
 ): void {
   switch (effect.type) {
     // ── Manager balance ──
@@ -304,6 +332,12 @@ export function applyEffect(
       draft.news.announcements[effect.manager].push(effect.text);
       return;
     }
+
+    // ── Spawn another event ──
+    case "spawnEvent": {
+      spawn(draft, effect.eventId, effect.seed);
+      return;
+    }
   }
 }
 
@@ -312,9 +346,10 @@ export function applyEffect(
  */
 export function applyEffects(
   draft: Draft<GameContext>,
-  effects: EventEffect[]
+  effects: EventEffect[],
+  spawn: SpawnEventFn
 ): void {
   for (const effect of effects) {
-    applyEffect(draft, effect);
+    applyEffect(draft, effect, spawn);
   }
 }

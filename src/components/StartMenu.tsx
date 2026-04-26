@@ -53,6 +53,7 @@ const StartMenu = () => {
               <h3>Remaken suunnittelu & ohjelmointi</h3>
               <ul>
                 <li>Mikko Forsström</li>
+                <li>Jean-Claude van Copilot</li>
               </ul>
               <h3>Grafiikka</h3>
               <ul>

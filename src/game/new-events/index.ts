@@ -16,6 +16,9 @@ import jobofferPHL from "./joboffer-phl";
 import kasino from "./kasino";
 import bloodbath from "./bloodbath";
 import russianAgent from "./russian-agent";
+import bazookaStrike from "./bazooka-strike";
+import sellNarcotics from "./sell-narcotics";
+import protest from "./protest";
 
 // Pilot ports land here as we add them.
 //
@@ -31,7 +34,10 @@ const newEvents = {
   jobofferPHL,
   kasino,
   bloodbath,
-  russianAgent
+  russianAgent,
+  bazookaStrike,
+  sellNarcotics,
+  protest
 } as const;
 
 export default newEvents;

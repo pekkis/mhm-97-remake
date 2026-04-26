@@ -422,6 +422,113 @@ When a single action grows beyond ~50 lines, extract — but follow these rules:
 - **Always pass fresh refs into machine context.** `[...managerDefs]`, `structuredClone(competitionData)`, etc. — never the imported singleton. See [src/state/defaults.ts](src/state/defaults.ts).
 - Symptom of getting this wrong: long arrays in DevTools that look truncated past index ~9, or fields displaying as `"[...]"` after the first occurrence.
 
+### Declarative event + prank patterns (locked, established 2026-04-26)
+
+The 96-event saga pile and the prank phase landed declaratively in one push. These rules apply to every future event/prank port.
+
+#### Event shape: `DeclarativeEvent<TData, TCreationData>`
+
+```ts
+type DeclarativeEvent<TData, TCreationData = BaseEventCreationFields> = {
+  type: "manager" | …;
+  create: (ctx: GameContext, seed: TCreationData) => Omit<TData, "id">;
+  options?: (ctx: GameContext, data: TData) => Record<string, string>;
+  resolve?: (ctx: GameContext, data: TData, value?: string) => TData;
+  render: (data: TData) => string[];
+  process?: (ctx: GameContext, data: TData) => EventEffect[];
+};
+```
+
+Second generic types the **creation seed**. Prank-spawned events take `PrankInstance`; system events take `{ manager: string }` (the `BaseEventCreationFields` default).
+
+#### Three event archetypes
+
+| Archetype       | `resolved` at create | `options` | `resolve` | Use when                                                                                  |
+| --------------- | -------------------- | --------- | --------- | ----------------------------------------------------------------------------------------- |
+| Pre-resolved    | `true` (literal)     | —         | —         | Outcome is fully determined by `(ctx, seed)` at create time (e.g. `bazookaStrike`)        |
+| Auto-resolve    | `false`              | —         | required  | Random roll determines outcome; no UI input (e.g. `sellNarcotics`, `protest`, `kasino`)   |
+| Interactive     | `false`              | required  | required  | Player chooses from `options()`, `resolve(ctx, data, value)` snapshots the choice         |
+
+#### Walker discipline (event-phase `entry`)
+
+The walker iterates `event.events` looking for `!processed` entries:
+
+- **`!resolved && def.options`** → leave alone (interactive, waits for `RESOLVE_EVENT`)
+- **`!resolved && !def.options`** → call `resolve()`, then `process()` ⇒ apply effects ⇒ mark `processed`
+- **`resolved && !processed`** → skip resolve, call `process()` ⇒ apply effects ⇒ mark `processed`
+
+**Drafting note:** the saga handled all three archetypes correctly via a three-step pipeline (`autoResolve → wait-for-player → processEvents`). An early draft of the machine walker mimicked only step 1 (`!resolved && autoResolve`) and never picked up pre-resolved events — they sat visible but inert. Fixed by keying on `!processed` and folding all three steps into one immer pass. The saga was never wrong about this; the interim machine code was.
+
+#### Random discipline (mandatory)
+
+- **Every random roll lives in `resolve`.** Result snapshotted onto the payload (`skillLost`, `caught`, `success`, …).
+- **`process` is deterministic** over `(ctx, data)`.
+- **Why:** `process` runs again after restoring a save. If randomness leaks into `process`, the same saved game produces different outcomes after load.
+
+Reference implementations: [src/game/new-events/sell-narcotics.ts](src/game/new-events/sell-narcotics.ts), [src/game/new-events/protest.ts](src/game/new-events/protest.ts).
+
+#### Effect interpreter with injected `SpawnEventFn`
+
+```ts
+type SpawnEventFn = (
+  draft: Draft<GameContext>,
+  eventId: string,
+  seed: BaseEventCreationFields
+) => void;
+
+applyEffects(
+  draft: Draft<GameContext>,
+  effects: EventEffect[],
+  spawn: SpawnEventFn
+): void
+```
+
+The `spawnEvent` variant of `EventEffect` lets pranks (and future events) chain into the event registry. The machine layer holds the registry and provides the closure. **Why injected:** event files import from `event-effects.ts`, so `event-effects.ts` cannot import the registry without a cycle.
+
+#### Pranks are declarative
+
+```ts
+type DeclarativePrank = {
+  name: string;
+  price: (competition: string) => number;
+  orderMessage: (prank: PrankInstance) => string;
+  execute: (ctx: GameContext, prank: PrankInstance) => EventEffect[];
+};
+```
+
+Most pranks return `[{ type: "spawnEvent", eventId, seed: prank }]` — the prank-phase action runs, queue clears, and the spawned event lands in the upcoming event phase. `fixedMatch` is the outlier — it returns a direct `addTeamEffect`. **No saga, no generators.**
+
+The prank-phase machine action ([src/machines/game.ts](src/machines/game.ts) `executePranks`) is one immer pass:
+
+```ts
+for (const prank of draft.prank.pranks) {
+  const def = prankTypes[prank.type];
+  if (!def) continue;
+  applyEffects(draft, def.execute(draft, prank), spawnEvent);
+}
+draft.prank.pranks = [];
+```
+
+#### `SnapshotSelector<T>` for state-aware predicates
+
+```ts
+type SnapshotSelector<T> = (snap: SnapshotFrom<typeof gameMachine>) => T;
+```
+
+When a predicate depends on the **state node** in addition to context (e.g. "advance is enabled unless we're in the event phase with unresolved events"), use `SnapshotSelector` instead of `ContextSelector`. The canonical example:
+
+```ts
+export const advanceEnabled: SnapshotSelector<boolean> = (snap) =>
+  !snap.matches({ in_game: { executing_phases: "event" } }) ||
+  allEventsResolved(snap.context);
+```
+
+Components consume via `GameMachineContext.useSelector(advanceEnabled)`. Use `ContextSelector<T>` for everything else (the vast majority of selectors stay context-only).
+
+#### Calendar flags `createRandomEvent` / `pranks` are redundant
+
+The phase guard (`has_phase("event_creation")`, `has_phase("prank")`) handles gating. The flags were a saga-era workaround. Removed from playoff round entries during this work — leave the rest alone unless the pattern recurs.
+
 ### Roadmap
 
 PR numbers below are sequential markers, not commitments. Each step ends with `pnpm typecheck && pnpm test --run && pnpm build` green.
@@ -500,13 +607,33 @@ The first cut used a function-form action that did `saveSnapshot(...)` then `gam
 
 #### PR P8: `event` system — command interpreter + 96 event files
 
-- Build the `EventCommand[]` interpreter as an action: `applyCommands(ctx, commands)`.
-- Convert event files in clusters (smallest first), as planned in the original event redesign section above.
-- Once all events are converted, delete `src/sagas/phase/event.ts`, `src/sagas/phase/event-creation.ts`, `src/sagas/event.ts`.
+**🟡 IN PROGRESS as of 2026-04-26.** Foundation complete + 9 events ported (out of ~96).
+
+- ✅ Event registry at [src/game/new-events/](src/game/new-events/) — `index.ts` export, currently 9 events: `pirka`, `jaralahti`, `jobofferPHL`, `kasino`, `bloodbath`, `russianAgent`, `bazookaStrike`, `sellNarcotics`, `protest`.
+- ✅ Effect interpreter at [src/game/event-effects.ts](src/game/event-effects.ts) with injected `SpawnEventFn`.
+- ✅ Three machine states fully wired:
+  - `event_creation` (entry-driven, calls `spawnEvent` with `{ manager }` seeds)
+  - `event` (entry walks unresolved events, `RESOLVE_EVENT` for interactive, `ADVANCE` guarded by `allEventsResolved`)
+  - `prank` (entry runs `executePranks`, auto-advances)
+- ✅ All conventions locked (see "Declarative event + prank patterns" above).
+- ✅ Pre-resolved event walker bug fixed (`!processed` not `!resolved`).
+- 🔄 **Remaining: ~87 events to port** from [src/game/events/](src/game/events/) (saga generators) to [src/game/new-events/](src/game/new-events/) (declarative). Convert in clusters by archetype: easiest are auto-resolve manager events with simple `EventEffect` outputs.
+- ❌ Once all events are ported, delete `src/sagas/phase/event.ts`, `src/sagas/phase/event-creation.ts`, `src/sagas/phase/prank.ts`, `src/sagas/event.ts`, `src/game/events.ts`, `src/game/events/`. The legacy `src/game/events/` directory remains as REFERENCE-ONLY pending the bulk port.
+
+##### Per-event porting checklist
+
+For each saga event being ported:
+
+1. Identify archetype (pre-resolved / auto-resolve / interactive) by looking at the saga `create`/`resolve`/`options`/`process`.
+2. Move all random rolls into `resolve` (or `create` for pre-resolved). Snapshot results to the payload.
+3. Convert `process` to return `EventEffect[]` instead of `yield put(...)`.
+4. Add to [src/game/new-events/index.ts](src/game/new-events/index.ts).
+5. Smoke-test in the GUI (use `DeveloperMenu.tsx` to spawn the event manually).
+6. Delete the corresponding file in [src/game/events/](src/game/events/).
 
 #### PR P9: Remaining phases
 
-- `prank` (small wait-for-user)
+- `prank` ✅ COMPLETE (landed alongside event system, see PR P8)
 - `gala` (wait-for-user)
 - `invitationsCreate` / `invitationsProcess` (auto-compute)
 - `startOfSeason` compound (`selectStrategy` → `championshipBetting`)

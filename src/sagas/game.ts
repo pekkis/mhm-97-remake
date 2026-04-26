@@ -26,7 +26,6 @@ import calculationsPhase from "./phase/calculations";
 import eventCreationPhase from "./phase/event-creation";
 import eventPhase from "./phase/event";
 import newsPhase from "./phase/news";
-import prankPhase from "./phase/prank";
 import gamedayPhase from "./phase/gameday";
 import invitationsCreatePhase from "./phase/invitations-create";
 import invitationsProcessPhase from "./phase/invitations-process";
@@ -113,10 +112,6 @@ export function* gameLoop() {
 
     if (phases.includes("action")) {
       yield* call(actionPhase);
-    }
-
-    if (phases.includes("prank")) {
-      yield* call(prankPhase);
     }
 
     if (phases.includes("gameday")) {

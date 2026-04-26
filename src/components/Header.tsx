@@ -2,10 +2,7 @@ import * as styles from "./Header.css";
 import Button from "./form/Button";
 import { FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import {
-  GameMachineContext,
-  useGameContext
-} from "@/context/game-machine-context";
+import { GameMachineContext } from "@/context/game-machine-context";
 import { uiStore } from "@/stores/ui";
 import { advanceEnabled as advanceEnabledSelector } from "@/machines/selectors";
 
@@ -20,7 +17,7 @@ const Header = ({
   menu = false,
   forward = "Eteenpäin!"
 }: HeaderProps) => {
-  const advanceEnabled = useGameContext(advanceEnabledSelector);
+  const advanceEnabled = GameMachineContext.useSelector(advanceEnabledSelector);
 
   const game = GameMachineContext.useActorRef();
 

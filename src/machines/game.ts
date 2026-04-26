@@ -10,7 +10,8 @@ import {
   canImproveArena,
   canOrderPrank,
   canBuyPlayer,
-  canSellPlayer
+  canSellPlayer,
+  allEventsResolved
 } from "@/machines/selectors";
 import difficultyLevels from "@/data/difficulty-levels";
 import teamData from "@/data/teams";
@@ -33,15 +34,36 @@ import { values, entries } from "remeda";
 import newEvents from "@/game/new-events";
 import eventsMap from "@/game/new-events/table";
 import type { DeclarativeEvent } from "@/types/event";
-import type { BaseEventFields } from "@/types/base";
+import type { BaseEventFields, BaseEventCreationFields } from "@/types/base";
+import { applyEffects, type SpawnEventFn } from "@/game/event-effects";
 
 // Heterogeneous registry lookup — `newEvents` is `as const` for per-event
 // payload typing at known keys; the interpreter looks events up by string
 // from `eventsMap`, so we widen here. See `new-events/index.ts` for why.
 const eventRegistry = newEvents as unknown as Record<
   string,
-  DeclarativeEvent<BaseEventFields, { manager: string }> | undefined
+  DeclarativeEvent<BaseEventFields, BaseEventCreationFields> | undefined
 >;
+
+/**
+ * Resolve a `spawnEvent` effect against the registry: build the event's
+ * payload via `def.create(ctx, seed)` and push it into the events map.
+ * Lives in the machine layer so `event-effects.ts` doesn't need to
+ * import the registry (which would form a cycle through every event
+ * file). Threaded through `applyEffects(...)`.
+ */
+const spawnEvent: SpawnEventFn = (draft, eventId, seed) => {
+  const def = eventRegistry[eventId];
+  if (!def) {
+    return;
+  }
+  const payload = def.create(draft as GameContext, seed);
+  if (!payload) {
+    return;
+  }
+  const id = crypto.randomUUID();
+  draft.event.events[id] = { ...payload, id };
+};
 
 // Parlay payout multipliers indexed by number of correct picks (0..6).
 // 1-1 mirror of `victories` in src/sagas/betting.ts.
@@ -117,6 +139,57 @@ function updateStreaks(
 }
 
 /**
+ * Resolve a single event, run its `process`, apply the resulting
+ * effects, and mark it processed. Used by both `executeAutoResolveEvents`
+ * (entry to the event phase) and `executeResolveEvent` (player action).
+ *
+ * Pure on `draft` — pulls the current event payload from the draft,
+ * walks it through the event's `resolve` (if any) and `process`, and
+ * writes the result + effects back into the draft.
+ *
+ * Pre-condition: `evtId` exists in `draft.event.events` and points at
+ * an event whose definition exists in `eventRegistry`.
+ */
+function resolveAndProcess(
+  draft: Draft<GameContext>,
+  evtId: string,
+  value: string
+): void {
+  const stored = draft.event.events[evtId];
+  if (!stored) {
+    return;
+  }
+  const def = eventRegistry[stored.eventId];
+  if (!def) {
+    return;
+  }
+
+  // Resolve only if the event isn't already resolved (some events
+  // are pre-resolved at creation time — `pirka`, `bazookaStrike`,
+  // anything where the data is fully determined up front). Cast
+  // around the registry widening: `def.resolve` is typed against a
+  // `BaseEventFields` payload; the stored event is `StoredEvent`
+  // (BaseEventFields + extras), which the actual per-event resolve
+  // knows how to read.
+  if (!stored.resolved) {
+    const resolved = def.resolve
+      ? def.resolve(draft as GameContext, stored as never, value)
+      : { ...stored, resolved: true };
+    // Defensive: ensure the flag is set even if a buggy resolve forgets it.
+    draft.event.events[evtId] = { ...resolved, resolved: true, id: evtId };
+  }
+
+  // Process. Apply the resulting effect list against the draft so
+  // subsequent events in the same pass see the mutations.
+  const effects = def.process(
+    draft as GameContext,
+    draft.event.events[evtId] as never
+  );
+  applyEffects(draft, effects, spawnEvent);
+  draft.event.events[evtId].processed = true;
+}
+
+/**
  * Game machine.
  *
  * Spawned by `appMachine` once the player has either finished the new-game
@@ -188,7 +261,11 @@ export type GameMachineEvents =
       };
     }
   | { type: "SAVED" }
-  | { type: "DISMISS_NOTIFICATION"; id: string };
+  | { type: "DISMISS_NOTIFICATION"; id: string }
+  | {
+      type: "RESOLVE_EVENT";
+      payload: { id: string; value: string };
+    };
 
 export const gameMachine = setup({
   types: {
@@ -832,28 +909,105 @@ export const gameMachine = setup({
         for (const manager of values(draft.manager.managers)) {
           const eventNumber = random.cinteger(1, 335);
           const eventName = eventsMap[eventNumber];
+
           if (!eventName) {
             continue;
           }
 
-          const hardCodedEventName = "kasino";
+          // `spawnEvent` no-ops if the event isn't registered yet
+          // (most of `eventsMap` until porting completes).
+          spawnEvent(draft, eventName, { manager: manager.id });
+        }
+      })
+    ),
 
-          const eventDef = eventRegistry[hardCodedEventName];
-
-          console.log("HAHA HEHE", eventDef);
-
-          if (!eventDef) {
-            continue;
-          } // not yet ported — silent no-op
-
-          const payload = eventDef.create(context, { manager: manager.id });
-          if (!payload) {
+    /**
+     * Event phase entry — walk every unprocessed event and handle it:
+     *   - already-resolved events (e.g. `pirka`, prank-spawned
+     *     `bazookaStrike`) → process only.
+     *   - unresolved + no `options()` → resolve auto + process.
+     *   - unresolved + has `options()` → skip; interactive, wait for
+     *     `RESOLVE_EVENT`.
+     *
+     * Mirrors the saga's two-pass approach (auto-resolve loop in
+     * `phase/event.ts` + `processEvents()` in `event.ts`,
+     * REFERENCE-ONLY post-pivot) collapsed into a single walk.
+     * "Auto-resolve?" is now a property of the event definition (no
+     * `options`) rather than an `autoResolve` flag baked into each
+     * payload by the create function.
+     */
+    executeAutoResolveEvents: assign(({ context }) =>
+      produce(context, (draft) => {
+        for (const [id, evt] of entries(draft.event.events)) {
+          if (evt.processed) {
             continue;
           }
-
-          const id = crypto.randomUUID();
-          draft.event.events[id] = { ...payload, id };
+          const def = eventRegistry[evt.eventId];
+          if (!def) {
+            continue;
+          }
+          // Interactive event still waiting on the player.
+          if (!evt.resolved && def.options) {
+            continue;
+          }
+          resolveAndProcess(draft, id, "auto");
         }
+      })
+    ),
+
+    /**
+     * Player resolved one interactive event. Look it up, run its
+     * `resolve` (which may roll random — that's where rolls live in
+     * the new system), apply effects from `process`, mark processed.
+     *
+     * 1-1 port of the `requestResolveEvent` → `resolveEvent` flow in
+     * `src/sagas/event.ts` (REFERENCE-ONLY post-pivot).
+     */
+    executeResolveEvent: assign(
+      ({ context }, params: { id: string; value: string }) =>
+        produce(context, (draft) => {
+          resolveAndProcess(draft, params.id, params.value);
+        })
+    ),
+
+    /**
+     * Wipe the event queue. Runs on exit from the event phase so the
+     * resolved/processed cards stay visible until the player advances
+     * out of the phase. Saga equivalent: `clearEvents()` inside
+     * `nextTurn()` at end of round.
+     */
+    executeClearEvents: assign(({ context }) =>
+      produce(context, (draft) => {
+        draft.event.events = {};
+      })
+    ),
+
+    /**
+     * Prank phase entry — execute every queued prank, applying its
+     * effect list (mostly `spawnEvent` → an event lands in
+     * `event.events` for the upcoming event phase; `fixedMatch` →
+     * direct team-effect debuff). Then clear the queue.
+     *
+     * 1-1 port of `src/sagas/phase/prank.ts` (REFERENCE-ONLY
+     * post-pivot). The `prankExecutor`/`dismissPrank(prankId)` two-step
+     * is collapsed into one immer pass.
+     *
+     * No UI — runs on `entry` and the state auto-advances.
+     */
+    executePranks: assign(({ context }) =>
+      produce(context, (draft) => {
+        for (const prank of draft.prank.pranks) {
+          const def = prankTypes[prank.type];
+          if (!def) {
+            continue;
+          }
+          applyEffects(
+            draft,
+            def.execute(draft as GameContext, prank),
+            spawnEvent
+          );
+        }
+        draft.prank.pranks = [];
       })
     ),
 
@@ -1076,12 +1230,12 @@ export const gameMachine = setup({
                 { target: "gameday_check" }
               ]
             },
-            // TODO: port the `prankPhase` saga (src/sagas/phase/prank.ts).
-            // Each queued prank's `execute()` either enqueues an event
-            // (`events[name].create(prank)` → `state.event.events.push(...)`)
-            // or applies a team effect (`fixedMatch` → opponentEffects).
-            // Auto-advance for now so the round-loop keeps moving.
+            // Prank phase — execute every queued prank in one pass.
+            // Most pranks `spawnEvent` so their fallout lands in the
+            // upcoming event phase; `fixedMatch` directly debuffs the
+            // victim. Auto-advances; no UI.
             prank: {
+              entry: "executePranks",
               always: "gameday_check"
             },
 
@@ -1173,7 +1327,22 @@ export const gameMachine = setup({
               ]
             },
             event: {
-              on: { ADVANCE: "news_check" }
+              entry: "executeAutoResolveEvents",
+              exit: "executeClearEvents",
+              on: {
+                RESOLVE_EVENT: {
+                  actions: {
+                    type: "executeResolveEvent",
+                    params: ({ event }) => event.payload
+                  }
+                },
+                ADVANCE: {
+                  // Defense in depth — UI also disables the advance
+                  // button via the `advanceEnabled` snapshot selector.
+                  guard: ({ context }) => allEventsResolved(context),
+                  target: "news_check"
+                }
+              }
             },
 
             news_check: {

@@ -1,6 +1,5 @@
-import { call } from "typed-redux-saga";
-import { addEffect } from "@/sagas/team";
-import events from "@/game/events";
+import type { GameContext } from "@/state";
+import type { EventEffect } from "@/game/event-effects";
 
 export type PrankInstance = {
   manager: string;
@@ -8,14 +7,23 @@ export type PrankInstance = {
   type: string;
 };
 
-type Prank = {
+/**
+ * Declarative prank definition. `execute(ctx, prank)` returns the
+ * effect list to apply when the prank phase resolves. Most pranks
+ * spawn a follow-up event (which then runs in the regular event
+ * phase); `fixedMatch` directly applies a team effect.
+ *
+ * Saga-free since the dual-write pivot. Mirrors the shape of
+ * `DeclarativeEvent.process`.
+ */
+export type DeclarativePrank = {
   name: string;
   price: (competition: string) => number;
   orderMessage: (prank: PrankInstance) => string;
-  execute: (prank: PrankInstance) => Generator;
+  execute: (ctx: GameContext, prank: PrankInstance) => EventEffect[];
 };
 
-const pranks: Record<string, Prank> = {
+const pranks: Record<string, DeclarativePrank> = {
   protest: {
     name: "Protesti",
     price: () => 0,
@@ -23,10 +31,13 @@ const pranks: Record<string, Prank> = {
     orderMessage: () =>
       `Faksaat protestin jääkiekkoliiton toimistolle. Pian hakulaitteesi jo piippaakin iloisesti: kirjelmä on vastaanotettu, ja se luvataan käsitellä "pikaisesti"`,
 
-    execute: function* (prank) {
-      const protestEvent = events["protest"];
-      yield* call(protestEvent.create, prank);
-    }
+    execute: (_ctx, prank) => [
+      {
+        type: "spawnEvent",
+        eventId: "protest",
+        seed: { manager: prank.manager, victim: prank.victim }
+      }
+    ]
   },
   playerHooking: {
     name: "Huumausaineiden myynti pelaajille",
@@ -35,10 +46,13 @@ const pranks: Record<string, Prank> = {
     orderMessage: () =>
       `Pikainen soitto Pösilän miehelle, vanhalle ystävällesi ja Helsingin huumemiliisin päällikölle __Ari Jaarniolle__, ja homma hoituu! Jaarnio lupaa lähettää miehensä matkaan alta aikayksikön!`,
 
-    execute: function* (prank) {
-      const event = events["sellNarcotics"];
-      yield* call(event.create, prank);
-    }
+    execute: (_ctx, prank) => [
+      {
+        type: "spawnEvent",
+        eventId: "sellNarcotics",
+        seed: { manager: prank.manager, victim: prank.victim }
+      }
+    ]
   },
   fixedMatch: {
     name: "Vastustajan lahjonta",
@@ -52,9 +66,17 @@ const pranks: Record<string, Prank> = {
     orderMessage: () =>
       `Soitat hämäräperäiselle vedonvälittäjälle, ja kerrot mitä tahdot. Hän lupaa hoitaa "asian" hienovaraisesti.`,
 
-    execute: function* (prank) {
-      yield addEffect(prank.victim, ["strength"], -10000, 1);
-    }
+    execute: (_ctx, prank) => [
+      {
+        type: "addTeamEffect",
+        team: prank.victim,
+        effect: {
+          parameter: ["strength"],
+          amount: -10000,
+          duration: 1
+        }
+      }
+    ]
   },
   bazookaStrike: {
     name: "Sinkoisku joukkueen matkabussiin",
@@ -63,10 +85,13 @@ const pranks: Record<string, Prank> = {
     orderMessage: () =>
       `Fanikauppanne vieressä onkin sopivasti moottoripyöräjengi MC Habadobon kerhotila. Ne pojat ovat tottuneet astetta rankempiin välienselvittyihin. Käyt toimittamassa tyypeille salkullisen kylmää käteistä, ja saat lupauksen pikaisesta toimituksesta.`,
 
-    execute: function* (prank) {
-      const event = events["bazookaStrike"];
-      yield* call(event.create, prank);
-    }
+    execute: (_ctx, prank) => [
+      {
+        type: "spawnEvent",
+        eventId: "bazookaStrike",
+        seed: { manager: prank.manager, victim: prank.victim }
+      }
+    ]
   }
 };
 

@@ -3,13 +3,14 @@ import ManagerInfo from "./ManagerInfo";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./styled-system/Box";
-import { useAppDispatch } from "@/config/redux";
-import { useGameContext } from "@/context/game-machine-context";
-import { requestResolveEvent } from "@/ducks/event";
+import {
+  GameMachineContext,
+  useGameContext
+} from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
 
 const Events = () => {
-  const dispatch = useAppDispatch();
+  const game = GameMachineContext.useActorRef();
   const manager = useGameContext(activeManager);
   const events = useGameContext((ctx) => ctx.event.events);
 
@@ -24,7 +25,10 @@ const Events = () => {
           manager={manager}
           events={events}
           onAnswer={(e, key) =>
-            dispatch(requestResolveEvent({ event: e, value: key }))
+            game.send({
+              type: "RESOLVE_EVENT",
+              payload: { id: e.id, value: key }
+            })
           }
         />
       </Box>

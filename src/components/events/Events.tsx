@@ -1,5 +1,5 @@
 import Markdown from "react-markdown";
-import eventList from "@/game/events";
+import newEvents from "@/game/new-events";
 import { entries, values } from "remeda";
 
 type EventsListProps = {
@@ -7,6 +7,13 @@ type EventsListProps = {
   manager: { id: string };
   onAnswer: (event: any, key: string) => void;
 };
+
+// Same `as const` registry → string-keyed widening shenanigans as in
+// the machine. See `src/game/new-events/index.ts` for the whole story.
+const eventRegistry = newEvents as unknown as Record<
+  string,
+  (typeof newEvents)[keyof typeof newEvents] | undefined
+>;
 
 const Events = ({ events, manager, onAnswer }: EventsListProps) => {
   const managersEvents = values(events).filter((e) => e.manager === manager.id);
@@ -16,7 +23,19 @@ const Events = ({ events, manager, onAnswer }: EventsListProps) => {
       <p>{managersEvents.length} tapahtumaa...</p>
 
       {managersEvents.map((e) => {
-        const event = eventList[e.eventId];
+        const event = eventRegistry[e.eventId];
+        if (!event) {
+          // Event spawned but not yet ported to new-events/.
+          // Should not happen in practice — the machine refuses to
+          // create events whose definitions aren't in the registry.
+          return (
+            <div key={e.id}>
+              <p>
+                <em>(Tuntematon tapahtuma: {e.eventId})</em>
+              </p>
+            </div>
+          );
+        }
 
         return (
           <div key={e.id}>
@@ -26,25 +45,23 @@ const Events = ({ events, manager, onAnswer }: EventsListProps) => {
                 .filter((t) => t)
                 .join("\n\n")}
             </Markdown>
-            {!e.resolved && (
+            {!e.resolved && event.options && (
               <ul>
-                {entries(event.options(e) as Record<string, string>).map(
-                  ([key, option]) => {
-                    return (
-                      <li key={key}>
-                        <a
-                          href="#"
-                          onClick={(evt) => {
-                            evt.preventDefault();
-                            onAnswer(e, key);
-                          }}
-                        >
-                          {option}
-                        </a>
-                      </li>
-                    );
-                  }
-                )}
+                {entries(event.options(e)).map(([key, option]) => {
+                  return (
+                    <li key={key}>
+                      <a
+                        href="#"
+                        onClick={(evt) => {
+                          evt.preventDefault();
+                          onAnswer(e, key);
+                        }}
+                      >
+                        {option}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
