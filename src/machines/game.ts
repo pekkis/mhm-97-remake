@@ -17,7 +17,7 @@ import calendar from "@/data/calendar";
 import competitionData from "@/data/competitions";
 import { computeStats } from "@/services/competition-type";
 import competitionTypes from "@/services/competition-type";
-import { simulate, gameFacts } from "@/services/game";
+import { simulate, gameFacts, resultFacts } from "@/services/game";
 import { amount as formatAmount } from "@/services/format";
 import strategies from "@/data/strategies";
 import prankTypes from "@/game/pranks";
@@ -28,6 +28,10 @@ import { notificationsMachine } from "@/machines/notifications";
 import type { NotificationData } from "@/machines/notification";
 import type { CompetitionId } from "@/types/competitions";
 import { values, entries } from "remeda";
+
+// Parlay payout multipliers indexed by number of correct picks (0..6).
+// 1-1 mirror of `victories` in src/sagas/betting.ts.
+const victories = [false, false, false, 1, 2, 5, 10] as const;
 
 /**
  * Game machine.
@@ -586,7 +590,54 @@ export const gameMachine = setup({
               }
             }
 
-            // 4. Advance the group's round counter.
+            // 4. Parlay payouts — PHL phase 0 group 0 only. 1-1 port of
+            //    `bettingResults()` in src/sagas/betting.ts.
+            //    Bets are NOT cleared (saga doesn't either — stays as-is
+            //    until end-of-season teardown).
+            if (competitionId === "phl" && comp.phase === 0 && groupIdx === 0) {
+              const correctCoupon = pairings.map((p) => {
+                const f = resultFacts(p.result!, "home");
+                if (f.isWin) {
+                  return "1";
+                }
+                if (f.isDraw) {
+                  return "x";
+                }
+                return "2";
+              });
+
+              for (const bet of draft.betting.bets) {
+                const correct = bet.coupon.filter(
+                  (c, i) => c === correctCoupon[i]
+                ).length;
+                const multiplier = victories[correct];
+                const m = draft.manager.managers[bet.manager];
+                if (!draft.news.announcements[bet.manager]) {
+                  draft.news.announcements[bet.manager] = [];
+                }
+                if (multiplier) {
+                  const win = Math.round(multiplier * bet.amount);
+                  if (m) {
+                    m.balance += win;
+                  }
+                  draft.news.announcements[bet.manager].push(
+                    `Voitit kavioveikkauksessa __${formatAmount(
+                      win
+                    )}__ pekkaa. Rivissäsi oli __${correct}__ oikein. Panoksesi oli __${formatAmount(
+                      bet.amount
+                    )}__ pekkaa.`
+                  );
+                } else {
+                  draft.news.announcements[bet.manager].push(
+                    `Et voittanut kavioveikkauksessa. Rivissäsi oli __${correct}__ oikein. Panoksesi oli __${formatAmount(
+                      bet.amount
+                    )}__ pekkaa.`
+                  );
+                }
+              }
+            }
+
+            // 5. Advance the group's round counter.
             group.round += 1;
           }
         }
@@ -627,6 +678,12 @@ export const gameMachine = setup({
       for (const id of gamedays) {
         const comp = context.competitions[id];
         const phase = comp.phases[comp.phase];
+        // Only tournaments play multiple rounds in a single gameday phase.
+        // Round-robin (PHL/division/EHL) plays one schedule-round per
+        // calendar gameday, no matter how many rounds the schedule has.
+        if (phase.type !== "tournament") {
+          continue;
+        }
         for (const group of phase.groups) {
           if (group.round < group.schedule.length) {
             return true;
