@@ -10,14 +10,28 @@
  * Add new ports to this object as they're written.
  */
 
-import type { DeclarativeEvent } from "@/types/event";
-import type { BaseEventCreationFields, BaseEventFields } from "@/types/base";
+import pirka from "./pirka";
+import jaralahti from "./jaralahti";
+import jobofferPHL from "./joboffer-phl";
+import kasino from "./kasino";
+import bloodbath from "./bloodbath";
+import russianAgent from "./russian-agent";
 
 // Pilot ports land here as we add them.
+//
+// Intentionally typed via `as const` (no `satisfies Record<…, DeclarativeEvent<…>>`):
+// `DeclarativeEvent` is contravariant in `TData` because of `render(data: TData)`,
+// so a heterogeneous registry can't be widened to a single base type without
+// losing per-event payload typing at lookup sites. Mirrors the legacy
+// `src/game/events.ts` pattern.
 
-const newEvents = {} as const satisfies Record<
-  string,
-  DeclarativeEvent<BaseEventFields, BaseEventCreationFields>
->;
+const newEvents = {
+  pirka,
+  jaralahti,
+  jobofferPHL,
+  kasino,
+  bloodbath,
+  russianAgent
+} as const;
 
 export default newEvents;
