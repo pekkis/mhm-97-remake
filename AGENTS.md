@@ -27,7 +27,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - Styling stack: **Vanilla Extract** (zero-runtime CSS-in-TS) + **sprinkles** for utility props
 - Forms: **react-hook-form** + **zod** + `@hookform/resolvers`
 - Icons: **react-icons** (FA solid subset)
-- Persistence: localStorage with `JSON.stringify`/`JSON.parse` via `src/services/persistence.ts`
+- Persistence: **slot-based snapshot persistence** via `src/services/persistence.ts` — `saveSnapshot(slot, snap)` / `loadSnapshot(slot)` / `hasSnapshot(slot)`, storage key `mhm97:slot:N`. Persists the full XState snapshot (`gameRef.getPersistedSnapshot()`), not just `GameContext`, so invoked children + state nodes survive load. Only slot 1 is wired up for now (slot picker UI lands later — MHM 2000 had 6 slots).
 - Randomness: **`RandomService`** type in `src/services/random.ts` with `createRandom(seed)` factory for testable DI; app-wide singleton as default export; supports deterministic seeding via `VITE_RANDOM_SEED` env var
 - Build extras: React Compiler via `@rolldown/plugin-babel` + `babel-plugin-react-compiler`
 - Entry point: `src/client.tsx`
@@ -42,7 +42,7 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 - Tournament eligibility: `src/sagas/tournament-eligibility.ts`
 - Competition saga registry: `src/sagas/competition-registry.ts`
 - `src/data/` contains **only pure data** — zero `typed-redux-saga` imports
-- **Regression tests: 218 vitest tests across 17 test files** (down from 305 — 5 bridge test files deleted in the pivot)
+- **Regression tests: 228 vitest tests across 18 test files** (up from 218 post-pivot — persistence + app machine save/load coverage added in P1)
 - **TypeScript check: ZERO errors** (`tsgo --noEmit`)
 - Dev tooling: **Stately Inspector** (`@statelyai/inspect`) for `appActor` + `@xstate/store` instances (dev-only, tree-shaken in prod). The inspector dedupes shared object references — **always pass fresh refs into machine context** (see `src/state/defaults.ts`).
 - **Bundle: 676kB JS (gzip 214kB), 7.08kB CSS (gzip 1.94kB)**
@@ -739,6 +739,13 @@ export const advanceEnabled = (state: RootState) =>
   - **Wait-for-user** (`MACHINE_INTERACTIVE_PHASES`): machine waits for `ADVANCE`, saga uses `waitFor(actor)`
   - **Saga-owned** (everything else): machine passively observes via `PHASE_COMPLETE`
 - **Next:** PR 11 (game setup machine — `pickingManager` in appMachine). Then PR 12 (selectStrategy + championshipBetting). Then PR 13 (de-sagaize seasonStart). See XSTATE-REFACTORING.md.
+
+### P3.post-pivot — Rebuild on `appMachine` directly
+
+- **PR P1 (snapshot persistence): ✅ COMPLETE (2026-04-26)** — Slot-based persistence service (`saveSnapshot(slot, snap)` / `loadSnapshot(slot)` / `hasSnapshot(slot)`). Storage key `mhm97:slot:N`, only slot 1 wired up so far. `appMachine` has `SAVE_GAME` (writes `gameRef.getPersistedSnapshot()`, then `sendTo(gameRef, SAVED)` so the game can fire its own "Peli tallennettiin." notification) and `LOAD_GAME` (invokes a `fromPromise` that returns the snapshot, falls back to `menu` on failure). `playing.entry` switched from `spawn(gameMachine)` to `createActor(gameMachine, { snapshot | input })` — `playing.exit` calls `gameRef.stop()`. Redux save/load (`saveGame` createAction, `gameSave` saga, `META_GAME_SAVE_REQUEST` `takeEvery`) deleted. 228/228 tests.
+- **Key finding (PR P1): `spawn()` doesn't accept `snapshot`, only `createActor()` does** — XState 5's `spawn()` signature in `setup({ actors })` accepts `id`, `systemId`, `input`, `syncSnapshot` — but **not** `snapshot`. To restore an actor from a persisted snapshot, you must use `createActor(machine, { snapshot })` from inside a function-form `assign(({ context }) => …)`. The trade-off: the resulting actor is its own root system (no parent registration), so `stopChild` is replaced with `gameRef.stop()` and `systemId` is gone. Worth it because `getPersistedSnapshot()` captures all invoked children automatically — no need to walk the tree manually.
+- **Key finding (PR P1): persist the snapshot, not just the context** — `getPersistedSnapshot()` includes the state node, all invoked children (championship-betting wizard, notification subtree, …) and the round-management scratch fields. Persisting `GameContext` alone would lose all of that. Treat the snapshot as opaque JSON; `createActor(machine, { snapshot })` restores everything. Confirmed end-to-end: save during the championship-betting flow → quit → load → wizard state intact.
+- **Key finding (PR P1): XState 5 dev-mode warns about nested factory calls inside function-form actions** — A function-form `actions: ({context}) => { ... gameRef.send({type: "SAVED"}); }` triggered `Custom actions should not call assign() directly` because the SAVED handshake spawned a notification child (which internally calls XState's `assign()` factory to wire the child's initial context). XState's `executingCustomAction` flag stays set across the nested chain. **Fix:** prefer referenced action descriptors over function-form actions whenever the action does anything more than synchronous IO. Pattern: register a referenced action in `setup({ actions })` for the IO, use built-in primitives (`sendTo`, `raise`, `emit`) for messaging. Both clear the flag before running.
 
 ### P4 — Styling: ✅ COMPLETE
 

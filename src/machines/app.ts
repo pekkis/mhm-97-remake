@@ -1,12 +1,12 @@
-import { setup, assign, fromPromise, stopChild } from "xstate";
-import type { ActorRefFrom } from "xstate";
+import { setup, assign, fromPromise, createActor, sendTo } from "xstate";
+import type { Actor, Snapshot } from "xstate";
 
 import {
   createDefaultGameContext,
   type GameContext,
   type Manager
 } from "@/state";
-import { loadGame } from "@/services/persistence";
+import { loadSnapshot, saveSnapshot } from "@/services/persistence";
 import { gameMachine } from "@/machines/game";
 import type { ManagerSubmission } from "@/machines/game";
 import { teamsMainCompetition } from "@/machines/selectors";
@@ -16,24 +16,33 @@ import difficultyLevels from "@/data/difficulty-levels";
  * Top-level application lifecycle machine.
  *
  * Owns the menu ↔ game shell. Holds a *pending* `GameContext` only
- * during `starting` / `loading` — i.e. while the new-game wizard or the
- * load actor is refining the context that will be handed to a spawned
- * `gameMachine` on entry to `playing`. Once spawned, the game owns its
- * context fully; app drops the reference on `QUIT`.
+ * during `starting` — i.e. while the new-game wizard is refining the
+ * context that will be handed to a spawned `gameMachine` on entry to
+ * `playing`. The `loading` path holds a persisted `snapshot` instead and
+ * spawns the game from it. Once spawned, the game owns its state fully;
+ * app drops the reference on `QUIT`.
  *
  * The same flow scales to a richer wizard (MHM 2000): each step refines
  * `pending`, the final step spawns the game with the finished context.
  */
 
+/**
+ * Currently only slot 1 is wired up. The save/load UI will pick a slot
+ * later (MHM 2000 had 6); for now everything funnels through this constant.
+ */
+const CURRENT_SLOT = 1;
+
 export type AppContext = {
   pending: GameContext | undefined;
-  gameRef: ActorRefFrom<typeof gameMachine> | undefined;
+  snapshot: Snapshot<unknown> | undefined;
+  gameRef: Actor<typeof gameMachine> | undefined;
 };
 
 export type AppMachineEvents =
   | { type: "START_GAME" }
   | { type: "LOAD_GAME" }
   | { type: "ADD_MANAGER"; payload: ManagerSubmission }
+  | { type: "SAVE_GAME" }
   | { type: "QUIT" };
 
 /**
@@ -85,19 +94,45 @@ export const appMachine = setup({
     events: {} as AppMachineEvents
   },
   actors: {
-    load_from_storage: fromPromise<GameContext>(async () => {
-      const loaded = loadGame();
+    load_from_storage: fromPromise<Snapshot<unknown>>(async () => {
+      const loaded = loadSnapshot(CURRENT_SLOT);
       if (!loaded) {
         throw new Error("no saved game");
       }
-      return loaded;
-    }),
-    game: gameMachine
+      return loaded as Snapshot<unknown>;
+    })
+  },
+  actions: {
+    persistSnapshot: (_, params: { snapshot: Snapshot<unknown> }) => {
+      saveSnapshot(CURRENT_SLOT, params.snapshot);
+    }
   }
 }).createMachine({
   id: "app",
   initial: "menu",
-  context: { pending: undefined, gameRef: undefined },
+  context: { pending: undefined, snapshot: undefined, gameRef: undefined },
+  on: {
+    SAVE_GAME: {
+      guard: ({ context }) => context.gameRef !== undefined,
+      // Two steps:
+      //   1. Imperative IO via a `params`-driven action object — keeps the
+      //      `assign()`/`createActor()` factories that fire later (e.g. when
+      //      the SAVED handshake spawns a notification child) from being
+      //      mistaken for "called inside a custom action" by XState's
+      //      dev-mode `executingCustomAction` flag.
+      //   2. `sendTo` — built-in primitive — to nudge the game so it can
+      //      surface its own "Peli tallennettiin." notification.
+      actions: [
+        {
+          type: "persistSnapshot",
+          params: ({ context }) => ({
+            snapshot: context.gameRef!.getPersistedSnapshot()
+          })
+        },
+        sendTo(({ context }) => context.gameRef!, { type: "SAVED" })
+      ]
+    }
+  },
   states: {
     menu: {
       on: {
@@ -128,28 +163,44 @@ export const appMachine = setup({
         src: "load_from_storage",
         onDone: {
           target: "playing",
-          actions: assign({ pending: ({ event }) => event.output })
+          actions: assign({ snapshot: ({ event }) => event.output })
         },
         onError: { target: "menu" }
       }
     },
     playing: {
-      // Hand `pending` straight to the spawned game and immediately drop
-      // app's reference. While `playing`, the game owns the context — app
-      // holding a parallel copy in `pending` makes Stately Inspector's
-      // shared-reference dedup walk two structurally-identical trees and
-      // crash trying to write `[Circular]` into the frozen second copy
-      // (Cannot assign to read only property of [object Array]).
-      entry: assign(({ context, spawn }) => ({
-        pending: undefined,
-        gameRef: spawn("game", {
-          systemId: "game",
-          input: context.pending!
-        })
-      })),
+      // Hydrate from `snapshot` if we came via load, otherwise from `pending`
+      // (new-game wizard). We use `createActor` rather than `spawn` because
+      // `spawn` can't accept a persisted snapshot in XState 5 — only the
+      // root-level `createActor` can. The trade-off is that the game lives
+      // in its own actor system rather than as a child of the app actor.
+      // It's fine: the game is fully self-contained and we own its lifecycle
+      // through the gameRef stored in context.
+      entry: assign(({ context }) => {
+        const game =
+          context.snapshot !== undefined
+            ? // gameMachine declares `input` as required, but XState ignores
+              // `input` when `snapshot` is provided — the persisted snapshot
+              // already carries the full context. Cast around the type
+              // requirement.
+              createActor(gameMachine, {
+                snapshot: context.snapshot
+              } as Parameters<typeof createActor<typeof gameMachine>>[1])
+            : createActor(gameMachine, { input: context.pending! });
+        game.start();
+        return {
+          pending: undefined,
+          snapshot: undefined,
+          gameRef: game
+        };
+      }),
       exit: [
-        stopChild(({ context }) => context.gameRef!),
-        assign({ pending: undefined, gameRef: undefined })
+        ({ context }) => context.gameRef?.stop(),
+        assign({
+          pending: undefined,
+          snapshot: undefined,
+          gameRef: undefined
+        })
       ],
       on: {
         QUIT: { target: "menu" }

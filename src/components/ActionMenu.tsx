@@ -4,17 +4,25 @@ import { getEffective } from "@/services/effects";
 import { CRISIS_MORALE_MAX } from "@/data/constants";
 import Button from "./form/Button";
 import { useAppDispatch } from "@/config/redux";
-import { useGameContext } from "@/context/game-machine-context";
+import {
+  GameMachineContext,
+  useGameContext
+} from "@/context/game-machine-context";
+import { AppMachineContext } from "@/context/app-machine-context";
 import { uiStore } from "@/stores/ui";
-import { saveGame, quitToMainMenu } from "@/ducks/meta";
+import { quitToMainMenu } from "@/ducks/meta";
 import { activeManager } from "@/machines/selectors";
 
 const ActionMenu = () => {
   const manager = useGameContext(activeManager);
   const teams = useGameContext((ctx) => ctx.teams);
-  const turn = useGameContext((ctx) => ctx.turn);
   const dispatch = useAppDispatch();
+  const appActor = AppMachineContext.useActorRef();
   const team = getEffective(teams[manager.team!]);
+
+  const canSave = GameMachineContext.useSelector((state) =>
+    state.matches({ in_game: { executing_phases: "action" } })
+  );
 
   return (
     <div>
@@ -122,10 +130,10 @@ const ActionMenu = () => {
       </nav>
       <Button
         block
-        disabled={turn.phase !== "action"}
+        disabled={!canSave}
         type="button"
         onClick={() => {
-          dispatch(saveGame());
+          appActor.send({ type: "SAVE_GAME" });
           uiStore.send({ type: "closeMenu" });
         }}
       >

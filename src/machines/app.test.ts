@@ -2,12 +2,13 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createActor, waitFor } from "xstate";
 import { appMachine } from "@/machines/app";
 import type { ManagerSubmission } from "@/machines/game";
+import { gameMachine } from "@/machines/game";
 import { createDefaultGameContext } from "@/state";
-import { loadGame } from "@/services/persistence";
+import { loadSnapshot, saveSnapshot } from "@/services/persistence";
 
 vi.mock("@/services/persistence", () => ({
-  loadGame: vi.fn(),
-  saveGame: vi.fn()
+  loadSnapshot: vi.fn(),
+  saveSnapshot: vi.fn()
 }));
 
 const submission: ManagerSubmission = {
@@ -24,7 +25,8 @@ const createTestActor = () => {
 };
 
 beforeEach(() => {
-  vi.mocked(loadGame).mockReset();
+  vi.mocked(loadSnapshot).mockReset();
+  vi.mocked(saveSnapshot).mockReset();
 });
 
 describe("appMachine", () => {
@@ -65,14 +67,14 @@ describe("appMachine", () => {
       expect(gameCtx.teams[submission.team].manager).toBe(activeId);
     });
 
-    it("entering playing spawns a game actor with systemId 'game'", () => {
+    it("entering playing creates a running game actor stored in context", () => {
       const actor = createTestActor();
       actor.send({ type: "START_GAME" });
       actor.send({ type: "ADD_MANAGER", payload: submission });
 
       const snap = actor.getSnapshot();
       expect(snap.context.gameRef).toBeDefined();
-      expect(actor.system.get("game")).toBe(snap.context.gameRef);
+      expect(snap.context.gameRef!.getSnapshot().status).toBe("active");
     });
 
     it("the spawned game starts in_game with the refined context", () => {
@@ -101,32 +103,67 @@ describe("appMachine", () => {
   });
 
   describe("load game flow", () => {
+    const buildSnapshot = (
+      mutate?: (ctx: ReturnType<typeof createDefaultGameContext>) => void
+    ) => {
+      const ctx = createDefaultGameContext();
+      mutate?.(ctx);
+      const tmp = createActor(gameMachine, { input: ctx });
+      tmp.start();
+      const snap = tmp.getPersistedSnapshot();
+      tmp.stop();
+      return snap;
+    };
+
     it("LOAD_GAME transitions to loading", () => {
-      vi.mocked(loadGame).mockReturnValue(createDefaultGameContext());
+      vi.mocked(loadSnapshot).mockReturnValue(buildSnapshot());
       const actor = createTestActor();
       actor.send({ type: "LOAD_GAME" });
       expect(actor.getSnapshot().value).toBe("loading");
     });
 
-    it("loading reaches playing with the loaded context handed to the game", async () => {
-      const loaded = createDefaultGameContext();
-      loaded.turn.season = 7; // marker we can verify survived the handoff
-      vi.mocked(loadGame).mockReturnValue(loaded);
+    it("loading reaches playing with the loaded snapshot driving the game", async () => {
+      const persisted = buildSnapshot((ctx) => {
+        ctx.turn.season = 7; // marker we can verify survived the handoff
+      });
+      vi.mocked(loadSnapshot).mockReturnValue(persisted);
       const actor = createTestActor();
       actor.send({ type: "LOAD_GAME" });
 
       await waitFor(actor, (snap) => snap.value === "playing");
       const snap = actor.getSnapshot();
       expect(snap.context.pending).toBeUndefined();
+      expect(snap.context.snapshot).toBeUndefined();
       expect(snap.context.gameRef).toBeDefined();
       expect(snap.context.gameRef!.getSnapshot().context.turn.season).toBe(7);
     });
 
     it("loading falls back to menu when no saved game exists", async () => {
-      vi.mocked(loadGame).mockReturnValue(null);
+      vi.mocked(loadSnapshot).mockReturnValue(null);
       const actor = createTestActor();
       actor.send({ type: "LOAD_GAME" });
       await waitFor(actor, (snap) => snap.value === "menu");
+    });
+  });
+
+  describe("save flow", () => {
+    it("SAVE_GAME persists the live game's snapshot to slot 1", () => {
+      const actor = createTestActor();
+      actor.send({ type: "START_GAME" });
+      actor.send({ type: "ADD_MANAGER", payload: submission });
+
+      actor.send({ type: "SAVE_GAME" });
+
+      expect(saveSnapshot).toHaveBeenCalledTimes(1);
+      const [slot, snap] = vi.mocked(saveSnapshot).mock.calls[0];
+      expect(slot).toBe(1);
+      expect(snap).toBeDefined();
+    });
+
+    it("SAVE_GAME is a no-op when no game is running", () => {
+      const actor = createTestActor();
+      actor.send({ type: "SAVE_GAME" });
+      expect(saveSnapshot).not.toHaveBeenCalled();
     });
   });
 

@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { saveGame, loadGame } from "@/services/persistence";
-import { createDefaultGameContext, type Manager } from "@/state";
+import { saveSnapshot, loadSnapshot, hasSnapshot } from "@/services/persistence";
 
 let storageData: Record<string, string> = {};
 
@@ -32,76 +31,49 @@ afterEach(() => {
   delete (globalThis as any).localStorage;
 });
 
-const pasolini: Manager = {
-  id: "pasolini",
-  name: "Pier Paolo Pasolini",
-  difficulty: 2,
-  pranksExecuted: 0,
-  services: {
-    coach: true,
-    insurance: false,
-    microphone: true,
-    cheer: false
-  },
-  balance: 150000,
-  arena: { name: "Cinema Paradiso", level: 3 },
-  extra: 2000,
-  insuranceExtra: 0,
-  flags: { rally: true }
-};
-
 describe("persistence service", () => {
-  describe("saveGame", () => {
-    it("serializes context to localStorage under 'mhm97' key", () => {
-      saveGame(createDefaultGameContext());
+  describe("saveSnapshot", () => {
+    it("serializes a snapshot to the slot's localStorage key", () => {
+      saveSnapshot(1, { value: "in_game", context: { foo: 1 } });
 
       expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        "mhm97",
+        "mhm97:slot:1",
         expect.any(String)
       );
-
-      const saved = localStorageMock.setItem.mock.calls[0][1];
-      expect(() => JSON.parse(saved)).not.toThrow();
     });
 
-    it("saves modified context correctly", () => {
-      const ctx = createDefaultGameContext();
-      ctx.manager.active = pasolini.id;
-      ctx.manager.managers[pasolini.id] = pasolini;
-      ctx.turn.round = 5;
-      ctx.turn.phase = "action";
+    it("keeps slots independent", () => {
+      saveSnapshot(1, { tag: "pasolini" });
+      saveSnapshot(2, { tag: "fellini" });
 
-      saveGame(ctx);
-
-      const saved = JSON.parse(localStorageMock.setItem.mock.calls[0][1]);
-      expect(saved.manager.active).toBe("pasolini");
-      expect(saved.turn.round).toBe(5);
-      expect(saved.turn.phase).toBe("action");
+      expect(loadSnapshot(1)).toEqual({ tag: "pasolini" });
+      expect(loadSnapshot(2)).toEqual({ tag: "fellini" });
     });
   });
 
-  describe("loadGame", () => {
-    it("returns null when nothing is saved", () => {
-      expect(loadGame()).toBeNull();
+  describe("loadSnapshot", () => {
+    it("returns null when the slot is empty", () => {
+      expect(loadSnapshot(1)).toBeNull();
     });
 
-    it("round-trips a context correctly", () => {
-      const ctx = createDefaultGameContext();
-      ctx.manager.active = pasolini.id;
-      ctx.manager.managers[pasolini.id] = pasolini;
-      ctx.turn.round = 3;
+    it("round-trips a snapshot correctly", () => {
+      const snap = {
+        value: "in_game",
+        context: { manager: { active: "pasolini" } }
+      };
+      saveSnapshot(1, snap);
+      expect(loadSnapshot(1)).toEqual(snap);
+    });
+  });
 
-      saveGame(ctx);
+  describe("hasSnapshot", () => {
+    it("is false for an empty slot", () => {
+      expect(hasSnapshot(1)).toBe(false);
+    });
 
-      const loaded = loadGame();
-      expect(loaded).not.toBeNull();
-      expect(loaded!.turn.round).toBe(3);
-      expect(loaded!.manager.active).toBe("pasolini");
-      expect(loaded!.manager.managers["pasolini"].balance).toBe(150000);
-      expect(loaded!.manager.managers["pasolini"].arena.name).toBe(
-        "Cinema Paradiso"
-      );
-      expect(loaded!.manager.managers["pasolini"].flags.rally).toBe(true);
+    it("is true once a slot has been written", () => {
+      saveSnapshot(1, { foo: 1 });
+      expect(hasSnapshot(1)).toBe(true);
     });
   });
 });

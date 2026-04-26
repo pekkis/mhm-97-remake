@@ -372,17 +372,34 @@ appMachine (THE machine, holds full GameContext)
 
 PR numbers below are sequential markers, not commitments. Each step ends with `pnpm typecheck && pnpm test --run && pnpm build` green.
 
-#### PR P1: Persistence (save/load) on `appMachine` ← NEXT
+#### PR P1: Persistence (save/load) on `appMachine` ✅ COMPLETE
 
-- Extend `appMachine` with `SAVE` and `LOAD` events.
-- `SAVE` runs `saveGame(context)` from `src/services/persistence.ts` (write `context` directly — no Redux involved).
-- `LOAD` is already partially wired: `appMachine.loading` accepts `GAME_LOADED { context }`. Add an entry action that calls `loadGame()` and sends `GAME_LOADED` with the result, or send `LOAD_FAILED` on null.
-- Update `src/services/persistence.ts` signature: `saveGame(ctx: GameContext)` / `loadGame(): GameContext | null`. No `RootState`, no Redux import.
-- Component: connect `MainMenu` "Lataa peli" button to `appActor.send({ type: "LOAD" })`; existing save button to `appActor.send({ type: "SAVE" })`.
-- Delete the Redux meta saga's save/load branches (or leave them as a fallback until Redux dies — TBD when convenient).
-- **Acceptance:** start a fresh game (default context), save, refresh page, load — context restored bit-for-bit.
+**Landed 2026-04-26.**
 
-#### PR P2: New game setup — `starting.pickingManager`
+- Slot-based persistence service: `saveSnapshot(slot, snap)` / `loadSnapshot(slot)` / `hasSnapshot(slot)` in [src/services/persistence.ts](src/services/persistence.ts). Storage key `mhm97:slot:N`. Only slot 1 is wired up for now; the slot-picker UI lands later (MHM 2000 had 6 slots).
+- The persisted payload is the **gameRef's full XState snapshot** (`actor.getPersistedSnapshot()`), not just `GameContext`. This was a deliberate departure from the original PR P1 plan — `getPersistedSnapshot()` captures invoked children (incl. the in-game championship-betting wizard, notification subtree, etc.) automatically.
+- `appMachine` extended:
+  - New event `SAVE_GAME` with a guard `context.gameRef !== undefined`, two actions: a referenced `persistSnapshot` action that calls `saveSnapshot()`, then `sendTo(gameRef, { type: "SAVED" })` so the game can surface its own "Peli tallennettiin." notification via the existing `notify` action.
+  - `loading` state invokes a `fromPromise` actor that returns the snapshot (or throws → `onError` falls back to `menu`).
+  - `playing.entry` now uses **`createActor(gameMachine, ...)`** instead of `spawn(gameMachine, ...)`. This is the only way to hydrate from a persisted snapshot in XState 5 — `spawn()` doesn't accept a `snapshot` option, only the root-level `createActor()` does. Trade-off: gameRef is now its own root actor system rather than an `appActor` child, so `stopChild` is replaced with `gameRef.stop()` in `playing.exit`. We lose the `systemId: "game"` registration, which was used by no production code.
+- [src/components/ActionMenu.tsx](src/components/ActionMenu.tsx) save button calls `appActor.send({ type: "SAVE_GAME" })`.
+- Redux save/load fully removed: `gameSave` saga, `META_GAME_SAVE_REQUEST` `takeEvery`, the `saveGame` createAction in `src/ducks/meta.ts`. Old `saveGame(state)`/`loadGame()` functions in `persistence.ts` replaced.
+- 4 new persistence tests (round-trip, slot isolation, `hasSnapshot`, etc.) + 5 new app machine tests (load/save flows). 228/228 total.
+- **Acceptance verified:** New Game → play → Save → notification fires → Quit → Load Game → game resumes with championship-betting wizard state intact.
+
+##### Why snapshot persistence beats context-only
+
+Persisting `GameContext` alone would lose the gameMachine's state node (where in the round/phase loop), all invoked children (notification timers, championship-betting modal state), and the round-management scratch fields (`currentRoundCalendar`, `remainingPhases`, `currentPhase`). Snapshot persistence inverts the problem: we treat the snapshot as opaque, hand it to `createActor`, and XState restores all of it (recursively) for free. The cost is a slightly larger localStorage payload, which doesn't matter at this scale.
+
+##### Why `createActor` over `spawn`
+
+XState 5's `spawn()` accepts `input` but not `snapshot`. Restoring an actor from a persisted snapshot requires `createActor(machine, { snapshot })`. Inside a machine's `assign`, `spawn` is the only built-in factory — so to use `createActor` we need the function-form `assign(({ context }) => …)`. That's what `playing.entry` does now. We also lose the actor system registration (no `systemId`), which is fine because the gameRef is held in app context anyway.
+
+##### Why `SAVE_GAME` uses a referenced action + `sendTo`
+
+The first cut used a function-form action that did `saveSnapshot(...)` then `gameRef.send({ type: "SAVED" })` synchronously. XState 5 dev mode fired a warning: `Custom actions should not call assign() directly`. The cause: the `SAVED` event made the game spawn a new notification child via `createActor`, which internally calls XState's `assign()` factory to wire up the child's initial context. While we're still inside a function-form action, XState's `executingCustomAction` flag is set, so any nested `assign()`/`sendTo()`/`raise()`/`emit()` factory call warns. Fix: split into a referenced `persistSnapshot` action (registered in `setup({ actions })`) for the IO and a built-in `sendTo` for the handshake. Both are first-class action descriptors, neither sets the flag.
+
+#### PR P2: New game setup — `starting.pickingManager` ← NEXT
 
 - `starting` becomes compound: `pickingManager` (initial) → `ready` → exits to `"in_game"` via `GAME_STARTED`.
 - `pickingManager` waits for `SUBMIT_MANAGER { managerData }`. The action mutates context (`manager.active`, `manager.managers[id]`, team's `manager` field) directly via `assign + produce`.

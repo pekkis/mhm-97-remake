@@ -8,8 +8,6 @@ import {
   put,
   select
 } from "typed-redux-saga";
-import { gameSave } from "@/sagas/meta";
-import { saveGame } from "@/ducks/meta";
 import {
   watchTransferMarket,
   crisisMeeting,
@@ -43,7 +41,6 @@ export default function* actionPhase() {
       fork(watchTransferMarket),
       takeEvery(managerCrisisMeeting, crisisMeeting),
       takeEvery(managerImproveArena, improveArena),
-      takeEvery(saveGame, gameSave),
       takeEvery(managerToggleService, toggleService),
       takeEvery(requestAcceptInvitation, function* (action) {
         yield* call(

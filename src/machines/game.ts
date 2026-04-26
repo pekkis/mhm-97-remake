@@ -67,6 +67,7 @@ export type GameMachineEvents =
         penalty: number;
       };
     }
+  | { type: "SAVED" }
   | { type: "DISMISS_NOTIFICATION"; id: string };
 
 export const gameMachine = setup({
@@ -340,7 +341,7 @@ export const gameMachine = setup({
       src: "notifications",
       id: "notifications",
       systemId: "notifications",
-      input: { defaultTimeout: 7000 }
+      input: { defaultTimeout: 70000 }
     }
   ],
   on: {
@@ -376,6 +377,18 @@ export const gameMachine = setup({
       actions: {
         type: "executeIncurPenalty",
         params: ({ event }) => event.payload
+      }
+    },
+    SAVED: {
+      actions: {
+        type: "notify",
+        params: ({ context }) => ({
+          notification: {
+            manager: context.manager.active!,
+            message: "Peli tallennettiin.",
+            type: "info"
+          }
+        })
       }
     }
   },

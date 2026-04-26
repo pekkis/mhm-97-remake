@@ -3,7 +3,6 @@ import type { MetaState } from "@/state/meta";
 
 export const quitToMainMenu = createAction("META_QUIT_TO_MAIN_MENU");
 export const startGame = createAction("META_GAME_START_REQUEST");
-export const saveGame = createAction("META_GAME_SAVE_REQUEST");
 export const gameStart = createAction("GAME_START");
 
 const defaultState: MetaState = {

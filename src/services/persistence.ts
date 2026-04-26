@@ -1,34 +1,28 @@
 /**
- * Game persistence service — save/load game state to/from localStorage.
+ * Save game persistence.
  *
- * Extracted from `src/sagas/meta.ts` (PR 6) to decouple persistence
- * from the saga layer. During the XState migration, this service will
- * be called from the game machine instead of sagas.
+ * Designed for multiple slots (MHM 2000 had 6) but only slot 1 is wired up
+ * for now. The slot picker UI lands later — for now `app.ts` always
+ * passes 1.
  *
- * Currently serializes the full Redux `RootState`. Once `gameMachine`
- * owns all game state, this will serialize `GameContext` instead.
+ * The payload is an XState persisted snapshot from `actor.getPersistedSnapshot()`.
+ * It is treated as opaque here — `app.ts` is responsible for restoring it via
+ * `createActor(gameMachine, { snapshot })`.
  */
 
-import type { GameContext } from "@/state";
+const STORAGE_PREFIX = "mhm97:slot:";
 
-const STORAGE_KEY = "mhm97";
+const slotKey = (slot: number): string => `${STORAGE_PREFIX}${slot}`;
 
-/**
- * Save the full game state to localStorage.
- */
-export const saveGame = (context: GameContext): void => {
-  const json = JSON.stringify(context);
-  localStorage.setItem(STORAGE_KEY, json);
+export const saveSnapshot = (slot: number, snapshot: unknown): void => {
+  localStorage.setItem(slotKey(slot), JSON.stringify(snapshot));
 };
 
-/**
- * Load game state from localStorage.
- * Returns `null` if no saved game exists.
- */
-export const loadGame = (): GameContext | null => {
-  const json = localStorage.getItem(STORAGE_KEY);
-  if (!json) {
-    return null;
-  }
+export const loadSnapshot = (slot: number): unknown | null => {
+  const json = localStorage.getItem(slotKey(slot));
+  if (!json) return null;
   return JSON.parse(json);
 };
+
+export const hasSnapshot = (slot: number): boolean =>
+  localStorage.getItem(slotKey(slot)) !== null;
