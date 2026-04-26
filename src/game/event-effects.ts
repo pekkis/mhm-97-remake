@@ -1,10 +1,29 @@
 import type { Draft } from "immer";
 
+import difficultyLevels from "@/data/difficulty-levels";
 import type { GameContext } from "@/state";
-import type { GameFlags, TeamEffect } from "@/state/game";
+import type { GameFlags, Team, TeamEffect } from "@/state/game";
 import type { CompetitionId } from "@/types/competitions";
 import type { BaseEventCreationFields } from "@/types/base";
 import { computeStats } from "@/services/competition-type";
+
+/**
+ * Look up the morale clamp for a team. Mirrors `getMoraleMinMax` in
+ * the deleted `src/sagas/team.ts`: a team's clamp comes from its
+ * manager's difficulty (default 2 if NPC / unmanaged).
+ */
+function moraleClamp(
+  draft: Draft<GameContext>,
+  team: Draft<Team>
+): { min: number; max: number } {
+  const managerId = team.manager;
+  const manager = managerId ? draft.manager.managers[managerId] : undefined;
+  const difficulty = manager ? manager.difficulty : 2;
+  return {
+    min: difficultyLevels[difficulty].moraleMin,
+    max: difficultyLevels[difficulty].moraleMax
+  };
+}
 
 /**
  * Spawn-event injection point. The interpreter doesn't know about the
@@ -228,14 +247,16 @@ export function applyEffect(
     case "incrementMorale": {
       const t = draft.teams[effect.team];
       if (t) {
-        t.morale += effect.amount;
+        const { min, max } = moraleClamp(draft, t);
+        t.morale = Math.min(max, Math.max(min, t.morale + effect.amount));
       }
       return;
     }
     case "decrementMorale": {
       const t = draft.teams[effect.team];
       if (t) {
-        t.morale -= effect.amount;
+        const { min, max } = moraleClamp(draft, t);
+        t.morale = Math.min(max, Math.max(min, t.morale - effect.amount));
       }
       return;
     }
@@ -249,7 +270,8 @@ export function applyEffect(
     case "setMorale": {
       const t = draft.teams[effect.team];
       if (t) {
-        t.morale = effect.value;
+        const { min, max } = moraleClamp(draft, t);
+        t.morale = Math.min(max, Math.max(min, effect.value));
       }
       return;
     }

@@ -50,9 +50,7 @@ const voodoo: DeclarativeEvent<VoodooData> = {
       return lines;
     }
     if (data.agree) {
-      lines.push(
-        `Yhteishenki paranee kun pelaajat uskovat itseensä enemmän!!`
-      );
+      lines.push(`Yhteishenki paranee kun pelaajat uskovat itseensä enemmän!!`);
     } else {
       lines.push(`Mies vilauttaa sinulle voodoo-nukkeaan...`);
     }

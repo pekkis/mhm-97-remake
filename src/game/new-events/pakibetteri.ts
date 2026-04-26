@@ -1,7 +1,4 @@
-import {
-  managerCompetesIn,
-  managersTeamId
-} from "@/machines/selectors";
+import { managerCompetesIn, managersTeamId } from "@/machines/selectors";
 import { amount as a } from "@/services/format";
 import type { DeclarativeEvent } from "@/types/event";
 import type { EventEffect } from "@/game/event-effects";
