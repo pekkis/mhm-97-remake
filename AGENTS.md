@@ -13,6 +13,8 @@ This is a long-running migration. Prioritize **safe, incremental changes** with 
 ## Current Reality (as of 2026-04-25)
 
 > ⚠️ **Pivot in progress.** The dual-write Redux ↔ XState bridge was abandoned 2026-04-25 after PRs 9–10 made it clear the scaffolding was becoming the product. We are now rebuilding game state on `appMachine` directly. Redux still owns gameplay state; the machine owns lifecycle. **The game will progressively break during the pivot — that is intentional.** See [`XSTATE-REFACTORING.md`](XSTATE-REFACTORING.md) for the post-pivot roadmap.
+>
+> **Redux/saga code is REFERENCE ONLY during the pivot.** Treat existing sagas, ducks, and Redux selectors as a frozen specification of intended behavior — read them to understand what the machine should do, then port. Do not attempt to "make Redux work" or preserve runtime parity with the saga side; many flows are already broken and will be deleted as their machine equivalents land. Symptoms like "the saga sets `setGamePhase("results")` but the UI never shows results" are pivot debris, not bugs to fix on the saga side. Fix them by porting to the machine.
 
 - Runtime / build tool: **Vite 8** (`pnpm dev`, `pnpm build`)
 - UI stack: React 19, React Router 7

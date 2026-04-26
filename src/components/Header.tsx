@@ -3,7 +3,10 @@ import Button from "./form/Button";
 import { FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/config/redux";
-import { useGameContext } from "@/context/game-machine-context";
+import {
+  GameMachineContext,
+  useGameContext
+} from "@/context/game-machine-context";
 import { advance } from "@/ducks/game";
 import { uiStore } from "@/stores/ui";
 import { advanceEnabled as advanceEnabledSelector } from "@/machines/selectors";
@@ -20,7 +23,9 @@ const Header = ({
   forward = "Eteenpäin!"
 }: HeaderProps) => {
   const advanceEnabled = useGameContext(advanceEnabledSelector);
-  const dispatch = useAppDispatch();
+
+  const game = GameMachineContext.useActorRef();
+
   const navigate = useNavigate();
 
   return (
@@ -55,7 +60,9 @@ const Header = ({
               terse
               block
               disabled={!advanceEnabled}
-              onClick={() => dispatch(advance(undefined))}
+              onClick={() => {
+                game.send({ type: "ADVANCE" });
+              }}
             >
               {forward}
             </Button>

@@ -630,8 +630,27 @@ export const gameMachine = setup({
                 { target: "calculations_check" }
               ]
             },
+            // Compound gameday state: the user previews the matches,
+            // advances to start the simulation, then sees the results and
+            // advances again to leave the phase. `play` is transient — its
+            // `entry` will run the simulation synchronously once the
+            // gameday port lands; for now it just falls through so the
+            // existing saga keeps doing the work.
             gameday: {
-              on: { ADVANCE: "calculations_check" }
+              initial: "preview",
+              onDone: "calculations_check",
+              states: {
+                preview: {
+                  on: { ADVANCE: "play" }
+                },
+                play: {
+                  always: "results"
+                },
+                results: {
+                  on: { ADVANCE: "done" }
+                },
+                done: { type: "final" }
+              }
             },
 
             calculations_check: {

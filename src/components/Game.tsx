@@ -42,8 +42,15 @@ const useUiPhase = (): string | undefined => {
     if (state.matches({ in_game: { executing_phases: "prank" } })) {
       return "prank";
     }
-    if (state.matches({ in_game: { executing_phases: "gameday" } })) {
+    if (
+      state.matches({ in_game: { executing_phases: { gameday: "preview" } } })
+    ) {
       return "gameday";
+    }
+    if (
+      state.matches({ in_game: { executing_phases: { gameday: "results" } } })
+    ) {
+      return "results";
     }
     if (state.matches({ in_game: { executing_phases: "calculations" } })) {
       return "calculations";
