@@ -1,5 +1,4 @@
 import { call } from "typed-redux-saga";
-import { addNotification } from "@/sagas/notification";
 import { addEffect } from "@/sagas/team";
 import events from "@/game/events";
 
@@ -12,7 +11,7 @@ export type PrankInstance = {
 type Prank = {
   name: string;
   price: (competition: string) => number;
-  order: (prank: PrankInstance) => Generator;
+  orderMessage: (prank: PrankInstance) => string;
   execute: (prank: PrankInstance) => Generator;
 };
 
@@ -21,13 +20,8 @@ const pranks: Record<string, Prank> = {
     name: "Protesti",
     price: () => 0,
 
-    order: function* (prank) {
-      yield* call(
-        addNotification,
-        prank.manager,
-        `Faksaat protestin jääkiekkoliiton toimistolle. Pian hakulaitteesi jo piippaakin iloisesti: kirjelmä on vastaanotettu, ja se luvataan käsitellä "pikaisesti"`
-      );
-    },
+    orderMessage: () =>
+      `Faksaat protestin jääkiekkoliiton toimistolle. Pian hakulaitteesi jo piippaakin iloisesti: kirjelmä on vastaanotettu, ja se luvataan käsitellä "pikaisesti"`,
 
     execute: function* (prank) {
       const protestEvent = events["protest"];
@@ -38,13 +32,8 @@ const pranks: Record<string, Prank> = {
     name: "Huumausaineiden myynti pelaajille",
     price: () => 150000,
 
-    order: function* (prank) {
-      yield* call(
-        addNotification,
-        prank.manager,
-        `Pikainen soitto Pösilän miehelle, vanhalle ystävällesi ja Helsingin huumemiliisin päällikölle __Ari Jaarniolle__, ja homma hoituu! Jaarnio lupaa lähettää miehensä matkaan alta aikayksikön!`
-      );
-    },
+    orderMessage: () =>
+      `Pikainen soitto Pösilän miehelle, vanhalle ystävällesi ja Helsingin huumemiliisin päällikölle __Ari Jaarniolle__, ja homma hoituu! Jaarnio lupaa lähettää miehensä matkaan alta aikayksikön!`,
 
     execute: function* (prank) {
       const event = events["sellNarcotics"];
@@ -60,13 +49,8 @@ const pranks: Record<string, Prank> = {
       return 150000;
     },
 
-    order: function* (prank) {
-      yield* call(
-        addNotification,
-        prank.manager,
-        `Soitat hämäräperäiselle vedonvälittäjälle, ja kerrot mitä tahdot. Hän lupaa hoitaa "asian" hienovaraisesti.`
-      );
-    },
+    orderMessage: () =>
+      `Soitat hämäräperäiselle vedonvälittäjälle, ja kerrot mitä tahdot. Hän lupaa hoitaa "asian" hienovaraisesti.`,
 
     execute: function* (prank) {
       yield addEffect(prank.victim, ["strength"], -10000, 1);
@@ -76,13 +60,8 @@ const pranks: Record<string, Prank> = {
     name: "Sinkoisku joukkueen matkabussiin",
     price: () => 3000000,
 
-    order: function* (prank) {
-      yield* call(
-        addNotification,
-        prank.manager,
-        `Fanikauppanne vieressä onkin sopivasti moottoripyöräjengi MC Habadobon kerhotila. Ne pojat ovat tottuneet astetta rankempiin välienselvittyihin. Käyt toimittamassa tyypeille salkullisen kylmää käteistä, ja saat lupauksen pikaisesta toimituksesta.`
-      );
-    },
+    orderMessage: () =>
+      `Fanikauppanne vieressä onkin sopivasti moottoripyöräjengi MC Habadobon kerhotila. Ne pojat ovat tottuneet astetta rankempiin välienselvittyihin. Käyt toimittamassa tyypeille salkullisen kylmää käteistä, ja saat lupauksen pikaisesta toimituksesta.`,
 
     execute: function* (prank) {
       const event = events["bazookaStrike"];

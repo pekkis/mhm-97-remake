@@ -2,12 +2,16 @@ import { setup, assign, sendTo } from "xstate";
 import { produce } from "immer";
 
 import type { GameContext } from "@/state";
-import { managersMainCompetition } from "@/machines/selectors";
+import {
+  managersMainCompetition,
+  managerCompetesIn
+} from "@/machines/selectors";
 import difficultyLevels from "@/data/difficulty-levels";
 import teamData from "@/data/teams";
 import calendar from "@/data/calendar";
 import competitionData from "@/data/competitions";
 import strategies from "@/data/strategies";
+import prankTypes from "@/game/pranks";
 import random from "@/services/random";
 import { notificationsMachine } from "@/machines/notifications";
 import type { NotificationData } from "@/machines/notification";
@@ -46,6 +50,10 @@ export type GameMachineEvents =
         amount: number;
         odds: number;
       };
+    }
+  | {
+      type: "ORDER_PRANK";
+      payload: { manager: string; type: string; victim: number };
     }
   | { type: "DISMISS_NOTIFICATION"; id: string };
 
@@ -212,6 +220,43 @@ export const gameMachine = setup({
     ),
 
     /**
+     * order a prank — debits the manager, queues the prank, and bumps the
+     * per-season counter. 1-1 port of the legacy `orderPrank()` saga +
+     * `addCase(orderPrank)` in the manager duck. The actual gameday-side
+     * effect (`pranks[type].execute`) still runs from the saga side.
+     *
+     * Notification is delivered separately via the `notify` action; UI
+     * gating (`pranksPerSeason` cap, calendar `pranks` flag) stays in the
+     * Pranks page.
+     */
+    executeOrderPrank: assign(
+      (
+        { context },
+        params: { manager: string; type: string; victim: number }
+      ) =>
+        produce(context, (draft) => {
+          const competesInPHL = managerCompetesIn(
+            params.manager,
+            "phl"
+          )(context);
+          const targetCompetition = competesInPHL ? "phl" : "division";
+          const price = prankTypes[params.type].price(targetCompetition);
+
+          const m = draft.manager.managers[params.manager];
+          if (!m) {
+            return;
+          }
+          m.balance -= price;
+          m.pranksExecuted += 1;
+          draft.prank.pranks.push({
+            manager: params.manager,
+            type: params.type,
+            victim: params.victim
+          });
+        })
+    ),
+
+    /**
      * Generic notification dispatcher — forwards a fully-formed notification
      * to the invoked `notifications` child machine. Call sites build the
      * message; this action only handles the delivery + id assignment.
@@ -253,6 +298,28 @@ export const gameMachine = setup({
         type: "DISMISS",
         id: event.id
       }))
+    },
+    ORDER_PRANK: {
+      actions: [
+        {
+          type: "executeOrderPrank",
+          params: ({ event }) => event.payload
+        },
+        {
+          type: "notify",
+          params: ({ event }) => ({
+            notification: {
+              manager: event.payload.manager,
+              message: prankTypes[event.payload.type].orderMessage({
+                manager: event.payload.manager,
+                type: event.payload.type,
+                victim: event.payload.victim
+              }),
+              type: "info"
+            }
+          })
+        }
+      ]
     }
   },
   states: {

@@ -9,9 +9,10 @@ import Box from "./styled-system/Box";
 import Calendar from "./ui/Calendar";
 
 import difficultyLevels from "@/data/difficulty-levels";
-import { useAppDispatch } from "@/config/redux";
-import { useGameContext } from "@/context/game-machine-context";
-import { orderPrank } from "@/ducks/prank";
+import {
+  GameMachineContext,
+  useGameContext
+} from "@/context/game-machine-context";
 import { useMachine } from "@xstate/react";
 import { prankSelectionMachine } from "@/machines/prankSelection";
 import { activeManager } from "@/machines/selectors";
@@ -21,7 +22,7 @@ const Pranks = () => {
   const teams = useGameContext((ctx) => ctx.teams);
   const competitions = useGameContext((ctx) => ctx.competitions);
   const [state, send] = useMachine(prankSelectionMachine);
-  const dispatch = useAppDispatch();
+  const gameActor = GameMachineContext.useActorRef();
 
   const phl = competitions.phl;
   const division = competitions.division;
@@ -85,7 +86,10 @@ const Pranks = () => {
                 victim: state.context.victim!
               }}
               execute={(m: string, t: string, v: number) => {
-                dispatch(orderPrank({ manager: m, type: t, victim: v }));
+                gameActor.send({
+                  type: "ORDER_PRANK",
+                  payload: { manager: m, type: t, victim: v }
+                });
                 send({ type: "ORDER" });
               }}
               teams={teams}

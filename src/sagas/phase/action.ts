@@ -22,8 +22,6 @@ import {
   managerImproveArena,
   managerToggleService
 } from "@/ducks/manager";
-import { orderPrank as orderPrankAction } from "@/ducks/prank";
-import { orderPrank as orderPrankSaga } from "@/sagas/prank";
 import { acceptInvitation } from "@/sagas/invitation";
 
 import { requestAcceptInvitation } from "@/ducks/invitation";
@@ -47,9 +45,6 @@ export default function* actionPhase() {
       takeEvery(managerImproveArena, improveArena),
       takeEvery(saveGame, gameSave),
       takeEvery(managerToggleService, toggleService),
-      takeEvery(orderPrankAction, function* (action) {
-        yield* call(orderPrankSaga, action);
-      }),
       takeEvery(requestAcceptInvitation, function* (action) {
         yield* call(
           acceptInvitation,

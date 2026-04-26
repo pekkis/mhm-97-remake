@@ -10,6 +10,8 @@ const LeagueTables = () => {
   const teams = useGameContext((ctx) => ctx.teams);
   const competitions = useGameContext((ctx) => ctx.competitions);
 
+  console.log({ teams, managers, competitions });
+
   return (
     <HeaderedPage>
       <Header back />

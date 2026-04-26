@@ -7,11 +7,6 @@ const defaultState: PrankState = {
   pranks: []
 };
 
-export const orderPrank = createAction<{
-  manager: string;
-  type: string;
-  victim: number;
-}>("PRANK_ORDER");
 export const addPrank = createAction<PrankInstance>("PRANK_ADD");
 export const dismissPrank = createAction<number>("PRANK_DISMISS");
 

@@ -106,4 +106,44 @@ describe("gameMachine", () => {
       expect(competitions.ehl.phases.length).toBeGreaterThan(0);
     });
   });
+
+  describe("ORDER_PRANK", () => {
+    it("debits the manager, queues the prank, and bumps pranksExecuted", () => {
+      const actor = createTestActor();
+      const activeId = actor.getSnapshot().context.manager.active!;
+
+      // Pasolini coaches team 12 → division. fixedMatch on division: 150000.
+      const before = actor.getSnapshot().context;
+      actor.send({
+        type: "ORDER_PRANK",
+        payload: { manager: activeId, type: "fixedMatch", victim: 7 }
+      });
+
+      const after = actor.getSnapshot().context;
+      const m = after.manager.managers[activeId];
+      expect(m.pranksExecuted).toBe(1);
+      expect(m.balance).toBe(
+        before.manager.managers[activeId].balance - 150000
+      );
+      expect(after.prank.pranks).toEqual([
+        { manager: activeId, type: "fixedMatch", victim: 7 }
+      ]);
+    });
+
+    it("free pranks (protest) leave balance untouched", () => {
+      const actor = createTestActor();
+      const activeId = actor.getSnapshot().context.manager.active!;
+      const beforeBalance =
+        actor.getSnapshot().context.manager.managers[activeId].balance;
+
+      actor.send({
+        type: "ORDER_PRANK",
+        payload: { manager: activeId, type: "protest", victim: 3 }
+      });
+
+      const m = actor.getSnapshot().context.manager.managers[activeId];
+      expect(m.balance).toBe(beforeBalance);
+      expect(m.pranksExecuted).toBe(1);
+    });
+  });
 });

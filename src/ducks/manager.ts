@@ -2,7 +2,6 @@ import { createAction, createReducer } from "@reduxjs/toolkit";
 import type { Manager, ManagerServices, ManagerState } from "@/state/manager";
 import { seasonStart, teamRemoveManager, teamAddManager } from "./game";
 import { quitToMainMenu } from "./meta";
-import { orderPrank } from "./prank";
 import { values } from "remeda";
 
 const defaultState: ManagerState = {
@@ -135,8 +134,5 @@ export default createReducer(defaultState, (builder) => {
     })
     .addCase(managerSetActive, (state, action) => {
       state.active = action.payload;
-    })
-    .addCase(orderPrank, (state, action) => {
-      state.managers[action.payload.manager].pranksExecuted += 1;
     });
 });
