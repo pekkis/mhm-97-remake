@@ -10,7 +10,7 @@ import difficultyLevels from "@/data/difficulty-levels";
 import teamData from "@/data/teams";
 import calendar from "@/data/calendar";
 import competitionData from "@/data/competitions";
-import competitionTypes from "@/services/competition-type";
+import { computeStats } from "@/services/competition-type";
 import strategies from "@/data/strategies";
 import prankTypes from "@/game/pranks";
 import random from "@/services/random";
@@ -231,7 +231,7 @@ export const gameMachine = setup({
           // have something to render before the first gameday. 1-1 port of
           // the legacy `calculatePhaseStats` saga that ran on COMPETITION_SEED.
           for (const g of newPhase.groups) {
-            g.stats = competitionTypes[g.type].stats(g) as typeof g.stats;
+            g.stats = computeStats(g);
           }
         }
       })
@@ -303,7 +303,7 @@ export const gameMachine = setup({
             return;
           }
           g.penalties.push({ team: params.team, penalty: params.penalty });
-          g.stats = competitionTypes[g.type].stats(g) as typeof g.stats;
+          g.stats = computeStats(g);
         })
     ),
 

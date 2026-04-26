@@ -1,5 +1,5 @@
 import { all, select, call, put, takeEvery } from "typed-redux-saga";
-import competitionTypes from "@/services/competition-type";
+import { computeStats } from "@/services/competition-type";
 import { resultFacts } from "@/services/game";
 
 import {
@@ -45,7 +45,7 @@ function* groupStats(competitionId: string, phaseId: number, groupId: number) {
       state.game.competitions[competitionId].phases[phaseId].groups[groupId]
   );
 
-  const stats = yield* call(competitionTypes[group.type].stats, group);
+  const stats = yield* call(computeStats, group);
 
   yield* put(
     competitionUpdateStats({

@@ -103,7 +103,10 @@ describe("competition-type", () => {
     });
 
     it("stats should return league table (same as round-robin)", () => {
-      const group = makeRoundRobinGroup({ teams: [0, 1], schedule: [] });
+      const group = {
+        ...makeRoundRobinGroup({ teams: [0, 1], schedule: [] }),
+        type: "tournament" as const
+      };
       const result = tourney.stats(group);
       expect(Array.isArray(result)).toBe(true);
     });
