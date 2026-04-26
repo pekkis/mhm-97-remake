@@ -91,6 +91,9 @@ export type EventEffect =
     }
   | { type: "incrementServiceBasePrice"; service: string; amount: number }
 
+  // ── Country strength (used by attitude-canada / attitude-usa) ──
+  | { type: "alterCountryStrength"; country: string; amount: number }
+
   // ── News (events sometimes push announcements during process) ──
   | { type: "addAnnouncement"; manager: string; text: string }
 
@@ -320,6 +323,15 @@ export function applyEffect(
     case "incrementServiceBasePrice": {
       if (effect.service in draft.serviceBasePrices) {
         draft.serviceBasePrices[effect.service] += effect.amount;
+      }
+      return;
+    }
+
+    // ── Country strength ──
+    case "alterCountryStrength": {
+      const country = draft.country.countries[effect.country];
+      if (country && country.strength !== undefined) {
+        country.strength += effect.amount;
       }
       return;
     }
