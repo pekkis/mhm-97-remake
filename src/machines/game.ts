@@ -2,6 +2,7 @@ import { setup, assign, sendTo, enqueueActions } from "xstate";
 import { produce } from "immer";
 
 import type { GameContext } from "@/state";
+import type { Manager } from "@/state/manager";
 import {
   managersMainCompetition,
   managerCompetesIn,
@@ -15,6 +16,8 @@ import teamData from "@/data/teams";
 import calendar from "@/data/calendar";
 import competitionData from "@/data/competitions";
 import { computeStats } from "@/services/competition-type";
+import competitionTypes from "@/services/competition-type";
+import { simulate } from "@/services/game";
 import strategies from "@/data/strategies";
 import prankTypes from "@/game/pranks";
 import arenas from "@/data/arenas";
@@ -424,6 +427,69 @@ export const gameMachine = setup({
     ),
 
     /**
+     * Play one round of every gameday listed in `calendar[round].gamedays`.
+     *
+     * Baby-step port of the legacy `gameday()` saga in `src/sagas/gameday.ts`:
+     * just the simulation loop, stats recompute, and `group.round += 1`.
+     * Per-manager bookkeeping (`afterGameday`), parlay payouts
+     * (`bettingResults`) and group-end awards (`groupEnd`) are TODO and
+     * still missing — they land as separate steps.
+     *
+     * Tournaments (and only tournaments — by game-design invariant, regular
+     * competitions never share a round with a tournament) play many rounds
+     * across this phase. The compound `gameday` state handles that by
+     * looping `preview → play → results → preview` until the
+     * `tournamentHasMoreRounds` guard returns false.
+     */
+    executeGameday: assign(({ context }) =>
+      produce(context, (draft) => {
+        const round = draft.turn.round;
+        const gamedays = calendar[round]?.gamedays ?? [];
+
+        for (const competitionId of gamedays) {
+          const comp = draft.competitions[competitionId];
+          const phase = comp.phases[comp.phase];
+          const ct = competitionTypes[phase.type];
+
+          for (const [groupIdx, group] of phase.groups.entries()) {
+            const groupParams = competitionData[
+              competitionId
+            ].parameters.gameday(comp.phase, groupIdx);
+            const groupRound = group.round;
+            const pairings = group.schedule[groupRound];
+
+            for (let x = 0; x < pairings.length; x++) {
+              if (!ct.playMatch(group, groupRound, x)) {
+                continue;
+              }
+              const pairing = pairings[x];
+              const home = draft.teams[group.teams[pairing.home]];
+              const away = draft.teams[group.teams[pairing.away]];
+              const result = simulate({
+                ...groupParams,
+                overtime: ct.overtime,
+                home,
+                away,
+                homeManager: home.manager
+                  ? draft.manager.managers[home.manager]
+                  : (undefined as unknown as Manager),
+                awayManager: away.manager
+                  ? draft.manager.managers[away.manager]
+                  : (undefined as unknown as Manager),
+                phaseId: comp.phase,
+                competitionId
+              });
+              pairing.result = result;
+            }
+
+            group.stats = computeStats(group);
+            group.round += 1;
+          }
+        }
+      })
+    ),
+
+    /**
      * Generic notification dispatcher — forwards a fully-formed notification
      * to the invoked `notifications` child machine. Call sites build the
      * message; this action only handles the delivery + id assignment.
@@ -445,7 +511,26 @@ export const gameMachine = setup({
   guards: {
     has_phase: ({ context }, params: { phase: string }) =>
       calendar[context.turn.round]?.phases.includes(params.phase) ?? false,
-    calendar_in_bounds: ({ context }) => context.turn.round < calendar.length
+    calendar_in_bounds: ({ context }) => context.turn.round < calendar.length,
+    /**
+     * True iff any group in any of the round's gamedays still has rounds
+     * left in its schedule. By game-design invariant, this is only ever
+     * true for tournaments — regular competitions exhaust their schedule
+     * in the single round dedicated to them in the calendar.
+     */
+    tournamentHasMoreRounds: ({ context }) => {
+      const gamedays = calendar[context.turn.round]?.gamedays ?? [];
+      for (const id of gamedays) {
+        const comp = context.competitions[id];
+        const phase = comp.phases[comp.phase];
+        for (const group of phase.groups) {
+          if (group.round < group.schedule.length) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
   }
 }).createMachine({
   id: "game",
@@ -649,10 +734,22 @@ export const gameMachine = setup({
                   on: { ADVANCE: "play" }
                 },
                 play: {
+                  entry: "executeGameday",
                   always: "results"
                 },
                 results: {
-                  on: { ADVANCE: "done" }
+                  on: {
+                    ADVANCE: [
+                      // Tournament still has rounds left — loop back so the
+                      // user sees the next round's preview.
+                      {
+                        guard: "tournamentHasMoreRounds",
+                        target: "preview"
+                      },
+                      // All scheduled play done — exit the gameday phase.
+                      { target: "done" }
+                    ]
+                  }
                 },
                 done: { type: "final" }
               }
