@@ -368,6 +368,60 @@ appMachine (THE machine, holds full GameContext)
 - **`structuredClone(def.data)` for default context** — kills the Stately Inspector reference-dedup bug class entirely (see AGENTS.md).
 - **Page/leaf component boundary** — pages may call `useSelector(appActor, …)` and `appActor.send(…)`. Leaf components stay store-agnostic (props in, callbacks out).
 
+### Migration patterns (locked, established 2026-04-26)
+
+These are the rules every phase port must follow. Deviating means flagging it in the PR.
+
+#### Action shape
+
+- **Always `setup({ actions: { foo: assign(…) } })` + referenced `{ type: "foo", params: ({event}) => event.payload }`** at the call site. Never inline function-form actions in `on:` handlers — they trigger XState's `executingCustomAction` dev-mode warning the moment they spawn or send.
+- **`enqueueActions(({context, enqueue}, params) => …)`** is the official escape hatch when one event handler needs both `assign` _and_ `sendTo` _and_ a value computed once that both reference (e.g. random skill roll feeding the assign and the notification message). Don't degrade to inline action arrays when a value is shared.
+- **State mutation is `assign(({context}) => produce(context, (draft) => …))`.** Period. No spread-based nested updates. Immer is mandatory for anything deeper than a top-level field.
+- **Two-transition pattern for guarded events with feedback.** When the failure path needs UI feedback (e.g. "Myyntilupa evätty"):
+  ```ts
+  SELL_PLAYER: [
+    { guard: (...) => canSell(...)(ctx), actions: "executeSellPlayer" },
+    { actions: { type: "notify", params: () => ({ ... }) } }
+  ]
+  ```
+  Don't silently swallow rejected events.
+
+#### Guards as shared predicates
+
+- Predicates that gate **both** UI affordances (`disabled` props) and machine transitions live in `src/machines/selectors.ts` as curried `ContextSelector<boolean>`:
+  ```ts
+  export const canSellPlayer =
+    (manager: string): ContextSelector<boolean> =>
+    (ctx) => /* … */;
+  ```
+- Consumed identically by both worlds:
+  - UI: `const ok = useGameContext(canSellPlayer(manager.id));`
+  - Machine: `guard: ({context, event}) => canSellPlayer(event.payload.manager)(context)`
+- **Never duplicate the rule.** If the UI condition and the machine guard ever drift, you've broken the contract.
+- **Selectors must stay pure.** Push data lookups (e.g. `prankTypes[type].price(competition)`) to the call site and pass the result in as a parameter — selectors that import data files invite circular dep chains (`selectors → game/pranks → sagas → selectors`).
+
+#### Per-competition behavior
+
+- When a phase action needs competition-specific logic, **add an optional method on `CompetitionDefinition`** instead of branching on `competitionId === "ehl"` inside the machine action.
+- Signature: `(draft: Draft<GameContext>, args: { phase, groupIdx, group }) => void`. **Do not hide immer.** Competitions participate in the same `produce()` pass as the surrounding phase action — pretending otherwise just means they spin up their own `produce` internally. `Draft<GameContext>` in the signature is honest about what these functions do.
+- **Co-locate the data.** EHL awards table + Finnish text live in [src/data/competitions/ehl.ts](src/data/competitions/ehl.ts). Tournament prize amounts live in [src/data/competitions/tournaments.ts](src/data/competitions/tournaments.ts) reading from `tournamentList`. PHL/division omit the field. Default behavior is no-op via optional chaining (`competitionDef.groupEnd?.(…)`).
+- This shape generalizes: same pattern works for `groupEnd` (today), future `afterMatch` (per-game manager bookkeeping), future `start`/`end` lifecycle hooks. The machine layer stays competition-agnostic.
+
+#### Phase function extraction (when machines grow)
+
+When a single action grows beyond ~50 lines, extract — but follow these rules:
+
+- **Pure phase functions** `(ctx: GameContext, params?) => GameContext` are the gold standard. No XState types in the signature, trivially testable as `f(ctx) === expected`. Wire them in the machine as `assign(({context}, params) => phaseFn(context, params))`.
+- **Draft mutators** `(draft: Draft<GameContext>, …) => void` are the right tool for sub-steps inside a phase function's `produce()` pass. Pass the draft around freely.
+- **Do NOT extract whole `assign(…)` action objects to other files.** XState's generic juggling makes them painful to type without the `setup()` callback context. Extract the _work_, keep the _wiring_ in the machine file.
+- **Reminder: state-narrowed `event` is a `setup()`-callback-only superpower.** Extracted helpers receive the full event union, or take a typed `params` object instead. The narrowing only happens inside the machine's `setup({actions: …})` callbacks.
+
+#### Stately Inspector hygiene
+
+- The inspector dedupes shared object references and stubs them as `"[...]"` placeholders.
+- **Always pass fresh refs into machine context.** `[...managerDefs]`, `structuredClone(competitionData)`, etc. — never the imported singleton. See [src/state/defaults.ts](src/state/defaults.ts).
+- Symptom of getting this wrong: long arrays in DevTools that look truncated past index ~9, or fields displaying as `"[...]"` after the first occurrence.
+
 ### Roadmap
 
 PR numbers below are sequential markers, not commitments. Each step ends with `pnpm typecheck && pnpm test --run && pnpm build` green.

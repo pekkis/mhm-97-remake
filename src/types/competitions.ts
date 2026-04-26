@@ -1,5 +1,6 @@
 import type { Team } from "@/state/game";
 import type { GameContext } from "@/state";
+import type { Draft } from "immer";
 
 // --- Game result ---
 
@@ -152,6 +153,16 @@ export type CompetitionDefinition = {
    * need extra context can be left undefined / sparse.
    */
   seedContext?: Array<((ctx: GameContext) => unknown) | undefined>;
+  /**
+   * Optional per-competition hook called from `executeGameday` when a
+   * group's schedule is exhausted (i.e. the round just played was the
+   * final one). Mutates the draft in place. Competitions without
+   * end-of-group bookkeeping (PHL, division) omit it.
+   */
+  groupEnd?: (
+    draft: Draft<GameContext>,
+    args: { phase: number; groupIdx: number; group: Group }
+  ) => void;
 };
 
 export type CompetitionSagaDefinition = {

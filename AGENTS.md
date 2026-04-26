@@ -605,6 +605,27 @@ Converted all 13 saga files + 13 phase files from `redux-saga/effects` to `typed
    - `type-fest` is installed (devDep) — use it freely for utility types (`Simplify`, `PartialDeep`, `SetRequired`, `Opaque`, etc.) instead of reinventing them.
    - `remeda` is installed — prefer `entries()`, `values()`, `keys()` from remeda over `Object.entries/values/keys` for better key type preservation (avoids `string` widening). This is now standard practice codebase-wide (~30 files converted). For other utilities, prefer native JS first, then `remeda` (do not reintroduce `ramda`).
 
+9. **XState 5 conventions (post-pivot)**
+   - **`setup({ actions, guards, actors })` always.** Use referenced actions (`actions: { foo: assign(…) }` + `actions: { type: "foo", params: ({event}) => event.payload }`) over function-form actions. Function-form trips the `executingCustomAction` dev-mode warning when the body sends to children.
+   - **`enqueueActions` when one action needs both `assign` + `sendTo`.** It lets you compute a one-time value (e.g. random roll) and reference it from both. See `executeBuyPlayer`/`executeSellPlayer`. Don't fall back to inline arrays of action objects when a value needs to be shared.
+   - **`assign(({context}) => produce(context, (draft) => …))` is the standard pattern** for state-modifying actions. Never use spread-based nested updates — immer is mandatory for any mutation deeper than the top level.
+   - **Guards as `ContextSelector<boolean>`.** Predicates that gate both UI affordances and machine transitions live in `src/machines/selectors.ts` as curried `(args) => (ctx) => boolean`. Same predicate consumed two ways: `useGameContext(canXxx(arg))` in components, `guard: ({context, event}) => canXxx(event.payload.arg)(context)` in the machine. **Never duplicate the rule.**
+   - **Two-transition pattern for guarded events with feedback.** When the failure path needs UI feedback (e.g. "Myyntilupa evätty"), use an array of transition objects: `EVENT: [{ guard, actions: execute }, { actions: notify }]`. Don't silently swallow rejected events.
+   - **Never put data lookups in selectors.** Selectors stay pure — push lookups (e.g. `prankTypes[type].price(competition)`) to the call site to avoid circular dep chains. Selectors that need pricing take it as a parameter.
+   - **Pass fresh refs into machine context** (`[...managerDefs]`, not the imported singleton) — the Stately Inspector dedupes shared object references and stubs them as `"[...]"` placeholders. See `src/state/defaults.ts`.
+
+10. **Competition-specific behavior lives on the competition definition**
+    - When `executeGameday` (or any future phase) needs a per-competition hook, add an optional method to `CompetitionDefinition` instead of branching on `competitionId === "ehl"` inside the machine action.
+    - Pattern: `(draft: Draft<GameContext>, args: { phase, groupIdx, group }) => void`. **Don't hide immer** — competitions participate in the same `produce()` pass as the rest of the action, and pretending otherwise just makes them spin up their own. `Draft<GameContext>` in the signature is honest about what they do.
+    - Co-locate the data: EHL awards table + Finnish text live in `src/data/competitions/ehl.ts`, tournament prize amounts read from `tournamentList`. PHL/division omit the field. Default behavior is no-op via optional chaining (`competitionDef.groupEnd?.(…)`).
+    - Same shape works for any per-competition extension point: `groupEnd`, future `afterMatch`, future `start`/`end` lifecycle hooks. The machine layer stays competition-agnostic.
+
+11. **Phase function extraction (when machine grows)**
+    - **Pure phase functions** `(ctx: GameContext, params?) => GameContext` can live anywhere — no XState types in the signature, trivially testable as `f(ctx) === expected`. Wire as `assign(({context}, params) => phaseFn(context, params))`.
+    - **Draft mutators** `(draft: Draft<GameContext>, …) => void` for sub-steps inside a phase function's `produce()`. Pass the draft around freely.
+    - **Don't try to extract whole `assign(…)` action objects to other files.** The XState generic juggling isn't worth it. Extract the work, keep the wiring in the machine file.
+    - **State-narrowed `event` is a `setup()`-callback-only superpower** — extracted helpers get the full event union or take typed `params` instead.
+
 ---
 
 ## Collaboration Style Preferences

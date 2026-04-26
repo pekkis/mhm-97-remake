@@ -1,8 +1,9 @@
 import { setup, assign, sendTo, enqueueActions } from "xstate";
-import { produce } from "immer";
+import { produce, type Draft } from "immer";
 
 import type { GameContext } from "@/state";
 import type { Manager } from "@/state/manager";
+import type { GameResult } from "@/types/competitions";
 import {
   managersMainCompetition,
   managerCompetesIn,
@@ -33,6 +34,75 @@ import { values, entries } from "remeda";
 // Parlay payout multipliers indexed by number of correct picks (0..6).
 // 1-1 mirror of `victories` in src/sagas/betting.ts.
 const victories = [false, false, false, 1, 2, 5, 10] as const;
+
+const emptyStreak = { win: 0, draw: 0, loss: 0, noLoss: 0, noWin: 0 } as const;
+const emptyGameRecord = { win: 0, draw: 0, loss: 0 } as const;
+
+/**
+ * Per-pairing stats bookkeeping. Updates team streaks (W/D/L plus the
+ * derived noWin/noLoss counters) and per-manager game records for both
+ * sides of a single match. 1-1 port of `gameResultHandler` +
+ * `updateFromFacts` reducer in `src/sagas/stats.ts` / `src/ducks/stats.ts`.
+ *
+ * Mutates `draft.stats` in place — call it from inside `executeGameday`'s
+ * `produce()` pass.
+ */
+function updateStreaks(
+  draft: Draft<GameContext>,
+  params: {
+    competition: string;
+    phase: number;
+    result: GameResult;
+    home: { team: number; manager: string | undefined };
+    away: { team: number; manager: string | undefined };
+  }
+) {
+  const stats = draft.stats;
+  const phaseKey = params.phase.toString();
+
+  for (const which of ["home", "away"] as const) {
+    const { team, manager } = params[which];
+    const facts = resultFacts(params.result, which);
+    const teamKey = team.toString();
+
+    // Team streaks.
+    if (!stats.streaks.team[teamKey]) {
+      stats.streaks.team[teamKey] = {};
+    }
+    if (!stats.streaks.team[teamKey][params.competition]) {
+      stats.streaks.team[teamKey][params.competition] = { ...emptyStreak };
+    }
+    const s = stats.streaks.team[teamKey][params.competition];
+    s.win = facts.isWin ? s.win + 1 : 0;
+    s.draw = facts.isDraw ? s.draw + 1 : 0;
+    s.loss = facts.isLoss ? s.loss + 1 : 0;
+    s.noLoss = facts.isWin || facts.isDraw ? s.noLoss + 1 : 0;
+    s.noWin = facts.isLoss || facts.isDraw ? s.noWin + 1 : 0;
+
+    // Manager game records (only for managed teams).
+    if (manager) {
+      if (!stats.managers[manager]) {
+        stats.managers[manager] = { games: {} };
+      }
+      if (!stats.managers[manager].games[params.competition]) {
+        stats.managers[manager].games[params.competition] = {};
+      }
+      if (!stats.managers[manager].games[params.competition][phaseKey]) {
+        stats.managers[manager].games[params.competition][phaseKey] = {
+          ...emptyGameRecord
+        };
+      }
+      const r = stats.managers[manager].games[params.competition][phaseKey];
+      if (facts.isWin) {
+        r.win += 1;
+      } else if (facts.isLoss) {
+        r.loss += 1;
+      } else {
+        r.draw += 1;
+      }
+    }
+  }
+}
 
 /**
  * Game machine.
@@ -505,6 +575,14 @@ export const gameMachine = setup({
                 competitionId
               });
               pairing.result = result;
+
+              updateStreaks(draft, {
+                competition: competitionId,
+                phase: comp.phase,
+                result,
+                home: { team: home.id, manager: home.manager },
+                away: { team: away.id, manager: away.manager }
+              });
             }
 
             // 2. Recompute the group's standings.
@@ -651,6 +729,19 @@ export const gameMachine = setup({
 
             // 5. Advance the group's round counter.
             group.round += 1;
+
+            // 6. groupEnd — when the schedule is exhausted, delegate to
+            //    the competition's own end-of-group hook (no-op default).
+            //    EHL hands out medalist awards (final phase only);
+            //    tournaments disburse the per-tournament prize.
+            //    PHL/division omit the hook.
+            if (group.round === group.schedule.length) {
+              competitionDef.groupEnd?.(draft, {
+                phase: comp.phase,
+                groupIdx,
+                group
+              });
+            }
           }
         }
       })

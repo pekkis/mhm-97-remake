@@ -2,9 +2,11 @@ import type { Team } from "@/state/game";
 import type {
   Competition,
   CompetitionDefinition,
+  TeamStat,
   TournamentGroup
 } from "@/types/competitions";
 import tournamentScheduler from "@/services/tournament";
+import { amount as formatAmount } from "@/services/format";
 import type { Manager } from "@/state/manager";
 import type { Invitation } from "@/state/invitation";
 import { foreignTeams } from "@/machines/selectors";
@@ -129,7 +131,36 @@ const tournaments: CompetitionDefinition = {
       managers: ctx.manager.managers,
       invitations: ctx.invitation.invitations.filter((i) => i.participate)
     })
-  ]
+  ],
+
+  groupEnd: (draft, { groupIdx, group }) => {
+    if (group.type !== "tournament") {
+      return;
+    }
+    const stats = group.stats as TeamStat[];
+    const award = tournamentList[groupIdx].award;
+    for (const stat of stats) {
+      const team = draft.teams[stat.id];
+      if (!team.domestic) {
+        continue;
+      }
+      team.readiness -= 2;
+      if (team.manager === undefined) {
+        continue;
+      }
+      const m = draft.manager.managers[team.manager];
+      if (!m) {
+        continue;
+      }
+      m.balance += award;
+      if (!draft.news.announcements[m.id]) {
+        draft.news.announcements[m.id] = [];
+      }
+      draft.news.announcements[m.id].push(
+        `Tilillenne on siirretty __${formatAmount(award)}__ pekkaa rahaa. Viiteviesti: joulutauon turnaus, osallistumismaksu, _${group.name}_.`
+      );
+    }
+  }
 };
 
 export default tournaments;
