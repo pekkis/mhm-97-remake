@@ -7,18 +7,21 @@ export type NotificationData = {
   type: string;
 };
 
-const AUTO_DISMISS_MS = 7000;
+export type NotificationInput = NotificationData & { timeout: number };
 
 /**
- * One notification = one machine. Lives 7 seconds in `active`, then
+ * One notification = one machine. Lives `timeout` ms in `active`, then
  * transitions to `expired` and notifies the parent so it can reap.
  * Manual `DISMISS` short-circuits the timer.
  */
 export const notificationMachine = setup({
   types: {
-    context: {} as NotificationData,
-    input: {} as NotificationData,
+    context: {} as NotificationInput,
+    input: {} as NotificationInput,
     events: {} as { type: "DISMISS" }
+  },
+  delays: {
+    AUTO_DISMISS: ({ context }) => context.timeout
   }
 }).createMachine({
   id: "notification",
@@ -26,7 +29,7 @@ export const notificationMachine = setup({
   initial: "active",
   states: {
     active: {
-      after: { [AUTO_DISMISS_MS]: "expired" },
+      after: { AUTO_DISMISS: "expired" },
       on: { DISMISS: "expired" }
     },
     expired: {

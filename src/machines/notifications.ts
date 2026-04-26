@@ -8,20 +8,32 @@ const MAX_NOTIFICATIONS = 3;
 
 export type NotificationActorRef = ActorRefFrom<typeof notificationMachine>;
 
+/** Notification payload pushed by the app — `timeout` falls back to the parent's default. */
+export type NotificationPayload = NotificationData & { timeout?: number };
+
+type NotificationsContext = {
+  notifications: NotificationActorRef[];
+  defaultTimeout: number;
+};
+
+type NotificationsInput = { defaultTimeout: number };
+
 type NotificationsEvents =
-  | { type: "PUSH"; notification: NotificationData }
+  | { type: "PUSH"; notification: NotificationPayload }
   | { type: "DISMISS"; id: string }
   | { type: "REMOVE"; id: string };
 
 /**
  * Parent machine for notifications. Each PUSH spawns a child
- * `notificationMachine` actor which auto-expires after 7s. Children
- * notify back via REMOVE on expiry; we cap at MAX_NOTIFICATIONS by
- * stopping the oldest when we'd overflow.
+ * `notificationMachine` actor which auto-expires after its `timeout`
+ * (defaulting to the parent's `defaultTimeout`). Children notify back
+ * via REMOVE on expiry; we cap at MAX_NOTIFICATIONS by stopping the
+ * oldest when we'd overflow.
  */
 export const notificationsMachine = setup({
   types: {
-    context: {} as { notifications: NotificationActorRef[] },
+    context: {} as NotificationsContext,
+    input: {} as NotificationsInput,
     events: {} as NotificationsEvents
   },
   actors: {
@@ -29,14 +41,20 @@ export const notificationsMachine = setup({
   }
 }).createMachine({
   id: "notifications",
-  context: { notifications: [] },
+  context: ({ input }) => ({
+    notifications: [],
+    defaultTimeout: input.defaultTimeout
+  }),
   on: {
     PUSH: {
       actions: assign({
         notifications: ({ context, event, spawn }) => {
           const ref = spawn("notification", {
             id: `notification-${event.notification.id}`,
-            input: event.notification
+            input: {
+              ...event.notification,
+              timeout: event.notification.timeout ?? context.defaultTimeout
+            }
           });
           const next = [...context.notifications, ref];
           if (next.length > MAX_NOTIFICATIONS) {

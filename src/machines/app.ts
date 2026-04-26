@@ -258,8 +258,13 @@ export const appMachine = setup({
      */
     notify: sendTo(
       "notifications",
-      (_, params: { notification: Omit<NotificationData, "id"> }) => ({
-        type: "PUSH",
+      (
+        _,
+        params: {
+          notification: Omit<NotificationData, "id"> & { timeout?: number };
+        }
+      ) => ({
+        type: "PUSH" as const,
         notification: { id: crypto.randomUUID(), ...params.notification }
       })
     )
@@ -278,7 +283,8 @@ export const appMachine = setup({
     {
       src: "notifications",
       id: "notifications",
-      systemId: "notifications"
+      systemId: "notifications",
+      input: { defaultTimeout: 7000 }
     }
   ],
   on: {

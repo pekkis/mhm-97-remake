@@ -1,18 +1,11 @@
 import * as styles from "./Notifications.css";
 import Notification from "./Notification";
-import { useSelector } from "@xstate/react";
 import { AppMachineContext } from "@/context/app-machine-context";
-import type { ActorRefFrom } from "xstate";
-import type { notificationsMachine } from "@/machines/notifications";
+import { NotificationsContext } from "@/context/notifications-context";
 
 const Notifications = () => {
   const appActor = AppMachineContext.useActorRef();
-  const notificationsActor = appActor.system.get(
-    "notifications"
-  ) as ActorRefFrom<typeof notificationsMachine>;
-
-  const notifications = useSelector(
-    notificationsActor,
+  const notifications = NotificationsContext.useSelector(
     (s) => s.context.notifications
   );
 

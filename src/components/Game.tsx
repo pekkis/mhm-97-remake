@@ -25,6 +25,9 @@ import Gala from "./Gala";
 import { useSelector } from "@xstate/store-react";
 import { uiStore } from "@/stores/ui";
 import { AppMachineContext } from "@/context/app-machine-context";
+import { NotificationsContext } from "@/context/notifications-context";
+import type { ActorRefFrom } from "xstate";
+import type { notificationsMachine } from "@/machines/notifications";
 import type { FC } from "react";
 
 type PhaseProps = {
@@ -153,12 +156,18 @@ const Game: FC = () => {
   console.log("MENU", menu);
 
   const phase = useUiPhase();
+  const appActor = AppMachineContext.useActorRef();
+  const notificationsActor = appActor.system.get(
+    "notifications"
+  ) as ActorRefFrom<typeof notificationsMachine>;
 
   return (
     <div>
       {menu && <ModalMenu />}
       <Phase phase={phase} />
-      <Notifications />
+      <NotificationsContext.Provider actor={notificationsActor}>
+        <Notifications />
+      </NotificationsContext.Provider>
     </div>
   );
 };

@@ -11,7 +11,9 @@ const make = (id: string, message = `msg-${id}`): NotificationData => ({
 });
 
 const createTestActor = () => {
-  const actor = createActor(notificationsMachine);
+  const actor = createActor(notificationsMachine, {
+    input: { defaultTimeout: 7000 }
+  });
   actor.start();
   return actor;
 };
