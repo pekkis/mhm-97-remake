@@ -25,6 +25,8 @@ import r from "@/services/random";
 import { victors } from "@/services/playoffs";
 import { entries, keys, pick, values } from "remeda";
 import arenas from "@/data/arenas";
+import difficultyLevels from "@/data/difficulty-levels";
+import calendar from "@/data/calendar";
 import type {
   GameContext,
   Manager,
@@ -314,6 +316,36 @@ export const canImproveArena =
       return false;
     }
     return m.balance >= next.price;
+  };
+
+/**
+ * True iff `manager` can still order a prank this round: their difficulty's
+ * per-season cap isn't reached, the current calendar round actually allows
+ * pranks, and — when a `price` is supplied — they can afford it.
+ *
+ * Price is passed in (rather than looked up from `@/game/pranks`) to avoid a
+ * circular import: prank `execute()` generators reach back into sagas, which
+ * already import these selectors. Callers resolve the price themselves.
+ */
+export const canOrderPrank =
+  (manager: string, price?: number): ContextSelector<boolean> =>
+  (ctx) => {
+    const m = ctx.manager.managers[manager];
+    if (!m) {
+      return false;
+    }
+    const round = calendar[ctx.turn.round];
+    if (!round?.pranks) {
+      return false;
+    }
+    const cap = difficultyLevels[m.difficulty].pranksPerSeason;
+    if (m.pranksExecuted >= cap) {
+      return false;
+    }
+    if (price !== undefined && m.balance < price) {
+      return false;
+    }
+    return true;
   };
 
 export const managerWithId =

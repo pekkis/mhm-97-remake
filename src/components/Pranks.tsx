@@ -8,28 +8,24 @@ import ConfirmPrank from "./pranks/ConfirmPrank";
 import Box from "./styled-system/Box";
 import Calendar from "./ui/Calendar";
 
-import difficultyLevels from "@/data/difficulty-levels";
 import {
   GameMachineContext,
   useGameContext
 } from "@/context/game-machine-context";
 import { useMachine } from "@xstate/react";
 import { prankSelectionMachine } from "@/machines/prankSelection";
-import { activeManager } from "@/machines/selectors";
+import { activeManager, canOrderPrank } from "@/machines/selectors";
 
 const Pranks = () => {
   const manager = useGameContext(activeManager);
   const teams = useGameContext((ctx) => ctx.teams);
   const competitions = useGameContext((ctx) => ctx.competitions);
+  const canDo = useGameContext(canOrderPrank(manager.id));
   const [state, send] = useMachine(prankSelectionMachine);
   const gameActor = GameMachineContext.useActorRef();
 
   const phl = competitions.phl;
   const division = competitions.division;
-
-  const difficultyLevel = difficultyLevels[manager.difficulty];
-
-  const canDo = difficultyLevel.pranksPerSeason > manager.pranksExecuted;
 
   const targetCompetition = phl.teams.includes(manager.team!) ? phl : division;
 

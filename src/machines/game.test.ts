@@ -18,7 +18,7 @@ const buildContextWithManager = (): GameContext => {
       microphone: false,
       cheer: false
     },
-    balance: 0,
+    balance: 1_000_000,
     arena: { name: "Stadio Olimpico", level: 0 },
     extra: 0,
     insuranceExtra: 0,

@@ -5,7 +5,8 @@ import type { GameContext } from "@/state";
 import {
   managersMainCompetition,
   managerCompetesIn,
-  canImproveArena
+  canImproveArena,
+  canOrderPrank
 } from "@/machines/selectors";
 import difficultyLevels from "@/data/difficulty-levels";
 import teamData from "@/data/teams";
@@ -380,6 +381,24 @@ export const gameMachine = setup({
       }))
     },
     ORDER_PRANK: {
+      // Mirror of the `Pranks.tsx` Calendar gate + per-type affordability
+      // check in `SelectType`. Price is resolved here (selectors can't
+      // import `@/game/pranks` without dragging the whole saga graph in).
+      guard: ({ context, event }) => {
+        const competesInPHL = managerCompetesIn(
+          event.payload.manager,
+          "phl"
+        )(context);
+        const competition = competesInPHL ? "phl" : "division";
+        const prank = prankTypes[event.payload.type];
+        if (!prank) {
+          return false;
+        }
+        return canOrderPrank(
+          event.payload.manager,
+          prank.price(competition)
+        )(context);
+      },
       actions: [
         {
           type: "executeOrderPrank",
@@ -406,7 +425,8 @@ export const gameMachine = setup({
       // selector backs the `disabled` prop on the Arena.tsx upgrade button.
       // Sends from anywhere else (dev menu, future bots, future tests) get
       // the same enforcement for free.
-      guard: ({ context, event }) => canImproveArena(event.payload.manager)(context),
+      guard: ({ context, event }) =>
+        canImproveArena(event.payload.manager)(context),
       actions: [
         {
           type: "executeImproveArena",
