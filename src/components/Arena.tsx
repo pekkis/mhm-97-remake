@@ -8,14 +8,15 @@ import clsx from "clsx";
 import * as styles from "./Arena.css";
 import { currency } from "@/services/format";
 import Box from "./styled-system/Box";
-import { useAppDispatch } from "@/config/redux";
-import { useGameContext } from "@/context/game-machine-context";
-import { managerImproveArena } from "@/ducks/manager";
+import {
+  GameMachineContext,
+  useGameContext
+} from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
 
 const Arenas = () => {
   const manager = useGameContext(activeManager);
-  const dispatch = useAppDispatch();
+  const gameActor = GameMachineContext.useActorRef();
 
   const currentLevel = manager.arena.level;
 
@@ -58,7 +59,10 @@ const Arenas = () => {
               block
               disabled={!canDo}
               onClick={() =>
-                dispatch(managerImproveArena({ manager: manager.id }))
+                gameActor.send({
+                  type: "IMPROVE_ARENA",
+                  payload: { manager: manager.id }
+                })
               }
             >
               <div>Paranna halliolosuhteitasi</div>

@@ -11,15 +11,10 @@ import {
 import {
   watchTransferMarket,
   crisisMeeting,
-  improveArena,
   toggleService,
   setActiveManager
 } from "@/sagas/manager";
-import {
-  managerCrisisMeeting,
-  managerImproveArena,
-  managerToggleService
-} from "@/ducks/manager";
+import { managerCrisisMeeting, managerToggleService } from "@/ducks/manager";
 import { acceptInvitation } from "@/sagas/invitation";
 
 import { requestAcceptInvitation } from "@/ducks/invitation";
@@ -40,7 +35,6 @@ export default function* actionPhase() {
     yield* all([
       fork(watchTransferMarket),
       takeEvery(managerCrisisMeeting, crisisMeeting),
-      takeEvery(managerImproveArena, improveArena),
       takeEvery(managerToggleService, toggleService),
       takeEvery(requestAcceptInvitation, function* (action) {
         yield* call(

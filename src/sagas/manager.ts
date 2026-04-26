@@ -7,7 +7,6 @@ import {
   managersTeamId,
   managersDifficulty,
   managerCompetesIn,
-  managersArena,
   managerHasService,
   teamsMainCompetition
 } from "@/selectors";
@@ -31,7 +30,6 @@ import {
 } from "@/ducks/manager";
 import type { ManagerServices } from "@/state/manager";
 import difficultyLevels from "@/data/difficulty-levels";
-import arenas from "@/data/arenas";
 import { incrementStrength, decrementStrength } from "./team";
 import r from "@/services/random";
 import { addAnnouncement } from "./news";
@@ -182,27 +180,6 @@ export function* buyPlayer(action: ReturnType<typeof managerBuyPlayer>) {
 export function* setArenaLevel(manager: string, level: number) {
   yield* put(
     managerSetArenaLevel({ manager, level: Math.max(0, Math.min(9, level)) })
-  );
-}
-
-export function* improveArena(action: { payload: { manager: string } }) {
-  const {
-    payload: { manager }
-  } = action;
-
-  const currentArena = yield* select(managersArena(manager));
-  const nextArenaLevel = currentArena!.level + 1;
-
-  const newArena = arenas[nextArenaLevel];
-
-  yield* call(decrementBalance, manager, newArena.price);
-
-  yield* call(setArenaLevel, manager, newArena.id);
-
-  yield* call(
-    addNotification,
-    manager,
-    `Työmiehet käyttävät vallankumoukselllisia kvanttityövälineitä, ja rakennusurakka valmistuu alta aikayksikön!`
   );
 }
 

@@ -64,9 +64,6 @@ export const managerBuyPlayer = createAction<{
   manager: string;
   playerType: string;
 }>("MANAGER_BUY_PLAYER");
-export const managerImproveArena = createAction<{ manager: string }>(
-  "MANAGER_IMPROVE_ARENA"
-);
 export const managerSellPlayer = createAction<{
   manager: string;
   playerType: string;

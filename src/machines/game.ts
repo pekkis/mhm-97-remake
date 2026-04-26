@@ -13,6 +13,7 @@ import competitionData from "@/data/competitions";
 import { computeStats } from "@/services/competition-type";
 import strategies from "@/data/strategies";
 import prankTypes from "@/game/pranks";
+import arenas from "@/data/arenas";
 import random from "@/services/random";
 import { notificationsMachine } from "@/machines/notifications";
 import type { NotificationData } from "@/machines/notification";
@@ -56,6 +57,10 @@ export type GameMachineEvents =
   | {
       type: "ORDER_PRANK";
       payload: { manager: string; type: string; victim: number };
+    }
+  | {
+      type: "IMPROVE_ARENA";
+      payload: { manager: string };
     }
   | {
       type: "TEAM_INCUR_PENALTY";
@@ -276,6 +281,28 @@ export const gameMachine = setup({
     ),
 
     /**
+     * improve arena — debits the manager and bumps their arena level by
+     * one (clamped 0..9). 1-1 port of the legacy `improveArena()` saga.
+     * Notification delivered separately via the `notify` action; UI gating
+     * (price affordable, level < 9) stays in `Arena.tsx`.
+     */
+    executeImproveArena: assign(({ context }, params: { manager: string }) =>
+      produce(context, (draft) => {
+        const m = draft.manager.managers[params.manager];
+        if (!m) {
+          return;
+        }
+        const nextLevel = m.arena.level + 1;
+        const nextArena = arenas[nextLevel];
+        if (!nextArena) {
+          return;
+        }
+        m.balance -= nextArena.price;
+        m.arena.level = Math.max(0, Math.min(9, nextLevel));
+      })
+    ),
+
+    /**
      * Apply a points penalty to a team in a round-robin group, then
      * recompute that group's stats so the standings reflect it
      * immediately. 1-1 port of the legacy `incurPenalty()` saga (which
@@ -341,7 +368,7 @@ export const gameMachine = setup({
       src: "notifications",
       id: "notifications",
       systemId: "notifications",
-      input: { defaultTimeout: 70000 }
+      input: { defaultTimeout: 7000 }
     }
   ],
   on: {
@@ -367,6 +394,25 @@ export const gameMachine = setup({
                 type: event.payload.type,
                 victim: event.payload.victim
               }),
+              type: "info"
+            }
+          })
+        }
+      ]
+    },
+    IMPROVE_ARENA: {
+      actions: [
+        {
+          type: "executeImproveArena",
+          params: ({ event }) => event.payload
+        },
+        {
+          type: "notify",
+          params: ({ event }) => ({
+            notification: {
+              manager: event.payload.manager,
+              message:
+                "Työmiehet käyttävät vallankumoukselllisia kvanttityövälineitä, ja rakennusurakka valmistuu alta aikayksikön!",
               type: "info"
             }
           })
