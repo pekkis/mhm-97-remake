@@ -5,10 +5,7 @@ import { incrementBalance } from "@/sagas/manager";
 import { addAnnouncement } from "@/sagas/news";
 import { incrementReadiness } from "@/sagas/team";
 import { amount } from "@/services/format";
-import type {
-  CompetitionSagaDefinition,
-  TeamStat
-} from "@/types/competitions";
+import type { CompetitionSagaDefinition, TeamStat } from "@/types/competitions";
 import { all, call, select } from "typed-redux-saga";
 
 export const tournamentsSagas: CompetitionSagaDefinition = {

@@ -5,16 +5,17 @@ import * as styles from "./Services.css";
 import Toggle from "./form/Toggle";
 import Markdown from "react-markdown";
 import Box from "./styled-system/Box";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { useAppDispatch } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { managerToggleService } from "@/ducks/manager";
 import { entries } from "remeda";
 
 import services from "@/data/services";
-import { activeManager } from "@/selectors";
+import { activeManager } from "@/machines/selectors";
 
 const Services = () => {
-  const manager = useAppSelector(activeManager);
-  const basePrices = useAppSelector((state) => state.game.serviceBasePrices);
+  const manager = useGameContext(activeManager);
+  const basePrices = useGameContext((ctx) => ctx.serviceBasePrices);
   const dispatch = useAppDispatch();
 
   return (

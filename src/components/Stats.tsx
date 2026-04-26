@@ -10,16 +10,16 @@ import Tab from "./ui/Tab";
 
 import ManagerStats from "./stats/ManagerStats";
 import TeamStats from "./stats/TeamStats";
-import { useAppSelector } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { useSelector } from "@xstate/store-react";
 import { countryStore } from "@/stores/country";
-import { activeManager } from "@/selectors";
+import { activeManager } from "@/machines/selectors";
 
 const Stats = () => {
-  const manager = useAppSelector(activeManager);
-  const teams = useAppSelector((state) => state.game.teams);
-  const competitions = useAppSelector((state) => state.game.competitions);
-  const stats = useAppSelector((state) => state.stats);
+  const manager = useGameContext(activeManager);
+  const teams = useGameContext((ctx) => ctx.teams);
+  const competitions = useGameContext((ctx) => ctx.competitions);
+  const stats = useGameContext((ctx) => ctx.stats);
   const countries = useSelector(countryStore, (s) => s.context.countries);
 
   const [tab, setTab] = useState(0);

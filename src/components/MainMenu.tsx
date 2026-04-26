@@ -7,17 +7,18 @@ import Forward from "./context-sensitive/Forward";
 import Current from "./context-sensitive/Current";
 
 import Box from "./styled-system/Box";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
-import { activeManager, interestingCompetitions } from "@/selectors";
+import { useAppDispatch } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
+import { activeManager, interestingCompetitions } from "@/machines/selectors";
 import { requestResolveEvent } from "@/ducks/event";
 
 const MainMenu = () => {
   const dispatch = useAppDispatch();
-  const manager = useAppSelector(activeManager);
-  const teams = useAppSelector((state) => state.game.teams);
-  const competitions = useAppSelector((state) => state.game.competitions);
-  const events = useAppSelector((state) => state.event.events);
-  const interesting = useAppSelector(interestingCompetitions);
+  const manager = useGameContext(activeManager);
+  const teams = useGameContext((ctx) => ctx.teams);
+  const competitions = useGameContext((ctx) => ctx.competitions);
+  const events = useGameContext((ctx) => ctx.event.events);
+  const interesting = useGameContext(interestingCompetitions);
 
   return (
     <HeaderedPage>

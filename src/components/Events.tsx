@@ -3,14 +3,15 @@ import ManagerInfo from "./ManagerInfo";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./styled-system/Box";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { useAppDispatch } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { requestResolveEvent } from "@/ducks/event";
-import { activeManager } from "@/selectors";
+import { activeManager } from "@/machines/selectors";
 
 const Events = () => {
   const dispatch = useAppDispatch();
-  const manager = useAppSelector(activeManager);
-  const events = useAppSelector((state) => state.event.events);
+  const manager = useGameContext(activeManager);
+  const events = useGameContext((ctx) => ctx.event.events);
 
   return (
     <HeaderedPage>

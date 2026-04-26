@@ -1,9 +1,9 @@
 import calendar from "@/data/calendar";
-import { useAppSelector } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 
 const Forward = () => {
-  const turn = useAppSelector((state) => state.game.turn);
-  const competitions = useAppSelector((state) => state.game.competitions);
+  const turn = useGameContext((ctx) => ctx.turn);
+  const competitions = useGameContext((ctx) => ctx.competitions);
 
   const calendarEntry = calendar[turn.round];
 

@@ -2,7 +2,7 @@ import { amount } from "@/services/format";
 import { getEffective } from "@/services/effects";
 import Box from "./styled-system/Box";
 import TurnIndicator from "./game/TurnIndicator";
-import { GameMachineContext } from "@/context/game-machine-context";
+import { useGameContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
 
 import * as styles from "./ManagerInfo.css";
@@ -12,11 +12,9 @@ type ManagerInfoProps = {
 };
 
 const ManagerInfo = ({ details = false }: ManagerInfoProps) => {
-  const manager = GameMachineContext.useSelector((state) =>
-    activeManager(state.context)
-  );
-  const teams = GameMachineContext.useSelector((state) => state.context.teams);
-  const turn = GameMachineContext.useSelector((state) => state.context.turn);
+  const manager = useGameContext(activeManager);
+  const teams = useGameContext((ctx) => ctx.teams);
+  const turn = useGameContext((ctx) => ctx.turn);
 
   const team = getEffective(teams[manager.team!]);
 

@@ -9,16 +9,17 @@ import Box from "./styled-system/Box";
 import Calendar from "./ui/Calendar";
 
 import difficultyLevels from "@/data/difficulty-levels";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { useAppDispatch } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { orderPrank } from "@/ducks/prank";
 import { useMachine } from "@xstate/react";
 import { prankSelectionMachine } from "@/machines/prankSelection";
-import { activeManager } from "@/selectors";
+import { activeManager } from "@/machines/selectors";
 
 const Pranks = () => {
-  const manager = useAppSelector(activeManager);
-  const teams = useAppSelector((state) => state.game.teams);
-  const competitions = useAppSelector((state) => state.game.competitions);
+  const manager = useGameContext(activeManager);
+  const teams = useGameContext((ctx) => ctx.teams);
+  const competitions = useGameContext((ctx) => ctx.competitions);
   const [state, send] = useMachine(prankSelectionMachine);
   const dispatch = useAppDispatch();
 

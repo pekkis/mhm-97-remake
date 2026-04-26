@@ -1,7 +1,7 @@
 import type { FC, ReactNode } from "react";
 import calendar from "@/data/calendar";
 import type { CalendarEntry } from "@/data/calendar";
-import { useAppSelector } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import type { Competition, CompetitionId } from "@/types/competitions";
 
 type CalendarProps = {
@@ -15,8 +15,8 @@ type CalendarProps = {
 };
 
 const Calendar: FC<CalendarProps> = ({ when, children, fallback = null }) => {
-  const turn = useAppSelector((state) => state.game.turn);
-  const competitions = useAppSelector((state) => state.game.competitions);
+  const turn = useGameContext((ctx) => ctx.turn);
+  const competitions = useGameContext((ctx) => ctx.competitions);
 
   const entry = calendar[turn.round];
 

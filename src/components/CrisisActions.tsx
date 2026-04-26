@@ -5,18 +5,19 @@ import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import Calendar from "./ui/Calendar";
 import Box from "./styled-system/Box";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { useAppDispatch } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { managerCrisisMeeting } from "@/ducks/manager";
 
 import crisis from "@/data/crisis";
 import { currency as c } from "@/services/format";
 import { getEffective } from "@/services/effects";
-import { activeManager } from "@/selectors";
+import { activeManager } from "@/machines/selectors";
 
 const CrisisActions = () => {
-  const manager = useAppSelector(activeManager);
-  const teams = useAppSelector((state) => state.game.teams);
-  const competitions = useAppSelector((state) => state.game.competitions);
+  const manager = useGameContext(activeManager);
+  const teams = useGameContext((ctx) => ctx.teams);
+  const competitions = useGameContext((ctx) => ctx.competitions);
   const dispatch = useAppDispatch();
 
   const balance = manager.balance;

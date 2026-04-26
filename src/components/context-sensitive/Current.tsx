@@ -2,12 +2,15 @@ import { Link } from "react-router-dom";
 import Calendar from "@/components/ui/Calendar";
 import * as styles from "./Current.css";
 import { FaExclamationCircle } from "react-icons/fa";
-import { useAppSelector } from "@/config/redux";
-import { activeManagersInvitations, activeManagersTeam } from "@/selectors";
+import { useGameContext } from "@/context/game-machine-context";
+import {
+  activeManagersInvitations,
+  activeManagersTeam
+} from "@/machines/selectors";
 
 const Current = () => {
-  const invitations = useAppSelector(activeManagersInvitations);
-  const team = useAppSelector(activeManagersTeam);
+  const invitations = useGameContext(activeManagersInvitations);
+  const team = useGameContext(activeManagersTeam);
 
   return (
     <div className={styles.current}>

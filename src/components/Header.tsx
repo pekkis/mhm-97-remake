@@ -2,10 +2,11 @@ import * as styles from "./Header.css";
 import Button from "./form/Button";
 import { FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { useAppDispatch } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { advance } from "@/ducks/game";
 import { uiStore } from "@/stores/ui";
-import { advanceEnabled as advanceEnabledSelector } from "@/selectors";
+import { advanceEnabled as advanceEnabledSelector } from "@/machines/selectors";
 
 type HeaderProps = {
   back?: boolean;
@@ -18,7 +19,7 @@ const Header = ({
   menu = false,
   forward = "Eteenpäin!"
 }: HeaderProps) => {
-  const advanceEnabled = useAppSelector(advanceEnabledSelector);
+  const advanceEnabled = useGameContext(advanceEnabledSelector);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

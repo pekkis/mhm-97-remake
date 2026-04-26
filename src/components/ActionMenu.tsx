@@ -3,15 +3,16 @@ import Calendar from "./ui/Calendar";
 import { getEffective } from "@/services/effects";
 import { CRISIS_MORALE_MAX } from "@/data/constants";
 import Button from "./form/Button";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { useAppDispatch } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { uiStore } from "@/stores/ui";
 import { saveGame, quitToMainMenu } from "@/ducks/meta";
-import { activeManager } from "@/selectors";
+import { activeManager } from "@/machines/selectors";
 
 const ActionMenu = () => {
-  const manager = useAppSelector(activeManager);
-  const teams = useAppSelector((state) => state.game.teams);
-  const turn = useAppSelector((state) => state.game.turn);
+  const manager = useGameContext(activeManager);
+  const teams = useGameContext((ctx) => ctx.teams);
+  const turn = useGameContext((ctx) => ctx.turn);
   const dispatch = useAppDispatch();
   const team = getEffective(teams[manager.team!]);
 

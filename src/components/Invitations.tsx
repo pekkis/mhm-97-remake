@@ -5,14 +5,15 @@ import Box from "./styled-system/Box";
 import tournamentList from "@/data/tournaments";
 import Markdown from "react-markdown";
 import Button from "./form/Button";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { useAppDispatch } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { requestAcceptInvitation } from "@/ducks/invitation";
-import { activeManager, activeManagersInvitations } from "@/selectors";
+import { activeManager, activeManagersInvitations } from "@/machines/selectors";
 
 const Invitations = () => {
-  const manager = useAppSelector(activeManager);
+  const manager = useGameContext(activeManager);
 
-  const invitations = useAppSelector(activeManagersInvitations);
+  const invitations = useGameContext(activeManagersInvitations);
   const dispatch = useAppDispatch();
 
   return (

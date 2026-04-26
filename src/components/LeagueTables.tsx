@@ -2,13 +2,13 @@ import Table from "./league-table/Table";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./styled-system/Box";
-import { useAppSelector } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { values } from "remeda";
 
 const LeagueTables = () => {
-  const managers = useAppSelector((state) => state.manager.managers);
-  const teams = useAppSelector((state) => state.game.teams);
-  const competitions = useAppSelector((state) => state.game.competitions);
+  const managers = useGameContext((ctx) => ctx.manager.managers);
+  const teams = useGameContext((ctx) => ctx.teams);
+  const competitions = useGameContext((ctx) => ctx.competitions);
 
   return (
     <HeaderedPage>

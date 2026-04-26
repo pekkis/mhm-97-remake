@@ -2,7 +2,7 @@ import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 
 import Box from "./styled-system/Box";
-import { useAppSelector } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 
 /*
 IF tuurix(tux) > 15 THEN COLOR 13, 0: PRINT lw(tux); " pelasi koko turnauksen ajan todella suurella syd\"mell\"!": franko = franko + 1
@@ -10,10 +10,8 @@ IF tuurix(tux) < -15 THEN COLOR 5, 0: PRINT lw(tux); " k\"rsi koko turnauksen aj
 */
 
 const WorldChampionships = () => {
-  const results = useAppSelector(
-    (state) => state.game.worldChampionshipResults
-  )!;
-  const turn = useAppSelector((state) => state.game.turn);
+  const results = useGameContext((ctx) => ctx.worldChampionshipResults)!;
+  const turn = useGameContext((ctx) => ctx.turn);
 
   return (
     <HeaderedPage>

@@ -10,12 +10,13 @@ import ManagerInfo from "./ManagerInfo";
 import Box from "./styled-system/Box";
 import Tabs from "./ui/Tabs";
 import Tab from "./ui/Tab";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { useAppDispatch } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { managerBuyPlayer, managerSellPlayer } from "@/ducks/manager";
-import { activeManager } from "@/selectors";
+import { activeManager } from "@/machines/selectors";
 
 const TransferMarket = () => {
-  const manager = useAppSelector(activeManager);
+  const manager = useGameContext(activeManager);
   const dispatch = useAppDispatch();
 
   const balance = manager.balance;

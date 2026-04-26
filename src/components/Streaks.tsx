@@ -1,6 +1,6 @@
 import { entries } from "remeda";
 import Box from "./styled-system/Box";
-import { useAppSelector } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 
 const humanReadables: Record<string, string> = {
   loss: "tappiota",
@@ -15,7 +15,7 @@ type StreaksProps = {
 };
 
 const Streaks = ({ competition, team }: StreaksProps) => {
-  const streaks = useAppSelector((state) => state.stats.streaks.team);
+  const streaks = useGameContext((ctx) => ctx.stats.streaks.team);
 
   const teamStreaks = streaks?.[team]?.[competition] ?? {};
   const filtered = entries(teamStreaks).filter(([, s]) => s > 1);

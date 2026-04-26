@@ -5,14 +5,14 @@ import Season from "./data/Season";
 import Announcements from "./events/Announcements";
 
 import Box from "./styled-system/Box";
-import { useAppSelector } from "@/config/redux";
-import { activeManager } from "@/selectors";
+import { useGameContext } from "@/context/game-machine-context";
+import { activeManager } from "@/machines/selectors";
 
 const EndOfSeason = () => {
-  const manager = useAppSelector(activeManager);
-  const news = useAppSelector((state) => state.news.news);
-  const turn = useAppSelector((state) => state.game.turn);
-  const announcements = useAppSelector((state) => state.news.announcements);
+  const manager = useGameContext(activeManager);
+  const news = useGameContext((ctx) => ctx.news.news);
+  const turn = useGameContext((ctx) => ctx.turn);
+  const announcements = useGameContext((ctx) => ctx.news.announcements);
 
   return (
     <HeaderedPage>

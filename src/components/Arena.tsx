@@ -8,12 +8,13 @@ import clsx from "clsx";
 import * as styles from "./Arena.css";
 import { currency } from "@/services/format";
 import Box from "./styled-system/Box";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { useAppDispatch } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { managerImproveArena } from "@/ducks/manager";
-import { activeManager } from "@/selectors";
+import { activeManager } from "@/machines/selectors";
 
 const Arenas = () => {
-  const manager = useAppSelector(activeManager);
+  const manager = useGameContext(activeManager);
   const dispatch = useAppDispatch();
 
   const currentLevel = manager.arena.level;

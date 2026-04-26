@@ -3,10 +3,10 @@ import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 
 import Box from "./styled-system/Box";
-import { useAppSelector } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 
 const Gala = () => {
-  const news = useAppSelector((state) => state.news.news);
+  const news = useGameContext((ctx) => ctx.news.news);
 
   return (
     <HeaderedPage>

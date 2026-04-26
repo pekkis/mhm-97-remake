@@ -3,15 +3,16 @@ import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import BettingForm from "./betting/BettingForm";
 import Box from "./styled-system/Box";
-import { useAppSelector, useAppDispatch } from "@/config/redux";
+import { useAppDispatch } from "@/config/redux";
+import { useGameContext } from "@/context/game-machine-context";
 import { requestBet } from "@/ducks/betting";
-import { activeManager } from "@/selectors";
+import { activeManager } from "@/machines/selectors";
 
 const Betting = () => {
-  const turn = useAppSelector((state) => state.game.turn);
-  const manager = useAppSelector(activeManager);
-  const teams = useAppSelector((state) => state.game.teams);
-  const competition = useAppSelector((state) => state.game.competitions.phl);
+  const turn = useGameContext((ctx) => ctx.turn);
+  const manager = useGameContext(activeManager);
+  const teams = useGameContext((ctx) => ctx.teams);
+  const competition = useGameContext((ctx) => ctx.competitions.phl);
   const dispatch = useAppDispatch();
 
   return (
