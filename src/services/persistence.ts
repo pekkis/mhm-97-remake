@@ -20,7 +20,9 @@ export const saveSnapshot = (slot: number, snapshot: unknown): void => {
 
 export const loadSnapshot = (slot: number): unknown | null => {
   const json = localStorage.getItem(slotKey(slot));
-  if (!json) return null;
+  if (!json) {
+    return null;
+  }
   return JSON.parse(json);
 };
 

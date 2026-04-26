@@ -20,6 +20,7 @@ import competitionTypes from "@/services/competition-type";
 import { simulate, gameFacts, resultFacts } from "@/services/game";
 import { amount as formatAmount } from "@/services/format";
 import strategies from "@/data/strategies";
+import services from "@/data/services";
 import prankTypes from "@/game/pranks";
 import arenas from "@/data/arenas";
 import playerTypes from "@/data/transfer-market";
@@ -51,6 +52,17 @@ export type ManagerSubmission = {
   difficulty: string;
   team: number;
 };
+
+// One small alias to avoid repeating the generics
+export type GameAssign<TParams = undefined> = ReturnType<
+  typeof assign<
+    GameContext,
+    GameMachineEvents,
+    TParams,
+    GameMachineEvents,
+    never
+  >
+>;
 
 export type GameMachineEvents =
   | { type: "ADVANCE" }
@@ -645,6 +657,59 @@ export const gameMachine = setup({
     ),
 
     /**
+     * Calculations phase — per-team readiness drift from the chosen
+     * strategy, per-manager service costs, then duration ticks on every
+     * active team effect. 1-1 port of `calculationsPhase()` in
+     * `src/sagas/phase/calculations.ts` + the `decrementDurations`
+     * reducer case.
+     *
+     * No UI — runs on `entry` and the state auto-advances.
+     */
+    executeCalculations: assign(({ context }) =>
+      produce(context, (draft) => {
+        const turn = draft.turn;
+        const basePrices = draft.serviceBasePrices;
+
+        // Per-team: strategy-driven readiness drift.
+        for (const team of draft.teams) {
+          const delta = strategies[team.strategy].incrementReadiness(turn);
+          if (delta !== 0) {
+            team.readiness += delta;
+          }
+        }
+
+        // Per-manager: pay for active services.
+        for (const manager of values(draft.manager.managers)) {
+          let serviceCosts = 0;
+          for (const [serviceId, active] of entries(manager.services)) {
+            if (!active) {
+              continue;
+            }
+            serviceCosts += services[serviceId].price(
+              basePrices[serviceId],
+              manager
+            );
+          }
+          if (serviceCosts !== 0) {
+            manager.balance -= serviceCosts;
+          }
+        }
+
+        // Tick durations on every active effect (team + opponent).
+        // Expired effects (duration <= 0 after the tick) are pruned by
+        // `advanceRound` at end of round.
+        for (const team of draft.teams) {
+          for (const e of team.effects) {
+            e.duration -= 1;
+          }
+          for (const e of team.opponentEffects) {
+            e.duration -= 1;
+          }
+        }
+      })
+    ),
+
+    /**
      * Generic notification dispatcher — forwards a fully-formed notification
      * to the invoked `notifications` child machine. Call sites build the
      * message; this action only handles the delivery + id assignment.
@@ -929,7 +994,8 @@ export const gameMachine = setup({
               ]
             },
             calculations: {
-              on: { ADVANCE: "event_creation_check" }
+              entry: "executeCalculations",
+              always: "event_creation_check"
             },
 
             event_creation_check: {
