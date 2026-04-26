@@ -24,6 +24,7 @@
 import r from "@/services/random";
 import { victors } from "@/services/playoffs";
 import { entries, keys, pick, values } from "remeda";
+import arenas from "@/data/arenas";
 import type {
   GameContext,
   Manager,
@@ -295,6 +296,25 @@ export const managerById =
   (manager: string): ContextSelector<Manager | undefined> =>
   (ctx) =>
     ctx.manager.managers[manager];
+
+/**
+ * True iff `manager` can afford the next arena upgrade and isn't already at
+ * the top tier. Single source of truth shared by the `Arena.tsx` button's
+ * `disabled` prop and the gameMachine's `IMPROVE_ARENA` guard.
+ */
+export const canImproveArena =
+  (manager: string): ContextSelector<boolean> =>
+  (ctx) => {
+    const m = ctx.manager.managers[manager];
+    if (!m) {
+      return false;
+    }
+    const next = arenas[m.arena.level + 1];
+    if (!next) {
+      return false;
+    }
+    return m.balance >= next.price;
+  };
 
 export const managerWithId =
   (id: string): ContextSelector<Manager | undefined> =>

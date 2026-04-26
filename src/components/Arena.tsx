@@ -12,17 +12,15 @@ import {
   GameMachineContext,
   useGameContext
 } from "@/context/game-machine-context";
-import { activeManager } from "@/machines/selectors";
+import { activeManager, canImproveArena } from "@/machines/selectors";
 
 const Arenas = () => {
   const manager = useGameContext(activeManager);
+  const canDo = useGameContext(canImproveArena(manager.id));
   const gameActor = GameMachineContext.useActorRef();
 
   const currentLevel = manager.arena.level;
-
   const nextLevel = arenas[currentLevel + 1];
-
-  const canDo = currentLevel < 9 && manager.balance >= nextLevel.price;
 
   return (
     <HeaderedPage>

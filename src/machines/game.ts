@@ -4,7 +4,8 @@ import { produce } from "immer";
 import type { GameContext } from "@/state";
 import {
   managersMainCompetition,
-  managerCompetesIn
+  managerCompetesIn,
+  canImproveArena
 } from "@/machines/selectors";
 import difficultyLevels from "@/data/difficulty-levels";
 import teamData from "@/data/teams";
@@ -401,6 +402,11 @@ export const gameMachine = setup({
       ]
     },
     IMPROVE_ARENA: {
+      // Single source of truth for affordability + level cap — the same
+      // selector backs the `disabled` prop on the Arena.tsx upgrade button.
+      // Sends from anywhere else (dev menu, future bots, future tests) get
+      // the same enforcement for free.
+      guard: ({ context, event }) => canImproveArena(event.payload.manager)(context),
       actions: [
         {
           type: "executeImproveArena",
