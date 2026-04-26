@@ -10,11 +10,13 @@ import difficultyLevels from "@/data/difficulty-levels";
 import teamData from "@/data/teams";
 import calendar from "@/data/calendar";
 import competitionData from "@/data/competitions";
+import competitionTypes from "@/services/competition-type";
 import strategies from "@/data/strategies";
 import prankTypes from "@/game/pranks";
 import random from "@/services/random";
 import { notificationsMachine } from "@/machines/notifications";
 import type { NotificationData } from "@/machines/notification";
+import type { CompetitionId } from "@/types/competitions";
 import { values } from "remeda";
 
 /**
@@ -54,6 +56,16 @@ export type GameMachineEvents =
   | {
       type: "ORDER_PRANK";
       payload: { manager: string; type: string; victim: number };
+    }
+  | {
+      type: "TEAM_INCUR_PENALTY";
+      payload: {
+        competition: CompetitionId;
+        phase: number;
+        group: number;
+        team: number;
+        penalty: number;
+      };
     }
   | { type: "DISMISS_NOTIFICATION"; id: string };
 
@@ -215,6 +227,12 @@ export const gameMachine = setup({
           draft.competitions[competition].phases.push(newPhase);
           draft.competitions[competition].phase = phase;
           draft.competitions[competition].teams = newPhase.teams;
+          // Materialize initial stats for every group so the league tables
+          // have something to render before the first gameday. 1-1 port of
+          // the legacy `calculatePhaseStats` saga that ran on COMPETITION_SEED.
+          for (const g of newPhase.groups) {
+            g.stats = competitionTypes[g.type].stats(g) as typeof g.stats;
+          }
         }
       })
     ),
@@ -253,6 +271,39 @@ export const gameMachine = setup({
             type: params.type,
             victim: params.victim
           });
+        })
+    ),
+
+    /**
+     * Apply a points penalty to a team in a round-robin group, then
+     * recompute that group's stats so the standings reflect it
+     * immediately. 1-1 port of the legacy `incurPenalty()` saga (which
+     * dispatched `teamIncurPenalty` followed by `calculateGroupStats`).
+     *
+     * Penalties only exist on round-robin groups; other group types
+     * silently no-op.
+     */
+    executeIncurPenalty: assign(
+      (
+        { context },
+        params: {
+          competition: CompetitionId;
+          phase: number;
+          group: number;
+          team: number;
+          penalty: number;
+        }
+      ) =>
+        produce(context, (draft) => {
+          const g =
+            draft.competitions[params.competition].phases[params.phase].groups[
+              params.group
+            ];
+          if (g.type !== "round-robin") {
+            return;
+          }
+          g.penalties.push({ team: params.team, penalty: params.penalty });
+          g.stats = competitionTypes[g.type].stats(g) as typeof g.stats;
         })
     ),
 
@@ -320,6 +371,12 @@ export const gameMachine = setup({
           })
         }
       ]
+    },
+    TEAM_INCUR_PENALTY: {
+      actions: {
+        type: "executeIncurPenalty",
+        params: ({ event }) => event.payload
+      }
     }
   },
   states: {
