@@ -98,6 +98,7 @@ const buildManager = (sub: ManagerSubmission, ctx: GameContext) => {
 export const gameMachine = setup({
   types: {
     context: {} as GameContext,
+    input: {} as GameContext,
     events: {} as GameMachineEvents
   },
 
@@ -278,7 +279,7 @@ export const gameMachine = setup({
 }).createMachine({
   id: "app",
   initial: "main_menu",
-  context: () => createDefaultGameContext(),
+  context: ({ input }) => input,
   invoke: [
     {
       src: "notifications",

@@ -17,10 +17,16 @@ const ErrorFallback = () => (
 );
 
 const GameProvider: FC = () => {
-  // todo: get the game actor here!
+  const gameRef = AppMachineContext.useSelector(
+    (state) => state.context.gameRef
+  );
+
+  if (!gameRef) {
+    return null;
+  }
 
   return (
-    <GameMachineContext.Provider>
+    <GameMachineContext.Provider actor={gameRef}>
       <Game />
     </GameMachineContext.Provider>
   );

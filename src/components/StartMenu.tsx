@@ -1,7 +1,6 @@
 import ButtonRow from "./form/ButtonRow";
 import Button from "./form/Button";
 import Box from "./styled-system/Box";
-import ManagerForm from "./start-menu/ManagerForm";
 import * as styles from "./StartMenu.css";
 import title from "./start-menu/title.png";
 import { AppMachineContext } from "@/context/app-machine-context";
@@ -13,20 +12,6 @@ const StartMenu = () => {
   );
 
   const app = AppMachineContext.useActorRef();
-
-  /*
-  const teams = AppMachineContext.useSelector((state) => state.context.teams);
-
-  const competitions = AppMachineContext.useSelector(
-    (state) => state.context.competitions
-  );
-
-  const { send } = GameMachineContext.useActorRef();
-
-  const starting = GameMachineContext.useSelector((state) =>
-    state.matches("starting")
-  );
-  */
 
   return (
     <div className={styles.startMenu}>

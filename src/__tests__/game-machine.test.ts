@@ -17,7 +17,7 @@ const submission: ManagerSubmission = {
 };
 
 const createTestActor = () => {
-  const actor = createActor(gameMachine);
+  const actor = createActor(gameMachine, { input: createDefaultGameContext() });
   actor.start();
   return actor;
 };

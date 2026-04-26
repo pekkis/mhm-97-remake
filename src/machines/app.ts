@@ -1,10 +1,16 @@
 import { setup, assign, fromPromise } from "xstate";
 import type { ActorRefFrom } from "xstate";
 
-import { createDefaultGameContext, type GameContext } from "@/state";
+import {
+  createDefaultGameContext,
+  type GameContext,
+  type Manager
+} from "@/state";
 import { loadGame } from "@/services/persistence";
 import { gameMachine } from "@/machines/game";
 import type { ManagerSubmission } from "@/machines/game";
+import { teamsMainCompetition } from "@/machines/selectors";
+import difficultyLevels from "@/data/difficulty-levels";
 
 /**
  * Top-level application lifecycle machine.
@@ -31,15 +37,47 @@ export type AppMachineEvents =
   | { type: "QUIT" };
 
 /**
- * Pure refinement: take a default `GameContext` and the wizard's manager
- * submission, return a `GameContext` with the manager installed and the
- * chosen team flagged. Stub — real implementation lands when we extract
- * from `gameMachine`'s `assignManager` action.
+ * Pure refinement: take the current pending `GameContext` and the wizard's
+ * manager submission, return a `GameContext` with the manager installed and
+ * the chosen team flagged. 1-1 port of the legacy `buildManager` +
+ * `assignManager` action that used to live in `gameMachine`.
  */
 const withManager = (
   ctx: GameContext,
-  _submission: ManagerSubmission
-): GameContext => ctx;
+  submission: ManagerSubmission
+): GameContext => {
+  const difficulty = parseInt(submission.difficulty, 10);
+  const main = teamsMainCompetition(submission.team)(ctx);
+  const manager: Manager = {
+    id: crypto.randomUUID(),
+    name: submission.name,
+    team: submission.team,
+    difficulty,
+    pranksExecuted: 0,
+    services: {
+      coach: false,
+      insurance: false,
+      microphone: false,
+      cheer: false
+    },
+    balance: difficultyLevels[difficulty].startBalance,
+    arena: { name: submission.arena, level: main === "phl" ? 3 : 0 },
+    extra: 0,
+    insuranceExtra: 0,
+    flags: {}
+  };
+
+  return {
+    ...ctx,
+    manager: {
+      active: manager.id,
+      managers: { ...ctx.manager.managers, [manager.id]: manager }
+    },
+    teams: ctx.teams.map((t) =>
+      t.id === submission.team ? { ...t, manager: manager.id } : t
+    )
+  };
+};
 
 export const appMachine = setup({
   types: {
