@@ -617,8 +617,13 @@ export const gameMachine = setup({
                 { target: "gameday_check" }
               ]
             },
+            // TODO: port the `prankPhase` saga (src/sagas/phase/prank.ts).
+            // Each queued prank's `execute()` either enqueues an event
+            // (`events[name].create(prank)` → `state.event.events.push(...)`)
+            // or applies a team effect (`fixedMatch` → opponentEffects).
+            // Auto-advance for now so the round-loop keeps moving.
             prank: {
-              on: { ADVANCE: "gameday_check" }
+              always: "gameday_check"
             },
 
             gameday_check: {
