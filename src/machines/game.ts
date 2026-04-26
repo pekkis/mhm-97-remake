@@ -17,7 +17,8 @@ import calendar from "@/data/calendar";
 import competitionData from "@/data/competitions";
 import { computeStats } from "@/services/competition-type";
 import competitionTypes from "@/services/competition-type";
-import { simulate } from "@/services/game";
+import { simulate, gameFacts } from "@/services/game";
+import { amount as formatAmount } from "@/services/format";
 import strategies from "@/data/strategies";
 import prankTypes from "@/game/pranks";
 import arenas from "@/data/arenas";
@@ -26,7 +27,7 @@ import random from "@/services/random";
 import { notificationsMachine } from "@/machines/notifications";
 import type { NotificationData } from "@/machines/notification";
 import type { CompetitionId } from "@/types/competitions";
-import { values } from "remeda";
+import { values, entries } from "remeda";
 
 /**
  * Game machine.
@@ -429,11 +430,16 @@ export const gameMachine = setup({
     /**
      * Play one round of every gameday listed in `calendar[round].gamedays`.
      *
-     * Baby-step port of the legacy `gameday()` saga in `src/sagas/gameday.ts`:
-     * just the simulation loop, stats recompute, and `group.round += 1`.
-     * Per-manager bookkeeping (`afterGameday`), parlay payouts
-     * (`bettingResults`) and group-end awards (`groupEnd`) are TODO and
-     * still missing — they land as separate steps.
+     * Folds the legacy `gameday()` saga + its `completeGameday` helper:
+     * for each group, simulate every match where `playMatch` returns true,
+     * recompute stats, then run the per-manager `afterGameday`
+     * bookkeeping (microphone roll → fine + announcement, plus
+     * gameBalance / moraleBoost / readinessBoost), then bump the group's
+     * round counter.
+     *
+     * Still TODO and intentionally NOT in this step:
+     *   - `bettingResults` (PHL group 0 only — parlay payouts)
+     *   - `groupEnd` (ehl medalists, tournament prizes)
      *
      * Tournaments (and only tournaments — by game-design invariant, regular
      * competitions never share a round with a tournament) play many rounds
@@ -450,14 +456,17 @@ export const gameMachine = setup({
           const comp = draft.competitions[competitionId];
           const phase = comp.phases[comp.phase];
           const ct = competitionTypes[phase.type];
+          const competitionDef = competitionData[competitionId];
 
           for (const [groupIdx, group] of phase.groups.entries()) {
-            const groupParams = competitionData[
-              competitionId
-            ].parameters.gameday(comp.phase, groupIdx);
+            const groupParams = competitionDef.parameters.gameday(
+              comp.phase,
+              groupIdx
+            );
             const groupRound = group.round;
             const pairings = group.schedule[groupRound];
 
+            // 1. Play every scheduled match.
             for (let x = 0; x < pairings.length; x++) {
               if (!ct.playMatch(group, groupRound, x)) {
                 continue;
@@ -482,7 +491,102 @@ export const gameMachine = setup({
               pairing.result = result;
             }
 
+            // 2. Recompute the group's standings.
             group.stats = computeStats(group);
+
+            // 3. Per-manager bookkeeping for the round we just played.
+            //    1-1 port of `afterGameday()` in src/sagas/manager.ts.
+            for (const [managerId, manager] of entries(
+              draft.manager.managers
+            )) {
+              const managersIndex = group.teams.findIndex(
+                (t) => t === manager.team
+              );
+              if (managersIndex === -1) {
+                continue;
+              }
+
+              const game = group.schedule[groupRound].find(
+                (p) => p.home === managersIndex || p.away === managersIndex
+              );
+              if (!game || !game.result) {
+                continue;
+              }
+
+              // Microphone bust roll: PHL/division phase 0 only, 6%
+              // chance → 50000 fine + 4-point penalty (in the league
+              // group, hard-coded to phase 0 group 0).
+              if (
+                manager.services.microphone &&
+                (competitionId === "phl" || competitionId === "division") &&
+                comp.phase === 0
+              ) {
+                if (random.bool(0.06)) {
+                  const fine = 50000;
+                  const pointDeduction = -4;
+                  manager.balance -= fine;
+                  // Inline the penalty (port of `incurPenalty` saga +
+                  // `teamIncurPenalty` reducer): only applies to
+                  // round-robin groups, which the league always is.
+                  const leagueGroup =
+                    draft.competitions[competitionId].phases[0].groups[0];
+                  if (leagueGroup.type === "round-robin") {
+                    leagueGroup.penalties.push({
+                      team: manager.team!,
+                      penalty: pointDeduction
+                    });
+                    leagueGroup.stats = computeStats(leagueGroup);
+                  }
+                  if (!draft.news.announcements[managerId]) {
+                    draft.news.announcements[managerId] = [];
+                  }
+                  draft.news.announcements[managerId].push(
+                    `"Salainen" mikrofonisi vastustajan vaihtoaitiossa on paljastunut. Teidät tuomitaan __${formatAmount(
+                      fine
+                    )}__ pekan sakkoihin ja __${pointDeduction}__ pisteen menetykseen.`
+                  );
+                }
+              }
+
+              const facts = gameFacts(game, managersIndex);
+              const team = draft.teams[manager.team!];
+
+              const balanceDelta = competitionDef.gameBalance(
+                comp.phase,
+                facts,
+                manager
+              );
+              const moraleDelta = competitionDef.moraleBoost(
+                comp.phase,
+                facts,
+                manager
+              );
+              const readinessDelta = competitionDef.readinessBoost(
+                comp.phase,
+                facts,
+                manager
+              );
+
+              if (balanceDelta) {
+                manager.balance += balanceDelta;
+              }
+              if (readinessDelta) {
+                team.readiness += readinessDelta;
+              }
+              if (moraleDelta) {
+                // Morale clamp uses the team's manager's difficulty
+                // (defaults to 2 / Pasolini-mode for unmanaged teams).
+                const diffIdx = manager.difficulty;
+                const min = difficultyLevels[diffIdx].moraleMin;
+                const max = difficultyLevels[diffIdx].moraleMax;
+                team.morale = Math.min(
+                  max,
+                  Math.max(min, team.morale + moraleDelta)
+                );
+              }
+            }
+
+            // 4. Advance the group's round counter.
             group.round += 1;
           }
         }
