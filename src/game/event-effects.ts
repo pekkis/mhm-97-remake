@@ -95,62 +95,86 @@ export function applyEffect(
     // ── Manager balance ──
     case "incrementBalance": {
       const m = draft.manager.managers[effect.manager];
-      if (m) m.balance += effect.amount;
+      if (m) {
+        m.balance += effect.amount;
+      }
       return;
     }
     case "decrementBalance": {
       const m = draft.manager.managers[effect.manager];
-      if (m) m.balance -= effect.amount;
+      if (m) {
+        m.balance -= effect.amount;
+      }
       return;
     }
     case "setBalance": {
       const m = draft.manager.managers[effect.manager];
-      if (m) m.balance = effect.amount;
+      if (m) {
+        m.balance = effect.amount;
+      }
       return;
     }
 
     // ── Manager arena / extras / services ──
     case "setArenaLevel": {
       const m = draft.manager.managers[effect.manager];
-      if (m) m.arena.level = effect.level;
+      if (m) {
+        m.arena.level = effect.level;
+      }
       return;
     }
     case "renameArena": {
       const m = draft.manager.managers[effect.manager];
-      if (m) m.arena.name = effect.name;
+      if (m) {
+        m.arena.name = effect.name;
+      }
       return;
     }
     case "setExtra": {
       const m = draft.manager.managers[effect.manager];
-      if (m) m.extra = effect.extra;
+      if (m) {
+        m.extra = effect.extra;
+      }
       return;
     }
     case "incrementInsuranceExtra": {
       const m = draft.manager.managers[effect.manager];
-      if (m) m.insuranceExtra += effect.amount;
+      if (m) {
+        m.insuranceExtra += effect.amount;
+      }
       return;
     }
     case "setInsuranceExtra": {
       const m = draft.manager.managers[effect.manager];
-      if (m) m.insuranceExtra = effect.extra;
+      if (m) {
+        m.insuranceExtra = effect.extra;
+      }
       return;
     }
     case "setService": {
       const m = draft.manager.managers[effect.manager];
-      if (m) m.services[effect.service] = effect.value;
+      if (m) {
+        m.services[effect.service] = effect.value;
+      }
       return;
     }
     case "hireManager": {
       // Atomic: detach from current team, attach to new team.
       // 1-1 port of `hireManager` saga in src/sagas/manager.ts.
       const m = draft.manager.managers[effect.manager];
-      if (!m) return;
+      if (!m) {
+        return;
+      }
       if (m.team !== undefined) {
         const oldTeam = draft.teams[m.team];
-        if (oldTeam) oldTeam.manager = undefined;
+        if (oldTeam) {
+          oldTeam.manager = undefined;
+        }
       }
       const newTeam = draft.teams[effect.team];
-      if (newTeam) newTeam.manager = effect.manager;
+      if (newTeam) {
+        newTeam.manager = effect.manager;
+      }
       m.team = effect.team;
       return;
     }
@@ -158,59 +182,81 @@ export function applyEffect(
     // ── Team strength / morale / readiness / strategy ──
     case "incrementStrength": {
       const t = draft.teams[effect.team];
-      if (t) t.strength += effect.amount;
+      if (t) {
+        t.strength += effect.amount;
+      }
       return;
     }
     case "decrementStrength": {
       const t = draft.teams[effect.team];
-      if (t) t.strength -= effect.amount;
+      if (t) {
+        t.strength -= effect.amount;
+      }
       return;
     }
     case "incrementMorale": {
       const t = draft.teams[effect.team];
-      if (t) t.morale += effect.amount;
+      if (t) {
+        t.morale += effect.amount;
+      }
       return;
     }
     case "decrementMorale": {
       const t = draft.teams[effect.team];
-      if (t) t.morale -= effect.amount;
+      if (t) {
+        t.morale -= effect.amount;
+      }
       return;
     }
     case "incrementReadiness": {
       const t = draft.teams[effect.team];
-      if (t) t.readiness += effect.amount;
+      if (t) {
+        t.readiness += effect.amount;
+      }
       return;
     }
     case "setMorale": {
       const t = draft.teams[effect.team];
-      if (t) t.morale = effect.value;
+      if (t) {
+        t.morale = effect.value;
+      }
       return;
     }
     case "setReadiness": {
       const t = draft.teams[effect.team];
-      if (t) t.readiness = effect.value;
+      if (t) {
+        t.readiness = effect.value;
+      }
       return;
     }
     case "setStrategy": {
       const t = draft.teams[effect.team];
-      if (t) t.strategy = effect.value;
+      if (t) {
+        t.strategy = effect.value;
+      }
       return;
     }
     case "renameTeam": {
       const t = draft.teams[effect.team];
-      if (t) t.name = effect.name;
+      if (t) {
+        t.name = effect.name;
+      }
       return;
     }
 
     // ── Team buffs / debuffs ──
     case "addTeamEffect": {
       const t = draft.teams[effect.team];
-      if (t) t.effects.push(effect.effect);
+      if (t) {
+        t.effects.push(effect.effect);
+      }
       return;
     }
     case "addOpponentEffect": {
       const t = draft.teams[effect.team];
-      if (t) t.opponentEffects.push(effect.effect);
+      if (t) {
+        t.opponentEffects.push(effect.effect);
+      }
       return;
     }
 
@@ -219,7 +265,9 @@ export function applyEffect(
       const phase =
         draft.competitions[effect.competition]?.phases[effect.phase];
       const group = phase?.groups[effect.group];
-      if (!group || group.type !== "round-robin") return;
+      if (!group || group.type !== "round-robin") {
+        return;
+      }
       group.penalties.push({ team: effect.team, penalty: effect.penalty });
       // 1-1 port of `incurPenalty` saga: recompute standings after penalty.
       group.stats = computeStats(group);
@@ -236,7 +284,9 @@ export function applyEffect(
     }
     case "setManagerFlag": {
       const m = draft.manager.managers[effect.manager];
-      if (m) m.flags[effect.flag] = effect.value;
+      if (m) {
+        m.flags[effect.flag] = effect.value;
+      }
       return;
     }
     case "incrementServiceBasePrice": {

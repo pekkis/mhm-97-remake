@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { saveSnapshot, loadSnapshot, hasSnapshot } from "@/services/persistence";
+import {
+  saveSnapshot,
+  loadSnapshot,
+  hasSnapshot
+} from "@/services/persistence";
 
 let storageData: Record<string, string> = {};
 

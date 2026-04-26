@@ -30,6 +30,18 @@ import { notificationsMachine } from "@/machines/notifications";
 import type { NotificationData } from "@/machines/notification";
 import type { CompetitionId } from "@/types/competitions";
 import { values, entries } from "remeda";
+import newEvents from "@/game/new-events";
+import eventsMap from "@/game/new-events/table";
+import type { DeclarativeEvent } from "@/types/event";
+import type { BaseEventFields } from "@/types/base";
+
+// Heterogeneous registry lookup — `newEvents` is `as const` for per-event
+// payload typing at known keys; the interpreter looks events up by string
+// from `eventsMap`, so we widen here. See `new-events/index.ts` for why.
+const eventRegistry = newEvents as unknown as Record<
+  string,
+  DeclarativeEvent<BaseEventFields, { manager: string }> | undefined
+>;
 
 // Parlay payout multipliers indexed by number of correct picks (0..6).
 // 1-1 mirror of `victories` in src/sagas/betting.ts.
@@ -801,6 +813,51 @@ export const gameMachine = setup({
     ),
 
     /**
+     * Event creation phase — for each manager, roll one event from
+     * `eventsMap` (1-335). If the rolled event is registered in the
+     * new declarative registry, build its payload via `create(ctx, …)`
+     * and push it into `event.events`. If not yet ported, the roll
+     * silently no-ops (the legacy generator-based path is gone).
+     *
+     * 1-1 port of `eventCreationPhase()` in
+     * `src/sagas/phase/event-creation.ts` (REFERENCE-ONLY post-pivot),
+     * minus the `createRandomEvent` calendar gate — entry to this state
+     * is already guarded by `has_phase("event_creation")`, so the gate
+     * is redundant.
+     *
+     * No UI — runs on `entry` and the state auto-advances.
+     */
+    executeEventCreation: assign(({ context }) =>
+      produce(context, (draft) => {
+        for (const manager of values(draft.manager.managers)) {
+          const eventNumber = random.cinteger(1, 335);
+          const eventName = eventsMap[eventNumber];
+          if (!eventName) {
+            continue;
+          }
+
+          const hardCodedEventName = "kasino";
+
+          const eventDef = eventRegistry[hardCodedEventName];
+
+          console.log("HAHA HEHE", eventDef);
+
+          if (!eventDef) {
+            continue;
+          } // not yet ported — silent no-op
+
+          const payload = eventDef.create(context, { manager: manager.id });
+          if (!payload) {
+            continue;
+          }
+
+          const id = crypto.randomUUID();
+          draft.event.events[id] = { ...payload, id };
+        }
+      })
+    ),
+
+    /**
      * Generic notification dispatcher — forwards a fully-formed notification
      * to the invoked `notifications` child machine. Call sites build the
      * message; this action only handles the delivery + id assignment.
@@ -1102,7 +1159,8 @@ export const gameMachine = setup({
               ]
             },
             event_creation: {
-              on: { ADVANCE: "event_check" }
+              entry: "executeEventCreation",
+              always: "event_check"
             },
 
             event_check: {

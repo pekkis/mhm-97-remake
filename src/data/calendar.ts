@@ -169,7 +169,10 @@ const raw: RawEntry[] = [
   },
 
   // 5 rounds of playoffs
-  ...repeat(phlDiv(), 5),
+  ...repeat(
+    phlDiv(["action", "gameday", "calculations", "event", "news", "seed"]),
+    5
+  ),
 
   // Semifinal seed
   {
@@ -182,7 +185,10 @@ const raw: RawEntry[] = [
   },
 
   // 5 rounds of semifinals
-  ...repeat(phlDiv(), 5),
+  ...repeat(
+    phlDiv(["action", "gameday", "calculations", "event", "news", "seed"]),
+    5
+  ),
 
   // Finals seed
   {
@@ -195,7 +201,10 @@ const raw: RawEntry[] = [
   },
 
   // 7 rounds of finals
-  ...repeat(phlDiv(), 7),
+  ...repeat(
+    phlDiv(["action", "gameday", "calculations", "event", "news", "seed"]),
+    7
+  ),
 
   // World championships
   {
