@@ -4,11 +4,20 @@ import Box from "./styled-system/Box";
 import ManagerForm from "./start-menu/ManagerForm";
 import * as styles from "./StartMenu.css";
 import title from "./start-menu/title.png";
-import { GameMachineContext } from "@/context/game-machine-context";
+import { AppMachineContext } from "@/context/app-machine-context";
+import { Starting } from "@/components/start-menu/Starting";
 
 const StartMenu = () => {
-  const teams = GameMachineContext.useSelector((state) => state.context.teams);
-  const competitions = GameMachineContext.useSelector(
+  const starting = AppMachineContext.useSelector((state) =>
+    state.matches("starting")
+  );
+
+  const app = AppMachineContext.useActorRef();
+
+  /*
+  const teams = AppMachineContext.useSelector((state) => state.context.teams);
+
+  const competitions = AppMachineContext.useSelector(
     (state) => state.context.competitions
   );
 
@@ -17,6 +26,7 @@ const StartMenu = () => {
   const starting = GameMachineContext.useSelector((state) =>
     state.matches("starting")
   );
+  */
 
   return (
     <div className={styles.startMenu}>
@@ -37,14 +47,14 @@ const StartMenu = () => {
                 <ButtonRow>
                   <Button
                     onClick={() => {
-                      send({ type: "START_GAME" });
+                      app.send({ type: "START_GAME" });
                     }}
                   >
                     Uusi peli
                   </Button>
                   <Button
                     onClick={() => {
-                      send({ type: "LOAD_GAME" });
+                      app.send({ type: "LOAD_GAME" });
                     }}
                   >
                     Lataa peli
@@ -90,17 +100,7 @@ const StartMenu = () => {
             </Box>
           )}
 
-          {starting && (
-            <Box p={1}>
-              <ManagerForm
-                teams={teams}
-                competitions={competitions}
-                advance={(payload) => {
-                  send({ type: "ADD_MANAGER", payload });
-                }}
-              />
-            </Box>
-          )}
+          {starting && <Starting />}
         </div>
       </div>
     </div>

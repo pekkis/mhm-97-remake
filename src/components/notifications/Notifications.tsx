@@ -1,7 +1,7 @@
 import * as styles from "./Notifications.css";
 import Notification from "./Notification";
-import { GameMachineContext } from "@/context/game-machine-context";
 import { NotificationsContext } from "@/context/notifications-context";
+import { GameMachineContext } from "@/context/game-machine-context";
 
 const Notifications = () => {
   const appActor = GameMachineContext.useActorRef();

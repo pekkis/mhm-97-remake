@@ -1,8 +1,8 @@
 import strategies from "@/data/strategies";
 import Button from "./form/Button";
 import Box from "./styled-system/Box";
-import { GameMachineContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
+import { GameMachineContext } from "@/context/game-machine-context";
 
 const SelectStrategy = () => {
   const manager = GameMachineContext.useSelector((state) =>

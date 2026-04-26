@@ -1,8 +1,9 @@
 import StartMenu from "./StartMenu";
 import Game from "./Game";
 import { ErrorBoundary } from "react-error-boundary";
-import { GameMachineContext } from "@/context/game-machine-context";
 import type { FC } from "react";
+import { AppMachineContext } from "@/context/app-machine-context";
+import { GameMachineContext } from "@/context/game-machine-context";
 
 const ErrorFallback = () => (
   <div>
@@ -15,14 +16,24 @@ const ErrorFallback = () => (
   </div>
 );
 
+const GameProvider: FC = () => {
+  // todo: get the game actor here!
+
+  return (
+    <GameMachineContext.Provider>
+      <Game />
+    </GameMachineContext.Provider>
+  );
+};
+
 const App: FC = () => {
-  const started = GameMachineContext.useSelector((state) => {
-    return state.matches("in_game");
+  const playing = AppMachineContext.useSelector((state) => {
+    return state.matches("playing");
   });
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      {started ? <Game /> : <StartMenu />}
+      {playing ? <GameProvider /> : <StartMenu />}
     </ErrorBoundary>
   );
 };

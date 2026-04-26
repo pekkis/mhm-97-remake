@@ -24,11 +24,11 @@ import Invitations from "./Invitations";
 import Gala from "./Gala";
 import { useSelector } from "@xstate/store-react";
 import { uiStore } from "@/stores/ui";
-import { GameMachineContext } from "@/context/game-machine-context";
 import { NotificationsContext } from "@/context/notifications-context";
 import type { ActorRefFrom } from "xstate";
 import type { notificationsMachine } from "@/machines/notifications";
 import type { FC } from "react";
+import { GameMachineContext } from "@/context/game-machine-context";
 
 type PhaseProps = {
   phase: string | undefined;
