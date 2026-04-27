@@ -5,9 +5,10 @@ import * as styles from "./Services.css";
 import Toggle from "./form/Toggle";
 import Markdown from "react-markdown";
 import Box from "./styled-system/Box";
-import { useAppDispatch } from "@/config/redux";
-import { useGameContext } from "@/context/game-machine-context";
-import { managerToggleService } from "@/ducks/manager";
+import {
+  GameMachineContext,
+  useGameContext
+} from "@/context/game-machine-context";
 import { entries } from "remeda";
 
 import services from "@/data/services";
@@ -16,7 +17,9 @@ import { activeManager } from "@/machines/selectors";
 const Services = () => {
   const manager = useGameContext(activeManager);
   const basePrices = useGameContext((ctx) => ctx.serviceBasePrices);
-  const dispatch = useAppDispatch();
+  const gameActor = GameMachineContext.useActorRef();
+
+  console.log("MANAGER SERVICES", manager.services);
 
   return (
     <HeaderedPage>
@@ -35,14 +38,12 @@ const Services = () => {
                   <Toggle
                     id={key}
                     checked={manager.services[key]}
-                    onChange={() =>
-                      dispatch(
-                        managerToggleService({
-                          manager: manager.id,
-                          service: key
-                        })
-                      )
-                    }
+                    onChange={() => {
+                      gameActor.send({
+                        type: "TOGGLE_SERVICE",
+                        payload: { manager: manager.id, service: key }
+                      });
+                    }}
                   />
                   <label htmlFor={key}>
                     <strong>{service.name}</strong>

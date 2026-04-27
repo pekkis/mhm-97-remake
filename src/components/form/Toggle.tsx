@@ -19,7 +19,7 @@ const Toggle: FC<ToggleProps> = ({ id, checked, disabled, onChange }) => {
         disabled={disabled}
         onChange={onChange}
       />
-      <span className={styles.track} />
+      <label className={styles.track} htmlFor={id} />
     </span>
   );
 };

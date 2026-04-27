@@ -164,8 +164,3 @@ export type CompetitionDefinition = {
     args: { phase: number; groupIdx: number; group: Group }
   ) => void;
 };
-
-export type CompetitionSagaDefinition = {
-  start?: (...args: any[]) => Generator<any, any, any>;
-  groupEnd?: (phase: number, group: number) => Generator;
-};

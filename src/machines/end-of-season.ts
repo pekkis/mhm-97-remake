@@ -182,8 +182,7 @@ const medalAwards: Award[] = [
   createAward(
     500000,
     10,
-    (d) =>
-      `__${d.name}__ nettoaa neljännestä sijastaan ${d.amount} pekkaa!`
+    (d) => `__${d.name}__ nettoaa neljännestä sijastaan ${d.amount} pekkaa!`
   )
 ];
 
@@ -196,8 +195,7 @@ const roundRobinAwards: Award[] = [
   createAward(
     400000,
     7,
-    (d) =>
-      `__${d.name}__ saa runkosarjan toisesta sijasta ${d.amount} pekkaa!`
+    (d) => `__${d.name}__ saa runkosarjan toisesta sijasta ${d.amount} pekkaa!`
   ),
   createAward(
     300000,
@@ -241,7 +239,11 @@ const yieldAwards = (
 // Random end-of-season events. Each entry rolls once per Pekkalandian team;
 // if eligible and the roll passes, the team's strength is bumped and a news
 // line is pushed. 1-1 port of `randomEvents` in `src/sagas/awards.ts`.
-type RandomEvent = (draft: Draft<GameContext>, random: RandomService, teamId: number) => void;
+type RandomEvent = (
+  draft: Draft<GameContext>,
+  random: RandomService,
+  teamId: number
+) => void;
 
 const playsInPHLOrWasPromoted = (
   draft: Draft<GameContext>,
@@ -325,8 +327,7 @@ const randomEvents: RandomEvent[] = [
     12,
     2,
     () => -199,
-    (d, t) =>
-      playsInPHLOrWasPromoted(d, t) && d.teams[t].strength > 400,
+    (d, t) => playsInPHLOrWasPromoted(d, t) && d.teams[t].strength > 400,
     (team) =>
       `__${team.name}__ kaatuu sisäisiin riitoihin! Pelaajat kävelevät ulos!`
   ),
@@ -334,25 +335,21 @@ const randomEvents: RandomEvent[] = [
     12,
     5,
     () => -70,
-    (d, t) =>
-      playsInPHLOrWasPromoted(d, t) && d.teams[t].strength > 300,
-    (team) =>
-      `__${team.name}__ hajoaa totaalisesti ulkomaiden rahaseuroihin!`
+    (d, t) => playsInPHLOrWasPromoted(d, t) && d.teams[t].strength > 300,
+    (team) => `__${team.name}__ hajoaa totaalisesti ulkomaiden rahaseuroihin!`
   ),
   createRandomEvent(
     12,
     6,
     () => -45,
-    (d, t) =>
-      playsInPHLOrWasPromoted(d, t) && d.teams[t].strength > 250,
+    (d, t) => playsInPHLOrWasPromoted(d, t) && d.teams[t].strength > 250,
     (team) => `__${team.name}__ menettää useita pelaajiaan ulkomaille.`
   ),
   createRandomEvent(
     12,
     8,
     () => -15,
-    (d, t) =>
-      playsInPHLOrWasPromoted(d, t) && d.teams[t].strength > 210,
+    (d, t) => playsInPHLOrWasPromoted(d, t) && d.teams[t].strength > 210,
     (team) => `__${team.name}__ menettää joitakin pelaajiaan ulkomaille.`
   ),
   createRandomEvent(
@@ -385,8 +382,7 @@ const randomEvents: RandomEvent[] = [
     12,
     5,
     () => 12,
-    (d, t) =>
-      playsInPHLOrWasPromoted(d, t) && d.teams[t].strength < 150,
+    (d, t) => playsInPHLOrWasPromoted(d, t) && d.teams[t].strength < 150,
     (team) =>
       `__${team.name}__ saa uuden sponsorin joka ostaa joukkueelle uusia pelaajia!`
   ),
@@ -394,8 +390,7 @@ const randomEvents: RandomEvent[] = [
     12,
     5,
     () => 23,
-    (d, t) =>
-      playsInPHLOrWasPromoted(d, t) && d.teams[t].strength < 135,
+    (d, t) => playsInPHLOrWasPromoted(d, t) && d.teams[t].strength < 135,
     (team) =>
       `__${team.name}__ saa uuden, RIKKAAN sponsorin joka ostaa joukkueelle uusia pelaajia!`
   ),
@@ -403,8 +398,7 @@ const randomEvents: RandomEvent[] = [
     22,
     16,
     () => 60,
-    (d, t) =>
-      playsInPHLOrWasPromoted(d, t) && d.teams[t].strength < 140,
+    (d, t) => playsInPHLOrWasPromoted(d, t) && d.teams[t].strength < 140,
     (team) =>
       `__${team.name}__ lähtee tosissaan mukaan mestaruustaistoon rahan voimalla!`
   ),
@@ -515,24 +509,21 @@ const randomEvents: RandomEvent[] = [
     12,
     8,
     () => 8,
-    (d, t) =>
-      playsInDivisionOrWasRelegated(d, t) && d.teams[t].strength < 82,
+    (d, t) => playsInDivisionOrWasRelegated(d, t) && d.teams[t].strength < 82,
     (team) => `__${team.name}__ saa uuden sponsorin!.`
   ),
   createRandomEvent(
     12,
     7,
     () => 13,
-    (d, t) =>
-      playsInDivisionOrWasRelegated(d, t) && d.teams[t].strength < 72,
+    (d, t) => playsInDivisionOrWasRelegated(d, t) && d.teams[t].strength < 72,
     (team) => `__${team.name}__ saa uuden, hyvän sponsorin!.`
   ),
   createRandomEvent(
     12,
     7,
     () => 16,
-    (d, t) =>
-      playsInDivisionOrWasRelegated(d, t) && d.teams[t].strength < 62,
+    (d, t) => playsInDivisionOrWasRelegated(d, t) && d.teams[t].strength < 62,
     (team) => `__${team.name}__ saa uuden, loistavan sponsorin!.`
   ),
   createRandomEvent(

@@ -2,7 +2,7 @@ import { setup, assign, sendTo, enqueueActions, stopChild } from "xstate";
 import { produce, type Draft } from "immer";
 
 import type { GameContext } from "@/state";
-import type { Manager } from "@/state/manager";
+import type { Manager, ManagerServices } from "@/state/manager";
 import type { GameResult, TeamStat } from "@/types/competitions";
 import {
   managersMainCompetition,
@@ -329,6 +329,10 @@ export type GameMachineEvents =
   | {
       type: "CRISIS_MEETING";
       payload: { manager: string };
+    }
+  | {
+      type: "TOGGLE_SERVICE";
+      payload: { manager: string; service: keyof ManagerServices };
     }
   | {
       type: "TEAM_INCUR_PENALTY";
@@ -827,6 +831,25 @@ export const gameMachine = setup({
           }
         });
       }
+    ),
+
+    /**
+     * Flip a service on or off for the manager. No cost at toggle time;
+     * service costs are deducted per-gameday by `executeGameday`. 1-1
+     * port of `toggleService()` in `src/sagas/manager.ts`.
+     */
+    executeToggleService: assign(
+      (
+        { context },
+        params: { manager: string; service: keyof ManagerServices }
+      ) =>
+        produce(context, (draft) => {
+          const m = draft.manager.managers[params.manager];
+          if (!m) {
+            return;
+          }
+          m.services[params.service] = !m.services[params.service];
+        })
     ),
 
     /**
@@ -1632,6 +1655,12 @@ export const gameMachine = setup({
         canCrisisMeeting(event.payload.manager)(context),
       actions: {
         type: "executeCrisisMeeting",
+        params: ({ event }) => event.payload
+      }
+    },
+    TOGGLE_SERVICE: {
+      actions: {
+        type: "executeToggleService",
         params: ({ event }) => event.payload
       }
     },

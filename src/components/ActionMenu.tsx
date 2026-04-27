@@ -3,20 +3,17 @@ import Calendar from "./ui/Calendar";
 import { getEffective } from "@/services/effects";
 import { CRISIS_MORALE_MAX } from "@/data/constants";
 import Button from "./form/Button";
-import { useAppDispatch } from "@/config/redux";
 import {
   GameMachineContext,
   useGameContext
 } from "@/context/game-machine-context";
 import { AppMachineContext } from "@/context/app-machine-context";
 import { uiStore } from "@/stores/ui";
-import { quitToMainMenu } from "@/ducks/meta";
 import { activeManager } from "@/machines/selectors";
 
 const ActionMenu = () => {
   const manager = useGameContext(activeManager);
   const teams = useGameContext((ctx) => ctx.teams);
-  const dispatch = useAppDispatch();
   const appActor = AppMachineContext.useActorRef();
   const team = getEffective(teams[manager.team!]);
 
@@ -144,7 +141,7 @@ const ActionMenu = () => {
         block
         type="button"
         onClick={() => {
-          dispatch(quitToMainMenu());
+          appActor.send({ type: "QUIT" });
           uiStore.send({ type: "closeMenu" });
         }}
       >

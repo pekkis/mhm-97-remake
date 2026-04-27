@@ -1,24 +1,18 @@
 import App from "./components/App";
-import { Provider as ReduxProvider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import "./styles/global.css";
-import type { Store } from "redux";
 import type { FC } from "react";
 import { AppMachineContext } from "@/context/app-machine-context";
 
-type Props = {
-  store: Store;
-};
+type Props = {};
 
-const Root: FC<Props> = ({ store }) => {
+const Root: FC<Props> = () => {
   return (
     <>
       <AppMachineContext.Provider>
-        <ReduxProvider store={store}>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </ReduxProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </AppMachineContext.Provider>
     </>
   );

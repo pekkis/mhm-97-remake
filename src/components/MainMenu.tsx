@@ -1,4 +1,3 @@
-import Events from "./events/Events";
 import Situation from "./context-sensitive/Situation";
 import ManagerInfo from "./ManagerInfo";
 import Header from "./Header";
@@ -7,17 +6,13 @@ import Forward from "./context-sensitive/Forward";
 import Current from "./context-sensitive/Current";
 
 import Box from "./styled-system/Box";
-import { useAppDispatch } from "@/config/redux";
 import { useGameContext } from "@/context/game-machine-context";
 import { activeManager, interestingCompetitions } from "@/machines/selectors";
-import { requestResolveEvent } from "@/ducks/event";
 
 const MainMenu = () => {
-  const dispatch = useAppDispatch();
   const manager = useGameContext(activeManager);
   const teams = useGameContext((ctx) => ctx.teams);
   const competitions = useGameContext((ctx) => ctx.competitions);
-  const events = useGameContext((ctx) => ctx.event.events);
   const interesting = useGameContext(interestingCompetitions);
 
   return (
@@ -34,14 +29,6 @@ const MainMenu = () => {
           competitions={competitions}
           interesting={interesting}
           teams={teams}
-        />
-
-        <Events
-          manager={manager}
-          events={events}
-          onAnswer={(e, key) =>
-            dispatch(requestResolveEvent({ event: e, value: key }))
-          }
         />
       </Box>
     </HeaderedPage>
