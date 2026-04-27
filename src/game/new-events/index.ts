@@ -214,7 +214,7 @@ const newEvents = {
   workPermits,
   worstManagerEver,
   yhteispeli,
-  youStalk,
+  youStalk
 } as const;
 
 export default newEvents;

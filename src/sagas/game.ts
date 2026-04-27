@@ -1,11 +1,8 @@
 import competitionData from "@/data/competitions";
 import {
-  seasonStart as seasonStartAction,
   gameBegin,
   clearExpired,
-  competitionStart as competitionStartAction,
   gameGroupEnd,
-  teamSetStrengths,
   setGameFlag,
   setServiceBasePrice,
   setGamePhase,
@@ -17,8 +14,6 @@ import {
 import { clearAnnouncements } from "@/ducks/news";
 import { clearEvents } from "@/ducks/event";
 
-import teamData from "@/data/teams";
-
 import { all, call, put, select, takeEvery, fork } from "typed-redux-saga";
 
 import actionPhase from "./phase/action";
@@ -26,25 +21,13 @@ import calculationsPhase from "./phase/calculations";
 import newsPhase from "./phase/news";
 import gamedayPhase from "./phase/gameday";
 import endOfSeasonPhase from "./phase/end-of-season";
-import startOfSeasonPhase from "./phase/start-of-season";
 import galaPhase from "./phase/gala";
 import calendar from "@/data/calendar";
-import difficultyLevels from "@/data/difficulty-levels";
 
-import { setExtra, decrementBalance, incrementInsuranceExtra } from "./manager";
 import { stats } from "./stats";
-import {
-  allTeams,
-  managersTeam,
-  managersDifficulty,
-  managersMainCompetition,
-  managerHasService,
-  managersArena
-} from "@/selectors";
 import type { RootState } from "@/config/redux";
 import type { CompetitionId, Group, TeamStat } from "@/types/competitions";
 import { competitionSagas } from "./competition-registry";
-import { entries } from "remeda";
 
 export function* beforeGame(action: ReturnType<typeof gameBegin>) {
   const {
@@ -115,10 +98,6 @@ export function* gameLoop() {
       yield* call(newsPhase);
     }
 
-    if (phases.includes("start_of_season")) {
-      yield* call(startOfSeasonPhase);
-    }
-
     if (phases.includes("gala")) {
       yield* call(galaPhase);
     }
@@ -131,18 +110,6 @@ export function* gameLoop() {
 
     yield* call(nextTurn);
   } while (true);
-}
-
-function* competitionStart(competitionId: CompetitionId) {
-  const competitionStarter = competitionSagas[competitionId].start;
-  if (competitionStarter) {
-    yield* call(competitionStarter);
-  }
-  yield* put(
-    competitionStartAction({
-      competition: competitionId
-    })
-  );
 }
 
 export function* groupEnd(
@@ -166,59 +133,7 @@ export function* groupEnd(
 }
 
 export function* seasonStart() {
-  const turn = yield* select((state: RootState) => state.game.turn);
-  const season = turn.season;
-
-  const teams = yield* select(allTeams);
-
-  // Re-strength European teams.
-  const reStrengths = teams.slice(24).map((t) => {
-    return {
-      id: t.id,
-      strength: teamData[t.id].strength()
-    };
-  });
-  yield* put(teamSetStrengths(reStrengths));
-
-  // Start all competitions.
-  for (const [key] of entries(competitionData)) {
-    yield* call(competitionStart, key);
-  }
-
-  const managers = yield* select((state: RootState) => state.manager.managers);
-  for (const [, manager] of entries(managers)) {
-    console.log("MANAGER", manager);
-
-    // Skip the first season for salary payments.
-    if (season > 0) {
-      const managerId = manager.id;
-      const team = yield* select(managersTeam(managerId));
-      const difficulty = yield* select(managersDifficulty(managerId));
-      const mainCompetition = yield* select(managersMainCompetition(managerId));
-      const salaryPerStrength =
-        difficultyLevels[difficulty].salary(mainCompetition);
-      const totalSalary = salaryPerStrength * team.strength;
-      yield* call(decrementBalance, managerId, totalSalary);
-
-      const hasInsurance = yield* select(
-        managerHasService(managerId, "insurance")
-      );
-
-      if (hasInsurance) {
-        const arena = yield* select(managersArena(managerId));
-        yield* call(incrementInsuranceExtra, managerId, -50 * arena!.level);
-      }
-    }
-
-    // Reset extra each season.
-    yield* call(
-      setExtra,
-      manager.id,
-      difficultyLevels[manager.difficulty].extra
-    );
-  }
-
-  yield* put(seasonStartAction());
+  // No-op. Season-start logic owned by `seasonStartSetup` in the game machine.
 }
 
 export function* promote(competition: string, team: number) {

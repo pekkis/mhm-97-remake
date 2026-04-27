@@ -374,6 +374,7 @@ export const gameMachine = setup({
             );
           }
           draft.parlayBets = [];
+          draft.news.announcements = {};
           draft.turn.round += 1;
         })
       );
