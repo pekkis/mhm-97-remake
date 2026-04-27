@@ -14,7 +14,7 @@ vi.mock("@/services/persistence", () => ({
 const submission: ManagerSubmission = {
   name: "Pier Paolo Pasolini",
   arena: "Stadio Olimpico",
-  difficulty: "1",
+  difficulty: 1,
   team: 12
 };
 

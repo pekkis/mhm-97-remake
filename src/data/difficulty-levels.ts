@@ -15,7 +15,7 @@ IF vai$ = "5" THEN vai = 5: banki = 0: ghalli = 0: moplus = -1: raha = -600000: 
 */
 
 export type DifficultyLevel = {
-  value: string;
+  value: number;
   name: string;
   description: string;
   moraleMin: number;
@@ -31,7 +31,7 @@ export type DifficultyLevel = {
 
 const difficultyLevels: DifficultyLevel[] = [
   {
-    value: "0",
+    value: 0,
     name: "Nörttivatsa",
     description: "Sokeria, sokeria!",
     moraleMin: -6,
@@ -45,7 +45,7 @@ const difficultyLevels: DifficultyLevel[] = [
     rallyExtra: (competition) => (competition === "phl" ? 40000 : 10000)
   },
   {
-    value: "1",
+    value: 1,
     name: "Maitovatsa",
     description: "Rutkasti maitoa, kiitos!",
     moraleMin: 10,
@@ -59,7 +59,7 @@ const difficultyLevels: DifficultyLevel[] = [
     rallyExtra: (competition) => (competition === "phl" ? 35000 : 10000)
   },
   {
-    value: "2",
+    value: 2,
     name: "Kahvivatsa",
     description: "Kahvi kahvina, maito maitona",
     moraleMin: -14,
@@ -73,7 +73,7 @@ const difficultyLevels: DifficultyLevel[] = [
     rallyExtra: (competition) => (competition === "phl" ? 30000 : 10000)
   },
   {
-    value: "3",
+    value: 3,
     name: "Vatsahaava",
     description: "Vahvan elämyksen ystäville",
     moraleMin: -18,
@@ -87,7 +87,7 @@ const difficultyLevels: DifficultyLevel[] = [
     rallyExtra: (competition) => (competition === "phl" ? 25000 : 10000)
   },
   {
-    value: "4",
+    value: 4,
     name: "Vatsakatarri",
     description: "Todellista tervanjuontia",
     moraleMin: -22,

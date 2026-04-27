@@ -267,7 +267,7 @@ function resolveAndProcess(
 export type ManagerSubmission = {
   name: string;
   arena: string;
-  difficulty: string;
+  difficulty: number;
   team: number;
 };
 

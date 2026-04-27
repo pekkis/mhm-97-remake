@@ -11,14 +11,21 @@ import type { Team } from "@/state/game";
 import type { Competition } from "@/types/competitions";
 import { values } from "remeda";
 
-export type ManagerFormValues = {
+type FormShape = {
   name: string;
   arena: string;
   difficulty: string;
   team: number;
 };
 
-const defaultValues: ManagerFormValues = {
+export type ManagerFormValues = {
+  name: string;
+  arena: string;
+  difficulty: number;
+  team: number;
+};
+
+const defaultValues: FormShape = {
   name: "Gaylord Lohiposki",
   arena: "MasoSports Areena",
   difficulty: "2",
@@ -36,13 +43,17 @@ const ManagerForm: FC<ManagerFormProps> = ({
   competitions,
   teams
 }) => {
-  const { register, handleSubmit } = useForm<ManagerFormValues>({
+  const { register, handleSubmit } = useForm<FormShape>({
     defaultValues
   });
 
   return (
     <div>
-      <form onSubmit={handleSubmit(advance)}>
+      <form
+        onSubmit={handleSubmit((values) =>
+          advance({ ...values, difficulty: parseInt(values.difficulty, 10) })
+        )}
+      >
         <Field>
           <Label>Managerin nimi</Label>
           <Input block id="name" {...register("name")} />
@@ -74,7 +85,7 @@ const ManagerForm: FC<ManagerFormProps> = ({
         <Field>
           <LabelDiv>Joukkue</LabelDiv>
 
-          <Select {...register("team")}>
+          <Select {...register("team", { valueAsNumber: true })}>
             {values(competitions).map((c) => {
               return (
                 <optgroup key={c.id} label={c.name}>

@@ -55,7 +55,7 @@ const withManager = (
   ctx: GameContext,
   submission: ManagerSubmission
 ): GameContext => {
-  const difficulty = parseInt(submission.difficulty, 10);
+  const difficulty = submission.difficulty;
   const main = teamsMainCompetition(submission.team)(ctx);
   const manager: Manager = {
     id: crypto.randomUUID(),
