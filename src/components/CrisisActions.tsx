@@ -1,28 +1,27 @@
-import { CRISIS_MORALE_MAX } from "@/data/constants";
 import Button from "./form/Button";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import Calendar from "./ui/Calendar";
 import Box from "./styled-system/Box";
-import { useAppDispatch } from "@/config/redux";
-import { useGameContext } from "@/context/game-machine-context";
-import { managerCrisisMeeting } from "@/ducks/manager";
+import {
+  GameMachineContext,
+  useGameContext
+} from "@/context/game-machine-context";
 
 import crisis from "@/data/crisis";
 import { currency as c } from "@/services/format";
 import { getEffective } from "@/services/effects";
-import { activeManager } from "@/machines/selectors";
+import { activeManager, canCrisisMeeting } from "@/machines/selectors";
 
 const CrisisActions = () => {
   const manager = useGameContext(activeManager);
   const teams = useGameContext((ctx) => ctx.teams);
   const competitions = useGameContext((ctx) => ctx.competitions);
-  const dispatch = useAppDispatch();
+  const canDo = useGameContext(canCrisisMeeting(manager.id));
+  const gameActor = GameMachineContext.useActorRef();
 
-  const balance = manager.balance;
   const team = getEffective(teams[manager.team!]);
-
   const crisisInfo = crisis(team, competitions);
 
   return (
@@ -50,11 +49,12 @@ const CrisisActions = () => {
 
           <Button
             block
-            disabled={
-              balance < crisisInfo.amount || team.morale > CRISIS_MORALE_MAX
-            }
+            disabled={!canDo}
             onClick={() =>
-              dispatch(managerCrisisMeeting({ manager: manager.id }))
+              gameActor.send({
+                type: "CRISIS_MEETING",
+                payload: { manager: manager.id }
+              })
             }
           >
             Pidä kriisipalaveri

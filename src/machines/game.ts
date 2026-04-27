@@ -11,6 +11,7 @@ import {
   canOrderPrank,
   canBuyPlayer,
   canSellPlayer,
+  canCrisisMeeting,
   allEventsResolved,
   randomManager
 } from "@/machines/selectors";
@@ -19,6 +20,7 @@ import teamData from "@/data/teams";
 import calendar from "@/data/calendar";
 import competitionData from "@/data/competitions";
 import tournamentList from "@/data/tournaments";
+import { CRISIS_COST } from "@/data/constants";
 import { isInvitedToTournament } from "@/machines/tournament-eligibility";
 import { computeStats } from "@/services/competition-type";
 import competitionTypes from "@/services/competition-type";
@@ -323,6 +325,10 @@ export type GameMachineEvents =
   | {
       type: "SELL_PLAYER";
       payload: { manager: string; playerType: number };
+    }
+  | {
+      type: "CRISIS_MEETING";
+      payload: { manager: string };
     }
   | {
       type: "TEAM_INCUR_PENALTY";
@@ -765,6 +771,58 @@ export const gameMachine = setup({
             id: crypto.randomUUID(),
             manager: params.manager,
             message: `Myymäsi pelaaja vie ${skillLoss} voimaa mukanaan!`,
+            type: "info" as const
+          }
+        });
+      }
+    ),
+
+    /**
+     * Hold a crisis meeting: debit the manager (full price in PHL,
+     * half in division), bump team morale by 4 + the manager's
+     * difficulty `moraleBoost`, and notify with the actual gain.
+     * Notification includes the rolled value so the message and the
+     * state stay consistent — `enqueueActions` lets us share `gain`
+     * between the assign and the sendTo.
+     *
+     * 1-1 port of `crisisMeeting()` in `src/sagas/manager.ts`. The
+     * morale clamp uses the manager's per-difficulty min/max from
+     * `difficultyLevels`.
+     */
+    executeCrisisMeeting: enqueueActions(
+      ({ context, enqueue }, params: { manager: string }) => {
+        const m = context.manager.managers[params.manager];
+        if (!m || m.team === undefined) {
+          return;
+        }
+        const team = context.teams[m.team];
+        const cost = context.competitions.division.teams.includes(team.id)
+          ? CRISIS_COST / 2
+          : CRISIS_COST;
+        const diff = difficultyLevels[m.difficulty];
+        const moraleGain = 4 + diff.moraleBoost;
+
+        enqueue.assign(
+          produce(context, (draft) => {
+            const dm = draft.manager.managers[params.manager];
+            if (!dm || dm.team === undefined) {
+              return;
+            }
+            dm.balance -= cost;
+            const dt = draft.teams[dm.team];
+            dt.morale = Math.min(
+              diff.moraleMax,
+              Math.max(diff.moraleMin, dt.morale + moraleGain)
+            );
+          })
+        );
+
+        enqueue.sendTo("notifications", {
+          type: "PUSH" as const,
+          notification: {
+            id: crypto.randomUUID(),
+            manager: params.manager,
+            message: `Psykologi valaa yhdessä managerin kanssa uskoa pelaajien mieliin. Moraali paranee (+${moraleGain}), ja joukkue keskittyy tuleviin haasteisiin uudella innolla!`,
             type: "info" as const
           }
         });
@@ -1563,6 +1621,17 @@ export const gameMachine = setup({
     TEAM_INCUR_PENALTY: {
       actions: {
         type: "executeIncurPenalty",
+        params: ({ event }) => event.payload
+      }
+    },
+    CRISIS_MEETING: {
+      // UI button (CrisisActions.tsx) is already disabled when the
+      // window is closed, morale too high, or balance too low — guard
+      // catches stray sends from elsewhere.
+      guard: ({ context, event }) =>
+        canCrisisMeeting(event.payload.manager)(context),
+      actions: {
+        type: "executeCrisisMeeting",
         params: ({ event }) => event.payload
       }
     },

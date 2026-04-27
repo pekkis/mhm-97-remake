@@ -27,6 +27,7 @@ import { entries, keys, pick, values } from "remeda";
 import arenas from "@/data/arenas";
 import difficultyLevels from "@/data/difficulty-levels";
 import calendar from "@/data/calendar";
+import { CRISIS_COST, CRISIS_MORALE_MAX } from "@/data/constants";
 import type { SnapshotFrom } from "xstate";
 import type { gameMachine } from "./game";
 import type {
@@ -412,6 +413,32 @@ export const canSellPlayer =
     const competesInPHL = managerCompetesIn(manager, "phl")(ctx);
     const minStrength = competesInPHL ? 130 : 50;
     return team.strength > minStrength;
+  };
+
+/**
+ * True iff `manager` can hold a crisis meeting: calendar window is open,
+ * team morale is low enough (≤ -3), and the manager can afford the cost
+ * (PHL: full price, division: half). 1-1 with the disabled-button logic
+ * in `CrisisActions.tsx`.
+ */
+export const canCrisisMeeting =
+  (manager: string): ContextSelector<boolean> =>
+  (ctx) => {
+    const m = ctx.manager.managers[manager];
+    if (!m || m.team === undefined) {
+      return false;
+    }
+    if (!calendar[ctx.turn.round]?.crisisMeeting) {
+      return false;
+    }
+    const team = ctx.teams[m.team];
+    if (team.morale > CRISIS_MORALE_MAX) {
+      return false;
+    }
+    const cost = ctx.competitions.division.teams.includes(team.id)
+      ? CRISIS_COST / 2
+      : CRISIS_COST;
+    return m.balance >= cost;
   };
 
 export const managerWithId =
