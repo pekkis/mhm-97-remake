@@ -5,6 +5,7 @@ import type { GameContext } from "@/state";
 import type { GameFlags, Team, TeamEffect } from "@/state/game";
 import type { CompetitionId } from "@/types/competitions";
 import type { BaseEventCreationFields } from "@/types/base";
+import type { NotificationData } from "@/machines/notification";
 import { computeStats } from "@/services/competition-type";
 
 /**
@@ -37,6 +38,20 @@ export type SpawnEventFn = (
   draft: Draft<GameContext>,
   eventId: string,
   seed: BaseEventCreationFields
+) => void;
+
+/**
+ * Notification injection point. Notifications live in the invoked
+ * `notifications` child actor — NOT on `GameContext` — so the pure
+ * draft interpreter can't deliver them. The machine layer provides a
+ * callback that the caller drains after `produce()` returns,
+ * forwarding each collected notification to the child via `sendTo`.
+ *
+ * Same shape as the in-machine `notify` action's `notification`
+ * parameter (id is assigned at the boundary, optional `timeout`).
+ */
+export type NotifyFn = (
+  notification: Omit<NotificationData, "id"> & { timeout?: number }
 ) => void;
 
 /**
@@ -116,6 +131,19 @@ export type EventEffect =
   // ── News (events sometimes push announcements during process) ──
   | { type: "addAnnouncement"; manager: string; text: string }
 
+  // ── Transient toast notification ──
+  // Delivered to the `notifications` child actor by the machine-layer
+  // `NotifyFn` (see top of file). Use this for short-lived UI feedback
+  // ("Peli tallennettiin.", "Voitit kavioveikkauksessa…"). For
+  // persistent per-manager news entries, use `addAnnouncement` instead.
+  | {
+      type: "notify";
+      manager: string;
+      message: string;
+      notificationType?: string;
+      timeout?: number;
+    }
+
   // ── Spawn another event ──
   // Resolved by the machine-layer `SpawnEventFn` (see top of file). The
   // interpreter delegates because the event registry can't be imported
@@ -139,7 +167,8 @@ export type EventEffect =
 export function applyEffect(
   draft: Draft<GameContext>,
   effect: EventEffect,
-  spawn: SpawnEventFn
+  spawn: SpawnEventFn,
+  notify: NotifyFn
 ): void {
   switch (effect.type) {
     // ── Manager balance ──
@@ -367,6 +396,17 @@ export function applyEffect(
       return;
     }
 
+    // ── Transient toast ──
+    case "notify": {
+      notify({
+        manager: effect.manager,
+        message: effect.message,
+        type: effect.notificationType ?? "info",
+        ...(effect.timeout !== undefined && { timeout: effect.timeout })
+      });
+      return;
+    }
+
     // ── Spawn another event ──
     case "spawnEvent": {
       spawn(draft, effect.eventId, effect.seed);
@@ -381,9 +421,10 @@ export function applyEffect(
 export function applyEffects(
   draft: Draft<GameContext>,
   effects: EventEffect[],
-  spawn: SpawnEventFn
+  spawn: SpawnEventFn,
+  notify: NotifyFn
 ): void {
   for (const effect of effects) {
-    applyEffect(draft, effect, spawn);
+    applyEffect(draft, effect, spawn, notify);
   }
 }

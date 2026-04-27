@@ -35,7 +35,11 @@ import newEvents from "@/game/new-events";
 import eventsMap from "@/game/new-events/table";
 import type { DeclarativeEvent } from "@/types/event";
 import type { BaseEventFields, BaseEventCreationFields } from "@/types/base";
-import { applyEffects, type SpawnEventFn } from "@/game/event-effects";
+import {
+  applyEffects,
+  type SpawnEventFn,
+  type NotifyFn
+} from "@/game/event-effects";
 
 // Heterogeneous registry lookup — `newEvents` is `as const` for per-event
 // payload typing at known keys; the interpreter looks events up by string
@@ -64,6 +68,32 @@ const spawnEvent: SpawnEventFn = (draft, eventId, seed) => {
   const id = crypto.randomUUID();
   draft.event.events[id] = { ...payload, id };
 };
+
+/**
+ * One notify-effect collection on its way out of an `enqueueActions`
+ * pass. Carries everything the `notifications` child needs except the
+ * id (assigned at flush time so each toast gets its own UUID).
+ */
+type PendingNotification = Omit<NotificationData, "id"> & { timeout?: number };
+
+/**
+ * Drain notifications collected by a `NotifyFn` into the invoked
+ * `notifications` child via `sendTo`. The interpreter can't reach the
+ * child from inside `produce()` (notifications don't live on
+ * `GameContext`), so any action that calls `applyEffects` must collect
+ * + flush around it. Keeps the call sites uniform.
+ */
+function flushNotifications(
+  enqueue: { sendTo: (target: string, event: unknown) => void },
+  pending: PendingNotification[]
+): void {
+  for (const n of pending) {
+    enqueue.sendTo("notifications", {
+      type: "PUSH" as const,
+      notification: { id: crypto.randomUUID(), ...n }
+    });
+  }
+}
 
 // Parlay payout multipliers indexed by number of correct picks (0..6).
 // 1-1 mirror of `victories` in src/sagas/betting.ts.
@@ -153,7 +183,8 @@ function updateStreaks(
 function resolveAndProcess(
   draft: Draft<GameContext>,
   evtId: string,
-  value: string
+  value: string,
+  notify: NotifyFn
 ): void {
   const stored = draft.event.events[evtId];
   if (!stored) {
@@ -185,7 +216,7 @@ function resolveAndProcess(
     draft as GameContext,
     draft.event.events[evtId] as never
   );
-  applyEffects(draft, effects, spawnEvent);
+  applyEffects(draft, effects, spawnEvent, notify);
   draft.event.events[evtId].processed = true;
 }
 
@@ -968,24 +999,29 @@ export const gameMachine = setup({
      * `options`) rather than an `autoResolve` flag baked into each
      * payload by the create function.
      */
-    executeAutoResolveEvents: assign(({ context }) =>
-      produce(context, (draft) => {
-        for (const [id, evt] of entries(draft.event.events)) {
-          if (evt.processed) {
-            continue;
+    executeAutoResolveEvents: enqueueActions(({ context, enqueue }) => {
+      const pending: PendingNotification[] = [];
+      const notify: NotifyFn = (n) => pending.push(n);
+      enqueue.assign(
+        produce(context, (draft) => {
+          for (const [id, evt] of entries(draft.event.events)) {
+            if (evt.processed) {
+              continue;
+            }
+            const def = eventRegistry[evt.eventId];
+            if (!def) {
+              continue;
+            }
+            // Interactive event still waiting on the player.
+            if (!evt.resolved && def.options) {
+              continue;
+            }
+            resolveAndProcess(draft, id, "auto", notify);
           }
-          const def = eventRegistry[evt.eventId];
-          if (!def) {
-            continue;
-          }
-          // Interactive event still waiting on the player.
-          if (!evt.resolved && def.options) {
-            continue;
-          }
-          resolveAndProcess(draft, id, "auto");
-        }
-      })
-    ),
+        })
+      );
+      flushNotifications(enqueue, pending);
+    }),
 
     /**
      * Player resolved one interactive event. Look it up, run its
@@ -995,11 +1031,17 @@ export const gameMachine = setup({
      * 1-1 port of the deleted `requestResolveEvent` → `resolveEvent` flow
      * in `src/sagas/event.ts`.
      */
-    executeResolveEvent: assign(
-      ({ context }, params: { id: string; value: string }) =>
-        produce(context, (draft) => {
-          resolveAndProcess(draft, params.id, params.value);
-        })
+    executeResolveEvent: enqueueActions(
+      ({ context, enqueue }, params: { id: string; value: string }) => {
+        const pending: PendingNotification[] = [];
+        const notify: NotifyFn = (n) => pending.push(n);
+        enqueue.assign(
+          produce(context, (draft) => {
+            resolveAndProcess(draft, params.id, params.value, notify);
+          })
+        );
+        flushNotifications(enqueue, pending);
+      }
     ),
 
     /**
@@ -1026,22 +1068,28 @@ export const gameMachine = setup({
      *
      * No UI — runs on `entry` and the state auto-advances.
      */
-    executePranks: assign(({ context }) =>
-      produce(context, (draft) => {
-        for (const prank of draft.prank.pranks) {
-          const def = prankTypes[prank.type];
-          if (!def) {
-            continue;
+    executePranks: enqueueActions(({ context, enqueue }) => {
+      const pending: PendingNotification[] = [];
+      const notify: NotifyFn = (n) => pending.push(n);
+      enqueue.assign(
+        produce(context, (draft) => {
+          for (const prank of draft.prank.pranks) {
+            const def = prankTypes[prank.type];
+            if (!def) {
+              continue;
+            }
+            applyEffects(
+              draft,
+              def.execute(draft as GameContext, prank),
+              spawnEvent,
+              notify
+            );
           }
-          applyEffects(
-            draft,
-            def.execute(draft as GameContext, prank),
-            spawnEvent
-          );
-        }
-        draft.prank.pranks = [];
-      })
-    ),
+          draft.prank.pranks = [];
+        })
+      );
+      flushNotifications(enqueue, pending);
+    }),
 
     /**
      * Generic notification dispatcher — forwards a fully-formed notification
