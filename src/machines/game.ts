@@ -46,6 +46,12 @@ import {
   type SpawnEventFn,
   type NotifyFn
 } from "@/game/event-effects";
+import {
+  runWorldChampionships,
+  runAwards,
+  runFinalizeStats,
+  runSeasonEnd
+} from "@/machines/end-of-season";
 
 // Heterogeneous registry lookup — `newEvents` is `as const` for per-event
 // payload typing at known keys; the interpreter looks events up by string
@@ -448,6 +454,18 @@ export const gameMachine = setup({
 
           manager.extra = difficultyLevels[manager.difficulty].extra;
         }
+
+        // Initialize currentSeason for stats accumulation. Saga side did
+        // this via the SEASON_START reducer in stats.ts.
+        draft.stats.currentSeason = {
+          ehlChampion: undefined,
+          presidentsTrophy: undefined,
+          medalists: undefined,
+          worldChampionships: undefined,
+          promoted: undefined,
+          relegated: undefined,
+          stories: {}
+        };
       })
     ),
 
@@ -589,13 +607,12 @@ export const gameMachine = setup({
      * and append the resulting `Phase` onto `competitions[id].phases`.
      *
      * 1-1 port of `sagas/phase/seed.ts` + `seedCompetition()` in
-     * `sagas/game.ts`. The legacy saga had a callback indirection (the
-     * tournaments saga returned a `setCompetitionTeams` saga to be invoked
-     * after the seeder ran); here we do that mirroring unconditionally —
-     * `comp.teams = phase.teams` is a no-op for competitions whose phase
-     * teams already match `comp.teams` (PHL/division/EHL), and matches the
-     * tournaments behavior. If a future competition needs different
-     * mirroring, revisit.
+     * `sagas/game.ts`. Tournaments mirror their newly-built participant
+     * list back to `comp.teams` (the legacy saga had a callback
+     * indirection — `setCompetitionTeams` — for exactly this); league
+     * competitions (PHL/division/EHL) keep their master roster
+     * untouched, since playoff seeds produce bracket-sized team lists,
+     * not full rosters.
      */
     executeSeedPhase: assign(({ context }) =>
       produce(context, (draft) => {
@@ -607,7 +624,9 @@ export const gameMachine = setup({
           const newPhase = def.seed[phase](draft.competitions, seederContext);
           draft.competitions[competition].phases.push(newPhase);
           draft.competitions[competition].phase = phase;
-          draft.competitions[competition].teams = newPhase.teams;
+          if (competition === "tournaments") {
+            draft.competitions[competition].teams = newPhase.teams;
+          }
           // Materialize initial stats for every group so the league tables
           // have something to render before the first gameday. 1-1 port of
           // the legacy `calculatePhaseStats` saga that ran on COMPETITION_SEED.
@@ -1149,6 +1168,51 @@ export const gameMachine = setup({
           resolveAndProcess(draft, params.id, params.value, notify);
         });
       }
+    ),
+
+    /**
+     * End-of-season: world championships. Recompute Pekkalandia
+     * (FI) strength as the PHL average, then roll luck + random per
+     * country and snapshot the sorted standings into
+     * `worldChampionshipResults` + `stats.currentSeason.worldChampionships`.
+     */
+    executeWorldChampionships: assign(({ context }) =>
+      produce(context, (draft) => {
+        runWorldChampionships(draft, random);
+      })
+    ),
+
+    /**
+     * End-of-season: pay PHL playoff medals + regular-season top-4 +
+     * playoff bonuses, then run ~21 random end-of-season events for
+     * every Pekkalandian team. All news lines push into `news.news`
+     * (cleared by `advanceRound` after the player advances out).
+     */
+    executeAwards: assign(({ context }) =>
+      produce(context, (draft) => {
+        runAwards(draft, random);
+      })
+    ),
+
+    /**
+     * End-of-season: finalize season stats (presidents trophy, medalists,
+     * promoted/relegated when distinct, per-manager stories).
+     */
+    executeFinalizeSeasonStats: assign(({ context }) =>
+      produce(context, (draft) => {
+        runFinalizeStats(draft);
+      })
+    ),
+
+    /**
+     * End-of-season: commit currentSeason → seasons[], promote/relegate,
+     * bump season counter, set round to -1 so `advanceRound` rolls back
+     * to 0 for the new season.
+     */
+    executeSeasonEnd: assign(({ context }) =>
+      produce(context, (draft) => {
+        runSeasonEnd(draft);
+      })
     ),
 
     /**
@@ -1863,10 +1927,32 @@ export const gameMachine = setup({
               ]
             },
             end_of_season: {
-              on: { ADVANCE: "round_end" }
+              initial: "world_championships",
+              states: {
+                world_championships: {
+                  entry: "executeWorldChampionships",
+                  on: { ADVANCE: "awards" }
+                },
+                awards: {
+                  entry: "executeAwards",
+                  always: "finalize_stats"
+                },
+                finalize_stats: {
+                  entry: "executeFinalizeSeasonStats",
+                  always: "review"
+                },
+                review: {
+                  on: { ADVANCE: "committing" }
+                },
+                committing: {
+                  entry: "executeSeasonEnd",
+                  always: "#round_end_after_season"
+                }
+              }
             },
 
             round_end: {
+              id: "round_end_after_season",
               entry: "advanceRound",
               always: [
                 { guard: "calendar_in_bounds", target: "action_check" },
