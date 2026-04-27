@@ -7,5 +7,4 @@ export { default as ui } from "./ui";
 export { default as notification } from "./notification";
 export { default as prank } from "./prank";
 export { default as stats } from "./stats";
-export { default as invitation } from "./invitation";
 export { default as country } from "./country";

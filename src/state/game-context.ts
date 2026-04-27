@@ -8,7 +8,6 @@
 
 import type { GameState } from "./game";
 import type { ManagerState } from "./manager";
-import type { BettingState } from "./betting";
 import type { EventState } from "./event";
 import type { InvitationState } from "./invitation";
 import type { NewsState } from "./news";
@@ -18,10 +17,10 @@ import type { CountryState } from "./country";
 import type { PrankState } from "./prank";
 import type { ActorRefFrom } from "xstate";
 import type { betMachine } from "@/machines/bet";
+import type { championBetMachine } from "@/machines/championBet";
 
 export type GameContext = GameState & {
   manager: ManagerState;
-  betting: BettingState;
   event: EventState;
   news: NewsState;
   notification: NotificationState;
@@ -37,4 +36,12 @@ export type GameContext = GameState & {
    * `advanceRound` (matches the deleted Redux `nextTurn` clear).
    */
   parlayBets: ActorRefFrom<typeof betMachine>[];
+  /**
+   * Active championship bet actors. Each is spawned by `gameMachine`
+   * on `PLACE_CHAMPION_BET`, parked in `placed` until end-of-season
+   * (when the champion is decided), then resolved — their
+   * `BET_RESOLVED` output is interpreted by the parent. Cleared at
+   * the season boundary (TODO: when end_of_season migrates).
+   */
+  championBets: ActorRefFrom<typeof championBetMachine>[];
 };

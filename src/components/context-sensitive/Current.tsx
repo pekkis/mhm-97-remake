@@ -14,7 +14,7 @@ const Current = () => {
 
   return (
     <div className={styles.current}>
-      {invitations.filter((i) => !i.participate).length > 0 && (
+      {invitations.filter((i) => !i.accepted).length > 0 && (
         <div className={styles.currentEntry}>
           <FaExclamationCircle />
           Pöydälläsi odottaa{" "}

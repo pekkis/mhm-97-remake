@@ -14,9 +14,7 @@ import {
   setActiveManager
 } from "@/sagas/manager";
 import { managerCrisisMeeting, managerToggleService } from "@/ducks/manager";
-import { acceptInvitation } from "@/sagas/invitation";
 
-import { requestAcceptInvitation } from "@/ducks/invitation";
 import { advance, setGamePhase } from "@/ducks/game";
 import type { RootState } from "@/config/redux";
 import { values } from "remeda";
@@ -31,14 +29,7 @@ export default function* actionPhase() {
   const task = yield* fork(function* () {
     yield* all([
       takeEvery(managerCrisisMeeting, crisisMeeting),
-      takeEvery(managerToggleService, toggleService),
-      takeEvery(requestAcceptInvitation, function* (action) {
-        yield* call(
-          acceptInvitation,
-          action.payload.manager,
-          action.payload.id
-        );
-      })
+      takeEvery(managerToggleService, toggleService)
     ]);
   });
 

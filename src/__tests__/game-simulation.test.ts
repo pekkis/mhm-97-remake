@@ -117,7 +117,6 @@ describe("game simulation integration", () => {
           "news",
           "seed",
           "invitations_create",
-          "invitations_process",
           "start_of_season",
           "end_of_season",
           "gala"

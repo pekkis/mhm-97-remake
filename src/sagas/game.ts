@@ -25,8 +25,6 @@ import actionPhase from "./phase/action";
 import calculationsPhase from "./phase/calculations";
 import newsPhase from "./phase/news";
 import gamedayPhase from "./phase/gameday";
-import invitationsCreatePhase from "./phase/invitations-create";
-import invitationsProcessPhase from "./phase/invitations-process";
 import endOfSeasonPhase from "./phase/end-of-season";
 import startOfSeasonPhase from "./phase/start-of-season";
 import galaPhase from "./phase/gala";
@@ -115,14 +113,6 @@ export function* gameLoop() {
 
     if (phases.includes("news")) {
       yield* call(newsPhase);
-    }
-
-    if (phases.includes("invitations_create")) {
-      yield* call(invitationsCreatePhase);
-    }
-
-    if (phases.includes("invitations_process")) {
-      yield* call(invitationsProcessPhase);
     }
 
     if (phases.includes("start_of_season")) {

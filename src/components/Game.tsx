@@ -70,11 +70,6 @@ const useUiPhase = (): string | undefined => {
       return "invitations_create";
     }
     if (
-      state.matches({ in_game: { executing_phases: "invitations_process" } })
-    ) {
-      return "invitations_process";
-    }
-    if (
       state.matches({
         in_game: {
           executing_phases: { start_of_season: "select_strategy" }

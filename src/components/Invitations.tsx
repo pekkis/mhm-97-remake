@@ -5,16 +5,17 @@ import Box from "./styled-system/Box";
 import tournamentList from "@/data/tournaments";
 import Markdown from "react-markdown";
 import Button from "./form/Button";
-import { useAppDispatch } from "@/config/redux";
-import { useGameContext } from "@/context/game-machine-context";
-import { requestAcceptInvitation } from "@/ducks/invitation";
+import {
+  GameMachineContext,
+  useGameContext
+} from "@/context/game-machine-context";
 import { activeManager, activeManagersInvitations } from "@/machines/selectors";
 
 const Invitations = () => {
   const manager = useGameContext(activeManager);
 
   const invitations = useGameContext(activeManagersInvitations);
-  const dispatch = useAppDispatch();
+  const actor = GameMachineContext.useActorRef();
 
   return (
     <HeaderedPage>
@@ -36,11 +37,12 @@ const Invitations = () => {
               <Button
                 block
                 onClick={() =>
-                  dispatch(
-                    requestAcceptInvitation({ manager: manager.id, id: i.id })
-                  )
+                  actor.send({
+                    type: "ACCEPT_INVITATION",
+                    payload: { manager: manager.id, id: i.id }
+                  })
                 }
-                disabled={i.participate}
+                disabled={i.accepted}
               >
                 Hyväksy turnauskutsu
               </Button>

@@ -3,7 +3,7 @@ import { createTestStore } from "./helpers/createTestStore";
 import { keys } from "remeda";
 
 describe("store initialization", () => {
-  it("should create a store with all 11 reducer slices", () => {
+  it("should create a store with all 10 reducer slices", () => {
     const store = createTestStore();
     const state = store.getState();
 
@@ -16,7 +16,6 @@ describe("store initialization", () => {
     expect(state).toHaveProperty("notification");
     expect(state).toHaveProperty("prank");
     expect(state).toHaveProperty("stats");
-    expect(state).toHaveProperty("invitation");
     expect(state).toHaveProperty("country");
   });
 
@@ -178,13 +177,6 @@ describe("store initialization", () => {
       expect(stats.managers).toEqual({});
       expect(stats.currentSeason).toBeUndefined();
       expect(stats.seasons).toEqual([]);
-    });
-  });
-
-  describe("invitation slice initial state", () => {
-    it("should have empty invitations", () => {
-      const store = createTestStore();
-      expect(store.getState().invitation.invitations).toEqual([]);
     });
   });
 

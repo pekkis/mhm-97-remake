@@ -360,16 +360,6 @@ export const interestingCompetitions = createSelector(
   }
 );
 
-export const allInvitations = (state: RootState) =>
-  state.invitation.invitations;
-
-export const activeManagersInvitations = createSelector(
-  [activeManager, allInvitations],
-  (manager, invitations) => {
-    return invitations.filter((i) => i.manager === manager.id);
-  }
-);
-
 export const randomManager =
   (exclude: number[] = []) =>
   (state: RootState) => {

@@ -2,8 +2,7 @@ export type Invitation = {
   id: string;
   manager: string;
   tournament: number;
-  duration: number;
-  participate?: boolean;
+  accepted: boolean;
 };
 
 export type InvitationState = {

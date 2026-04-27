@@ -129,7 +129,7 @@ const tournaments: CompetitionDefinition = {
     (ctx) => ({
       teams: foreignTeams(ctx),
       managers: ctx.manager.managers,
-      invitations: ctx.invitation.invitations.filter((i) => i.participate)
+      invitations: ctx.invitation.invitations.filter((i) => i.accepted)
     })
   ],
 
