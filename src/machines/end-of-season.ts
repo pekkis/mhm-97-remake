@@ -357,8 +357,12 @@ const randomEvents: RandomEvent[] = [
     1,
     () => -30,
     (d, t) => {
-      if (!playsInPHLOrWasPromoted(d, t)) return false;
-      if (d.teams[t].strength <= 200) return false;
+      if (!playsInPHLOrWasPromoted(d, t)) {
+        return false;
+      }
+      if (d.teams[t].strength <= 200) {
+        return false;
+      }
       const rank = teamPositionInRoundRobin(d, t, "phl", 0);
       return rank !== false && rank > 8;
     },
@@ -370,8 +374,12 @@ const randomEvents: RandomEvent[] = [
     1,
     () => 20,
     (d, t) => {
-      if (!playsInPHLOrWasPromoted(d, t)) return false;
-      if (d.teams[t].strength >= 160) return false;
+      if (!playsInPHLOrWasPromoted(d, t)) {
+        return false;
+      }
+      if (d.teams[t].strength >= 160) {
+        return false;
+      }
       const rank = teamPositionInRoundRobin(d, t, "phl", 0);
       return rank !== false && rank <= 8;
     },
@@ -442,15 +450,21 @@ const randomEvents: RandomEvent[] = [
     5,
     () => -40,
     (d, t) => {
-      if (!teamCompetesIn(d, t, "phl")) return false;
+      if (!teamCompetesIn(d, t, "phl")) {
+        return false;
+      }
       const phlStats = d.competitions.phl.phases[0].groups[0]
         .stats as TeamStat[];
       const phlLoser = phlStats[phlStats.length - 1].id;
-      if (phlLoser !== t) return false;
+      if (phlLoser !== t) {
+        return false;
+      }
       const divisionVictor = victors(
         d.competitions.division.phases[3].groups[0] as PlayoffGroup
       )[0]?.id;
-      if (divisionVictor === t) return false; // not actually relegated
+      if (divisionVictor === t) {
+        return false;
+      } // not actually relegated
       return d.teams[t].strength > 160;
     },
     (team) =>
@@ -461,15 +475,21 @@ const randomEvents: RandomEvent[] = [
     7,
     () => -20,
     (d, t) => {
-      if (!teamCompetesIn(d, t, "phl")) return false;
+      if (!teamCompetesIn(d, t, "phl")) {
+        return false;
+      }
       const phlStats = d.competitions.phl.phases[0].groups[0]
         .stats as TeamStat[];
       const phlLoser = phlStats[phlStats.length - 1].id;
-      if (phlLoser !== t) return false;
+      if (phlLoser !== t) {
+        return false;
+      }
       const divisionVictor = victors(
         d.competitions.division.phases[3].groups[0] as PlayoffGroup
       )[0]?.id;
-      if (divisionVictor === t) return false;
+      if (divisionVictor === t) {
+        return false;
+      }
       return d.teams[t].strength > 130;
     },
     (team) =>
@@ -480,11 +500,15 @@ const randomEvents: RandomEvent[] = [
     1,
     () => -20,
     (d, t) => {
-      if (!teamCompetesIn(d, t, "division")) return false;
+      if (!teamCompetesIn(d, t, "division")) {
+        return false;
+      }
       const divisionVictor = victors(
         d.competitions.division.phases[3].groups[0] as PlayoffGroup
       )[0]?.id;
-      if (divisionVictor === t) return false;
+      if (divisionVictor === t) {
+        return false;
+      }
       return d.teams[t].strength > 120;
     },
     (team) =>
@@ -495,11 +519,15 @@ const randomEvents: RandomEvent[] = [
     1,
     () => -40,
     (d, t) => {
-      if (!teamCompetesIn(d, t, "division")) return false;
+      if (!teamCompetesIn(d, t, "division")) {
+        return false;
+      }
       const divisionVictor = victors(
         d.competitions.division.phases[3].groups[0] as PlayoffGroup
       )[0]?.id;
-      if (divisionVictor === t) return false;
+      if (divisionVictor === t) {
+        return false;
+      }
       return d.teams[t].strength > 140;
     },
     (team) =>
@@ -702,7 +730,9 @@ const runPromote = (
   teamId: number
 ): void => {
   const promoteTo = competitionData[competitionId as CompetitionId].promoteTo;
-  if (promoteTo === false) return;
+  if (promoteTo === false) {
+    return;
+  }
   removeTeamFromCompetition(draft, competitionId, teamId);
   addTeamToCompetition(draft, promoteTo, teamId);
 };
@@ -713,7 +743,9 @@ const runRelegate = (
   teamId: number
 ): void => {
   const relegateTo = competitionData[competitionId as CompetitionId].relegateTo;
-  if (relegateTo === false) return;
+  if (relegateTo === false) {
+    return;
+  }
   removeTeamFromCompetition(draft, competitionId, teamId);
   addTeamToCompetition(draft, relegateTo, teamId);
 };
