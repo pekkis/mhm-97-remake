@@ -6,7 +6,6 @@ import { call, put, select, take } from "typed-redux-saga";
 import { groupEnd } from "./game";
 import { calculateGroupStats } from "./stats";
 import { afterGameday } from "./manager";
-import { bettingResults } from "./betting";
 import {
   advance,
   gameBegin,
@@ -80,10 +79,6 @@ function* completeGameday(
 ) {
   yield* call(calculateGroupStats, competition, phase, group);
   yield* call(afterGameday, competition, phase, group, round);
-
-  if (competition === "phl" && phase === 0 && group === 0) {
-    yield* call(bettingResults, round);
-  }
 
   yield* put(
     gamedayComplete({

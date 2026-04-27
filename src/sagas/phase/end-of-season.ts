@@ -5,7 +5,6 @@ import { victors, eliminated } from "@/services/playoffs";
 import awards from "@/sagas/awards";
 import { cinteger } from "@/services/random";
 import { setSeasonStat, createSeasonStories } from "@/sagas/stats";
-import { processChampionBets } from "@/sagas/betting";
 import { competition, allTeams } from "@/selectors";
 import { setStrength } from "@/ducks/country";
 import type { Country } from "@/state/country";
@@ -126,8 +125,6 @@ export default function* endOfSeasonPhase() {
     yield* call(setSeasonStat, ["relegated"], phlLoser);
     yield* call(setSeasonStat, ["promoted"], divisionVictor);
   }
-
-  yield* call(processChampionBets);
 
   yield* call(createSeasonStories);
 

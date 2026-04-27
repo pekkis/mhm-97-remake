@@ -235,6 +235,10 @@ export type GameMachineEvents =
       };
     }
   | {
+      type: "PLACE_BET";
+      payload: { manager: string; coupon: string[]; amount: number };
+    }
+  | {
       type: "ORDER_PRANK";
       payload: { manager: string; type: string; victim: number };
     }
@@ -287,6 +291,10 @@ export const gameMachine = setup({
             (e) => e.duration > 0
           );
         }
+        // 1-1 port of `addCase(nextTurn)` in src/ducks/betting.ts: parlay
+        // bets are placed in the action phase and paid out (or not) during
+        // gameday — clear them at the round boundary.
+        draft.betting.bets = [];
         draft.turn.round += 1;
       })
     ),
@@ -392,6 +400,30 @@ export const gameMachine = setup({
             team: params.team,
             amount: params.amount,
             odds: params.odds
+          });
+          const m = draft.manager.managers[params.manager];
+          if (m) {
+            m.balance -= params.amount;
+          }
+        })
+    ),
+
+    /**
+     * action phase — record a parlay bet and pay the stake. 1-1 port of
+     * the legacy `bet()` saga in src/sagas/betting.ts (data half).
+     * Bets are cleared at the round boundary (`advanceRound`); payout
+     * happens during gameday inside `executeGameday`.
+     */
+    placeBet: assign(
+      (
+        { context },
+        params: { manager: string; coupon: string[]; amount: number }
+      ) =>
+        produce(context, (draft) => {
+          draft.betting.bets.push({
+            manager: params.manager,
+            coupon: params.coupon,
+            amount: params.amount
           });
           const m = draft.manager.managers[params.manager];
           if (m) {
@@ -1187,6 +1219,25 @@ export const gameMachine = setup({
         type: "executeIncurPenalty",
         params: ({ event }) => event.payload
       }
+    },
+    PLACE_BET: {
+      actions: [
+        {
+          type: "placeBet",
+          params: ({ event }) => event.payload
+        },
+        {
+          type: "notify",
+          params: ({ event }) => ({
+            notification: {
+              manager: event.payload.manager,
+              message:
+                "Kiikutat veikkauskuponkisi lähimmälle S-kioskille. Olkoon onni myötä!",
+              type: "info"
+            }
+          })
+        }
+      ]
     },
     SAVED: {
       actions: {

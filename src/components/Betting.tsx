@@ -3,9 +3,10 @@ import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import BettingForm from "./betting/BettingForm";
 import Box from "./styled-system/Box";
-import { useAppDispatch } from "@/config/redux";
-import { useGameContext } from "@/context/game-machine-context";
-import { requestBet } from "@/ducks/betting";
+import {
+  GameMachineContext,
+  useGameContext
+} from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
 
 const Betting = () => {
@@ -13,7 +14,7 @@ const Betting = () => {
   const manager = useGameContext(activeManager);
   const teams = useGameContext((ctx) => ctx.teams);
   const competition = useGameContext((ctx) => ctx.competitions.phl);
-  const dispatch = useAppDispatch();
+  const actor = GameMachineContext.useActorRef();
 
   return (
     <HeaderedPage>
@@ -31,7 +32,10 @@ const Betting = () => {
           teams={teams}
           manager={manager}
           bet={(coupon: string[], amount: number) =>
-            dispatch(requestBet({ manager: manager.id, coupon, amount }))
+            actor.send({
+              type: "PLACE_BET",
+              payload: { manager: manager.id, coupon, amount }
+            })
           }
           competition={competition}
         />

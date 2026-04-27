@@ -17,8 +17,6 @@ import { managerCrisisMeeting, managerToggleService } from "@/ducks/manager";
 import { acceptInvitation } from "@/sagas/invitation";
 
 import { requestAcceptInvitation } from "@/ducks/invitation";
-import { requestBet } from "@/ducks/betting";
-import { bet } from "@/sagas/betting";
 import { advance, setGamePhase } from "@/ducks/game";
 import type { RootState } from "@/config/redux";
 import { values } from "remeda";
@@ -40,12 +38,6 @@ export default function* actionPhase() {
           action.payload.manager,
           action.payload.id
         );
-      }),
-      takeEvery(requestBet, function* (action) {
-        const {
-          payload: { manager, coupon, amount }
-        } = action;
-        yield* call(bet, manager, coupon, amount);
       })
     ]);
   });
