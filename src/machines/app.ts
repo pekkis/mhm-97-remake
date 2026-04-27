@@ -184,9 +184,13 @@ export const appMachine = setup({
               // already carries the full context. Cast around the type
               // requirement.
               createActor(gameMachine, {
-                snapshot: context.snapshot
+                snapshot: context.snapshot,
+                systemId: "game"
               } as Parameters<typeof createActor<typeof gameMachine>>[1])
-            : createActor(gameMachine, { input: context.pending! });
+            : createActor(gameMachine, {
+                input: context.pending!,
+                systemId: "game"
+              });
         game.start();
         return {
           pending: undefined,

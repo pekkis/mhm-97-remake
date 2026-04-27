@@ -1,4 +1,4 @@
-import { setup, sendParent, assign } from "xstate";
+import { setup, sendTo, assign } from "xstate";
 
 import type { EventEffect } from "@/game/event-effects";
 import { amount as formatAmount } from "@/services/format";
@@ -24,8 +24,11 @@ export type BetEvent = { type: "RESOLVE"; correctCoupon: string[] };
  * One parlay bet. Spawned by `gameMachine` on `PLACE_BET`, parked in
  * `placed` until the league round runs in `executeGameday` and the
  * parent sends `RESOLVE { correctCoupon }`. On resolution the bet
- * computes its payout as `EventEffect[]` and forwards it to the parent
- * via `BET_RESOLVED`, which the parent's interpreter consumes.
+ * computes its payout as `EventEffect[]` and forwards it to the game
+ * actor via `BET_RESOLVED` — found via `system.get("game")` (the
+ * gameActor is registered with that systemId in `app.ts`). This is
+ * snapshot-safe: actor refs in context are NOT serializable, but
+ * systemId lookup is.
  *
  * The bet doesn't apply effects itself — that's the interpreter's job.
  * Keeps the bet pure (no draft access, no notification side-effects)
@@ -54,11 +57,14 @@ export const betMachine = setup({
     },
     resolved: {
       type: "final",
-      entry: sendParent(({ context, self }) => ({
-        type: "BET_RESOLVED" as const,
-        betId: self.id,
-        effects: computePayout(context)
-      }))
+      entry: sendTo(
+        ({ system }) => system.get("game"),
+        ({ context, self }) => ({
+          type: "BET_RESOLVED" as const,
+          betId: self.id,
+          effects: computePayout(context)
+        })
+      )
     }
   }
 });
