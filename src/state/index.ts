@@ -19,7 +19,7 @@ export type {
   ManagerServices,
   ManagerState
 } from "./manager";
-export type { Bet, ChampionshipBet, BettingState } from "./betting";
+export type { ChampionshipBet, BettingState } from "./betting";
 export type { StoredEvent, EventState } from "./event";
 export type { Invitation, InvitationState } from "./invitation";
 export type { MetaManager, MetaState } from "./meta";

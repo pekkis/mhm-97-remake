@@ -5,13 +5,6 @@ export type ChampionshipBet = {
   odds: number;
 };
 
-export type Bet = {
-  manager: string;
-  coupon: string[];
-  amount: number;
-};
-
 export type BettingState = {
   championshipBets: ChampionshipBet[];
-  bets: Bet[];
 };

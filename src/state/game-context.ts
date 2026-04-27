@@ -16,6 +16,8 @@ import type { NotificationState } from "./notification";
 import type { StatsState } from "./stats";
 import type { CountryState } from "./country";
 import type { PrankState } from "./prank";
+import type { ActorRefFrom } from "xstate";
+import type { betMachine } from "@/machines/bet";
 
 export type GameContext = GameState & {
   manager: ManagerState;
@@ -27,4 +29,12 @@ export type GameContext = GameState & {
   stats: StatsState;
   invitation: InvitationState;
   country: CountryState;
+  /**
+   * Active parlay bet actors. Each is spawned by `gameMachine` on
+   * `PLACE_BET`, parked in `placed` until the league round runs in
+   * `executeGameday`, then resolved — their `BET_RESOLVED` output
+   * is interpreted by the parent. Cleared at the round boundary by
+   * `advanceRound` (matches the deleted Redux `nextTurn` clear).
+   */
+  parlayBets: ActorRefFrom<typeof betMachine>[];
 };

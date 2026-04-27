@@ -1,4 +1,4 @@
-import { setup, assign, sendTo, enqueueActions } from "xstate";
+import { setup, assign, sendTo, enqueueActions, stopChild } from "xstate";
 import { produce, type Draft } from "immer";
 
 import type { GameContext } from "@/state";
@@ -29,6 +29,7 @@ import playerTypes from "@/data/transfer-market";
 import random from "@/services/random";
 import { notificationsMachine } from "@/machines/notifications";
 import type { NotificationData } from "@/machines/notification";
+import { betMachine } from "@/machines/bet";
 import type { CompetitionId } from "@/types/competitions";
 import { values, entries } from "remeda";
 import newEvents from "@/game/new-events";
@@ -37,6 +38,7 @@ import type { DeclarativeEvent } from "@/types/event";
 import type { BaseEventFields, BaseEventCreationFields } from "@/types/base";
 import {
   applyEffects,
+  type EventEffect,
   type SpawnEventFn,
   type NotifyFn
 } from "@/game/event-effects";
@@ -122,9 +124,9 @@ function runInterpreter(
   }
 }
 
-// Parlay payout multipliers indexed by number of correct picks (0..6).
-// 1-1 mirror of `victories` in src/sagas/betting.ts.
-const victories = [false, false, false, 1, 2, 5, 10] as const;
+// Parlay payout multipliers moved to src/machines/bet.ts (where the
+// payout is now computed). The bet actor reaches `resolved` and emits
+// `BET_RESOLVED { effects }` which the root handler interprets.
 
 const emptyStreak = { win: 0, draw: 0, loss: 0, noLoss: 0, noWin: 0 } as const;
 const emptyGameRecord = { win: 0, draw: 0, loss: 0 } as const;
@@ -327,6 +329,11 @@ export type GameMachineEvents =
   | {
       type: "RESOLVE_EVENT";
       payload: { id: string; value: string };
+    }
+  | {
+      type: "BET_RESOLVED";
+      betId: string;
+      effects: EventEffect[];
     };
 
 export const gameMachine = setup({
@@ -337,7 +344,8 @@ export const gameMachine = setup({
   },
 
   actors: {
-    notifications: notificationsMachine
+    notifications: notificationsMachine,
+    bet: betMachine
   },
 
   actions: {
@@ -349,10 +357,12 @@ export const gameMachine = setup({
             (e) => e.duration > 0
           );
         }
-        // 1-1 port of `addCase(nextTurn)` in src/ducks/betting.ts: parlay
-        // bets are placed in the action phase and paid out (or not) during
-        // gameday — clear them at the round boundary.
-        draft.betting.bets = [];
+        // Parlay bets are paid out (or not) during gameday and removed
+        // by the BET_RESOLVED handler. Anything still hanging around
+        // here means the round had no league play (no chance to
+        // resolve) — drop the refs so they don't accumulate. The actors
+        // themselves get GC'd once unreferenced.
+        draft.parlayBets = [];
         draft.turn.round += 1;
       })
     ),
@@ -467,27 +477,44 @@ export const gameMachine = setup({
     ),
 
     /**
-     * action phase — record a parlay bet and pay the stake. 1-1 port of
-     * the legacy `bet()` saga in src/sagas/betting.ts (data half).
-     * Bets are cleared at the round boundary (`advanceRound`); payout
-     * happens during gameday inside `executeGameday`.
+     * action phase — spawn a parlay bet actor for the chosen coupon and
+     * debit the stake. The bet sits in `placed` until `executeGameday`
+     * sends it `RESOLVE { correctCoupon }`; on resolution the bet emits
+     * `BET_RESOLVED { effects }` which the root handler interprets.
+     *
+     * Two `assign`s in one `enqueueActions` so we can keep the immer
+     * mutation for the manager balance and add the actor ref to
+     * `parlayBets` without immer touching the actor (which would freeze
+     * its internal getters). Same split-assign pattern as
+     * `executeBuyPlayer`.
      */
-    placeBet: assign(
+    placeBet: enqueueActions(
       (
-        { context },
+        { context, enqueue },
         params: { manager: string; coupon: string[]; amount: number }
-      ) =>
-        produce(context, (draft) => {
-          draft.betting.bets.push({
-            manager: params.manager,
-            coupon: params.coupon,
-            amount: params.amount
-          });
-          const m = draft.manager.managers[params.manager];
-          if (m) {
-            m.balance -= params.amount;
-          }
-        })
+      ) => {
+        enqueue.assign(
+          produce(context, (draft) => {
+            const m = draft.manager.managers[params.manager];
+            if (m) {
+              m.balance -= params.amount;
+            }
+          })
+        );
+        enqueue.assign({
+          parlayBets: ({ context, spawn }) => [
+            ...context.parlayBets,
+            spawn("bet", {
+              id: `bet-${crypto.randomUUID()}`,
+              input: {
+                manager: params.manager,
+                coupon: params.coupon,
+                amount: params.amount
+              }
+            })
+          ]
+        });
+      }
     ),
 
     /**
@@ -712,9 +739,16 @@ export const gameMachine = setup({
      * looping `preview → play → results → preview` until the
      * `tournamentHasMoreRounds` guard returns false.
      */
-    executeGameday: assign(({ context }) =>
-      produce(context, (draft) => {
-        const round = draft.turn.round;
+    executeGameday: enqueueActions(({ context, enqueue }) => {
+      // Captured during the league round (PHL phase 0 group 0). After
+      // `produce()` returns we send `RESOLVE { correctCoupon }` to every
+      // parlay bet actor; each computes its payout and emits
+      // `BET_RESOLVED` which the root handler interprets.
+      let leagueCorrectCoupon: string[] | undefined;
+
+      enqueue.assign(
+        produce(context, (draft) => {
+          const round = draft.turn.round;
         const gamedays = calendar[round]?.gamedays ?? [];
 
         for (const competitionId of gamedays) {
@@ -859,12 +893,14 @@ export const gameMachine = setup({
               }
             }
 
-            // 4. Parlay payouts — PHL phase 0 group 0 only. 1-1 port of
-            //    `bettingResults()` in src/sagas/betting.ts.
-            //    Bets are NOT cleared (saga doesn't either — stays as-is
-            //    until end-of-season teardown).
+            // 4. Capture parlay correct coupon — PHL phase 0 group 0
+            //    only. Payout happens after `produce()`: we send
+            //    `RESOLVE { correctCoupon }` to each parlay bet actor.
+            //    Each bet computes its own payout and emits
+            //    `BET_RESOLVED { effects }` which the root handler
+            //    interprets via `runInterpreter`.
             if (competitionId === "phl" && comp.phase === 0 && groupIdx === 0) {
-              const correctCoupon = pairings.map((p) => {
+              leagueCorrectCoupon = pairings.map((p) => {
                 const f = resultFacts(p.result!, "home");
                 if (f.isWin) {
                   return "1";
@@ -874,36 +910,6 @@ export const gameMachine = setup({
                 }
                 return "2";
               });
-
-              for (const bet of draft.betting.bets) {
-                const correct = bet.coupon.filter(
-                  (c, i) => c === correctCoupon[i]
-                ).length;
-                const multiplier = victories[correct];
-                const m = draft.manager.managers[bet.manager];
-                if (!draft.news.announcements[bet.manager]) {
-                  draft.news.announcements[bet.manager] = [];
-                }
-                if (multiplier) {
-                  const win = Math.round(multiplier * bet.amount);
-                  if (m) {
-                    m.balance += win;
-                  }
-                  draft.news.announcements[bet.manager].push(
-                    `Voitit kavioveikkauksessa __${formatAmount(
-                      win
-                    )}__ pekkaa. Rivissäsi oli __${correct}__ oikein. Panoksesi oli __${formatAmount(
-                      bet.amount
-                    )}__ pekkaa.`
-                  );
-                } else {
-                  draft.news.announcements[bet.manager].push(
-                    `Et voittanut kavioveikkauksessa. Rivissäsi oli __${correct}__ oikein. Panoksesi oli __${formatAmount(
-                      bet.amount
-                    )}__ pekkaa.`
-                  );
-                }
-              }
             }
 
             // 5. Advance the group's round counter.
@@ -923,8 +929,22 @@ export const gameMachine = setup({
             }
           }
         }
-      })
-    ),
+        })
+      );
+
+      // After produce: dispatch RESOLVE to every parlay bet actor.
+      // Each transitions to its `resolved` final state, computes the
+      // payout via `computePayout(...)`, and sends `BET_RESOLVED`
+      // back to us — the root handler runs the interpreter.
+      if (leagueCorrectCoupon) {
+        for (const ref of context.parlayBets) {
+          enqueue.sendTo(ref, {
+            type: "RESOLVE" as const,
+            correctCoupon: leagueCorrectCoupon
+          });
+        }
+      }
+    }),
 
     /**
      * Calculations phase — per-team readiness drift from the chosen
@@ -1310,6 +1330,23 @@ export const gameMachine = setup({
           }
         })
       }
+    },
+    BET_RESOLVED: {
+      // A spawned bet actor has reached its `resolved` final state.
+      // Interpret its `effects` (announcements, balance increment),
+      // remove the (now-stopped) ref from `parlayBets`, and stop the
+      // child to release its system-level registration. Same
+      // `runInterpreter` pattern as event/prank phases.
+      actions: enqueueActions(({ context, enqueue, event }) => {
+        runInterpreter(context, enqueue, (draft, notify) => {
+          applyEffects(draft, event.effects, spawnEvent, notify);
+        });
+        enqueue.assign({
+          parlayBets: ({ context }) =>
+            context.parlayBets.filter((ref) => ref.id !== event.betId)
+        });
+        enqueue(stopChild(event.betId));
+      })
     }
   },
   states: {

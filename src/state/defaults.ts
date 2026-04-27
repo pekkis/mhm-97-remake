@@ -76,7 +76,10 @@ export const createDefaultGameContext = (): GameContext => ({
   manager: { active: undefined, managers: {} },
 
   // betting
-  betting: { championshipBets: [], bets: [] },
+  betting: { championshipBets: [] },
+
+  // parlay bets — spawned per PLACE_BET, see machines/bet.ts
+  parlayBets: [],
 
   // event
   event: { events: {} },
