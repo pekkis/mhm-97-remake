@@ -215,6 +215,10 @@ One concern per change set. Keep diffs reviewable.
 - Prefer named exports; default exports only when interop forces it.
 - **Prefer non-mutating array methods:** `toSorted()` over `sort()`, `toReversed()` over `reverse()`, `toSpliced()` over `splice()`, `with()` over index assignment. Consistency matters more than micro-optimization.
 - **Prefer logical/semantic CSS naming over physical:** when the choice exists, `inline` / `block` (and `inline-start` / `block-end` etc.) beat `top` / `right` / `bottom` / `left`. Same for design-system component props (`paddingInline`, not `paddingX` on a new API). Flexbox `row` / `column` are fine — they're flow-relative already.
+- **Avoid global styling.** Bleeds across the whole app and creates spooky action at a distance. Reach for modern platform + library features that scope by context instead:
+  - Vanilla Extract `selectors: { "tbody &": {...} }` for ancestor/sibling-conditional rules co-located with the variant they belong to — not `globalStyle`.
+  - Prefer CSS nesting, `:has()`, `:is()`, container queries, `light-dark()`, logical properties — modern CSS removes most historical reasons to reach for a global rule.
+  - `globalStyle` is reserved for genuine globals: element resets in [src/styles/global.css.ts](src/styles/global.css.ts), `:root` tokens, `@font-face`. Not for styling a third-party component or "just this one descendant".
 
 ### 5. State homes: machines/stores or `useState` — nothing in between
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useSelector } from "@xstate/store/react";
+import { useSelector } from "@xstate/store-react";
 import Calendar from "./ui/Calendar";
 import Cluster from "./ui/Cluster";
 import { getEffective } from "@/services/effects";

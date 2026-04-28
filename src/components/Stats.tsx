@@ -11,8 +11,6 @@ import Tab from "./ui/Tab";
 import ManagerStats from "./stats/ManagerStats";
 import TeamStats from "./stats/TeamStats";
 import { useGameContext } from "@/context/game-machine-context";
-import { useSelector } from "@xstate/store-react";
-import { countryStore } from "@/stores/country";
 import { activeManager } from "@/machines/selectors";
 
 const Stats = () => {
@@ -20,7 +18,7 @@ const Stats = () => {
   const teams = useGameContext((ctx) => ctx.teams);
   const competitions = useGameContext((ctx) => ctx.competitions);
   const stats = useGameContext((ctx) => ctx.stats);
-  const countries = useSelector(countryStore, (s) => s.context.countries);
+  const countries = useGameContext((ctx) => ctx.country.countries);
 
   const [tab, setTab] = useState(0);
 

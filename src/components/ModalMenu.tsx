@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useSelector } from "@xstate/store/react";
+import { useSelector } from "@xstate/store-react";
 import * as styles from "./ModalMenu.css";
 import ActionMenu from "./ActionMenu";
 import { uiStore } from "@/stores/ui";
