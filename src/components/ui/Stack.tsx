@@ -15,9 +15,26 @@ type Justify =
   | "space-evenly";
 type Wrap = "nowrap" | "wrap" | "wrap-reverse";
 
+// Layout-appropriate semantic elements. No <a> / <button> / <input> on purpose:
+// per-element prop typing isn't carried, so restrict to tags that take only
+// generic block content.
+type LayoutElement =
+  | "div"
+  | "section"
+  | "article"
+  | "nav"
+  | "ul"
+  | "ol"
+  | "header"
+  | "footer"
+  | "main"
+  | "aside"
+  | "form";
+
 type StackProps = {
   children?: ReactNode;
   className?: string;
+  as?: LayoutElement;
   direction?: Direction;
   gap?: SpaceKey;
   align?: Align;
@@ -29,6 +46,7 @@ type StackProps = {
 const Stack: FC<StackProps> = ({
   children,
   className,
+  as: Element = "div",
   direction = "column",
   gap = "md",
   align,
@@ -44,7 +62,9 @@ const Stack: FC<StackProps> = ({
     ...(justify !== undefined && { justifyContent: justify }),
     ...(wrap !== undefined && { flexWrap: wrap })
   });
-  return <div className={clsx(sprinkleClass, className)}>{children}</div>;
+  return (
+    <Element className={clsx(sprinkleClass, className)}>{children}</Element>
+  );
 };
 
 Stack.displayName = "Stack";

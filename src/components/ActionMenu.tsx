@@ -12,6 +12,7 @@ import {
 import { AppMachineContext } from "@/context/app-machine-context";
 import { uiStore, type ThemePreference } from "@/stores/ui";
 import { activeManager } from "@/machines/selectors";
+import Stack from "@/components/ui/Stack";
 
 const themeOptions: ReadonlyArray<{ value: ThemePreference; label: string }> = [
   { value: "system", label: "Järjestelmä" },
@@ -30,132 +31,93 @@ const ActionMenu = () => {
     state.matches({ in_game: { executing_phases: "action" } })
   );
 
+  const close = () => uiStore.send({ type: "closeMenu" });
+
   return (
-    <div>
-      <nav>
-        <ul>
-          <li>
-            <Link onClick={() => uiStore.send({ type: "closeMenu" })} to="/">
-              Päävalikko
-            </Link>
-          </li>
+    <Stack gap="md">
+      <Stack gap="md">
+        <Stack as="nav" gap="xs" align="center">
+          <Link onClick={close} to="/">
+            Päävalikko
+          </Link>
 
           {team.morale <= CRISIS_MORALE_MAX && (
             <Calendar when={(c) => c.crisisMeeting}>
-              <li>
-                <Link
-                  onClick={() => uiStore.send({ type: "closeMenu" })}
-                  to="/kriisipalaveri"
-                >
-                  Kriisipalaveri
-                </Link>
-              </li>
+              <Link onClick={close} to="/kriisipalaveri">
+                Kriisipalaveri
+              </Link>
             </Calendar>
           )}
+
           <Calendar when={(c) => c.transferMarket}>
-            <li>
-              <Link
-                onClick={() => uiStore.send({ type: "closeMenu" })}
-                to="/pelaajamarkkinat"
-              >
-                Pelaajamarkkinat
-              </Link>
-            </li>
+            <Link onClick={close} to="/pelaajamarkkinat">
+              Pelaajamarkkinat
+            </Link>
           </Calendar>
-          <li>
-            <Link
-              onClick={() => uiStore.send({ type: "closeMenu" })}
-              to="/sarjataulukot"
-            >
-              Sarjataulukot
-            </Link>
-          </li>
 
-          <li>
-            <Link
-              onClick={() => uiStore.send({ type: "closeMenu" })}
-              to="/areena"
-            >
-              Areena
-            </Link>
-          </li>
+          <Link onClick={close} to="/sarjataulukot">
+            Sarjataulukot
+          </Link>
 
-          <li>
-            <Link
-              onClick={() => uiStore.send({ type: "closeMenu" })}
-              to="/erikoistoimenpiteet"
-            >
-              Erikoistoimenpiteet
-            </Link>
-          </li>
+          <Link onClick={close} to="/areena">
+            Areena
+          </Link>
+
+          <Link onClick={close} to="/erikoistoimenpiteet">
+            Erikoistoimenpiteet
+          </Link>
 
           <Calendar when={(c) => c.pranks}>
-            <li>
-              <Link
-                onClick={() => uiStore.send({ type: "closeMenu" })}
-                to="/jaynat"
-              >
-                Jäynät
-              </Link>
-            </li>
+            <Link onClick={close} to="/jaynat">
+              Jäynät
+            </Link>
           </Calendar>
 
-          <li>
-            <Link
-              onClick={() => uiStore.send({ type: "closeMenu" })}
-              to="/tilastot"
-            >
-              Tilastot
-            </Link>
-          </li>
+          <Link onClick={close} to="/tilastot">
+            Tilastot
+          </Link>
 
           <Calendar
             when={(e, _c, competitions) => {
               return e.gamedays.includes("phl") && competitions.phl.phase === 0;
             }}
           >
-            <li>
-              <Link
-                onClick={() => uiStore.send({ type: "closeMenu" })}
-                to="/veikkaus"
-              >
-                Veikkaus
-              </Link>
-            </li>
+            <Link onClick={close} to="/veikkaus">
+              Veikkaus
+            </Link>
           </Calendar>
 
-          <li>
-            <Link
-              onClick={() => uiStore.send({ type: "closeMenu" })}
-              to="/debug"
-            >
-              Devausmenukka
-            </Link>
-          </li>
-        </ul>
-      </nav>
-      <Button
-        block
-        disabled={!canSave}
-        type="button"
-        onClick={() => {
-          appActor.send({ type: "SAVE_GAME" });
-          uiStore.send({ type: "closeMenu" });
-        }}
-      >
-        Tallenna
-      </Button>
+          <Link onClick={close} to="/debug">
+            Devausmenukka
+          </Link>
+        </Stack>
 
-      <Button
-        block
-        type="button"
-        onClick={() => {
-          appActor.send({ type: "QUIT" });
-          uiStore.send({ type: "closeMenu" });
-        }}
-      >
-        Lopeta!
-      </Button>
+        <Stack direction="row">
+          <Button
+            block
+            disabled={!canSave}
+            type="button"
+            onClick={() => {
+              appActor.send({ type: "SAVE_GAME" });
+              close();
+            }}
+          >
+            Tallenna
+          </Button>
+
+          <Button
+            block
+            type="button"
+            secondary
+            onClick={() => {
+              appActor.send({ type: "QUIT" });
+              close();
+            }}
+          >
+            Lopeta!
+          </Button>
+        </Stack>
+      </Stack>
 
       <Cluster gap="xs" justify="space-between">
         {themeOptions.map((opt) => (
@@ -170,7 +132,7 @@ const ActionMenu = () => {
           </Button>
         ))}
       </Cluster>
-    </div>
+    </Stack>
   );
 };
 

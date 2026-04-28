@@ -7,9 +7,7 @@ const THEME_STORAGE_KEY = "mhm97:theme";
 const readStoredTheme = (): ThemePreference => {
   if (typeof window === "undefined") return "system";
   const raw = window.localStorage.getItem(THEME_STORAGE_KEY);
-  return raw === "light" || raw === "dark" || raw === "system"
-    ? raw
-    : "system";
+  return raw === "light" || raw === "dark" || raw === "system" ? raw : "system";
 };
 
 const applyTheme = (theme: ThemePreference): void => {

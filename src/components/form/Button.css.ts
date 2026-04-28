@@ -1,4 +1,4 @@
-import { style, globalStyle } from "@vanilla-extract/css";
+import { style } from "@vanilla-extract/css";
 
 export const button = style({
   border: "1px solid rgb(99, 99, 99)",
@@ -44,8 +44,4 @@ export const terse = style({
 export const block = style({
   width: "100%",
   display: "block"
-});
-
-globalStyle(`${button} + ${button}`, {
-  marginLeft: "1em"
 });

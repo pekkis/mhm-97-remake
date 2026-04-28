@@ -13,9 +13,23 @@ type Justify =
   | "space-around"
   | "space-evenly";
 
+type LayoutElement =
+  | "div"
+  | "section"
+  | "article"
+  | "nav"
+  | "ul"
+  | "ol"
+  | "header"
+  | "footer"
+  | "main"
+  | "aside"
+  | "form";
+
 type ClusterProps = {
   children?: ReactNode;
   className?: string;
+  as?: LayoutElement;
   gap?: SpaceKey;
   align?: Align;
   justify?: Justify;
@@ -26,6 +40,7 @@ type ClusterProps = {
 const Cluster: FC<ClusterProps> = ({
   children,
   className,
+  as: Element = "div",
   gap = "sm",
   align = "center",
   justify = "start",
@@ -40,7 +55,9 @@ const Cluster: FC<ClusterProps> = ({
     justifyContent: justify,
     gap
   });
-  return <div className={clsx(sprinkleClass, className)}>{children}</div>;
+  return (
+    <Element className={clsx(sprinkleClass, className)}>{children}</Element>
+  );
 };
 
 Cluster.displayName = "Cluster";

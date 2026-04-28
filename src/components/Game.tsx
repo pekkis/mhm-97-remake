@@ -22,8 +22,6 @@ import WorldChampionships from "./WorldChampionships";
 import Stats from "./Stats";
 import Invitations from "./Invitations";
 import Gala from "./Gala";
-import { useSelector } from "@xstate/store-react";
-import { uiStore } from "@/stores/ui";
 import { NotificationsContext } from "@/context/notifications-context";
 import type { ActorRefFrom } from "xstate";
 import type { notificationsMachine } from "@/machines/notifications";
@@ -166,8 +164,6 @@ const Phase: FC<PhaseProps> = ({ phase }) => {
 };
 
 const Game: FC = () => {
-  const menu = useSelector(uiStore, (s) => s.context.menu);
-
   const phase = useUiPhase();
   const gameActor = GameMachineContext.useActorRef();
   const notificationsActor = gameActor.system.get(
@@ -178,7 +174,7 @@ const Game: FC = () => {
 
   return (
     <div>
-      {menu && <ModalMenu />}
+      <ModalMenu />
       <Phase phase={phase} />
       <NotificationsContext.Provider actor={notificationsActor}>
         <Notifications />

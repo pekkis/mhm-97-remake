@@ -1,44 +1,23 @@
-import { style, globalStyle } from "@vanilla-extract/css";
+import { style } from "@vanilla-extract/css";
+import { vars } from "@/styles/theme.css";
 
-export const menuContainer = style({
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  bottom: 0,
-  backgroundColor: "rgba(255, 255, 255, 0.9)",
-  zIndex: 100000,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: "1em"
-});
+export const dialog = style({
+  // The native <dialog> centers itself when opened with showModal().
+  // We just style the chrome.
+  border: "none",
+  padding: vars.space.md,
+  borderRadius: vars.radius.lg,
+  backgroundColor: vars.color.surfaceRaised,
+  color: vars.color.text,
+  boxShadow: vars.shadow.xl,
+  width: "min(32rem, calc(100vw - 2rem))",
+  maxHeight: "calc(100vh - 2rem)",
+  overflow: "auto",
 
-export const menuContents = style({
-  backgroundColor: "rgb(0, 0, 0)",
-  padding: "1em",
-  color: "rgb(255, 255, 255)",
-  width: "100%",
-  borderRadius: "1em"
-});
-
-globalStyle(
-  `${menuContents} a:link, ${menuContents} a:hover, ${menuContents} a:visited`,
-  {
-    color: "rgb(255, 255, 255)"
+  selectors: {
+    "&::backdrop": {
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      backdropFilter: "blur(2px)"
+    }
   }
-);
-
-globalStyle(`${menuContents} ul`, {
-  display: "block",
-  listStyleType: "none",
-  listStylePosition: "inside",
-  margin: 0,
-  padding: 0,
-  textAlign: "center"
-});
-
-globalStyle(`${menuContents} ul li`, {
-  margin: 0,
-  padding: "0.5em 0"
 });
