@@ -350,39 +350,30 @@ export const gameMachine = setup({
      * team and debit the stake. The bet sits in `placed` until
      * end-of-season sends it `RESOLVE { champion }`; on resolution it
      * emits `BET_RESOLVED { effects }` which the root handler
-     * interprets. Same split-assign pattern as `placeBet`.
+     * interprets.
      */
-    placeChampionBet: enqueueActions(
+    placeChampionBet: assign(
       (
-        { context, enqueue },
+        { context, spawn },
         params: { manager: string; team: number; amount: number; odds: number }
-      ) => {
-        enqueue.assign(
-          produce(context, (draft) => {
-            const m = draft.manager.managers[params.manager];
-            if (m) {
-              m.balance -= params.amount;
-            }
-          })
-        );
-        enqueue.assign({
-          betting: ({ context, spawn }) => ({
-            ...context.betting,
-            championBets: [
-              ...context.betting.championBets,
-              spawn("championBet", {
-                id: `champion-bet-${crypto.randomUUID()}`,
-                input: {
-                  manager: params.manager,
-                  team: params.team,
-                  amount: params.amount,
-                  odds: params.odds
-                }
-              })
-            ]
-          })
-        });
-      }
+      ) =>
+        produce(context, (draft) => {
+          const m = draft.manager.managers[params.manager];
+          if (m) {
+            m.balance -= params.amount;
+          }
+          draft.betting.championBets.push(
+            spawn("championBet", {
+              id: `champion-bet-${crypto.randomUUID()}`,
+              input: {
+                manager: params.manager,
+                team: params.team,
+                amount: params.amount,
+                odds: params.odds
+              }
+            })
+          );
+        })
     ),
 
     /**
@@ -427,43 +418,28 @@ export const gameMachine = setup({
      * debit the stake. The bet sits in `placed` until `executeGameday`
      * sends it `RESOLVE { correctCoupon }`; on resolution the bet emits
      * `BET_RESOLVED { effects }` which the root handler interprets.
-     *
-     * Two `assign`s in one `enqueueActions` so we can keep the immer
-     * mutation for the manager balance and add the actor ref to
-     * `parlayBets` without immer touching the actor (which would freeze
-     * its internal getters). Same split-assign pattern as
-     * `executeBuyPlayer`.
      */
-    placeBet: enqueueActions(
+    placeBet: assign(
       (
-        { context, enqueue },
+        { context, spawn },
         params: { manager: string; coupon: string[]; amount: number }
-      ) => {
-        enqueue.assign(
-          produce(context, (draft) => {
-            const m = draft.manager.managers[params.manager];
-            if (m) {
-              m.balance -= params.amount;
-            }
-          })
-        );
-        enqueue.assign({
-          betting: ({ context, spawn }) => ({
-            ...context.betting,
-            parlayBets: [
-              ...context.betting.parlayBets,
-              spawn("bet", {
-                id: `bet-${crypto.randomUUID()}`,
-                input: {
-                  manager: params.manager,
-                  coupon: params.coupon,
-                  amount: params.amount
-                }
-              })
-            ]
-          })
-        });
-      }
+      ) =>
+        produce(context, (draft) => {
+          const m = draft.manager.managers[params.manager];
+          if (m) {
+            m.balance -= params.amount;
+          }
+          draft.betting.parlayBets.push(
+            spawn("bet", {
+              id: `bet-${crypto.randomUUID()}`,
+              input: {
+                manager: params.manager,
+                coupon: params.coupon,
+                amount: params.amount
+              }
+            })
+          );
+        })
     ),
 
     /**
