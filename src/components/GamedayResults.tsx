@@ -1,5 +1,5 @@
 import calendar from "@/data/calendar";
-import Table from "./league-table/Table";
+import Table from "./league-table/LeagueTable";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import Results from "./gameday/Results";

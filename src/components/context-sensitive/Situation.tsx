@@ -1,6 +1,5 @@
 import type { FC } from "react";
-import Table from "@/components/league-table/Table";
-import ResponsiveTable from "@/components/responsive-table/ResponsiveTable";
+import Table from "@/components/league-table/LeagueTable";
 import Matchups from "@/components/playoffs/Matchups";
 import Games from "@/components/gameday/Games";
 import Streaks from "@/components/Streaks";
@@ -59,25 +58,21 @@ const Situation: FC<SituationProps> = ({
                         {phase.type === "round-robin" && (
                           <div>
                             <h4>Sarjataulukko</h4>
-                            <ResponsiveTable>
-                              <Table
-                                managers={{ [manager.id]: manager }}
-                                teams={teams}
-                                division={group}
-                              />
-                            </ResponsiveTable>
+                            <Table
+                              managers={{ [manager.id]: manager }}
+                              teams={teams}
+                              division={group}
+                            />
                           </div>
                         )}
                         {phase.type === "tournament" && (
                           <div>
                             <h4>Tilanne</h4>
-                            <ResponsiveTable>
-                              <Table
-                                managers={{ [manager.id]: manager }}
-                                teams={teams}
-                                division={group}
-                              />
-                            </ResponsiveTable>
+                            <Table
+                              managers={{ [manager.id]: manager }}
+                              teams={teams}
+                              division={group}
+                            />
                           </div>
                         )}
 

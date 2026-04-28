@@ -1,4 +1,4 @@
-import Table from "./league-table/Table";
+import Table from "./league-table/LeagueTable";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./ui/Box";
