@@ -24,6 +24,20 @@ type NotificationsEvents =
   | { type: "REMOVE"; id: string };
 
 /**
+ * Build a typed `PUSH` event for the notifications actor. Centralises
+ * the `id: crypto.randomUUID()` and `type: "PUSH"` boilerplate, and —
+ * more usefully — gives call sites real type-checking on the
+ * notification payload (the bare `enqueue.sendTo("notifications", ...)`
+ * form has no way to infer the event shape from the string target).
+ */
+export const pushNotification = (
+  notification: Omit<NotificationData, "id"> & { timeout?: number }
+): { type: "PUSH"; notification: NotificationPayload } => ({
+  type: "PUSH",
+  notification: { id: crypto.randomUUID(), ...notification }
+});
+
+/**
  * Parent machine for notifications. Each PUSH spawns a child
  * `notificationMachine` actor which auto-expires after its `timeout`
  * (defaulting to the parent's `defaultTimeout`). Children notify back

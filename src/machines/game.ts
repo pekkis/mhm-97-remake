@@ -27,7 +27,10 @@ import prankTypes from "@/game/pranks";
 import arenas from "@/data/arenas";
 import playerTypes from "@/data/transfer-market";
 import random from "@/services/random";
-import { notificationsMachine } from "@/machines/notifications";
+import {
+  notificationsMachine,
+  pushNotification
+} from "@/machines/notifications";
 import type { NotificationData } from "@/machines/notification";
 import { betMachine } from "@/machines/bet";
 import { championBetMachine } from "@/machines/championBet";
@@ -564,15 +567,14 @@ export const gameMachine = setup({
             draft.teams[m.team].strength += skillGain;
           })
         );
-        enqueue.sendTo("notifications", {
-          type: "PUSH" as const,
-          notification: {
-            id: crypto.randomUUID(),
+        enqueue.sendTo(
+          "notifications",
+          pushNotification({
             manager: params.manager,
             message: `Ostamasi pelaaja tuo ${skillGain} lisää voimaa joukkueeseen!`,
-            type: "info" as const
-          }
-        });
+            type: "info"
+          })
+        );
       }
     ),
 
@@ -600,15 +602,14 @@ export const gameMachine = setup({
             draft.teams[m.team].strength -= skillLoss;
           })
         );
-        enqueue.sendTo("notifications", {
-          type: "PUSH" as const,
-          notification: {
-            id: crypto.randomUUID(),
+        enqueue.sendTo(
+          "notifications",
+          pushNotification({
             manager: params.manager,
             message: `Myymäsi pelaaja vie ${skillLoss} voimaa mukanaan!`,
-            type: "info" as const
-          }
-        });
+            type: "info"
+          })
+        );
       }
     ),
 
@@ -652,15 +653,14 @@ export const gameMachine = setup({
           })
         );
 
-        enqueue.sendTo("notifications", {
-          type: "PUSH" as const,
-          notification: {
-            id: crypto.randomUUID(),
+        enqueue.sendTo(
+          "notifications",
+          pushNotification({
             manager: params.manager,
             message: `Psykologi valaa yhdessä managerin kanssa uskoa pelaajien mieliin. Moraali paranee (+${moraleGain}), ja joukkue keskittyy tuleviin haasteisiin uudella innolla!`,
-            type: "info" as const
-          }
-        });
+            type: "info"
+          })
+        );
       }
     ),
 
