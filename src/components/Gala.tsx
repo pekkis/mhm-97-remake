@@ -2,7 +2,7 @@ import News from "./news/News";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 
 const Gala = () => {
@@ -12,7 +12,7 @@ const Gala = () => {
     <HeaderedPage>
       <Header forward="Jo riittää lätinä, asiaan!" />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Loppuottelugaala</h2>
 
         <News news={news} />

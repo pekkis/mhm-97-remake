@@ -4,7 +4,7 @@ import HeaderedPage from "./ui/HeaderedPage";
 import Season from "./data/Season";
 import Announcements from "./events/Announcements";
 
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
 
@@ -18,7 +18,7 @@ const EndOfSeason = () => {
     <HeaderedPage>
       <Header forward="Seuraava kausi" />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>
           Kausi <Season long index={turn.season} />
         </h2>

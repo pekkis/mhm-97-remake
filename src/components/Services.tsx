@@ -4,7 +4,7 @@ import ManagerInfo from "./ManagerInfo";
 import * as styles from "./Services.css";
 import Toggle from "./form/Toggle";
 import Markdown from "react-markdown";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import {
   GameMachineContext,
   useGameContext
@@ -26,7 +26,7 @@ const Services = () => {
       <Header back />
       <ManagerInfo details />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Erikoistoimenpiteet</h2>
 
         <div className={styles.servicesList}>

@@ -3,7 +3,7 @@ import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import Calendar from "./ui/Calendar";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import {
   GameMachineContext,
   useGameContext
@@ -30,7 +30,7 @@ const CrisisActions = () => {
 
       <ManagerInfo details />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Kriisipalaveri</h2>
 
         <Calendar

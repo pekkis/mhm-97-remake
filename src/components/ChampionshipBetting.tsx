@@ -2,7 +2,7 @@ import ManagerInfo from "./ManagerInfo";
 import HeaderedPage from "./ui/HeaderedPage";
 import Button from "./form/Button";
 import BettingForm from "./championship-betting/BettingForm";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import { GameMachineContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
 
@@ -20,7 +20,7 @@ const ChampionshipBetting = () => {
     <HeaderedPage>
       <ManagerInfo details />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Mestariveikkaus</h2>
 
         <p>

@@ -1,7 +1,7 @@
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 
 /*
@@ -17,7 +17,7 @@ const WorldChampionships = () => {
     <HeaderedPage>
       <Header forward="Palkintogaala" />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Maailmanmestaruuskisat {turn.season + 1}</h2>
 
         <div>

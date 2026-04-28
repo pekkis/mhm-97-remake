@@ -1,7 +1,7 @@
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import tournamentList from "@/data/tournaments";
 import Markdown from "react-markdown";
 import Button from "./form/Button";
@@ -23,7 +23,7 @@ const Invitations = () => {
 
       <ManagerInfo details />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Turnauskutsut</h2>
 
         {invitations.map((i, index) => {

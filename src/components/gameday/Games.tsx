@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import competitionTypes from "@/services/competition-type";
 import Game from "./Game";
-import Box from "@/components/styled-system/Box";
+import Box from "@/components/ui/Box";
 import type { Team } from "@/state/game";
 import type { Manager } from "@/state/manager";
 import type { Group } from "@/types/competitions";
@@ -20,7 +20,7 @@ const Games: FC<GamesProps> = ({ teams, context, round, managers }) => {
   });
 
   return (
-    <Box my={1}>
+    <Box my="md">
       {pairings.map((pairing, i) => {
         return (
           <Game

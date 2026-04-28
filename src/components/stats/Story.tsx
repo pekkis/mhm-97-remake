@@ -4,7 +4,7 @@ import Achievements from "./Achievements";
 import ResponsiveTable from "@/components/responsive-table/ResponsiveTable";
 import Table from "@/components/responsive-table/Table";
 import Td from "@/components/responsive-table/Td";
-import Box from "@/components/styled-system/Box";
+import Box from "@/components/ui/Box";
 import type { Team } from "@/state/game";
 import type { Competition } from "@/types/competitions";
 
@@ -18,7 +18,7 @@ type StoryProps = {
 const Story: FC<StoryProps> = ({ season, story, teams, competitions }) => {
   const t = story.mainCompetitionStat;
   return (
-    <Box my={1}>
+    <Box my="md">
       <h3>
         <Season long index={season} />{" "}
       </h3>

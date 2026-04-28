@@ -5,7 +5,7 @@ import HeaderedPage from "./ui/HeaderedPage";
 import SelectVictim from "./pranks/SelectVictim";
 import SelectType from "./pranks/SelectType";
 import ConfirmPrank from "./pranks/ConfirmPrank";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import Calendar from "./ui/Calendar";
 
 import {
@@ -35,7 +35,7 @@ const Pranks = () => {
 
       <ManagerInfo details />
 
-      <Box p={1}>
+      <Box p="md">
         <Calendar
           when={(c) => c.pranks}
           fallback={<p>Jäynät on tältä kaudelta jäynäytetty.</p>}

@@ -3,7 +3,7 @@ import Table from "./league-table/Table";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import Games from "./gameday/Games";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 
 const Gameday = () => {
@@ -22,7 +22,7 @@ const Gameday = () => {
     <HeaderedPage>
       <Header />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Pelipäivä</h2>
 
         {currentCompetitions.map((competition) => {

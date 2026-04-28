@@ -1,5 +1,5 @@
 import ManagerForm from "@/components/start-menu/ManagerForm";
-import Box from "@/components/styled-system/Box";
+import Box from "@/components/ui/Box";
 import { AppMachineContext } from "@/context/app-machine-context";
 import type { FC } from "react";
 
@@ -15,7 +15,7 @@ export const Starting: FC = () => {
   );
 
   return (
-    <Box p={1}>
+    <Box p="md">
       <ManagerForm
         teams={teams}
         competitions={competitions}

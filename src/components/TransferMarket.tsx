@@ -7,7 +7,7 @@ import HeaderedPage from "./ui/HeaderedPage";
 import Calendar from "./ui/Calendar";
 import { currency } from "@/services/format";
 import ManagerInfo from "./ManagerInfo";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import Tabs from "./ui/Tabs";
 import Tab from "./ui/Tab";
 import {
@@ -30,7 +30,7 @@ const TransferMarket = () => {
 
       <ManagerInfo details />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Pelaajamarkkinat</h2>
 
         <Calendar

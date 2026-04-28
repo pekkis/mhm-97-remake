@@ -4,7 +4,7 @@ import ManagerInfo from "./ManagerInfo";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import Tabs from "./ui/Tabs";
 import Tab from "./ui/Tab";
 
@@ -30,7 +30,7 @@ const Stats = () => {
 
       <ManagerInfo details />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Tilastot</h2>
 
         <Tabs selected={tab} onSelect={setTab}>

@@ -5,7 +5,7 @@ import HeaderedPage from "./ui/HeaderedPage";
 import Forward from "./context-sensitive/Forward";
 import Current from "./context-sensitive/Current";
 
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 import { activeManager, interestingCompetitions } from "@/machines/selectors";
 
@@ -21,7 +21,7 @@ const MainMenu = () => {
 
       <ManagerInfo details />
 
-      <Box p={1}>
+      <Box p="md">
         <Current />
 
         <Situation

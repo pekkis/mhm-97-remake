@@ -214,6 +214,7 @@ One concern per change set. Keep diffs reviewable.
 - No reintroducing Immutable.js, Redux, redux-saga, or styled-components.
 - Prefer named exports; default exports only when interop forces it.
 - **Prefer non-mutating array methods:** `toSorted()` over `sort()`, `toReversed()` over `reverse()`, `toSpliced()` over `splice()`, `with()` over index assignment. Consistency matters more than micro-optimization.
+- **Prefer logical/semantic CSS naming over physical:** when the choice exists, `inline` / `block` (and `inline-start` / `block-end` etc.) beat `top` / `right` / `bottom` / `left`. Same for design-system component props (`paddingInline`, not `paddingX` on a new API). Flexbox `row` / `column` are fine — they're flow-relative already.
 
 ### 5. State homes: machines/stores or `useState` — nothing in between
 

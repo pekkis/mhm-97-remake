@@ -1,6 +1,6 @@
 import strategies from "@/data/strategies";
 import Button from "./form/Button";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import { activeManager } from "@/machines/selectors";
 import { GameMachineContext } from "@/context/game-machine-context";
 
@@ -11,7 +11,7 @@ const SelectStrategy = () => {
   const actor = GameMachineContext.useActorRef();
 
   return (
-    <Box p={1}>
+    <Box p="md">
       <h2>Valitse harjoittelustrategia</h2>
 
       <p>

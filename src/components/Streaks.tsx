@@ -1,5 +1,5 @@
 import { entries } from "remeda";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 
 const humanReadables: Record<string, string> = {
@@ -25,7 +25,7 @@ const Streaks = ({ competition, team }: StreaksProps) => {
   }
 
   return (
-    <Box my={1}>
+    <Box my="md">
       <h4>Putket</h4>
       {filtered.map(([key, s]) => {
         return (

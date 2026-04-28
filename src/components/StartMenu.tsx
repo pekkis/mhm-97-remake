@@ -1,6 +1,6 @@
 import ButtonRow from "./form/ButtonRow";
 import Button from "./form/Button";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import * as styles from "./StartMenu.css";
 import title from "./start-menu/title.png";
 import { AppMachineContext } from "@/context/app-machine-context";
@@ -19,7 +19,7 @@ const StartMenu = () => {
         <div className={styles.contents}>
           <div className={styles.centerer}>
             <img className={styles.titleImg} src={title} />
-            <Box px={1} py={0}>
+            <Box px="md" py="none">
               <h1>MHM 97</h1>
               <h2>maailman paras jääkiekkomanagerisimulaatio</h2>
               <h2>build: rpoot</h2>
@@ -27,7 +27,7 @@ const StartMenu = () => {
           </div>
 
           {!starting && (
-            <Box p={1}>
+            <Box p="md">
               <div className={styles.centerer}>
                 <ButtonRow>
                   <Button

@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
+import { useSelector } from "@xstate/store/react";
 import Calendar from "./ui/Calendar";
+import Cluster from "./ui/Cluster";
 import { getEffective } from "@/services/effects";
 import { CRISIS_MORALE_MAX } from "@/data/constants";
 import Button from "./form/Button";
@@ -8,14 +10,21 @@ import {
   useGameContext
 } from "@/context/game-machine-context";
 import { AppMachineContext } from "@/context/app-machine-context";
-import { uiStore } from "@/stores/ui";
+import { uiStore, type ThemePreference } from "@/stores/ui";
 import { activeManager } from "@/machines/selectors";
+
+const themeOptions: ReadonlyArray<{ value: ThemePreference; label: string }> = [
+  { value: "system", label: "Järjestelmä" },
+  { value: "light", label: "Vaalea" },
+  { value: "dark", label: "Tumma" }
+];
 
 const ActionMenu = () => {
   const manager = useGameContext(activeManager);
   const teams = useGameContext((ctx) => ctx.teams);
   const appActor = AppMachineContext.useActorRef();
   const team = getEffective(teams[manager.team!]);
+  const theme = useSelector(uiStore, (s) => s.context.theme);
 
   const canSave = GameMachineContext.useSelector((state) =>
     state.matches({ in_game: { executing_phases: "action" } })
@@ -147,6 +156,20 @@ const ActionMenu = () => {
       >
         Lopeta!
       </Button>
+
+      <Cluster gap="xs" justify="space-between">
+        {themeOptions.map((opt) => (
+          <Button
+            key={opt.value}
+            type="button"
+            terse
+            secondary={theme !== opt.value}
+            onClick={() => uiStore.send({ type: "setTheme", theme: opt.value })}
+          >
+            {opt.label}
+          </Button>
+        ))}
+      </Cluster>
     </div>
   );
 };

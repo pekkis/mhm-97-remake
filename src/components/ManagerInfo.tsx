@@ -1,6 +1,6 @@
 import { amount } from "@/services/format";
 import { getEffective } from "@/services/effects";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import TurnIndicator from "./game/TurnIndicator";
 import { useGameContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
@@ -19,7 +19,7 @@ const ManagerInfo = ({ details = false }: ManagerInfoProps) => {
   const team = getEffective(teams[manager.team!]);
 
   return (
-    <Box p={1} bg="bar">
+    <Box p="md" bg="surfaceMuted">
       <h2 className={styles.managerName}>{manager.name}</h2>
 
       {details && (

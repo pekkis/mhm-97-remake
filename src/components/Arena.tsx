@@ -7,7 +7,7 @@ import arenas from "@/data/arenas";
 import clsx from "clsx";
 import * as styles from "./Arena.css";
 import { currency } from "@/services/format";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import {
   GameMachineContext,
   useGameContext
@@ -28,7 +28,7 @@ const Arenas = () => {
 
       <ManagerInfo details />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Areena</h2>
 
         <div>

@@ -1,7 +1,7 @@
 import Table from "./league-table/Table";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 import { values } from "remeda";
 
@@ -15,7 +15,7 @@ const LeagueTables = () => {
   return (
     <HeaderedPage>
       <Header back />
-      <Box p={1}>
+      <Box p="md">
         <h2>Sarjataulukot</h2>
 
         {values(competitions)

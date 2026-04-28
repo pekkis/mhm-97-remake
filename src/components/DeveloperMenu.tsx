@@ -1,7 +1,7 @@
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
 import { getEffective } from "@/services/effects";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 import { values } from "remeda";
 
@@ -13,7 +13,7 @@ const DeveloperMenu = () => {
     <HeaderedPage>
       <Header back />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Devausinfo</h2>
 
         {values(competitions).map((c) => {

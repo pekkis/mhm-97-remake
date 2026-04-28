@@ -2,7 +2,7 @@ import Announcements from "./events/Announcements";
 import ManagerInfo from "./ManagerInfo";
 import Header from "./Header";
 import HeaderedPage from "./ui/HeaderedPage";
-import Box from "./styled-system/Box";
+import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
 
@@ -15,7 +15,7 @@ const News = () => {
       <Header />
       <ManagerInfo details />
 
-      <Box p={1}>
+      <Box p="md">
         <h2>Tapahtumat</h2>
         <Announcements
           announcements={announcements[manager.id.toString()] || []}
