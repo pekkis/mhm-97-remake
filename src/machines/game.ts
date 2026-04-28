@@ -2,8 +2,7 @@ import { setup, assign, sendTo, enqueueActions, stopChild } from "xstate";
 import { produce, type Draft } from "immer";
 
 import type { GameContext } from "@/state";
-import type { Manager, ManagerServices } from "@/state/manager";
-import type { GameResult } from "@/types/competitions";
+import type { ManagerServices } from "@/state/manager";
 import {
   managersMainCompetition,
   managerCompetesIn,
@@ -22,9 +21,6 @@ import tournamentList from "@/data/tournaments";
 import { CRISIS_COST } from "@/data/constants";
 import { isInvitedToTournament } from "@/machines/tournament-eligibility";
 import { computeStats } from "@/services/competition-type";
-import competitionTypes from "@/services/competition-type";
-import { simulate, gameFacts, resultFacts } from "@/services/game";
-import { amount as formatAmount } from "@/services/format";
 import strategies from "@/data/strategies";
 import services from "@/data/services";
 import prankTypes from "@/game/pranks";
@@ -56,79 +52,11 @@ import {
 } from "@/machines/parts/events-engine";
 import eventsMap from "@/game/new-events/table";
 import { runGala } from "@/machines/parts/gala";
+import { runGameday } from "@/machines/parts/gameday";
 
 // Parlay payout multipliers moved to src/machines/bet.ts (where the
 // payout is now computed). The bet actor reaches `resolved` and emits
 // `BET_RESOLVED { effects }` which the root handler interprets.
-
-const emptyStreak = { win: 0, draw: 0, loss: 0, noLoss: 0, noWin: 0 } as const;
-const emptyGameRecord = { win: 0, draw: 0, loss: 0 } as const;
-
-/**
- * Per-pairing stats bookkeeping. Updates team streaks (W/D/L plus the
- * derived noWin/noLoss counters) and per-manager game records for both
- * sides of a single match. 1-1 port of `gameResultHandler` +
- * `updateFromFacts` reducer in `src/sagas/stats.ts` / `src/ducks/stats.ts`.
- *
- * Mutates `draft.stats` in place — call it from inside `executeGameday`'s
- * `produce()` pass.
- */
-function updateStreaks(
-  draft: Draft<GameContext>,
-  params: {
-    competition: string;
-    phase: number;
-    result: GameResult;
-    home: { team: number; manager: string | undefined };
-    away: { team: number; manager: string | undefined };
-  }
-) {
-  const stats = draft.stats;
-  const phaseKey = params.phase.toString();
-
-  for (const which of ["home", "away"] as const) {
-    const { team, manager } = params[which];
-    const facts = resultFacts(params.result, which);
-    const teamKey = team.toString();
-
-    // Team streaks.
-    if (!stats.streaks.team[teamKey]) {
-      stats.streaks.team[teamKey] = {};
-    }
-    if (!stats.streaks.team[teamKey][params.competition]) {
-      stats.streaks.team[teamKey][params.competition] = { ...emptyStreak };
-    }
-    const s = stats.streaks.team[teamKey][params.competition];
-    s.win = facts.isWin ? s.win + 1 : 0;
-    s.draw = facts.isDraw ? s.draw + 1 : 0;
-    s.loss = facts.isLoss ? s.loss + 1 : 0;
-    s.noLoss = facts.isWin || facts.isDraw ? s.noLoss + 1 : 0;
-    s.noWin = facts.isLoss || facts.isDraw ? s.noWin + 1 : 0;
-
-    // Manager game records (only for managed teams).
-    if (manager) {
-      if (!stats.managers[manager]) {
-        stats.managers[manager] = { games: {} };
-      }
-      if (!stats.managers[manager].games[params.competition]) {
-        stats.managers[manager].games[params.competition] = {};
-      }
-      if (!stats.managers[manager].games[params.competition][phaseKey]) {
-        stats.managers[manager].games[params.competition][phaseKey] = {
-          ...emptyGameRecord
-        };
-      }
-      const r = stats.managers[manager].games[params.competition][phaseKey];
-      if (facts.isWin) {
-        r.win += 1;
-      } else if (facts.isLoss) {
-        r.loss += 1;
-      } else {
-        r.draw += 1;
-      }
-    }
-  }
-}
 
 /**
  * Resolve a single event, run its `process`, apply the resulting
@@ -300,7 +228,7 @@ export const gameMachine = setup({
       // league play never sent them `RESOLVE`, so they'd otherwise leak
       // — XState 5 spawned actors run until explicitly stopped, the GC
       // doesn't reach them via dropped context refs alone).
-      for (const ref of context.parlayBets) {
+      for (const ref of context.betting.parlayBets) {
         enqueue(stopChild(ref.id));
       }
       enqueue.assign(
@@ -311,7 +239,7 @@ export const gameMachine = setup({
               (e) => e.duration > 0
             );
           }
-          draft.parlayBets = [];
+          draft.betting.parlayBets = [];
           draft.news.news = [];
           draft.news.announcements = {};
           draft.turn.round += 1;
@@ -438,18 +366,21 @@ export const gameMachine = setup({
           })
         );
         enqueue.assign({
-          championBets: ({ context, spawn }) => [
-            ...context.championBets,
-            spawn("championBet", {
-              id: `champion-bet-${crypto.randomUUID()}`,
-              input: {
-                manager: params.manager,
-                team: params.team,
-                amount: params.amount,
-                odds: params.odds
-              }
-            })
-          ]
+          betting: ({ context, spawn }) => ({
+            ...context.betting,
+            championBets: [
+              ...context.betting.championBets,
+              spawn("championBet", {
+                id: `champion-bet-${crypto.randomUUID()}`,
+                input: {
+                  manager: params.manager,
+                  team: params.team,
+                  amount: params.amount,
+                  odds: params.odds
+                }
+              })
+            ]
+          })
         });
       }
     ),
@@ -517,17 +448,20 @@ export const gameMachine = setup({
           })
         );
         enqueue.assign({
-          parlayBets: ({ context, spawn }) => [
-            ...context.parlayBets,
-            spawn("bet", {
-              id: `bet-${crypto.randomUUID()}`,
-              input: {
-                manager: params.manager,
-                coupon: params.coupon,
-                amount: params.amount
-              }
-            })
-          ]
+          betting: ({ context, spawn }) => ({
+            ...context.betting,
+            parlayBets: [
+              ...context.betting.parlayBets,
+              spawn("bet", {
+                id: `bet-${crypto.randomUUID()}`,
+                input: {
+                  manager: params.manager,
+                  coupon: params.coupon,
+                  amount: params.amount
+                }
+              })
+            ]
+          })
         });
       }
     ),
@@ -826,215 +760,37 @@ export const gameMachine = setup({
      * looping `preview → play → results → preview` until the
      * `tournamentHasMoreRounds` guard returns false.
      */
-    executeGameday: enqueueActions(({ context, enqueue }) => {
-      // Captured during the league round (PHL phase 0 group 0). After
-      // `produce()` returns we send `RESOLVE { correctCoupon }` to every
-      // parlay bet actor; each computes its payout and emits
-      // `BET_RESOLVED` which the root handler interprets.
-      let leagueCorrectCoupon: string[] | undefined;
+    executeGameday: assign(({ context }) =>
+      produce(context, (draft) => {
+        runGameday(draft);
+      })
+    ),
 
-      enqueue.assign(
-        produce(context, (draft) => {
-          const round = draft.turn.round;
-          const gamedays = calendar[round]?.gamedays ?? [];
-
-          for (const competitionId of gamedays) {
-            const comp = draft.competitions[competitionId];
-            const phase = comp.phases[comp.phase];
-            const ct = competitionTypes[phase.type];
-            const competitionDef = competitionData[competitionId];
-
-            for (const [groupIdx, group] of phase.groups.entries()) {
-              const groupParams = competitionDef.parameters.gameday(
-                comp.phase,
-                groupIdx
-              );
-              const groupRound = group.round;
-              const pairings = group.schedule[groupRound];
-
-              // 1. Play every scheduled match.
-              for (let x = 0; x < pairings.length; x++) {
-                if (!ct.playMatch(group, groupRound, x)) {
-                  continue;
-                }
-                const pairing = pairings[x];
-                const home = draft.teams[group.teams[pairing.home]];
-                const away = draft.teams[group.teams[pairing.away]];
-                const result = simulate({
-                  ...groupParams,
-                  overtime: ct.overtime,
-                  home,
-                  away,
-                  homeManager: home.manager
-                    ? draft.manager.managers[home.manager]
-                    : (undefined as unknown as Manager),
-                  awayManager: away.manager
-                    ? draft.manager.managers[away.manager]
-                    : (undefined as unknown as Manager),
-                  phaseId: comp.phase,
-                  competitionId
-                });
-                pairing.result = result;
-
-                updateStreaks(draft, {
-                  competition: competitionId,
-                  phase: comp.phase,
-                  result,
-                  home: { team: home.id, manager: home.manager },
-                  away: { team: away.id, manager: away.manager }
-                });
-              }
-
-              // 2. Recompute the group's standings.
-              group.stats = computeStats(group);
-
-              // 3. Per-manager bookkeeping for the round we just played.
-              //    1-1 port of `afterGameday()` in src/sagas/manager.ts.
-              for (const [managerId, manager] of entries(
-                draft.manager.managers
-              )) {
-                const managersIndex = group.teams.findIndex(
-                  (t) => t === manager.team
-                );
-                if (managersIndex === -1) {
-                  continue;
-                }
-
-                const game = group.schedule[groupRound].find(
-                  (p) => p.home === managersIndex || p.away === managersIndex
-                );
-                if (!game || !game.result) {
-                  continue;
-                }
-
-                // Microphone bust roll: PHL/division phase 0 only, 6%
-                // chance → 50000 fine + 4-point penalty (in the league
-                // group, hard-coded to phase 0 group 0).
-                if (
-                  manager.services.microphone &&
-                  (competitionId === "phl" || competitionId === "division") &&
-                  comp.phase === 0
-                ) {
-                  if (random.bool(0.06)) {
-                    const fine = 50000;
-                    const pointDeduction = -4;
-                    manager.balance -= fine;
-                    // Inline the penalty (port of `incurPenalty` saga +
-                    // `teamIncurPenalty` reducer): only applies to
-                    // round-robin groups, which the league always is.
-                    const leagueGroup =
-                      draft.competitions[competitionId].phases[0].groups[0];
-                    if (leagueGroup.type === "round-robin") {
-                      leagueGroup.penalties.push({
-                        team: manager.team!,
-                        penalty: pointDeduction
-                      });
-                      leagueGroup.stats = computeStats(leagueGroup);
-                    }
-                    if (!draft.news.announcements[managerId]) {
-                      draft.news.announcements[managerId] = [];
-                    }
-                    draft.news.announcements[managerId].push(
-                      `"Salainen" mikrofonisi vastustajan vaihtoaitiossa on paljastunut. Teidät tuomitaan __${formatAmount(
-                        fine
-                      )}__ pekan sakkoihin ja __${pointDeduction}__ pisteen menetykseen.`
-                    );
-                  }
-                }
-
-                const facts = gameFacts(game, managersIndex);
-                const team = draft.teams[manager.team!];
-
-                const balanceDelta = competitionDef.gameBalance(
-                  comp.phase,
-                  facts,
-                  manager
-                );
-                const moraleDelta = competitionDef.moraleBoost(
-                  comp.phase,
-                  facts,
-                  manager
-                );
-                const readinessDelta = competitionDef.readinessBoost(
-                  comp.phase,
-                  facts,
-                  manager
-                );
-
-                if (balanceDelta) {
-                  manager.balance += balanceDelta;
-                }
-                if (readinessDelta) {
-                  team.readiness += readinessDelta;
-                }
-                if (moraleDelta) {
-                  // Morale clamp uses the team's manager's difficulty
-                  // (defaults to 2 / Pasolini-mode for unmanaged teams).
-                  const diffIdx = manager.difficulty;
-                  const min = difficultyLevels[diffIdx].moraleMin;
-                  const max = difficultyLevels[diffIdx].moraleMax;
-                  team.morale = Math.min(
-                    max,
-                    Math.max(min, team.morale + moraleDelta)
-                  );
-                }
-              }
-
-              // 4. Capture parlay correct coupon — PHL phase 0 group 0
-              //    only. Payout happens after `produce()`: we send
-              //    `RESOLVE { correctCoupon }` to each parlay bet actor.
-              //    Each bet computes its own payout and emits
-              //    `BET_RESOLVED { effects }` which the root handler
-              //    interprets via `runInterpreter`.
-              if (
-                competitionId === "phl" &&
-                comp.phase === 0 &&
-                groupIdx === 0
-              ) {
-                leagueCorrectCoupon = pairings.map((p) => {
-                  const f = resultFacts(p.result!, "home");
-                  if (f.isWin) {
-                    return "1";
-                  }
-                  if (f.isDraw) {
-                    return "x";
-                  }
-                  return "2";
-                });
-              }
-
-              // 5. Advance the group's round counter.
-              group.round += 1;
-
-              // 6. groupEnd — when the schedule is exhausted, delegate to
-              //    the competition's own end-of-group hook (no-op default).
-              //    EHL hands out medalist awards (final phase only);
-              //    tournaments disburse the per-tournament prize.
-              //    PHL/division omit the hook.
-              if (group.round === group.schedule.length) {
-                competitionDef.groupEnd?.(draft, {
-                  phase: comp.phase,
-                  groupIdx,
-                  group
-                });
-              }
-            }
-          }
-        })
-      );
-
-      // After produce: dispatch RESOLVE to every parlay bet actor.
-      // Each transitions to its `resolved` final state, computes the
-      // payout via `computePayout(...)`, and sends `BET_RESOLVED`
-      // back to us — the root handler runs the interpreter.
-      if (leagueCorrectCoupon) {
-        for (const ref of context.parlayBets) {
-          enqueue.sendTo(ref, {
-            type: "RESOLVE" as const,
-            correctCoupon: leagueCorrectCoupon
-          });
-        }
+    /**
+     * Bridge between `executeGameday` and the parlay bet actors.
+     * Reads `betting.lastLeagueCoupon` (set by `runGameday` when the
+     * PHL phase-0 group-0 round runs), dispatches `RESOLVE` to every
+     * parlay bet, and clears the field. Each bet computes its payout,
+     * transitions to `resolved`, and emits `BET_RESOLVED { effects }`
+     * which the root handler interprets via `runInterpreter`.
+     */
+    resolveParlayBets: enqueueActions(({ context, enqueue }) => {
+      const coupon = context.betting.lastLeagueCoupon;
+      if (!coupon) {
+        return;
       }
+      for (const ref of context.betting.parlayBets) {
+        enqueue.sendTo(ref, {
+          type: "RESOLVE" as const,
+          correctCoupon: coupon
+        });
+      }
+      enqueue.assign({
+        betting: ({ context }) => ({
+          ...context.betting,
+          lastLeagueCoupon: undefined
+        })
+      });
     }),
 
     /**
@@ -1515,10 +1271,15 @@ export const gameMachine = setup({
           applyEffects(draft, event.effects, spawnEvent, notify);
         });
         enqueue.assign({
-          parlayBets: ({ context }) =>
-            context.parlayBets.filter((ref) => ref.id !== event.betId),
-          championBets: ({ context }) =>
-            context.championBets.filter((ref) => ref.id !== event.betId)
+          betting: ({ context }) => ({
+            ...context.betting,
+            parlayBets: context.betting.parlayBets.filter(
+              (ref) => ref.id !== event.betId
+            ),
+            championBets: context.betting.championBets.filter(
+              (ref) => ref.id !== event.betId
+            )
+          })
         });
         enqueue(stopChild(event.betId));
       })
@@ -1618,7 +1379,7 @@ export const gameMachine = setup({
                   on: { ADVANCE: "play" }
                 },
                 play: {
-                  entry: "executeGameday",
+                  entry: ["executeGameday", "resolveParlayBets"],
                   always: "results"
                 },
                 results: {

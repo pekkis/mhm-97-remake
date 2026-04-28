@@ -75,11 +75,13 @@ export const createDefaultGameContext = (): GameContext => ({
 
   manager: { active: undefined, managers: {} },
 
-  // parlay bets — spawned per PLACE_BET, see machines/bet.ts
-  parlayBets: [],
-
-  // championship bets — spawned per PLACE_CHAMPION_BET, see machines/championBet.ts
-  championBets: [],
+  // betting — parlay + championship bet actors plus the transient
+  // last-round coupon used to bridge `executeGameday` and `resolveParlayBets`.
+  betting: {
+    parlayBets: [],
+    championBets: [],
+    lastLeagueCoupon: undefined
+  },
 
   // event
   event: { events: {} },

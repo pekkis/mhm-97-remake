@@ -28,6 +28,7 @@ export type { PrankState } from "./prank";
 export type { Streak, GameRecord, SeasonStats, StatsState } from "./stats";
 export type { UiState } from "./ui";
 export type { Country, CountryState } from "./country";
+export type { BettingState } from "./betting";
 
 export type { GameContext } from "./game-context";
 export { createDefaultGameContext } from "./defaults";
