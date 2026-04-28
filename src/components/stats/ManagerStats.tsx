@@ -1,6 +1,7 @@
 import { useState, type FC } from "react";
 import Tabs from "@/components/ui/Tabs";
 import Tab from "@/components/ui/Tab";
+import { Table, Td, Th } from "@/components/ui/Table";
 import Story from "./Story";
 import type { Team } from "@/state/game";
 import type { Manager } from "@/state/manager";
@@ -61,26 +62,26 @@ const ManagerStats: FC<ManagerStatsProps> = ({
                   <div key={c.id}>
                     <h3>{c.name}</h3>
 
-                    <table>
+                    <Table>
                       <tbody>
                         <tr>
-                          <th>Otteluita</th>
-                          <td>{stat.win + stat.draw + stat.loss}</td>
+                          <Th>Otteluita</Th>
+                          <Td>{stat.win + stat.draw + stat.loss}</Td>
                         </tr>
                         <tr>
-                          <th>Voittoja</th>
-                          <td>{stat.win}</td>
+                          <Th>Voittoja</Th>
+                          <Td>{stat.win}</Td>
                         </tr>
                         <tr>
-                          <th>Tasapelejä</th>
-                          <td>{stat.draw}</td>
+                          <Th>Tasapelejä</Th>
+                          <Td>{stat.draw}</Td>
                         </tr>
                         <tr>
-                          <th>Tappioita</th>
-                          <td>{stat.loss}</td>
+                          <Th>Tappioita</Th>
+                          <Td>{stat.loss}</Td>
                         </tr>
                       </tbody>
-                    </table>
+                    </Table>
                   </div>
                 );
               })}

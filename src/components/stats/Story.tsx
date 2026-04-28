@@ -2,6 +2,7 @@ import type { FC } from "react";
 import Season from "@/components/data/Season";
 import Achievements from "./Achievements";
 import Box from "@/components/ui/Box";
+import { Table, Td, Th } from "@/components/ui/Table";
 import type { Team } from "@/state/game";
 import type { Competition } from "@/types/competitions";
 
@@ -20,36 +21,34 @@ const Story: FC<StoryProps> = ({ season, story, teams, competitions }) => {
         <Season long index={season} />{" "}
       </h3>
 
-      <table>
+      <Table>
         <thead>
           <tr>
-            <th className="fixed">Sarja</th>
-            <th className="fixed">Sija</th>
-            <th className="fixed">Joukkue</th>
-            <th>O</th>
-            <th>V</th>
-            <th>TP</th>
-            <th>H</th>
-            <th>P</th>
-            <th>ME</th>
+            <Th>Sarja</Th>
+            <Th>Sija</Th>
+            <Th>Joukkue</Th>
+            <Th>O</Th>
+            <Th>V</Th>
+            <Th>TP</Th>
+            <Th>H</Th>
+            <Th>P</Th>
+            <Th>ME</Th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td className="fixed">
-              {competitions[story.mainCompetition].abbr}
-            </td>
-            <td className="fixed">{story.ranking + 1}</td>
-            <td className="fixed">{teams[t.id]?.name}</td>
-            <td>{t.gamesPlayed}</td>
-            <td>{t.wins}</td>
-            <td>{t.draws}</td>
-            <td>{t.losses}</td>
-            <td>{t.points}</td>
-            <td>{t.goalsFor - t.goalsAgainst}</td>
+            <Td>{competitions[story.mainCompetition].abbr}</Td>
+            <Td>{story.ranking + 1}</Td>
+            <Td>{teams[t.id]?.name}</Td>
+            <Td>{t.gamesPlayed}</Td>
+            <Td>{t.wins}</Td>
+            <Td>{t.draws}</Td>
+            <Td>{t.losses}</Td>
+            <Td>{t.points}</Td>
+            <Td>{t.goalsFor - t.goalsAgainst}</Td>
           </tr>
         </tbody>
-      </table>
+      </Table>
       <Achievements story={story} />
     </Box>
   );

@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FC } from "react";
 import Tabs from "@/components/ui/Tabs";
 import Tab from "@/components/ui/Tab";
+import { Table, Td, Th } from "@/components/ui/Table";
 import Season from "@/components/data/Season";
 
 type TeamStatsProps = {
@@ -16,13 +17,13 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
   return (
     <Tabs selected={tab} onSelect={setTab}>
       <Tab title="Mitalistit">
-        <table>
+        <Table>
           <thead>
             <tr>
-              <th className="fixed">Vuosi</th>
-              <th>Kultaa</th>
-              <th>Hopeaa</th>
-              <th>Pronssia</th>
+              <Th sticky="inline-start">Vuosi</Th>
+              <Th>Kultaa</Th>
+              <Th>Hopeaa</Th>
+              <Th>Pronssia</Th>
             </tr>
           </thead>
           <tbody>
@@ -30,25 +31,25 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
               .map((season: any, seasonIndex: number) => {
                 return (
                   <tr key={seasonIndex}>
-                    <td className="fixed">
+                    <Td sticky="inline-start">
                       <Season index={seasonIndex} />
-                    </td>
+                    </Td>
                     {season.medalists?.map((m: string, k: number) => (
-                      <td key={k}>{teams[m]?.name}</td>
+                      <Td key={k}>{teams[m]?.name}</Td>
                     ))}
                   </tr>
                 );
               })
               .toReversed()}
           </tbody>
-        </table>
+        </Table>
       </Tab>
       <Tab title="Runkosarjan voittaja">
-        <table>
+        <Table>
           <thead>
             <tr>
-              <th>Vuosi</th>
-              <th>Runkosarjan voittaja</th>
+              <Th>Vuosi</Th>
+              <Th>Runkosarjan voittaja</Th>
             </tr>
           </thead>
           <tbody>
@@ -56,24 +57,24 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
               .map((season: any, seasonIndex: number) => {
                 return (
                   <tr key={seasonIndex}>
-                    <td>
+                    <Td>
                       <Season index={seasonIndex} />
-                    </td>
-                    <td>{teams[season.presidentsTrophy]?.name}</td>
+                    </Td>
+                    <Td>{teams[season.presidentsTrophy]?.name}</Td>
                   </tr>
                 );
               })
               .toReversed()}
           </tbody>
-        </table>
+        </Table>
       </Tab>
       <Tab title="Nousijat / putoajat">
-        <table>
+        <Table>
           <thead>
             <tr>
-              <th>Vuosi</th>
-              <th>Nousija</th>
-              <th>Putoaja</th>
+              <Th>Vuosi</Th>
+              <Th>Nousija</Th>
+              <Th>Putoaja</Th>
             </tr>
           </thead>
           <tbody>
@@ -81,24 +82,24 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
               .map((season: any, seasonIndex: number) => {
                 return (
                   <tr key={seasonIndex}>
-                    <td>
+                    <Td>
                       <Season index={seasonIndex} />
-                    </td>
-                    <td>{teams[season.promoted]?.name ?? "-"}</td>
-                    <td>{teams[season.relegated]?.name ?? "-"}</td>
+                    </Td>
+                    <Td>{teams[season.promoted]?.name ?? "-"}</Td>
+                    <Td>{teams[season.relegated]?.name ?? "-"}</Td>
                   </tr>
                 );
               })
               .toReversed()}
           </tbody>
-        </table>
+        </Table>
       </Tab>
       <Tab title="EHL">
-        <table>
+        <Table>
           <thead>
             <tr>
-              <th>Vuosi</th>
-              <th>Euroopan mestari</th>
+              <Th>Vuosi</Th>
+              <Th>Euroopan mestari</Th>
             </tr>
           </thead>
           <tbody>
@@ -106,25 +107,25 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
               .map((season: any, seasonIndex: number) => {
                 return (
                   <tr key={seasonIndex}>
-                    <td>
+                    <Td>
                       <Season index={seasonIndex} />
-                    </td>
-                    <td>{teams[season.ehlChampion]?.name}</td>
+                    </Td>
+                    <Td>{teams[season.ehlChampion]?.name}</Td>
                   </tr>
                 );
               })
               .toReversed()}
           </tbody>
-        </table>
+        </Table>
       </Tab>
       <Tab title="MM-kisat">
-        <table>
+        <Table>
           <thead>
             <tr>
-              <th className="fixed">Vuosi</th>
-              <th>Kultaa</th>
-              <th>Hopeaa</th>
-              <th>Pronssia</th>
+              <Th sticky="inline-start">Vuosi</Th>
+              <Th>Kultaa</Th>
+              <Th>Hopeaa</Th>
+              <Th>Pronssia</Th>
             </tr>
           </thead>
           <tbody>
@@ -132,20 +133,20 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
               .map((season: any, seasonIndex: number) => {
                 return (
                   <tr key={seasonIndex}>
-                    <td className="fixed">
+                    <Td sticky="inline-start">
                       <Season index={seasonIndex} />
-                    </td>
+                    </Td>
                     {season.worldChampionships
                       ?.slice(0, 3)
                       .map((m: string, k: number) => (
-                        <td key={k}>{countries?.[m]?.name}</td>
+                        <Td key={k}>{countries?.[m]?.name}</Td>
                       ))}
                   </tr>
                 );
               })
               .toReversed()}
           </tbody>
-        </table>
+        </Table>
       </Tab>
     </Tabs>
   );

@@ -4,6 +4,7 @@ import { getEffective } from "@/services/effects";
 import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 import { values } from "remeda";
+import { Table, Td, Th } from "./ui/Table";
 
 const DeveloperMenu = () => {
   const teams = useGameContext((ctx) => ctx.teams);
@@ -20,14 +21,14 @@ const DeveloperMenu = () => {
           return (
             <div key={c.id}>
               <h2>{c.name}</h2>
-              <table>
+              <Table>
                 <thead>
                   <tr>
-                    <th>Joukkue</th>
-                    <th>O-voima</th>
-                    <th>E-voima</th>
-                    <th>E-moraali</th>
-                    <th>E-valmius</th>
+                    <Th>Joukkue</Th>
+                    <Th>O-voima</Th>
+                    <Th>E-voima</Th>
+                    <Th>E-moraali</Th>
+                    <Th>E-valmius</Th>
                   </tr>
                 </thead>
 
@@ -40,16 +41,16 @@ const DeveloperMenu = () => {
 
                       return (
                         <tr key={team.id}>
-                          <td>{team.name}</td>
-                          <td>{team.strength}</td>
-                          <td>{e.strength}</td>
-                          <td>{e.morale}</td>
-                          <td>{e.readiness}</td>
+                          <Td>{team.name}</Td>
+                          <Td>{team.strength}</Td>
+                          <Td>{e.strength}</Td>
+                          <Td>{e.morale}</Td>
+                          <Td>{e.readiness}</Td>
                         </tr>
                       );
                     })}
                 </tbody>
-              </table>
+              </Table>
             </div>
           );
         })}
