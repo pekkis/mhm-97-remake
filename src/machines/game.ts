@@ -785,12 +785,11 @@ export const gameMachine = setup({
           correctCoupon: coupon
         });
       }
-      enqueue.assign({
-        betting: ({ context }) => ({
-          ...context.betting,
-          lastLeagueCoupon: undefined
+      enqueue.assign(
+        produce(context, (draft) => {
+          draft.betting.lastLeagueCoupon = undefined;
         })
-      });
+      );
     }),
 
     /**
@@ -1270,16 +1269,18 @@ export const gameMachine = setup({
         runInterpreter(context, enqueue, (draft, notify) => {
           applyEffects(draft, event.effects, spawnEvent, notify);
         });
+        // Callback form so this assign sees the context produced by
+        // `runInterpreter` above, not the original closed-over `context`.
         enqueue.assign({
-          betting: ({ context }) => ({
-            ...context.betting,
-            parlayBets: context.betting.parlayBets.filter(
-              (ref) => ref.id !== event.betId
-            ),
-            championBets: context.betting.championBets.filter(
-              (ref) => ref.id !== event.betId
-            )
-          })
+          betting: ({ context }) =>
+            produce(context.betting, (draft) => {
+              draft.parlayBets = draft.parlayBets.filter(
+                (ref) => ref.id !== event.betId
+              );
+              draft.championBets = draft.championBets.filter(
+                (ref) => ref.id !== event.betId
+              );
+            })
         });
         enqueue(stopChild(event.betId));
       })
