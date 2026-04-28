@@ -132,9 +132,9 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
               .map((season: any, seasonIndex: number) => {
                 return (
                   <tr key={seasonIndex}>
-                    <Td className="fixed">
+                    <td className="fixed">
                       <Season index={seasonIndex} />
-                    </Td>
+                    </td>
                     {season.worldChampionships
                       ?.slice(0, 3)
                       .map((m: string, k: number) => (

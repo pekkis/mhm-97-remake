@@ -24,7 +24,7 @@
     "test": "vitest",
     "test:run": "vitest --run",
     "test:ui": "vitest --ui",
-    "verify": "pnpm run test --run && pnpm run lint && pnpm run format && pnpm run typecheck"
+    "verify": "pnpm run test --run && pnpm run format && pnpm run lint --fix && pnpm run typecheck"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
