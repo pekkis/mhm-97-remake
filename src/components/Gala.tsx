@@ -1,5 +1,5 @@
 import News from "./news/News";
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 
 import Box from "./ui/Box";
@@ -10,7 +10,7 @@ const Gala = () => {
 
   return (
     <HeaderedPage>
-      <Header forward="Jo riittää lätinä, asiaan!" />
+      <StickyMenu forward="Jo riittää lätinä, asiaan!" />
 
       <Box p="md">
         <h2>Loppuottelugaala</h2>

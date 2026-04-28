@@ -1,13 +1,13 @@
 import Situation from "./context-sensitive/Situation";
 import ManagerInfo from "./ManagerInfo";
-import Header from "./Header";
-import HeaderedPage from "./ui/HeaderedPage";
+import StickyMenu from "./StickyMenu";
 import Forward from "./context-sensitive/Forward";
 import Current from "./context-sensitive/Current";
 
 import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 import { activeManager, interestingCompetitions } from "@/machines/selectors";
+import AdvancedHeaderedPage from "@/components/ui/AdvancedHeaderedPage";
 
 const MainMenu = () => {
   const manager = useGameContext(activeManager);
@@ -16,12 +16,11 @@ const MainMenu = () => {
   const interesting = useGameContext(interestingCompetitions);
 
   return (
-    <HeaderedPage>
-      <Header menu forward={<Forward />} />
-
-      <ManagerInfo details />
-
-      <Box p="md">
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu menu forward={<Forward />} />}
+      managerInfo={<ManagerInfo details />}
+    >
+      <Box>
         <Current />
 
         <Situation
@@ -31,7 +30,7 @@ const MainMenu = () => {
           teams={teams}
         />
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

@@ -1,5 +1,5 @@
 import Button from "./form/Button";
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import Calendar from "./ui/Calendar";
@@ -26,7 +26,7 @@ const CrisisActions = () => {
 
   return (
     <HeaderedPage>
-      <Header back />
+      <StickyMenu back />
 
       <ManagerInfo details />
 

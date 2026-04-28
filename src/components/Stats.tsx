@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import ManagerInfo from "./ManagerInfo";
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 
 import Box from "./ui/Box";
@@ -24,7 +24,7 @@ const Stats = () => {
 
   return (
     <HeaderedPage>
-      <Header back />
+      <StickyMenu back />
 
       <ManagerInfo details />
 

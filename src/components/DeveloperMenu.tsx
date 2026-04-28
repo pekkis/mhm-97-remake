@@ -1,4 +1,4 @@
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import { getEffective } from "@/services/effects";
 import Box from "./ui/Box";
@@ -12,7 +12,7 @@ const DeveloperMenu = () => {
 
   return (
     <HeaderedPage>
-      <Header back />
+      <StickyMenu back />
 
       <Box p="md">
         <h2>Devausinfo</h2>

@@ -6,6 +6,9 @@ import { useGameContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
 
 import * as styles from "./ManagerInfo.css";
+import Centerer from "@/components/Centerer";
+import Cluster from "@/components/ui/Cluster";
+import Stack from "@/components/ui/Stack";
 
 type ManagerInfoProps = {
   details?: boolean;
@@ -20,33 +23,40 @@ const ManagerInfo = ({ details = false }: ManagerInfoProps) => {
 
   return (
     <Box p="md" bg="surfaceMuted">
-      <h2 className={styles.managerName}>{manager.name}</h2>
+      <Centerer>
+        <Stack gap="lg">
+          <Box>
+            <h2 className={styles.managerName}>{manager.name}</h2>
+          </Box>
+          {details && (
+            <Box>
+              <Cluster gapInline="xl" gapBlock="sm">
+                <Stack direction="row" gap="sm">
+                  <div className={styles.title}>Voima</div>
+                  <div>{team.strength}</div>
+                </Stack>
 
-      {details && (
-        <div className={styles.details}>
-          <div className={styles.detail}>
-            <div className={styles.title}>Voima</div>
-            <div>{team.strength}</div>
-          </div>
+                <Stack direction="row" gap="sm">
+                  <div className={styles.title}>Moraali</div>
+                  <div>{team.morale}</div>
+                </Stack>
 
-          <div className={styles.detail}>
-            <div className={styles.title}>Moraali</div>
-            <div>{team.morale}</div>
-          </div>
+                <Stack direction="row" gap="sm">
+                  <div className={styles.title}>Raha</div>
+                  <div>{amount(manager.balance)}</div>
+                </Stack>
 
-          <div className={styles.detail}>
-            <div className={styles.title}>Raha</div>
-            <div>{amount(manager.balance)}</div>
-          </div>
-
-          <div className={styles.detail}>
-            <div className={styles.title}>Vuoro</div>
-            <div>
-              <TurnIndicator turn={turn} />
-            </div>
-          </div>
-        </div>
-      )}
+                <Stack direction="row" gap="sm">
+                  <div className={styles.title}>Vuoro</div>
+                  <div>
+                    <TurnIndicator turn={turn} />
+                  </div>
+                </Stack>
+              </Cluster>
+            </Box>
+          )}
+        </Stack>
+      </Centerer>
     </Box>
   );
 };

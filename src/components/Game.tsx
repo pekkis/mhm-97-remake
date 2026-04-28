@@ -173,13 +173,13 @@ const Game: FC = () => {
   console.log("GAME", gameActor);
 
   return (
-    <div>
+    <>
       <ModalMenu />
       <Phase phase={phase} />
       <NotificationsContext.Provider actor={notificationsActor}>
         <Notifications />
       </NotificationsContext.Provider>
-    </div>
+    </>
   );
 };
 

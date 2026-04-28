@@ -1,6 +1,6 @@
 import EventsList from "./events/Events";
 import ManagerInfo from "./ManagerInfo";
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./ui/Box";
 import {
@@ -16,7 +16,7 @@ const Events = () => {
 
   return (
     <HeaderedPage>
-      <Header />
+      <StickyMenu />
       <ManagerInfo details />
 
       <Box p="md">

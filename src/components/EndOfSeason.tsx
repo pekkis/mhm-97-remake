@@ -1,5 +1,5 @@
 import News from "./news/News";
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import Season from "./data/Season";
 import Announcements from "./events/Announcements";
@@ -16,7 +16,7 @@ const EndOfSeason = () => {
 
   return (
     <HeaderedPage>
-      <Header forward="Seuraava kausi" />
+      <StickyMenu forward="Seuraava kausi" />
 
       <Box p="md">
         <h2>

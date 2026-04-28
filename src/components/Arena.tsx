@@ -1,4 +1,4 @@
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import ButtonRow from "./form/ButtonRow";
@@ -24,7 +24,7 @@ const Arenas = () => {
 
   return (
     <HeaderedPage>
-      <Header back />
+      <StickyMenu back />
 
       <ManagerInfo details />
 

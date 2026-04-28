@@ -1,6 +1,6 @@
 import Announcements from "./events/Announcements";
 import ManagerInfo from "./ManagerInfo";
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
@@ -12,7 +12,7 @@ const News = () => {
 
   return (
     <HeaderedPage>
-      <Header />
+      <StickyMenu />
       <ManagerInfo details />
 
       <Box p="md">

@@ -19,6 +19,5 @@ export const detail = style({
 });
 
 export const title = style({
-  fontWeight: "bold",
-  paddingRight: "0.5em"
+  fontWeight: "bold"
 });

@@ -1,5 +1,5 @@
 import ManagerInfo from "./ManagerInfo";
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import BettingForm from "./betting/BettingForm";
 import Box from "./ui/Box";
@@ -18,7 +18,7 @@ const Betting = () => {
 
   return (
     <HeaderedPage>
-      <Header back />
+      <StickyMenu back />
 
       <ManagerInfo details />
 

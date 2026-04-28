@@ -1,4 +1,4 @@
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 
 import Box from "./ui/Box";
@@ -15,7 +15,7 @@ const WorldChampionships = () => {
 
   return (
     <HeaderedPage>
-      <Header forward="Palkintogaala" />
+      <StickyMenu forward="Palkintogaala" />
 
       <Box p="md">
         <h2>Maailmanmestaruuskisat {turn.season + 1}</h2>

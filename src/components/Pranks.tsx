@@ -1,5 +1,5 @@
 import ManagerInfo from "./ManagerInfo";
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 
 import SelectVictim from "./pranks/SelectVictim";
@@ -31,7 +31,7 @@ const Pranks = () => {
 
   return (
     <HeaderedPage>
-      <Header back />
+      <StickyMenu back />
 
       <ManagerInfo details />
 

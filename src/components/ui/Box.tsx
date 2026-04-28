@@ -6,6 +6,8 @@ import { vars } from "@/styles/theme.css";
 type SpaceKey = keyof typeof vars.space;
 type ColorKey = keyof typeof vars.color;
 type RadiusKey = keyof typeof vars.radius;
+type TextAlign = "start" | "center" | "end" | "justify";
+type Flex = "none" | "auto" | "0" | "1";
 
 type BoxProps = {
   children?: ReactNode;
@@ -19,6 +21,8 @@ type BoxProps = {
   bg?: ColorKey;
   color?: ColorKey;
   radius?: RadiusKey;
+  textAlign?: TextAlign;
+  flex?: Flex;
 };
 
 const Box: FC<BoxProps> = ({
@@ -32,7 +36,9 @@ const Box: FC<BoxProps> = ({
   my,
   bg,
   color,
-  radius
+  radius,
+  textAlign,
+  flex
 }) => {
   const sprinkleClass = sprinkles({
     ...(p !== undefined && { padding: p }),
@@ -43,7 +49,9 @@ const Box: FC<BoxProps> = ({
     ...(my !== undefined && { marginY: my }),
     ...(bg !== undefined && { backgroundColor: bg }),
     ...(color !== undefined && { color }),
-    ...(radius !== undefined && { borderRadius: radius })
+    ...(radius !== undefined && { borderRadius: radius }),
+    ...(textAlign !== undefined && { textAlign }),
+    ...(flex !== undefined && { flex })
   });
   return <div className={clsx(sprinkleClass, className)}>{children}</div>;
 };

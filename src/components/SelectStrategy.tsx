@@ -1,8 +1,10 @@
 import strategies from "@/data/strategies";
 import Button from "./form/Button";
-import Box from "./ui/Box";
 import { activeManager } from "@/machines/selectors";
 import { GameMachineContext } from "@/context/game-machine-context";
+import HeaderedPage from "@/components/ui/HeaderedPage";
+import ManagerInfo from "@/components/ManagerInfo";
+import Centerer from "@/components/Centerer";
 
 const SelectStrategy = () => {
   const manager = GameMachineContext.useSelector((state) =>
@@ -11,41 +13,44 @@ const SelectStrategy = () => {
   const actor = GameMachineContext.useActorRef();
 
   return (
-    <Box p="md">
-      <h2>Valitse harjoittelustrategia</h2>
+    <HeaderedPage>
+      <ManagerInfo details />
+      <Centerer>
+        <h2>Valitse harjoittelustrategia</h2>
 
-      <p>
-        On kesä, ja aika määrätä mihin joukkue ajoittaa huippukuntonsa! Tarjolla
-        on kolme vaihtoehtoa:
-      </p>
+        <p>
+          On kesä, ja aika määrätä mihin joukkue ajoittaa huippukuntonsa!
+          Tarjolla on kolme vaihtoehtoa:
+        </p>
 
-      {strategies.map((strategy) => {
-        return (
-          <div key={strategy.id}>
-            <h3>{strategy.name}</h3>
+        {strategies.map((strategy) => {
+          return (
+            <div key={strategy.id}>
+              <h3>{strategy.name}</h3>
 
-            <p>{strategy.description}</p>
+              <p>{strategy.description}</p>
 
-            <p>
-              <Button
-                block
-                onClick={() =>
-                  actor.send({
-                    type: "SELECT_STRATEGY",
-                    payload: {
-                      manager: manager.id,
-                      strategy: strategy.id
-                    }
-                  })
-                }
-              >
-                Valitse strategia "{strategy.name}"
-              </Button>
-            </p>
-          </div>
-        );
-      })}
-    </Box>
+              <p>
+                <Button
+                  block
+                  onClick={() =>
+                    actor.send({
+                      type: "SELECT_STRATEGY",
+                      payload: {
+                        manager: manager.id,
+                        strategy: strategy.id
+                      }
+                    })
+                  }
+                >
+                  Valitse strategia "{strategy.name}"
+                </Button>
+              </p>
+            </div>
+          );
+        })}
+      </Centerer>
+    </HeaderedPage>
   );
 };
 

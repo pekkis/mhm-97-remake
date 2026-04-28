@@ -82,7 +82,9 @@ const layoutProperties = defineProperties({
     maxWidth: ["100%", "fit-content"],
     height: ["auto", "100%"],
     overflow: ["visible", "hidden", "auto", "scroll", "clip"],
-    position: ["static", "relative", "absolute", "fixed", "sticky"]
+    position: ["static", "relative", "absolute", "fixed", "sticky"],
+    zIndex: vars.zIndex,
+    flex: ["none", "auto", "0", "1"]
   }
 });
 
@@ -100,7 +102,7 @@ const typographyProperties = defineProperties({
     fontWeight: vars.fontWeight,
     lineHeight: vars.lineHeight,
     fontFamily: vars.fontFamily,
-    textAlign: ["left", "center", "right", "justify"],
+    textAlign: ["start", "center", "end", "justify", "left", "right"],
     textTransform: ["none", "uppercase", "lowercase", "capitalize"]
   }
 });

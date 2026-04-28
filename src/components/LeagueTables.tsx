@@ -1,5 +1,5 @@
 import Table from "./league-table/LeagueTable";
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
@@ -14,7 +14,7 @@ const LeagueTables = () => {
 
   return (
     <HeaderedPage>
-      <Header back />
+      <StickyMenu back />
       <Box p="md">
         <h2>Sarjataulukot</h2>
 

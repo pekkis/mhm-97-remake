@@ -118,6 +118,20 @@ export const vars = createGlobalTheme(":root", {
     md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
     lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
     xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+  },
+  /**
+   * Named z-index layers. Use these instead of bare numbers so the
+   * stacking contract is in one place. Higher number = closer to the
+   * user. Leave gaps so future layers slot in without renumbering.
+   */
+  zIndex: {
+    base: "0",
+    raised: "10",
+    sticky: "100",
+    overlay: "500",
+    modal: "1000",
+    toast: "1500",
+    tooltip: "2000"
   }
 });
 

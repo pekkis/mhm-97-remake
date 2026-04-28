@@ -31,6 +31,10 @@ type ClusterProps = {
   className?: string;
   as?: LayoutElement;
   gap?: SpaceKey;
+  /** Horizontal gap between siblings. Defaults to `gap`. */
+  gapInline?: SpaceKey;
+  /** Vertical gap between wrapped rows. Defaults to `gap`. */
+  gapBlock?: SpaceKey;
   align?: Align;
   justify?: Justify;
   reverse?: boolean;
@@ -42,6 +46,8 @@ const Cluster: FC<ClusterProps> = ({
   className,
   as: Element = "div",
   gap = "sm",
+  gapInline,
+  gapBlock,
   align = "center",
   justify = "start",
   reverse = false,
@@ -53,7 +59,8 @@ const Cluster: FC<ClusterProps> = ({
     flexWrap: "wrap",
     alignItems: align,
     justifyContent: justify,
-    gap
+    columnGap: gapInline ?? gap,
+    rowGap: gapBlock ?? gap
   });
   return (
     <Element className={clsx(sprinkleClass, className)}>{children}</Element>

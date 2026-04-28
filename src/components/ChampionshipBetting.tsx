@@ -2,9 +2,9 @@ import ManagerInfo from "./ManagerInfo";
 import HeaderedPage from "./ui/HeaderedPage";
 import Button from "./form/Button";
 import BettingForm from "./championship-betting/BettingForm";
-import Box from "./ui/Box";
 import { GameMachineContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
+import Centerer from "@/components/Centerer";
 
 const ChampionshipBetting = () => {
   const manager = GameMachineContext.useSelector((state) =>
@@ -20,7 +20,7 @@ const ChampionshipBetting = () => {
     <HeaderedPage>
       <ManagerInfo details />
 
-      <Box p="md">
+      <Centerer>
         <h2>Mestariveikkaus</h2>
 
         <p>
@@ -53,7 +53,7 @@ const ChampionshipBetting = () => {
         <Button secondary block onClick={() => actor.send({ type: "ADVANCE" })}>
           En halua veikata
         </Button>
-      </Box>
+      </Centerer>
     </HeaderedPage>
   );
 };

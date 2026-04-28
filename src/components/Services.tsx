@@ -1,4 +1,4 @@
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import * as styles from "./Services.css";
@@ -23,7 +23,7 @@ const Services = () => {
 
   return (
     <HeaderedPage>
-      <Header back />
+      <StickyMenu back />
       <ManagerInfo details />
 
       <Box p="md">

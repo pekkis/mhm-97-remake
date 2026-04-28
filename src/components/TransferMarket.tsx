@@ -2,7 +2,7 @@ import { useState } from "react";
 import playerTypes from "@/data/transfer-market";
 import Button from "./form/Button";
 import ButtonContainer from "./ui/ButtonContainer";
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import Calendar from "./ui/Calendar";
 import { currency } from "@/services/format";
@@ -26,7 +26,7 @@ const TransferMarket = () => {
 
   return (
     <HeaderedPage>
-      <Header back />
+      <StickyMenu back />
 
       <ManagerInfo details />
 

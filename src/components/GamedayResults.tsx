@@ -1,6 +1,6 @@
 import calendar from "@/data/calendar";
 import Table from "./league-table/LeagueTable";
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import Results from "./gameday/Results";
 import Box from "./ui/Box";
@@ -20,7 +20,7 @@ const GamedayResults = () => {
 
   return (
     <HeaderedPage>
-      <Header />
+      <StickyMenu />
       <Box p="md">
         <h2>Tulokset</h2>
 

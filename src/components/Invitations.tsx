@@ -1,4 +1,4 @@
-import Header from "./Header";
+import StickyMenu from "./StickyMenu";
 import HeaderedPage from "./ui/HeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import Box from "./ui/Box";
@@ -19,7 +19,7 @@ const Invitations = () => {
 
   return (
     <HeaderedPage>
-      <Header back />
+      <StickyMenu back />
 
       <ManagerInfo details />
 
