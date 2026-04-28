@@ -1,5 +1,5 @@
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import ButtonRow from "./form/ButtonRow";
 import Button from "./form/Button";
@@ -23,11 +23,10 @@ const Arenas = () => {
   const nextLevel = arenas[currentLevel + 1];
 
   return (
-    <HeaderedPage>
-      <StickyMenu back />
-
-      <ManagerInfo details />
-
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu back />}
+      managerInfo={<ManagerInfo details />}
+    >
       <Box p="md">
         <h2>Areena</h2>
 
@@ -69,7 +68,7 @@ const Arenas = () => {
           )}
         </ButtonRow>
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

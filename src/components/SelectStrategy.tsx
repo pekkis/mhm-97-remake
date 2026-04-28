@@ -2,9 +2,8 @@ import strategies from "@/data/strategies";
 import Button from "./form/Button";
 import { activeManager } from "@/machines/selectors";
 import { GameMachineContext } from "@/context/game-machine-context";
-import HeaderedPage from "@/components/ui/HeaderedPage";
+import AdvancedHeaderedPage from "@/components/ui/AdvancedHeaderedPage";
 import ManagerInfo from "@/components/ManagerInfo";
-import Centerer from "@/components/Centerer";
 
 const SelectStrategy = () => {
   const manager = GameMachineContext.useSelector((state) =>
@@ -13,10 +12,8 @@ const SelectStrategy = () => {
   const actor = GameMachineContext.useActorRef();
 
   return (
-    <HeaderedPage>
-      <ManagerInfo details />
-      <Centerer>
-        <h2>Valitse harjoittelustrategia</h2>
+    <AdvancedHeaderedPage managerInfo={<ManagerInfo details />}>
+      <h2>Valitse harjoittelustrategia</h2>
 
         <p>
           On kesä, ja aika määrätä mihin joukkue ajoittaa huippukuntonsa!
@@ -49,8 +46,7 @@ const SelectStrategy = () => {
             </div>
           );
         })}
-      </Centerer>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

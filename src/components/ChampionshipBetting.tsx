@@ -1,10 +1,9 @@
 import ManagerInfo from "./ManagerInfo";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import Button from "./form/Button";
 import BettingForm from "./championship-betting/BettingForm";
 import { GameMachineContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
-import Centerer from "@/components/Centerer";
 
 const ChampionshipBetting = () => {
   const manager = GameMachineContext.useSelector((state) =>
@@ -17,11 +16,8 @@ const ChampionshipBetting = () => {
   const actor = GameMachineContext.useActorRef();
 
   return (
-    <HeaderedPage>
-      <ManagerInfo details />
-
-      <Centerer>
-        <h2>Mestariveikkaus</h2>
+    <AdvancedHeaderedPage managerInfo={<ManagerInfo details />}>
+      <h2>Mestariveikkaus</h2>
 
         <p>
           On vuosittaisen <strong>mestariveikkauksen aika</strong>. Tässä
@@ -53,8 +49,7 @@ const ChampionshipBetting = () => {
         <Button secondary block onClick={() => actor.send({ type: "ADVANCE" })}>
           En halua veikata
         </Button>
-      </Centerer>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

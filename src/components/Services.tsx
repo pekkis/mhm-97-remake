@@ -1,5 +1,5 @@
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import * as styles from "./Services.css";
 import Toggle from "./form/Toggle";
@@ -22,10 +22,10 @@ const Services = () => {
   console.log("MANAGER SERVICES", manager.services);
 
   return (
-    <HeaderedPage>
-      <StickyMenu back />
-      <ManagerInfo details />
-
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu back />}
+      managerInfo={<ManagerInfo details />}
+    >
       <Box p="md">
         <h2>Erikoistoimenpiteet</h2>
 
@@ -58,7 +58,7 @@ const Services = () => {
           })}
         </div>
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

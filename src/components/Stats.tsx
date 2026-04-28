@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import ManagerInfo from "./ManagerInfo";
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 
 import Box from "./ui/Box";
 import Tabs from "./ui/Tabs";
@@ -23,11 +23,10 @@ const Stats = () => {
   const [tab, setTab] = useState(0);
 
   return (
-    <HeaderedPage>
-      <StickyMenu back />
-
-      <ManagerInfo details />
-
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu back />}
+      managerInfo={<ManagerInfo details />}
+    >
       <Box p="md">
         <h2>Tilastot</h2>
 
@@ -46,7 +45,7 @@ const Stats = () => {
           </Tab>
         </Tabs>
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

@@ -1,6 +1,6 @@
 import ManagerInfo from "./ManagerInfo";
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 
 import SelectVictim from "./pranks/SelectVictim";
 import SelectType from "./pranks/SelectType";
@@ -30,11 +30,10 @@ const Pranks = () => {
   const targetCompetition = phl.teams.includes(manager.team!) ? phl : division;
 
   return (
-    <HeaderedPage>
-      <StickyMenu back />
-
-      <ManagerInfo details />
-
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu back />}
+      managerInfo={<ManagerInfo details />}
+    >
       <Box p="md">
         <Calendar
           when={(c) => c.pranks}
@@ -94,7 +93,7 @@ const Pranks = () => {
           )}
         </Calendar>
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

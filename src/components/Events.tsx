@@ -1,7 +1,7 @@
 import EventsList from "./events/Events";
 import ManagerInfo from "./ManagerInfo";
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import Box from "./ui/Box";
 import {
   GameMachineContext,
@@ -15,10 +15,10 @@ const Events = () => {
   const events = useGameContext((ctx) => ctx.event.events);
 
   return (
-    <HeaderedPage>
-      <StickyMenu />
-      <ManagerInfo details />
-
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu />}
+      managerInfo={<ManagerInfo details />}
+    >
       <Box p="md">
         <h2>Tapahtumat</h2>
         <EventsList
@@ -32,7 +32,7 @@ const Events = () => {
           }
         />
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

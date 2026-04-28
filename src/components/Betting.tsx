@@ -1,6 +1,6 @@
 import ManagerInfo from "./ManagerInfo";
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import BettingForm from "./betting/BettingForm";
 import Box from "./ui/Box";
 import {
@@ -17,11 +17,10 @@ const Betting = () => {
   const actor = GameMachineContext.useActorRef();
 
   return (
-    <HeaderedPage>
-      <StickyMenu back />
-
-      <ManagerInfo details />
-
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu back />}
+      managerInfo={<ManagerInfo details />}
+    >
       <Box p="md">
         <h2>Kavioveikkaus</h2>
 
@@ -40,7 +39,7 @@ const Betting = () => {
           competition={competition}
         />
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

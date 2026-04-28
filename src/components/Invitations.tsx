@@ -1,5 +1,5 @@
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import Box from "./ui/Box";
 import tournamentList from "@/data/tournaments";
@@ -18,11 +18,10 @@ const Invitations = () => {
   const actor = GameMachineContext.useActorRef();
 
   return (
-    <HeaderedPage>
-      <StickyMenu back />
-
-      <ManagerInfo details />
-
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu back />}
+      managerInfo={<ManagerInfo details />}
+    >
       <Box p="md">
         <h2>Turnauskutsut</h2>
 
@@ -50,7 +49,7 @@ const Invitations = () => {
           );
         })}
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

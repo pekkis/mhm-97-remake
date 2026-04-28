@@ -35,7 +35,7 @@ const StickyMenu: FC<Props> = ({
     <Box p="md">
       <Stack direction="row">
         {back && (
-          <div className="advance">
+          <Box flex="1">
             <Button
               block
               onClick={() => {
@@ -44,7 +44,7 @@ const StickyMenu: FC<Props> = ({
             >
               Päävalikkoon
             </Button>
-          </div>
+          </Box>
         )}
 
         {!back && (

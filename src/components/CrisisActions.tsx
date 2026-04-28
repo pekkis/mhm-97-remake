@@ -1,6 +1,6 @@
 import Button from "./form/Button";
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import Calendar from "./ui/Calendar";
 import Box from "./ui/Box";
@@ -25,11 +25,10 @@ const CrisisActions = () => {
   const crisisInfo = crisis(team, competitions);
 
   return (
-    <HeaderedPage>
-      <StickyMenu back />
-
-      <ManagerInfo details />
-
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu back />}
+      managerInfo={<ManagerInfo details />}
+    >
       <Box p="md">
         <h2>Kriisipalaveri</h2>
 
@@ -61,7 +60,7 @@ const CrisisActions = () => {
           </Button>
         </Calendar>
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

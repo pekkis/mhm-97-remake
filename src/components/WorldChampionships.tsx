@@ -1,5 +1,5 @@
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 
 import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
@@ -14,9 +14,9 @@ const WorldChampionships = () => {
   const turn = useGameContext((ctx) => ctx.turn);
 
   return (
-    <HeaderedPage>
-      <StickyMenu forward="Palkintogaala" />
-
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu forward="Palkintogaala" />}
+    >
       <Box p="md">
         <h2>Maailmanmestaruuskisat {turn.season + 1}</h2>
 
@@ -49,7 +49,7 @@ const WorldChampionships = () => {
           })}
         </ol>
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

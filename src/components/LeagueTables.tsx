@@ -1,6 +1,6 @@
 import Table from "./league-table/LeagueTable";
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 import { values } from "remeda";
@@ -13,8 +13,7 @@ const LeagueTables = () => {
   console.log({ teams, managers, competitions });
 
   return (
-    <HeaderedPage>
-      <StickyMenu back />
+    <AdvancedHeaderedPage stickyMenu={<StickyMenu back />}>
       <Box p="md">
         <h2>Sarjataulukot</h2>
 
@@ -43,7 +42,7 @@ const LeagueTables = () => {
             );
           })}
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

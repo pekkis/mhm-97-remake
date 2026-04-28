@@ -1,5 +1,5 @@
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import { getEffective } from "@/services/effects";
 import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
@@ -11,9 +11,7 @@ const DeveloperMenu = () => {
   const competitions = useGameContext((ctx) => ctx.competitions);
 
   return (
-    <HeaderedPage>
-      <StickyMenu back />
-
+    <AdvancedHeaderedPage stickyMenu={<StickyMenu back />}>
       <Box p="md">
         <h2>Devausinfo</h2>
 
@@ -55,7 +53,7 @@ const DeveloperMenu = () => {
           );
         })}
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 

@@ -1,6 +1,6 @@
 import News from "./news/News";
 import StickyMenu from "./StickyMenu";
-import HeaderedPage from "./ui/HeaderedPage";
+import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import Season from "./data/Season";
 import Announcements from "./events/Announcements";
 
@@ -15,9 +15,9 @@ const EndOfSeason = () => {
   const announcements = useGameContext((ctx) => ctx.news.announcements);
 
   return (
-    <HeaderedPage>
-      <StickyMenu forward="Seuraava kausi" />
-
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu forward="Seuraava kausi" />}
+    >
       <Box p="md">
         <h2>
           Kausi <Season long index={turn.season} />
@@ -29,7 +29,7 @@ const EndOfSeason = () => {
 
         <News manager={manager} news={news} />
       </Box>
-    </HeaderedPage>
+    </AdvancedHeaderedPage>
   );
 };
 
