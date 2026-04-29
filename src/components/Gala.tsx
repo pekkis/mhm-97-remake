@@ -2,7 +2,8 @@ import News from "./news/News";
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 
-import Box from "./ui/Box";
+import Heading from "@/components/ui/Heading";
+import Stack from "@/components/ui/Stack";
 import { useGameContext } from "@/context/game-machine-context";
 
 const Gala = () => {
@@ -12,11 +13,11 @@ const Gala = () => {
     <AdvancedHeaderedPage
       stickyMenu={<StickyMenu forward="Jo riittää lätinä, asiaan!" />}
     >
-      <Box p="md">
-        <h2>Loppuottelugaala</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Loppuottelugaala</Heading>
 
         <News news={news} />
-      </Box>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

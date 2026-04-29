@@ -1,7 +1,8 @@
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
-import Box from "./ui/Box";
+import Heading from "@/components/ui/Heading";
+import Stack from "@/components/ui/Stack";
 import tournamentList from "@/data/tournaments";
 import Button from "./ui/Button";
 import {
@@ -22,33 +23,35 @@ const Invitations = () => {
       stickyMenu={<StickyMenu back />}
       managerInfo={<ManagerInfo details />}
     >
-      <Box p="md">
-        <h2>Turnauskutsut</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Turnauskutsut</Heading>
 
-        {invitations.map((i, index) => {
-          const t = tournamentList[i.tournament];
-          return (
-            <div key={index}>
-              <h3>{t.name}</h3>
+        <Stack gap="md">
+          {invitations.map((i, index) => {
+            const t = tournamentList[i.tournament];
+            return (
+              <Stack key={index} gap="sm">
+                <Heading level={3}>{t.name}</Heading>
 
-              <Markdown>{t.description(t.award)}</Markdown>
+                <Markdown>{t.description(t.award)}</Markdown>
 
-              <Button
-                block
-                onClick={() =>
-                  actor.send({
-                    type: "ACCEPT_INVITATION",
-                    payload: { manager: manager.id, id: i.id }
-                  })
-                }
-                disabled={i.accepted}
-              >
-                Hyväksy turnauskutsu
-              </Button>
-            </div>
-          );
-        })}
-      </Box>
+                <Button
+                  block
+                  onClick={() =>
+                    actor.send({
+                      type: "ACCEPT_INVITATION",
+                      payload: { manager: manager.id, id: i.id }
+                    })
+                  }
+                  disabled={i.accepted}
+                >
+                  Hyväksy turnauskutsu
+                </Button>
+              </Stack>
+            );
+          })}
+        </Stack>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

@@ -1,7 +1,8 @@
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 
-import Box from "./ui/Box";
+import Heading from "@/components/ui/Heading";
+import Stack from "@/components/ui/Stack";
 import Paragraph from "./ui/Paragraph";
 import { useGameContext } from "@/context/game-machine-context";
 
@@ -16,38 +17,34 @@ const WorldChampionships = () => {
 
   return (
     <AdvancedHeaderedPage stickyMenu={<StickyMenu forward="Palkintogaala" />}>
-      <Box p="md">
-        <h2>Maailmanmestaruuskisat {turn.season + 1}</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Maailmanmestaruuskisat {turn.season + 1}</Heading>
 
-        <div>
+        <Stack gap="sm">
           {results
             .filter((e) => e.luck > 0)
-            .map((e) => {
-              return (
-                <Paragraph key={e.id}>
-                  <strong>{e.name}</strong> pelasi koko turnauksen ajan todella
-                  suurella sydämellä!
-                </Paragraph>
-              );
-            })}
+            .map((e) => (
+              <Paragraph key={e.id}>
+                <strong>{e.name}</strong> pelasi koko turnauksen ajan todella
+                suurella sydämellä!
+              </Paragraph>
+            ))}
           {results
             .filter((e) => e.luck < 0)
-            .map((e) => {
-              return (
-                <Paragraph key={e.id}>
-                  <strong>{e.name}</strong> kärsi koko turnauksen ajan suurista
-                  ongelmista!
-                </Paragraph>
-              );
-            })}
-        </div>
+            .map((e) => (
+              <Paragraph key={e.id}>
+                <strong>{e.name}</strong> kärsi koko turnauksen ajan suurista
+                ongelmista!
+              </Paragraph>
+            ))}
+        </Stack>
 
         <ol>
-          {results.map((entry) => {
-            return <li key={entry.id}>{entry.name}</li>;
-          })}
+          {results.map((entry) => (
+            <li key={entry.id}>{entry.name}</li>
+          ))}
         </ol>
-      </Box>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

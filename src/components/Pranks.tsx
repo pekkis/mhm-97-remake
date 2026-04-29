@@ -5,7 +5,6 @@ import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import SelectVictim from "./pranks/SelectVictim";
 import SelectType from "./pranks/SelectType";
 import ConfirmPrank from "./pranks/ConfirmPrank";
-import Box from "./ui/Box";
 import Paragraph from "./ui/Paragraph";
 import Calendar from "./ui/Calendar";
 

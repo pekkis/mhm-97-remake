@@ -4,7 +4,8 @@ import ManagerInfo from "./ManagerInfo";
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 
-import Box from "./ui/Box";
+import Heading from "@/components/ui/Heading";
+import Stack from "@/components/ui/Stack";
 import Tabs from "./ui/Tabs";
 
 import ManagerStats from "./stats/ManagerStats";
@@ -26,8 +27,8 @@ const Stats = () => {
       stickyMenu={<StickyMenu back />}
       managerInfo={<ManagerInfo details />}
     >
-      <Box p="md">
-        <h2>Tilastot</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Tilastot</Heading>
 
         <Tabs
           selected={tab}
@@ -52,7 +53,7 @@ const Stats = () => {
             }
           ]}
         />
-      </Box>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

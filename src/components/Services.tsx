@@ -1,9 +1,7 @@
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
-import * as styles from "./Services.css";
 import Toggle from "@/components/ui/form/Toggle";
-import Box from "./ui/Box";
 import {
   GameMachineContext,
   useGameContext
@@ -13,6 +11,10 @@ import { entries } from "remeda";
 import services from "@/data/services";
 import { activeManager } from "@/machines/selectors";
 import Markdown from "@/components/Markdown";
+import Stack from "@/components/ui/Stack";
+import Heading from "@/components/ui/Heading";
+import Box from "@/components/ui/Box";
+import Cluster from "@/components/ui/Cluster";
 
 const Services = () => {
   const manager = useGameContext(activeManager);
@@ -26,15 +28,15 @@ const Services = () => {
       stickyMenu={<StickyMenu back />}
       managerInfo={<ManagerInfo details />}
     >
-      <Box p="md">
-        <h2>Erikoistoimenpiteet</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Erikoistoimenpiteet</Heading>
 
-        <div className={styles.servicesList}>
+        <Stack gap="md">
           {entries(services).map(([key, service]) => {
             const basePrice = basePrices[key];
             return (
-              <div key={key}>
-                <div>
+              <Box key={key}>
+                <Cluster>
                   <Toggle
                     id={key}
                     checked={manager.services[key]}
@@ -45,19 +47,21 @@ const Services = () => {
                       });
                     }}
                   />
-                  <label htmlFor={key}>
-                    <strong>{service.name}</strong>
-                  </label>
-                </div>
+                  <Box>
+                    <label htmlFor={key}>
+                      <strong>{service.name}</strong>
+                    </label>
+                  </Box>
+                </Cluster>
 
                 <Markdown>
                   {service.description(service.price(basePrice, manager))}
                 </Markdown>
-              </div>
+              </Box>
             );
           })}
-        </div>
-      </Box>
+        </Stack>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

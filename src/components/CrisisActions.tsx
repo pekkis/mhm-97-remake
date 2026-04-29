@@ -3,7 +3,8 @@ import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import Calendar from "./ui/Calendar";
-import Box from "./ui/Box";
+import Heading from "@/components/ui/Heading";
+import Stack from "@/components/ui/Stack";
 import Paragraph from "./ui/Paragraph";
 import {
   GameMachineContext,
@@ -30,8 +31,8 @@ const CrisisActions = () => {
       stickyMenu={<StickyMenu back />}
       managerInfo={<ManagerInfo details />}
     >
-      <Box p="md">
-        <h2>Kriisipalaveri</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Kriisipalaveri</Heading>
 
         <Calendar
           when={(c) => c.crisisMeeting}
@@ -42,25 +43,27 @@ const CrisisActions = () => {
             </Paragraph>
           }
         >
-          <Paragraph>
-            Kriisipalaveri auttaa joukkuetta unohtamaan tappioputken ja
-            keskittymään tulevaan. Se maksaa {c(crisisInfo.amount)}.
-          </Paragraph>
+          <Stack gap="md">
+            <Paragraph>
+              Kriisipalaveri auttaa joukkuetta unohtamaan tappioputken ja
+              keskittymään tulevaan. Se maksaa {c(crisisInfo.amount)}.
+            </Paragraph>
 
-          <Button
-            block
-            disabled={!canDo}
-            onClick={() =>
-              gameActor.send({
-                type: "CRISIS_MEETING",
-                payload: { manager: manager.id }
-              })
-            }
-          >
-            Pidä kriisipalaveri
-          </Button>
+            <Button
+              block
+              disabled={!canDo}
+              onClick={() =>
+                gameActor.send({
+                  type: "CRISIS_MEETING",
+                  payload: { manager: manager.id }
+                })
+              }
+            >
+              Pidä kriisipalaveri
+            </Button>
+          </Stack>
         </Calendar>
-      </Box>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

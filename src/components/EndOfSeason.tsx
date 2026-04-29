@@ -4,7 +4,8 @@ import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import Season from "./data/Season";
 import Announcements from "./events/Announcements";
 
-import Box from "./ui/Box";
+import Heading from "@/components/ui/Heading";
+import Stack from "@/components/ui/Stack";
 import { useGameContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
 
@@ -16,17 +17,17 @@ const EndOfSeason = () => {
 
   return (
     <AdvancedHeaderedPage stickyMenu={<StickyMenu forward="Seuraava kausi" />}>
-      <Box p="md">
-        <h2>
+      <Stack gap="lg">
+        <Heading level={2}>
           Kausi <Season long index={turn.season} />
-        </h2>
+        </Heading>
 
         <Announcements
           announcements={announcements[manager.id.toString()] || []}
         />
 
         <News manager={manager} news={news} />
-      </Box>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

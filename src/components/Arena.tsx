@@ -1,7 +1,6 @@
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
-import Cluster from "./ui/Cluster";
 import Button from "./ui/Button";
 import arenas from "@/data/arenas";
 import clsx from "clsx";
