@@ -5,6 +5,7 @@ import Heading from "@/components/ui/Heading";
 import Stack from "@/components/ui/Stack";
 import Paragraph from "./ui/Paragraph";
 import { useGameContext } from "@/context/game-machine-context";
+import Box from "@/components/ui/Box";
 
 /*
 IF tuurix(tux) > 15 THEN COLOR 13, 0: PRINT lw(tux); " pelasi koko turnauksen ajan todella suurella syd\"mell\"!": franko = franko + 1
@@ -24,26 +25,26 @@ const WorldChampionships = () => {
           {results
             .filter((e) => e.luck > 0)
             .map((e) => (
-              <Paragraph key={e.id}>
+              <Box key={e.id}>
                 <strong>{e.name}</strong> pelasi koko turnauksen ajan todella
                 suurella sydämellä!
-              </Paragraph>
+              </Box>
             ))}
           {results
             .filter((e) => e.luck < 0)
             .map((e) => (
-              <Paragraph key={e.id}>
+              <Box key={e.id}>
                 <strong>{e.name}</strong> kärsi koko turnauksen ajan suurista
                 ongelmista!
-              </Paragraph>
+              </Box>
             ))}
-        </Stack>
 
-        <ol>
-          {results.map((entry) => (
-            <li key={entry.id}>{entry.name}</li>
-          ))}
-        </ol>
+          <ol>
+            {results.map((entry) => (
+              <li key={entry.id}>{entry.name}</li>
+            ))}
+          </ol>
+        </Stack>
       </Stack>
     </AdvancedHeaderedPage>
   );

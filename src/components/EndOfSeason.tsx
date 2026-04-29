@@ -22,11 +22,13 @@ const EndOfSeason = () => {
           Kausi <Season long index={turn.season} />
         </Heading>
 
-        <Announcements
-          announcements={announcements[manager.id.toString()] || []}
-        />
+        <Stack>
+          <Announcements
+            announcements={announcements[manager.id.toString()] || []}
+          />
 
-        <News manager={manager} news={news} />
+          <News manager={manager} news={news} />
+        </Stack>
       </Stack>
     </AdvancedHeaderedPage>
   );

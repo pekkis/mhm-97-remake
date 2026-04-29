@@ -35,7 +35,7 @@ const suddenDeath: DeclarativeEvent<SuddenDeathData> = {
 
   render: (data) => {
     const lines = [
-      `Kaikki pelaajasi ovat saaneet surmansa lento-onnettomuudessa! Johtokunta kehottaa sinua etsimään uusia kiekkoilijoita`
+      `Kaikki pelaajasi ovat saaneet surmansa lento-onnettomuudessa! Johtokunta kehottaa sinua etsimään uusia kiekkoilijoita.`
     ];
     if (!data.resolved) {
       return lines;

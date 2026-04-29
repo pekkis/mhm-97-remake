@@ -1,4 +1,6 @@
 import Markdown from "@/components/Markdown";
+import Box from "@/components/ui/Box";
+import Stack from "@/components/ui/Stack";
 import type { FC } from "react";
 
 type NewsProps = {
@@ -8,15 +10,15 @@ type NewsProps = {
 
 const News: FC<NewsProps> = ({ news }) => {
   return (
-    <div>
+    <Stack>
       {news.map((n, i) => {
         return (
-          <div key={i}>
+          <Box key={i}>
             <Markdown>{n}</Markdown>
-          </div>
+          </Box>
         );
       })}
-    </div>
+    </Stack>
   );
 };
 

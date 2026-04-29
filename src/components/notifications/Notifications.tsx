@@ -9,8 +9,6 @@ const Notifications = () => {
     (s) => s.context.notifications
   );
 
-  console.log("NOTIFICATIONS", notifications);
-
   return (
     <div className={styles.notifications}>
       {notifications.toReversed().map((ref) => (
