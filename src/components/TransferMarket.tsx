@@ -10,7 +10,6 @@ import ManagerInfo from "./ManagerInfo";
 import Box from "./ui/Box";
 import Paragraph from "./ui/Paragraph";
 import Tabs from "./ui/Tabs";
-import Tab from "./ui/Tab";
 import {
   GameMachineContext,
   useGameContext
@@ -42,62 +41,72 @@ const TransferMarket = () => {
             </Paragraph>
           }
         >
-          <Tabs selected={tab} onSelect={setTab}>
-            <Tab title="Osta pelaajia">
-              <Stack>
-                {playerTypes.map((playerType, index) => {
-                  return (
-                    <Button
-                      key={index}
-                      onClick={() =>
-                        gameActor.send({
-                          type: "BUY_PLAYER",
-                          payload: {
-                            manager: manager.id,
-                            playerType: index
+          <Tabs
+            selected={tab}
+            onSelect={setTab}
+            items={[
+              {
+                title: "Osta pelaajia",
+                content: (
+                  <Stack>
+                    {playerTypes.map((playerType, index) => {
+                      return (
+                        <Button
+                          key={index}
+                          onClick={() =>
+                            gameActor.send({
+                              type: "BUY_PLAYER",
+                              payload: {
+                                manager: manager.id,
+                                playerType: index
+                              }
+                            })
                           }
-                        })
-                      }
-                      block
-                      disabled={balance < playerType.buy}
-                    >
-                      <div>{playerType.description}</div>
-                      <div>
-                        <strong>{currency(playerType.buy)}</strong>
-                      </div>
-                    </Button>
-                  );
-                })}
-              </Stack>
-            </Tab>
-            <Tab title="Myy pelaajia">
-              <Stack>
-                {playerTypes.map((playerType, index) => {
-                  return (
-                    <Button
-                      key={index}
-                      onClick={() =>
-                        gameActor.send({
-                          type: "SELL_PLAYER",
-                          payload: {
-                            manager: manager.id,
-                            playerType: index
+                          block
+                          disabled={balance < playerType.buy}
+                        >
+                          <div>{playerType.description}</div>
+                          <div>
+                            <strong>{currency(playerType.buy)}</strong>
+                          </div>
+                        </Button>
+                      );
+                    })}
+                  </Stack>
+                )
+              },
+              {
+                title: "Myy pelaajia",
+                content: (
+                  <Stack>
+                    {playerTypes.map((playerType, index) => {
+                      return (
+                        <Button
+                          key={index}
+                          onClick={() =>
+                            gameActor.send({
+                              type: "SELL_PLAYER",
+                              payload: {
+                                manager: manager.id,
+                                playerType: index
+                              }
+                            })
                           }
-                        })
-                      }
-                      block
-                      disabled={!canSell}
-                    >
-                      <div>{playerType.description}</div>
-                      <div>
-                        <strong>{currency(playerType.sell)}</strong>
-                      </div>
-                    </Button>
-                  );
-                })}
-              </Stack>
-            </Tab>
-          </Tabs>
+                          block
+                          disabled={!canSell}
+                        >
+                          <div>{playerType.description}</div>
+                          <div>
+                            <strong>{currency(playerType.sell)}</strong>
+                          </div>
+                        </Button>
+                      );
+                    })}
+                  </Stack>
+                )
+              }
+            ]}
+          />
         </Calendar>
       </Box>
     </AdvancedHeaderedPage>

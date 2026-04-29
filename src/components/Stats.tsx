@@ -6,7 +6,6 @@ import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 
 import Box from "./ui/Box";
 import Tabs from "./ui/Tabs";
-import Tab from "./ui/Tab";
 
 import ManagerStats from "./stats/ManagerStats";
 import TeamStats from "./stats/TeamStats";
@@ -30,20 +29,29 @@ const Stats = () => {
       <Box p="md">
         <h2>Tilastot</h2>
 
-        <Tabs selected={tab} onSelect={setTab}>
-          <Tab title="Joukkueet">
-            <TeamStats teams={teams} stats={stats} countries={countries} />
-          </Tab>
-
-          <Tab title="Manageri">
-            <ManagerStats
-              manager={manager}
-              competitions={competitions}
-              stats={stats}
-              teams={teams}
-            />
-          </Tab>
-        </Tabs>
+        <Tabs
+          selected={tab}
+          onSelect={setTab}
+          items={[
+            {
+              title: "Joukkueet",
+              content: (
+                <TeamStats teams={teams} stats={stats} countries={countries} />
+              )
+            },
+            {
+              title: "Manageri",
+              content: (
+                <ManagerStats
+                  manager={manager}
+                  competitions={competitions}
+                  stats={stats}
+                  teams={teams}
+                />
+              )
+            }
+          ]}
+        />
       </Box>
     </AdvancedHeaderedPage>
   );

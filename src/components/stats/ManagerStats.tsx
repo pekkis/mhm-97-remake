@@ -1,6 +1,5 @@
 import { useState, type FC } from "react";
 import Tabs from "@/components/ui/Tabs";
-import Tab from "@/components/ui/Tab";
 import { Table, Td, Th } from "@/components/ui/Table";
 import Story from "./Story";
 import type { Team } from "@/state/game";
@@ -28,67 +27,75 @@ const ManagerStats: FC<ManagerStatsProps> = ({
   );
 
   return (
-    <div>
-      <Tabs selected={tab} onSelect={setTab}>
-        <Tab title="Kausi kaudelta">
-          {managersStories
-            .map((story, seasonIndex) => {
-              return (
-                <Story
-                  key={seasonIndex}
-                  season={seasonIndex}
-                  story={story}
-                  teams={teams}
-                  competitions={competitions}
-                />
-              );
-            })
-            .toReversed()}
-        </Tab>
-        <Tab title="Ura numeroina">
-          <div>
-            {(["phl", "division", "ehl"] as const)
-              .map((c) => competitions[c])
-              .map((c) => {
-                const stat = stats.managers?.[manager.id]?.games?.[c.id]?.[
-                  "0"
-                ] ?? {
-                  win: 0,
-                  draw: 0,
-                  loss: 0
-                };
+    <Tabs
+      selected={tab}
+      onSelect={setTab}
+      items={[
+        {
+          title: "Kausi kaudelta",
+          content: (
+            <>
+              {managersStories
+                .map((story, seasonIndex) => (
+                  <Story
+                    key={seasonIndex}
+                    season={seasonIndex}
+                    story={story}
+                    teams={teams}
+                    competitions={competitions}
+                  />
+                ))
+                .toReversed()}
+            </>
+          )
+        },
+        {
+          title: "Ura numeroina",
+          content: (
+            <div>
+              {(["phl", "division", "ehl"] as const)
+                .map((c) => competitions[c])
+                .map((c) => {
+                  const stat = stats.managers?.[manager.id]?.games?.[c.id]?.[
+                    "0"
+                  ] ?? {
+                    win: 0,
+                    draw: 0,
+                    loss: 0
+                  };
 
-                return (
-                  <div key={c.id}>
-                    <h3>{c.name}</h3>
+                  return (
+                    <div key={c.id}>
+                      <h3>{c.name}</h3>
 
-                    <Table>
-                      <tbody>
-                        <tr>
-                          <Th>Otteluita</Th>
-                          <Td>{stat.win + stat.draw + stat.loss}</Td>
-                        </tr>
-                        <tr>
-                          <Th>Voittoja</Th>
-                          <Td>{stat.win}</Td>
-                        </tr>
-                        <tr>
-                          <Th>Tasapelejä</Th>
-                          <Td>{stat.draw}</Td>
-                        </tr>
-                        <tr>
-                          <Th>Tappioita</Th>
-                          <Td>{stat.loss}</Td>
-                        </tr>
-                      </tbody>
-                    </Table>
-                  </div>
-                );
-              })}
-          </div>
-        </Tab>
-      </Tabs>
-    </div>
+                      <Table>
+                        <tbody>
+                          <tr>
+                            <Th>Otteluita</Th>
+                            <Td>{stat.win + stat.draw + stat.loss}</Td>
+                          </tr>
+                          <tr>
+                            <Th>Voittoja</Th>
+                            <Td>{stat.win}</Td>
+                          </tr>
+                          <tr>
+                            <Th>Tasapelejä</Th>
+                            <Td>{stat.draw}</Td>
+                          </tr>
+                          <tr>
+                            <Th>Tappioita</Th>
+                            <Td>{stat.loss}</Td>
+                          </tr>
+                        </tbody>
+                      </Table>
+                    </div>
+                  );
+                })}
+            </div>
+          )
+        }
+      ]}
+    />
   );
 };
 
