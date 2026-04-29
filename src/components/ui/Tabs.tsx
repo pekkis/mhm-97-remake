@@ -60,7 +60,9 @@ const Tabs: FC<TabsProps> = ({ items, selected, onSelect, className }) => {
         </div>
 
         {items.map((item, index) => {
-          if (!visited.current.has(index)) return null;
+          if (!visited.current.has(index)) {
+            return null;
+          }
           const isActive = index === safeSelected;
           return (
             <Activity key={index} mode={isActive ? "visible" : "hidden"}>

@@ -5,6 +5,7 @@ import Paragraph from "@/components/ui/Paragraph";
 import pranks from "@/game/pranks";
 import type { Team } from "@/state/game";
 import type { Manager } from "@/state/manager";
+import Box from "@/components/ui/Box";
 
 type ConfirmPrankProps = {
   cancel: () => void;
@@ -24,16 +25,16 @@ const ConfirmPrank: FC<ConfirmPrankProps> = ({
   const prankInfo = pranks[prank.type];
 
   return (
-    <div>
-      <Paragraph>
+    <Stack>
+      <Box>
         <strong>Jäynä: </strong>
         {prankInfo.name}
-      </Paragraph>
+      </Box>
 
-      <Paragraph>
+      <Box>
         <strong>Uhri: </strong>
         {teams[prank.victim]?.name}
-      </Paragraph>
+      </Box>
 
       <Stack>
         <Button
@@ -55,7 +56,7 @@ const ConfirmPrank: FC<ConfirmPrankProps> = ({
           Peruuta
         </Button>
       </Stack>
-    </div>
+    </Stack>
   );
 };
 

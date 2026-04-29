@@ -13,6 +13,8 @@ import {
   useGameContext
 } from "@/context/game-machine-context";
 import { activeManager, canImproveArena } from "@/machines/selectors";
+import Stack from "@/components/ui/Stack";
+import Heading from "@/components/ui/Heading";
 
 const Arenas = () => {
   const manager = useGameContext(activeManager);
@@ -27,30 +29,32 @@ const Arenas = () => {
       stickyMenu={<StickyMenu back />}
       managerInfo={<ManagerInfo details />}
     >
-      <Box p="md">
-        <h2>Areena</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Areena</Heading>
 
-        <div>
-          <h3>Areenasi sijoitus areenahierarkiassa:</h3>
+        <Stack gap="md">
+          <Heading level={3}>Areenasi sijoitus areenahierarkiassa:</Heading>
 
-          {arenas
-            .map((arena, level) => {
-              return (
-                <div
-                  className={clsx(
-                    styles.arenaRow,
-                    level === currentLevel && styles.arenaRowCurrent
-                  )}
-                  key={arena.id}
-                >
-                  {arena.name}
-                </div>
-              );
-            })
-            .toReversed()}
-        </div>
+          <Box>
+            {arenas
+              .map((arena, level) => {
+                return (
+                  <div
+                    className={clsx(
+                      styles.arenaRow,
+                      level === currentLevel && styles.arenaRowCurrent
+                    )}
+                    key={arena.id}
+                  >
+                    {arena.name}
+                  </div>
+                );
+              })
+              .toReversed()}
+          </Box>
+        </Stack>
 
-        <Cluster gap="md">
+        <Box>
           {nextLevel && (
             <Button
               block
@@ -62,12 +66,14 @@ const Arenas = () => {
                 })
               }
             >
-              <div>Paranna halliolosuhteitasi</div>
-              <div>{currency(nextLevel.price)}</div>
+              <Box>Paranna halliolosuhteitasi</Box>
+              <Box>
+                <strong>{currency(nextLevel.price)}</strong>
+              </Box>
             </Button>
           )}
-        </Cluster>
-      </Box>
+        </Box>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

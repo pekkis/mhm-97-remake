@@ -9,6 +9,8 @@ import {
   useGameContext
 } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
+import Stack from "@/components/ui/Stack";
+import Heading from "@/components/ui/Heading";
 
 const Betting = () => {
   const turn = useGameContext((ctx) => ctx.turn);
@@ -22,24 +24,31 @@ const Betting = () => {
       stickyMenu={<StickyMenu back />}
       managerInfo={<ManagerInfo details />}
     >
-      <Box p="md">
-        <h2>Kavioveikkaus</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Kavioveikkaus</Heading>
 
-        <Paragraph>Puuppa.</Paragraph>
+        <Box>
+          <Paragraph>
+            Pekkalandiassa rahapelejä on aina pyörittänyt, ja tulee aina
+            pyörittämään, monopoliyhtiö <strong>Arvaus</strong>. Pelivalikoima
+            on kapea, kertoimet huonoja. Tässä viikon kavioveikkauskuponki.
+            Onnea matkaan. Kansan terveydelle!
+          </Paragraph>
 
-        <BettingForm
-          turn={turn}
-          teams={teams}
-          manager={manager}
-          bet={(coupon: string[], amount: number) =>
-            actor.send({
-              type: "PLACE_BET",
-              payload: { manager: manager.id, coupon, amount }
-            })
-          }
-          competition={competition}
-        />
-      </Box>
+          <BettingForm
+            turn={turn}
+            teams={teams}
+            manager={manager}
+            bet={(coupon: string[], amount: number) =>
+              actor.send({
+                type: "PLACE_BET",
+                payload: { manager: manager.id, coupon, amount }
+              })
+            }
+            competition={competition}
+          />
+        </Box>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

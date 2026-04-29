@@ -25,12 +25,6 @@ const StickyMenu: FC<Props> = ({
 
   const navigate = useNavigate();
 
-  console.log({
-    back,
-    menu,
-    forward
-  });
-
   return (
     <Box p="md">
       <Stack direction="row">

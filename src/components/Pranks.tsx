@@ -16,6 +16,8 @@ import {
 import { useMachine } from "@xstate/react";
 import { prankSelectionMachine } from "@/machines/prankSelection";
 import { activeManager, canOrderPrank } from "@/machines/selectors";
+import Stack from "@/components/ui/Stack";
+import Heading from "@/components/ui/Heading";
 
 const Pranks = () => {
   const manager = useGameContext(activeManager);
@@ -35,67 +37,69 @@ const Pranks = () => {
       stickyMenu={<StickyMenu back />}
       managerInfo={<ManagerInfo details />}
     >
-      <Box p="md">
-        <Calendar
-          when={(c) => c.pranks}
-          fallback={
-            <Paragraph>Jäynät on tältä kaudelta jäynäytetty.</Paragraph>
-          }
-        >
-          <h2>Jäynät</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Jäynät</Heading>
 
-          {!canDo && (
-            <Paragraph>
-              Olet jo jäynäyttänyt {manager.pranksExecuted} kertaa tällä
-              kaudella. Nähdään ensi vuonna!
-            </Paragraph>
-          )}
+        <Stack>
+          <Calendar
+            when={(c) => c.pranks}
+            fallback={
+              <Paragraph>Jäynät on tältä kaudelta jäynäytetty.</Paragraph>
+            }
+          >
+            {!canDo && (
+              <Paragraph>
+                Olet jo jäynäyttänyt {manager.pranksExecuted} kertaa tällä
+                kaudella. Nähdään ensi vuonna!
+              </Paragraph>
+            )}
 
-          {state.matches("idle") && (
-            <SelectType
-              manager={manager}
-              enabled={canDo}
-              competition={targetCompetition.name}
-              selectType={(id: string) =>
-                send({ type: "SELECT_TYPE", prankType: id })
-              }
-              cancel={() => send({ type: "CANCEL" })}
-            />
-          )}
+            {state.matches("idle") && (
+              <SelectType
+                manager={manager}
+                enabled={canDo}
+                competition={targetCompetition.name}
+                selectType={(id: string) =>
+                  send({ type: "SELECT_TYPE", prankType: id })
+                }
+                cancel={() => send({ type: "CANCEL" })}
+              />
+            )}
 
-          {state.matches("typeSelected") && (
-            <SelectVictim
-              manager={manager}
-              prank={state.context}
-              competition={targetCompetition}
-              teams={teams}
-              selectVictim={(id: number) =>
-                send({ type: "SELECT_VICTIM", victim: id })
-              }
-              cancel={() => send({ type: "CANCEL" })}
-            />
-          )}
+            {state.matches("typeSelected") && (
+              <SelectVictim
+                manager={manager}
+                prank={state.context}
+                competition={targetCompetition}
+                teams={teams}
+                selectVictim={(id: number) =>
+                  send({ type: "SELECT_VICTIM", victim: id })
+                }
+                cancel={() => send({ type: "CANCEL" })}
+              />
+            )}
 
-          {state.matches("victimSelected") && (
-            <ConfirmPrank
-              manager={manager}
-              prank={{
-                type: state.context.type!,
-                victim: state.context.victim!
-              }}
-              execute={(m: string, t: string, v: number) => {
-                gameActor.send({
-                  type: "ORDER_PRANK",
-                  payload: { manager: m, type: t, victim: v }
-                });
-                send({ type: "ORDER" });
-              }}
-              teams={teams}
-              cancel={() => send({ type: "CANCEL" })}
-            />
-          )}
-        </Calendar>
-      </Box>
+            {state.matches("victimSelected") && (
+              <ConfirmPrank
+                manager={manager}
+                prank={{
+                  type: state.context.type!,
+                  victim: state.context.victim!
+                }}
+                execute={(m: string, t: string, v: number) => {
+                  gameActor.send({
+                    type: "ORDER_PRANK",
+                    payload: { manager: m, type: t, victim: v }
+                  });
+                  send({ type: "ORDER" });
+                }}
+                teams={teams}
+                cancel={() => send({ type: "CANCEL" })}
+              />
+            )}
+          </Calendar>
+        </Stack>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

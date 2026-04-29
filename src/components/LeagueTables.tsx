@@ -1,47 +1,54 @@
-import Table from "./league-table/LeagueTable";
+import { useState } from "react";
+import { values } from "remeda";
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
-import Box from "./ui/Box";
+import Box from "@/components/ui/Box";
+import Heading from "@/components/ui/Heading";
+import Stack from "@/components/ui/Stack";
+import Tabs, { type TabItem } from "@/components/ui/Tabs";
+import LeagueTable from "@/components/league-table/LeagueTable";
 import { useGameContext } from "@/context/game-machine-context";
-import { values } from "remeda";
+import ManagerInfo from "@/components/ManagerInfo";
 
 const LeagueTables = () => {
   const managers = useGameContext((ctx) => ctx.manager.managers);
   const teams = useGameContext((ctx) => ctx.teams);
   const competitions = useGameContext((ctx) => ctx.competitions);
 
-  console.log({ teams, managers, competitions });
+  const [tab, setTab] = useState(0);
+
+  const items: TabItem[] = values(competitions)
+    .filter((c) => c.phase >= 0)
+    .map((c) => {
+      const groups = c.phases[0].groups;
+      return {
+        title: c.name,
+        content: () => (
+          <Stack gap="md">
+            {groups.map((group, i) => (
+              <Stack key={i} gap="sm">
+                {<Heading level={3}>{group.name}</Heading>}
+                <LeagueTable
+                  division={group}
+                  managers={managers}
+                  teams={teams}
+                />
+              </Stack>
+            ))}
+          </Stack>
+        )
+      };
+    });
 
   return (
-    <AdvancedHeaderedPage stickyMenu={<StickyMenu back />}>
-      <Box p="md">
-        <h2>Sarjataulukot</h2>
-
-        {values(competitions)
-          .filter((c) => c.phase >= 0)
-          .map((c) => {
-            const phase = c.phases[0];
-            const groups = phase.groups;
-
-            return (
-              <div key={c.id}>
-                <h3>{c.name}</h3>
-                {groups.map((group, i) => {
-                  return (
-                    <div key={i}>
-                      <h4>{group.name}</h4>
-                      <Table
-                        division={group}
-                        managers={managers}
-                        teams={teams}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-      </Box>
+    <AdvancedHeaderedPage
+      stickyMenu={<StickyMenu back />}
+      managerInfo={<ManagerInfo details />}
+    >
+      <Stack gap="lg">
+        <Heading level={2}>Sarjataulukot</Heading>
+        <Tabs items={items} selected={tab} onSelect={setTab} />
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

@@ -15,6 +15,7 @@ import {
   useGameContext
 } from "@/context/game-machine-context";
 import { activeManager, canSellPlayer } from "@/machines/selectors";
+import Heading from "@/components/ui/Heading";
 
 const TransferMarket = () => {
   const manager = useGameContext(activeManager);
@@ -29,8 +30,8 @@ const TransferMarket = () => {
       stickyMenu={<StickyMenu back />}
       managerInfo={<ManagerInfo details />}
     >
-      <Box p="md">
-        <h2>Pelaajamarkkinat</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Pelaajamarkkinat</Heading>
 
         <Calendar
           when={(c) => c.transferMarket}
@@ -65,10 +66,10 @@ const TransferMarket = () => {
                           block
                           disabled={balance < playerType.buy}
                         >
-                          <div>{playerType.description}</div>
-                          <div>
-                            <strong>{currency(playerType.buy)}</strong>
-                          </div>
+                          <Box>{playerType.description}</Box>
+                          <Box>
+                            <Box>{currency(playerType.buy)}</Box>
+                          </Box>
                         </Button>
                       );
                     })}
@@ -95,10 +96,10 @@ const TransferMarket = () => {
                           block
                           disabled={!canSell}
                         >
-                          <div>{playerType.description}</div>
-                          <div>
+                          <Box>{playerType.description}</Box>
+                          <Box>
                             <strong>{currency(playerType.sell)}</strong>
-                          </div>
+                          </Box>
                         </Button>
                       );
                     })}
@@ -108,7 +109,7 @@ const TransferMarket = () => {
             ]}
           />
         </Calendar>
-      </Box>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

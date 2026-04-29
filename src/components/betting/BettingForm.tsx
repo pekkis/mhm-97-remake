@@ -8,6 +8,8 @@ import type { Team } from "@/state/game";
 import type { Manager } from "@/state/manager";
 import type { Competition } from "@/types/competitions";
 import { entries } from "remeda";
+import Stack from "@/components/ui/Stack";
+import Box from "@/components/ui/Box";
 
 type BettingFormValues = {
   "0": string;
@@ -62,68 +64,78 @@ const BettingForm: FC<BettingFormProps> = ({ competition, teams, bet }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {pairings.map((pairing, i) => {
-        const name = i.toString() as keyof BettingFormValues;
-        return (
-          <div key={i}>
-            <div>
-              <TeamName team={teams[group.teams[pairing.home]]} /> -{" "}
-              <TeamName team={teams[group.teams[pairing.away]]} />
-            </div>
-            <div>
-              <label>
-                <input
-                  type="radio"
-                  value="1"
-                  {...register(name, { required: true })}
-                />{" "}
-                1
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  value="x"
-                  {...register(name, { required: true })}
-                />{" "}
-                x
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  value="2"
-                  {...register(name, { required: true })}
-                />{" "}
-                2
-              </label>
-            </div>
-          </div>
-        );
-      })}
+      <Stack gap="md">
+        <Stack gap="sm">
+          {pairings.map((pairing, i) => {
+            const name = i.toString() as keyof BettingFormValues;
+            return (
+              <div key={i}>
+                <div>
+                  <TeamName team={teams[group.teams[pairing.home]]} /> -{" "}
+                  <TeamName team={teams[group.teams[pairing.away]]} />
+                </div>
+                <div>
+                  <label>
+                    <input
+                      type="radio"
+                      value="1"
+                      {...register(name, { required: true })}
+                    />{" "}
+                    1
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      value="x"
+                      {...register(name, { required: true })}
+                    />{" "}
+                    x
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      value="2"
+                      {...register(name, { required: true })}
+                    />{" "}
+                    2
+                  </label>
+                </div>
+              </div>
+            );
+          })}
+        </Stack>
 
-      <div>
-        <Controller
-          name="amount"
-          control={control}
-          render={({ field }) => (
-            <Slider
-              min={10000}
-              max={1000000}
-              step={10000}
-              value={field.value}
-              onChange={field.onChange}
+        <Stack direction="row">
+          <Box flex="1">
+            <Controller
+              name="amount"
+              control={control}
+              render={({ field }) => (
+                <Slider
+                  min={10000}
+                  max={1000000}
+                  step={10000}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
             />
-          )}
-        />
-        <strong>{a(values.amount)}</strong> pekkaa
-      </div>
+          </Box>
+          <Box>
+            <strong>{a(values.amount)}</strong> pekkaa
+          </Box>
+        </Stack>
 
-      <Button
-        disabled={entries(values).some(([k, v]) => k !== "amount" && v === "")}
-        block
-        type="submit"
-      >
-        Veikkaa
-      </Button>
+        <Button
+          disabled={entries(values).some(
+            ([k, v]) => k !== "amount" && v === ""
+          )}
+          block
+          type="submit"
+        >
+          Veikkaa
+        </Button>
+      </Stack>{" "}
     </form>
   );
 };
