@@ -2,9 +2,12 @@ import calendar from "@/data/calendar";
 import Table from "./league-table/LeagueTable";
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
-import Results from "./gameday/Results";
+import Games from "./gameday/Games";
 import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
+import Heading from "@/components/ui/Heading";
+import Stack from "@/components/ui/Stack";
+import Results from "@/components/gameday/Results";
 
 const GamedayResults = () => {
   const turn = useGameContext((ctx) => ctx.turn);
@@ -20,22 +23,22 @@ const GamedayResults = () => {
 
   return (
     <AdvancedHeaderedPage stickyMenu={<StickyMenu />}>
-      <Box p="md">
-        <h2>Tulokset</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Pelipäivä</Heading>
 
         {currentCompetitions.map((competition) => {
           const currentPhase = competition.phases[competition.phase];
 
           return (
-            <div key={competition.name}>
+            <Stack key={competition.name} gap="md">
               {currentPhase.groups.map((group, groupIndex) => {
                 const currentRound = group.round - 1;
 
                 return (
-                  <div key={groupIndex}>
-                    <h3>
+                  <Stack key={groupIndex}>
+                    <Heading level={3}>
                       {competition.name}, {group.name} [{currentRound}]
-                    </h3>
+                    </Heading>
 
                     <Results
                       teams={teams}
@@ -45,23 +48,21 @@ const GamedayResults = () => {
                     />
 
                     {currentPhase.type === "tournament" && (
-                      <div>
+                      <Box>
                         <Table
                           division={group}
                           managers={managers}
                           teams={teams}
                         />
-                      </div>
+                      </Box>
                     )}
-
-                    <div />
-                  </div>
+                  </Stack>
                 );
               })}
-            </div>
+            </Stack>
           );
         })}
-      </Box>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

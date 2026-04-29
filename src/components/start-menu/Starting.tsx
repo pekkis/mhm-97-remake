@@ -1,5 +1,4 @@
 import ManagerForm from "@/components/start-menu/ManagerForm";
-import Box from "@/components/ui/Box";
 import { AppMachineContext } from "@/context/app-machine-context";
 import type { FC } from "react";
 

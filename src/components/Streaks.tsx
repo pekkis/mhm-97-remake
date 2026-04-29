@@ -1,6 +1,9 @@
 import { entries } from "remeda";
 import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
+import Heading from "@/components/ui/Heading";
+import Stack from "@/components/ui/Stack";
+import PhaseStatusPhase from "@/components/context-sensitive/PhaseStatusPhase";
 
 const humanReadables: Record<string, string> = {
   loss: "tappiota",
@@ -25,16 +28,17 @@ const Streaks = ({ competition, team }: StreaksProps) => {
   }
 
   return (
-    <Box my="md">
-      <h4>Putket</h4>
-      {filtered.map(([key, s]) => {
-        return (
-          <div key={key}>
-            <strong>{s}</strong> {humanReadables[key]} putkeen.
-          </div>
-        );
-      })}
-    </Box>
+    <PhaseStatusPhase heading="Putket">
+      <Box>
+        {filtered.map(([key, s]) => {
+          return (
+            <Box key={key}>
+              <strong>{s}</strong> {humanReadables[key]} putkeen.
+            </Box>
+          );
+        })}
+      </Box>
+    </PhaseStatusPhase>
   );
 };
 

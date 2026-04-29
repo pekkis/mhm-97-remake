@@ -8,6 +8,7 @@ import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 import { activeManager, interestingCompetitions } from "@/machines/selectors";
 import AdvancedHeaderedPage from "@/components/ui/AdvancedHeaderedPage";
+import Stack from "@/components/ui/Stack";
 
 const MainMenu = () => {
   const manager = useGameContext(activeManager);
@@ -20,7 +21,7 @@ const MainMenu = () => {
       stickyMenu={<StickyMenu menu forward={<Forward />} />}
       managerInfo={<ManagerInfo details />}
     >
-      <Box>
+      <Stack gap="lg">
         <Current />
 
         <Situation
@@ -29,7 +30,7 @@ const MainMenu = () => {
           interesting={interesting}
           teams={teams}
         />
-      </Box>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

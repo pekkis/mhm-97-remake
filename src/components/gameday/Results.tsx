@@ -19,25 +19,23 @@ const Results: FC<ResultsProps> = ({ teams, context, round, managers }) => {
   });
 
   return (
-    <Box my="md">
-      <Table>
-        <tbody>
-          {pairings.map((pairing, i) => (
-            <MatchRow
-              key={i}
-              home={teams[context.teams[pairing.home]]}
-              away={teams[context.teams[pairing.away]]}
-              score={
-                pairing.result
-                  ? `${pairing.result.home}–${pairing.result.away}`
-                  : undefined
-              }
-              managers={managers}
-            />
-          ))}
-        </tbody>
-      </Table>
-    </Box>
+    <Table>
+      <tbody>
+        {pairings.map((pairing, i) => (
+          <MatchRow
+            key={i}
+            home={teams[context.teams[pairing.home]]}
+            away={teams[context.teams[pairing.away]]}
+            score={
+              pairing.result
+                ? `${pairing.result.home}–${pairing.result.away}`
+                : undefined
+            }
+            managers={managers}
+          />
+        ))}
+      </tbody>
+    </Table>
   );
 };
 

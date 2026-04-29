@@ -17,9 +17,12 @@ const AdvancedHeaderedPage: FC<Props> = ({
   return (
     <Box className={styles.root}>
       {managerInfo}
-      <Box className={styles.content}>
-        <Centerer>{children}</Centerer>
+      <Box className={styles.content} my="md">
+        <Centerer>
+          <Box px="md">{children}</Box>
+        </Centerer>
       </Box>
+
       {stickyMenu && <div className={styles.stickyMenu}>{stickyMenu}</div>}
     </Box>
   );
