@@ -112,7 +112,7 @@ export const vars = createGlobalTheme(":root", {
     bold: "700"
   },
   fontFamily: {
-    body: "'Maven Pro', sans-serif",
+    body: "'IBM Plex Sans Variable', sans-serif",
     mono: "ui-monospace, 'SF Mono', Menlo, Consolas, monospace"
   },
   shadow: {

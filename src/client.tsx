@@ -1,3 +1,4 @@
+import "@fontsource-variable/ibm-plex-sans/index.css";
 import { createRoot } from "react-dom/client";
 import Root from "./Root";
 import { StrictMode } from "react";

@@ -1,7 +1,8 @@
 import type { FC } from "react";
 import competitionTypes from "@/services/competition-type";
-import Game from "./Game";
 import Box from "@/components/ui/Box";
+import { Table } from "@/components/ui/Table";
+import MatchRow from "@/components/team/MatchRow";
 import type { Team } from "@/state/game";
 import type { Manager } from "@/state/manager";
 import type { Group } from "@/types/competitions";
@@ -21,17 +22,24 @@ const Games: FC<GamesProps> = ({ teams, context, round, managers }) => {
 
   return (
     <Box my="md">
-      {pairings.map((pairing, i) => {
-        return (
-          <Game
-            key={i}
-            context={context}
-            pairing={pairing}
-            teams={teams}
-            managers={managers}
-          />
-        );
-      })}
+      <Table>
+        <tbody>
+          {pairings.map((pairing, i) => (
+            <MatchRow
+              key={i}
+              home={teams[context.teams[pairing.home]]}
+              away={teams[context.teams[pairing.away]]}
+              score={
+                pairing.result
+                  ? `${pairing.result.home}–${pairing.result.away}`
+                  : undefined
+              }
+              reserveScore
+              managers={managers}
+            />
+          ))}
+        </tbody>
+      </Table>
     </Box>
   );
 };

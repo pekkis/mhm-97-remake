@@ -1,11 +1,11 @@
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
 import Button from "@/components/ui/Button";
-import Input from "@/components/form/Input";
-import Select from "@/components/form/Select";
-import Label from "@/components/form/Label";
-import LabelDiv from "@/components/form/LabelDiv";
-import Field from "@/components/form/Field";
+import Input from "@/components/ui/form/Input";
+import Select from "@/components/ui/form/Select";
+import Label from "@/components/ui/form/Label";
+import LabelDiv from "@/components/ui/form/LabelDiv";
+import Field from "@/components/ui/form/Field";
 import difficultyLevels from "@/data/difficulty-levels";
 import type { Team } from "@/state/game";
 import type { Competition } from "@/types/competitions";

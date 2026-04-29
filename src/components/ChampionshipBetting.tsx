@@ -19,36 +19,36 @@ const ChampionshipBetting = () => {
     <AdvancedHeaderedPage managerInfo={<ManagerInfo details />}>
       <h2>Mestariveikkaus</h2>
 
-        <p>
-          On vuosittaisen <strong>mestariveikkauksen aika</strong>. Tässä
-          ehdokkaat ja heidän kertoimensa.
-        </p>
+      <p>
+        On vuosittaisen <strong>mestariveikkauksen aika</strong>. Tässä
+        ehdokkaat ja heidän kertoimensa.
+      </p>
 
-        <BettingForm
-          manager={manager}
-          betChampion={(
-            managerId: string,
-            teamId: number,
-            amount: number,
-            odds: number
-          ) =>
-            actor.send({
-              type: "PLACE_CHAMPION_BET",
-              payload: {
-                manager: managerId,
-                team: teamId,
-                amount,
-                odds
-              }
-            })
-          }
-          competition={competitions.phl}
-          teams={teams}
-        />
+      <BettingForm
+        manager={manager}
+        betChampion={(
+          managerId: string,
+          teamId: number,
+          amount: number,
+          odds: number
+        ) =>
+          actor.send({
+            type: "PLACE_CHAMPION_BET",
+            payload: {
+              manager: managerId,
+              team: teamId,
+              amount,
+              odds
+            }
+          })
+        }
+        competition={competitions.phl}
+        teams={teams}
+      />
 
-        <Button secondary block onClick={() => actor.send({ type: "ADVANCE" })}>
-          En halua veikata
-        </Button>
+      <Button secondary block onClick={() => actor.send({ type: "ADVANCE" })}>
+        En halua veikata
+      </Button>
     </AdvancedHeaderedPage>
   );
 };

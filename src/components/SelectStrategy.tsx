@@ -15,37 +15,37 @@ const SelectStrategy = () => {
     <AdvancedHeaderedPage managerInfo={<ManagerInfo details />}>
       <h2>Valitse harjoittelustrategia</h2>
 
-        <p>
-          On kesä, ja aika määrätä mihin joukkue ajoittaa huippukuntonsa!
-          Tarjolla on kolme vaihtoehtoa:
-        </p>
+      <p>
+        On kesä, ja aika määrätä mihin joukkue ajoittaa huippukuntonsa! Tarjolla
+        on kolme vaihtoehtoa:
+      </p>
 
-        {strategies.map((strategy) => {
-          return (
-            <div key={strategy.id}>
-              <h3>{strategy.name}</h3>
+      {strategies.map((strategy) => {
+        return (
+          <div key={strategy.id}>
+            <h3>{strategy.name}</h3>
 
-              <p>{strategy.description}</p>
+            <p>{strategy.description}</p>
 
-              <p>
-                <Button
-                  block
-                  onClick={() =>
-                    actor.send({
-                      type: "SELECT_STRATEGY",
-                      payload: {
-                        manager: manager.id,
-                        strategy: strategy.id
-                      }
-                    })
-                  }
-                >
-                  Valitse strategia "{strategy.name}"
-                </Button>
-              </p>
-            </div>
-          );
-        })}
+            <p>
+              <Button
+                block
+                onClick={() =>
+                  actor.send({
+                    type: "SELECT_STRATEGY",
+                    payload: {
+                      manager: manager.id,
+                      strategy: strategy.id
+                    }
+                  })
+                }
+              >
+                Valitse strategia "{strategy.name}"
+              </Button>
+            </p>
+          </div>
+        );
+      })}
     </AdvancedHeaderedPage>
   );
 };

@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { useForm, Controller } from "react-hook-form";
-import Slider from "@/components/form/Slider";
+import Slider from "@/components/ui/form/Slider";
 import { amount as a } from "@/services/format";
 import odds from "@/data/championship-betting";
 import Button from "@/components/ui/Button";

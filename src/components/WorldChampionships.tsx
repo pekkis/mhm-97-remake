@@ -14,9 +14,7 @@ const WorldChampionships = () => {
   const turn = useGameContext((ctx) => ctx.turn);
 
   return (
-    <AdvancedHeaderedPage
-      stickyMenu={<StickyMenu forward="Palkintogaala" />}
-    >
+    <AdvancedHeaderedPage stickyMenu={<StickyMenu forward="Palkintogaala" />}>
       <Box p="md">
         <h2>Maailmanmestaruuskisat {turn.season + 1}</h2>
 

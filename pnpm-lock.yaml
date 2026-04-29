@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@fontsource-variable/ibm-plex-sans':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.73.1(react@19.2.5))
@@ -362,6 +365,9 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@fontsource-variable/ibm-plex-sans@5.2.8':
+    resolution: {integrity: sha512-n5PF2iFa0CZT0QYTPzxvZ39opC9LnU0zdoRccoADbs+Dtsd+lbXOZF7RNuIPHcQX1dKjF63sxnRImQIB5eD0Ag==}
 
   '@hookform/resolvers@5.2.2':
     resolution: {integrity: sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA==}
@@ -2044,6 +2050,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.28.0':
     optional: true
+
+  '@fontsource-variable/ibm-plex-sans@5.2.8': {}
 
   '@hookform/resolvers@5.2.2(react-hook-form@7.73.1(react@19.2.5))':
     dependencies:

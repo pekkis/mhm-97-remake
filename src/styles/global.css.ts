@@ -9,6 +9,10 @@ globalStyle(":root", {
   fontSize: "16px",
   lineHeight: vars.lineHeight.normal,
   fontFamily: vars.fontFamily.body,
+  // Tabular numerals so currencies, scores, and league tables line up
+  // in columns. `cv11` selects the single-storey `a` variant which
+  // reads better at small sizes — a Plex-specific touch.
+  fontFeatureSettings: '"tnum", "cv11"',
   backgroundColor: vars.color.bg,
   color: vars.color.text
 });

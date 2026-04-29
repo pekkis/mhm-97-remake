@@ -27,6 +27,7 @@
     "verify": "pnpm run test --run && pnpm run format && pnpm run lint --fix && pnpm run typecheck"
   },
   "dependencies": {
+    "@fontsource-variable/ibm-plex-sans": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
     "@vanilla-extract/css": "^1.20.1",
     "@vanilla-extract/sprinkles": "^1.6.5",

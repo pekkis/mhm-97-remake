@@ -15,9 +15,7 @@ const EndOfSeason = () => {
   const announcements = useGameContext((ctx) => ctx.news.announcements);
 
   return (
-    <AdvancedHeaderedPage
-      stickyMenu={<StickyMenu forward="Seuraava kausi" />}
-    >
+    <AdvancedHeaderedPage stickyMenu={<StickyMenu forward="Seuraava kausi" />}>
       <Box p="md">
         <h2>
           Kausi <Season long index={turn.season} />

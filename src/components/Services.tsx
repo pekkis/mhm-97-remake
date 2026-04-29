@@ -2,7 +2,7 @@ import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import * as styles from "./Services.css";
-import Toggle from "./form/Toggle";
+import Toggle from "@/components/ui/form/Toggle";
 import Markdown from "react-markdown";
 import Box from "./ui/Box";
 import {
