@@ -50,6 +50,9 @@ const metterer: DeclarativeEvent<MettererData> = {
     const lines = [
       `Karkus Metterer, tunnettu maalivahti, haluaisi tulla joukkueeseesi pelaamaan 3 ottelun ajaksi kun Elitserienissä peliaikaa ei siunaannu. Otatko Karkuksen mukaan?`
     ];
+    if (!data.resolved) {
+      return lines;
+    }
     if (!data.agree) {
       lines.push(`Ei sitten.`);
     } else {

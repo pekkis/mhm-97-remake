@@ -1,4 +1,3 @@
-import { amount as a } from "@/services/format";
 import type { DeclarativeEvent } from "@/types/event";
 
 const eventId = "suddenDeath";
@@ -9,7 +8,6 @@ export type SuddenDeathData = {
   manager: string;
   resolved: boolean;
   amount: number;
-  hasInsurance?: boolean;
 };
 
 /**
@@ -39,9 +37,6 @@ const suddenDeath: DeclarativeEvent<SuddenDeathData> = {
     const lines = [
       `Kaikki pelaajasi ovat saaneet surmansa lento-onnettomuudessa! Johtokunta kehottaa sinua etsimään uusia kiekkoilijoita`
     ];
-    if (data.hasInsurance) {
-      lines.push(`Etelälä joutuu maksamaan sinulle ${a(data.amount)} pekkaa`);
-    }
     if (!data.resolved) {
       return lines;
     }
