@@ -1,6 +1,3 @@
 import { style } from "@vanilla-extract/css";
-import { vars } from "@/styles/theme.css";
 
-export const field = style({
-  marginBlock: vars.space.md
-});
+export const field = style({});

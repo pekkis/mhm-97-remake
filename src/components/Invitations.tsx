@@ -3,13 +3,13 @@ import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import Box from "./ui/Box";
 import tournamentList from "@/data/tournaments";
-import Markdown from "react-markdown";
 import Button from "./ui/Button";
 import {
   GameMachineContext,
   useGameContext
 } from "@/context/game-machine-context";
 import { activeManager, activeManagersInvitations } from "@/machines/selectors";
+import Markdown from "@/components/Markdown";
 
 const Invitations = () => {
   const manager = useGameContext(activeManager);

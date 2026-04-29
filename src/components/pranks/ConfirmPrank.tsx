@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import Stack from "@/components/ui/Stack";
 import Button from "@/components/ui/Button";
+import Paragraph from "@/components/ui/Paragraph";
 import pranks from "@/game/pranks";
 import type { Team } from "@/state/game";
 import type { Manager } from "@/state/manager";
@@ -24,15 +25,15 @@ const ConfirmPrank: FC<ConfirmPrankProps> = ({
 
   return (
     <div>
-      <p>
+      <Paragraph>
         <strong>Jäynä: </strong>
         {prankInfo.name}
-      </p>
+      </Paragraph>
 
-      <p>
+      <Paragraph>
         <strong>Uhri: </strong>
         {teams[prank.victim]?.name}
-      </p>
+      </Paragraph>
 
       <Stack>
         <Button

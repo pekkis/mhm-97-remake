@@ -8,6 +8,7 @@ import Calendar from "./ui/Calendar";
 import { currency } from "@/services/format";
 import ManagerInfo from "./ManagerInfo";
 import Box from "./ui/Box";
+import Paragraph from "./ui/Paragraph";
 import Tabs from "./ui/Tabs";
 import Tab from "./ui/Tab";
 import {
@@ -35,10 +36,10 @@ const TransferMarket = () => {
         <Calendar
           when={(c) => c.transferMarket}
           fallback={
-            <p>
+            <Paragraph>
               Valitettavasti siirtoaika on umpeutunut. Tervetuloa takaisin ensi
               vuonna!
-            </p>
+            </Paragraph>
           }
         >
           <Tabs selected={tab} onSelect={setTab}>

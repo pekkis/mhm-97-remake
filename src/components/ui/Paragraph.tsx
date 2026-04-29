@@ -17,8 +17,9 @@ type ParagraphProps = {
 };
 
 /**
- * Plain `<p>` with sprinkle-driven typography props. Inherits the
- * element default `margin: 1em 0` from `src/styles/global.css.ts`.
+ * Plain `<p>` with sprinkle-driven typography props. Has a default
+ * block margin (`vars.space.md`) so prose has rhythm out of the box.
+ * If you need flush stacking, wrap in `<Box my="none">` or use `<Stack>`.
  */
 const Paragraph: FC<ParagraphProps> = ({
   children,

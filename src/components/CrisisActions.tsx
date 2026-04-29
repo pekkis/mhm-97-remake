@@ -4,6 +4,7 @@ import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import Calendar from "./ui/Calendar";
 import Box from "./ui/Box";
+import Paragraph from "./ui/Paragraph";
 import {
   GameMachineContext,
   useGameContext
@@ -35,16 +36,16 @@ const CrisisActions = () => {
         <Calendar
           when={(c) => c.crisisMeeting}
           fallback={
-            <p>
+            <Paragraph>
               Tässä vaiheessa kautta on auttamatta liian myöhäistä
               kriisipalaveroida!
-            </p>
+            </Paragraph>
           }
         >
-          <p>
+          <Paragraph>
             Kriisipalaveri auttaa joukkuetta unohtamaan tappioputken ja
             keskittymään tulevaan. Se maksaa {c(crisisInfo.amount)}.
-          </p>
+          </Paragraph>
 
           <Button
             block

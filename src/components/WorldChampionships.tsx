@@ -2,6 +2,7 @@ import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 
 import Box from "./ui/Box";
+import Paragraph from "./ui/Paragraph";
 import { useGameContext } from "@/context/game-machine-context";
 
 /*
@@ -23,20 +24,20 @@ const WorldChampionships = () => {
             .filter((e) => e.luck > 0)
             .map((e) => {
               return (
-                <p key={e.id}>
+                <Paragraph key={e.id}>
                   <strong>{e.name}</strong> pelasi koko turnauksen ajan todella
                   suurella sydämellä!
-                </p>
+                </Paragraph>
               );
             })}
           {results
             .filter((e) => e.luck < 0)
             .map((e) => {
               return (
-                <p key={e.id}>
+                <Paragraph key={e.id}>
                   <strong>{e.name}</strong> kärsi koko turnauksen ajan suurista
                   ongelmista!
-                </p>
+                </Paragraph>
               );
             })}
         </div>

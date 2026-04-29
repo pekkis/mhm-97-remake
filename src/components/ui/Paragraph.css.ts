@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
+import { vars } from "@/styles/theme.css";
 
 export const root = style({
-  margin: 0
+  marginBlock: vars.space.md
 });

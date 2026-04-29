@@ -6,6 +6,7 @@ import SelectVictim from "./pranks/SelectVictim";
 import SelectType from "./pranks/SelectType";
 import ConfirmPrank from "./pranks/ConfirmPrank";
 import Box from "./ui/Box";
+import Paragraph from "./ui/Paragraph";
 import Calendar from "./ui/Calendar";
 
 import {
@@ -37,15 +38,17 @@ const Pranks = () => {
       <Box p="md">
         <Calendar
           when={(c) => c.pranks}
-          fallback={<p>Jäynät on tältä kaudelta jäynäytetty.</p>}
+          fallback={
+            <Paragraph>Jäynät on tältä kaudelta jäynäytetty.</Paragraph>
+          }
         >
           <h2>Jäynät</h2>
 
           {!canDo && (
-            <p>
+            <Paragraph>
               Olet jo jäynäyttänyt {manager.pranksExecuted} kertaa tällä
               kaudella. Nähdään ensi vuonna!
-            </p>
+            </Paragraph>
           )}
 
           {state.matches("idle") && (

@@ -15,14 +15,12 @@ export const Starting: FC = () => {
   );
 
   return (
-    <Box p="md">
-      <ManagerForm
-        teams={teams}
-        competitions={competitions}
-        advance={(payload) => {
-          app.send({ type: "ADD_MANAGER", payload });
-        }}
-      />
-    </Box>
+    <ManagerForm
+      teams={teams}
+      competitions={competitions}
+      advance={(payload) => {
+        app.send({ type: "ADD_MANAGER", payload });
+      }}
+    />
   );
 };

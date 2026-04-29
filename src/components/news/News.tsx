@@ -1,5 +1,5 @@
+import Markdown from "@/components/Markdown";
 import type { FC } from "react";
-import Markdown from "react-markdown";
 
 type NewsProps = {
   news: string[];

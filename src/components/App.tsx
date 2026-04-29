@@ -4,15 +4,16 @@ import { ErrorBoundary } from "react-error-boundary";
 import type { FC } from "react";
 import { AppMachineContext } from "@/context/app-machine-context";
 import { GameMachineContext } from "@/context/game-machine-context";
+import Paragraph from "./ui/Paragraph";
 
 const ErrorFallback = () => (
   <div>
     <h1>Jokin meni pieleen. Voi örr!</h1>
-    <p>Syynä lienee tieteelle tuntematon bugi.</p>
-    <p>
+    <Paragraph>Syynä lienee tieteelle tuntematon bugi.</Paragraph>
+    <Paragraph>
       Virhe on toivottavasti jo lähetetty palvelimelle turvaan ja Pekkis näkee
       sen! Toivottavasti olit tallentanut, koska tästä ei toivuta!
-    </p>
+    </Paragraph>
   </div>
 );
 

@@ -3,7 +3,6 @@ import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
 import * as styles from "./Services.css";
 import Toggle from "@/components/ui/form/Toggle";
-import Markdown from "react-markdown";
 import Box from "./ui/Box";
 import {
   GameMachineContext,
@@ -13,6 +12,7 @@ import { entries } from "remeda";
 
 import services from "@/data/services";
 import { activeManager } from "@/machines/selectors";
+import Markdown from "@/components/Markdown";
 
 const Services = () => {
   const manager = useGameContext(activeManager);

@@ -7,6 +7,9 @@ import Button from "@/components/ui/Button";
 import type { Team } from "@/state/game";
 import type { Manager } from "@/state/manager";
 import type { Competition } from "@/types/competitions";
+import Box from "@/components/ui/Box";
+import Heading from "@/components/ui/Heading";
+import Stack from "@/components/ui/Stack";
 
 type ChampionshipBettingFormValues = {
   team: string;
@@ -55,45 +58,54 @@ const BettingForm: FC<ChampionshipBettingFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <h3>Valitse ehdokkaasi</h3>
+      <Stack>
+        <Heading level={3}>Valitse ehdokkaasi</Heading>
 
-      {teamsAndOdds.map((team) => {
-        return (
-          <div key={team.id}>
-            <label>
-              <input
-                type="radio"
-                value={team.id.toString()}
-                {...register("team", { required: true })}
-              />
-              {team.name} ({team.odds})
-            </label>
-          </div>
-        );
-      })}
+        <Box>
+          {teamsAndOdds.map((team) => {
+            return (
+              <div key={team.id}>
+                <label>
+                  <input
+                    type="radio"
+                    value={team.id.toString()}
+                    {...register("team", { required: true })}
+                  />
+                  {team.name} ({team.odds})
+                </label>
+              </div>
+            );
+          })}
+        </Box>
 
-      <h3>Valitse panos</h3>
+        <Heading level={3}>Valitse panos</Heading>
 
-      <div>
-        <Controller
-          name="amount"
-          control={control}
-          render={({ field }) => (
-            <Slider
-              min={10000}
-              max={1000000}
-              step={10000}
-              value={field.value}
-              onChange={field.onChange}
+        <Stack direction="row">
+          <Box flex="1">
+            <Controller
+              name="amount"
+              control={control}
+              render={({ field }) => (
+                <Slider
+                  min={10000}
+                  max={1000000}
+                  step={10000}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
             />
-          )}
-        />
-        <strong>{a(values.amount)}</strong> pekkaa
-      </div>
+          </Box>
 
-      <Button disabled={values.team === ""} block type="submit">
-        Veikkaa mestaria
-      </Button>
+          <Box>
+            <strong>{a(values.amount)}</strong> pekkaa
+          </Box>
+        </Stack>
+
+        <Button disabled={values.team === ""} block type="submit">
+          Veikkaa mestaria
+        </Button>
+      </Stack>
     </form>
   );
 };

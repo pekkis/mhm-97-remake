@@ -3,6 +3,7 @@ import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import BettingForm from "./betting/BettingForm";
 import Box from "./ui/Box";
+import Paragraph from "./ui/Paragraph";
 import {
   GameMachineContext,
   useGameContext
@@ -24,7 +25,7 @@ const Betting = () => {
       <Box p="md">
         <h2>Kavioveikkaus</h2>
 
-        <p>Puuppa.</p>
+        <Paragraph>Puuppa.</Paragraph>
 
         <BettingForm
           turn={turn}

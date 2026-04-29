@@ -10,6 +10,7 @@ import difficultyLevels from "@/data/difficulty-levels";
 import type { Team } from "@/state/game";
 import type { Competition } from "@/types/competitions";
 import { values } from "remeda";
+import Stack from "@/components/ui/Stack";
 
 type FormShape = {
   name: string;
@@ -54,62 +55,64 @@ const ManagerForm: FC<ManagerFormProps> = ({
           advance({ ...values, difficulty: parseInt(values.difficulty, 10) })
         )}
       >
-        <Field>
-          <Label>Managerin nimi</Label>
-          <Input block id="name" {...register("name")} />
-        </Field>
+        <Stack gap="md">
+          <Field>
+            <Label>Managerin nimi</Label>
+            <Input block id="name" {...register("name")} />
+          </Field>
 
-        <Field>
-          <Label>Areenan nimi</Label>
-          <Input block id="arena" {...register("arena")} />
-        </Field>
+          <Field>
+            <Label>Areenan nimi</Label>
+            <Input block id="arena" {...register("arena")} />
+          </Field>
 
-        <Field>
-          <LabelDiv>Vaikeustaso</LabelDiv>
-          {difficultyLevels.map((dl) => {
-            return (
-              <div key={dl.value}>
-                <label>
-                  <Input
-                    type="radio"
-                    value={dl.value}
-                    {...register("difficulty")}
-                  />{" "}
-                  {dl.name} ({dl.description})
-                </label>
-              </div>
-            );
-          })}
-        </Field>
-
-        <Field>
-          <LabelDiv>Joukkue</LabelDiv>
-
-          <Select {...register("team", { valueAsNumber: true })}>
-            {values(competitions).map((c) => {
+          <Field>
+            <LabelDiv>Vaikeustaso</LabelDiv>
+            {difficultyLevels.map((dl) => {
               return (
-                <optgroup key={c.id} label={c.name}>
-                  {c.teams
-                    .map((t) => teams[t])
-                    .toSorted((a, b) => a.name.localeCompare(b.name))
-                    .map((t) => {
-                      return (
-                        <option key={t.id} value={t.id}>
-                          {t.name}
-                        </option>
-                      );
-                    })}
-                </optgroup>
+                <div key={dl.value}>
+                  <label>
+                    <Input
+                      type="radio"
+                      value={dl.value}
+                      {...register("difficulty")}
+                    />{" "}
+                    {dl.name} ({dl.description})
+                  </label>
+                </div>
               );
             })}
-          </Select>
-        </Field>
+          </Field>
 
-        <Field>
-          <Button block type="submit">
-            Eteenpäin
-          </Button>
-        </Field>
+          <Field>
+            <LabelDiv>Joukkue</LabelDiv>
+
+            <Select {...register("team", { valueAsNumber: true })}>
+              {values(competitions).map((c) => {
+                return (
+                  <optgroup key={c.id} label={c.name}>
+                    {c.teams
+                      .map((t) => teams[t])
+                      .toSorted((a, b) => a.name.localeCompare(b.name))
+                      .map((t) => {
+                        return (
+                          <option key={t.id} value={t.id}>
+                            {t.name}
+                          </option>
+                        );
+                      })}
+                  </optgroup>
+                );
+              })}
+            </Select>
+          </Field>
+
+          <Field>
+            <Button block type="submit">
+              Eteenpäin
+            </Button>
+          </Field>
+        </Stack>
       </form>
     </div>
   );
