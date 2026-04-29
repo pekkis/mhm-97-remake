@@ -1,5 +1,4 @@
 import type { FC } from "react";
-import Box from "@/components/ui/Box";
 import { Table } from "@/components/ui/Table";
 import MatchRow from "@/components/team/MatchRow";
 import type { Team } from "@/state/game";

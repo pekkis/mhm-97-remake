@@ -1,4 +1,6 @@
 import Markdown from "@/components/Markdown";
+import Box from "@/components/ui/Box";
+import Heading from "@/components/ui/Heading";
 import type { FC } from "react";
 
 type AnnouncementsProps = {
@@ -7,17 +9,17 @@ type AnnouncementsProps = {
 
 const Announcements: FC<AnnouncementsProps> = ({ announcements }) => {
   return (
-    <div>
-      <h2>Ilmoitukset</h2>
+    <Box>
+      <Heading level={3}>Ilmoitukset</Heading>
 
       {announcements.map((a, i) => {
         return (
-          <div key={i}>
+          <Box key={i}>
             <Markdown>{a}</Markdown>
-          </div>
+          </Box>
         );
       })}
-    </div>
+    </Box>
   );
 };
 

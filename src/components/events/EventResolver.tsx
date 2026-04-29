@@ -4,17 +4,23 @@ import Markdown from "@/components/Markdown";
 import Button from "@/components/ui/Button";
 import Stack from "@/components/ui/Stack";
 import newEvents from "@/game/new-events";
+import Box from "@/components/ui/Box";
+import type { StoredEvent } from "@/state/event";
+import type { DeclarativeEvent } from "@/types/event";
+import type { BaseEventFields } from "@/types/base";
 
-// See `src/game/new-events/index.ts` — `as const` registry needs a
-// string-keyed widening to look up by runtime event id.
+// The registry is `as const` for nice per-event typing at definition
+// sites, but at the call site we look up by a runtime id, so we widen
+// to a string-keyed lookup of the loosest declarative-event shape.
+type AnyEvent = DeclarativeEvent<BaseEventFields & Record<string, unknown>>;
 const eventRegistry = newEvents as unknown as Record<
   string,
-  (typeof newEvents)[keyof typeof newEvents] | undefined
+  AnyEvent | undefined
 >;
 
 type EventResolverProps = {
-  event: any;
-  onAnswer: (event: any, key: string) => void;
+  event: StoredEvent;
+  onAnswer: (event: StoredEvent, key: string) => void;
 };
 
 const EventResolver: FC<EventResolverProps> = ({ event, onAnswer }) => {
@@ -30,7 +36,7 @@ const EventResolver: FC<EventResolverProps> = ({ event, onAnswer }) => {
   }
 
   return (
-    <div>
+    <Box>
       <Markdown>
         {definition
           .render(event)
@@ -46,7 +52,7 @@ const EventResolver: FC<EventResolverProps> = ({ event, onAnswer }) => {
           ))}
         </Stack>
       )}
-    </div>
+    </Box>
   );
 };
 

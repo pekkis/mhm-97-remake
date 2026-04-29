@@ -1352,7 +1352,11 @@ export const gameMachine = setup({
             },
             event: {
               entry: "executeAutoResolveEvents",
-              exit: "executeClearEvents",
+
+              always: {
+                guard: ({ context }) => allEventsResolved(context),
+                target: "news_check"
+              },
               on: {
                 RESOLVE_EVENT: {
                   actions: {
@@ -1528,7 +1532,10 @@ export const gameMachine = setup({
 
             round_end: {
               id: "round_end_after_season",
-              entry: "advanceRound",
+              // Defensive cleanup. Resolved events normally get cleared
+              // when exiting the `news` phase, but not every round has
+              // one — so wipe any leftovers at the round boundary.
+              entry: ["executeClearEvents", "advanceRound"],
               always: [
                 { guard: "calendar_in_bounds", target: "action_check" },
                 { target: "season_done" }

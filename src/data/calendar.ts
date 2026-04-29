@@ -161,7 +161,7 @@ const raw: RawEntry[] = [
   // Playoff seed
   {
     title: "Playoff-pläjäys",
-    phases: ["action", "event", "seed"],
+    phases: ["action", "event", "news", "seed"],
     seed: [
       { competition: "phl", phase: 1 },
       { competition: "division", phase: 1 }
@@ -177,7 +177,7 @@ const raw: RawEntry[] = [
   // Semifinal seed
   {
     title: "Semifinaali-pläjäys",
-    phases: ["action", "event", "seed"],
+    phases: ["action", "event", "news", "seed"],
     seed: [
       { competition: "phl", phase: 2 },
       { competition: "division", phase: 2 }
@@ -193,7 +193,7 @@ const raw: RawEntry[] = [
   // Finals seed
   {
     title: "Finaali-pläjäys",
-    phases: ["action", "event", "seed", "gala"],
+    phases: ["action", "event", "news", "seed", "gala"],
     seed: [
       { competition: "phl", phase: 3 },
       { competition: "division", phase: 3 }

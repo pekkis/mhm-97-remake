@@ -1,13 +1,14 @@
+import Stack from "@/components/ui/Stack";
 import EventsList from "./events/Events";
 import ManagerInfo from "./ManagerInfo";
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
-import Box from "./ui/Box";
 import {
   GameMachineContext,
   useGameContext
 } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";
+import Heading from "@/components/ui/Heading";
 
 const Events = () => {
   const game = GameMachineContext.useActorRef();
@@ -19,8 +20,9 @@ const Events = () => {
       stickyMenu={<StickyMenu />}
       managerInfo={<ManagerInfo details />}
     >
-      <Box p="md">
-        <h2>Tapahtumat</h2>
+      <Stack gap="lg">
+        <Heading level={2}>Tapahtumat</Heading>
+
         <EventsList
           manager={manager}
           events={events}
@@ -31,7 +33,7 @@ const Events = () => {
             })
           }
         />
-      </Box>
+      </Stack>
     </AdvancedHeaderedPage>
   );
 };

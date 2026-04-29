@@ -4,7 +4,6 @@ import StickyMenu from "./StickyMenu";
 import Forward from "./context-sensitive/Forward";
 import Current from "./context-sensitive/Current";
 
-import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 import { activeManager, interestingCompetitions } from "@/machines/selectors";
 import AdvancedHeaderedPage from "@/components/ui/AdvancedHeaderedPage";

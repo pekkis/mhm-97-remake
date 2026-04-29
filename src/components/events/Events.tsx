@@ -1,11 +1,12 @@
 import { values } from "remeda";
 import Box from "@/components/ui/Box";
 import EventResolver from "./EventResolver";
+import type { StoredEvent } from "@/state/event";
 
 type EventsListProps = {
-  events: Record<string, any>;
+  events: Record<string, StoredEvent>;
   manager: { id: string };
-  onAnswer: (event: any, key: string) => void;
+  onAnswer: (event: StoredEvent, key: string) => void;
 };
 
 const Events = ({ events, manager, onAnswer }: EventsListProps) => {

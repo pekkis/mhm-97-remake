@@ -1,8 +1,6 @@
 import { entries } from "remeda";
 import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
-import Heading from "@/components/ui/Heading";
-import Stack from "@/components/ui/Stack";
 import PhaseStatusPhase from "@/components/context-sensitive/PhaseStatusPhase";
 
 const humanReadables: Record<string, string> = {

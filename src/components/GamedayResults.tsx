@@ -2,7 +2,6 @@ import calendar from "@/data/calendar";
 import Table from "./league-table/LeagueTable";
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
-import Games from "./gameday/Games";
 import Box from "./ui/Box";
 import { useGameContext } from "@/context/game-machine-context";
 import Heading from "@/components/ui/Heading";

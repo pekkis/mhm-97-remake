@@ -2,7 +2,6 @@ import PhaseStatusPhase from "@/components/context-sensitive/PhaseStatusPhase";
 import Games from "@/components/gameday/Games";
 import LeagueTable from "@/components/league-table/LeagueTable";
 import Matchups from "@/components/playoffs/Matchups";
-import Box from "@/components/ui/Box";
 import Stack from "@/components/ui/Stack";
 import type { Manager, Team } from "@/state";
 import type { Phase, PlayoffGroup } from "@/types/competitions";
