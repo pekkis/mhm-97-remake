@@ -27,11 +27,10 @@ const News = () => {
             events={events}
             onAnswer={() => undefined}
           />
-
-          <Announcements
-            announcements={announcements[manager.id.toString()] || []}
-          />
         </Stack>
+        <Announcements
+          announcements={announcements[manager.id.toString()] || []}
+        />
       </Stack>
     </AdvancedHeaderedPage>
   );

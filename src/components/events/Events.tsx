@@ -2,6 +2,7 @@ import { values } from "remeda";
 import Box from "@/components/ui/Box";
 import EventResolver from "./EventResolver";
 import type { StoredEvent } from "@/state/event";
+import Paragraph from "@/components/ui/Paragraph";
 
 type EventsListProps = {
   events: Record<string, StoredEvent>;
@@ -14,6 +15,8 @@ const Events = ({ events, manager, onAnswer }: EventsListProps) => {
 
   return (
     <Box>
+      {managersEvents.length === 0 && <Paragraph>Ei tapahtumia.</Paragraph>}
+
       {managersEvents.map((e) => (
         <EventResolver key={e.id} event={e} onAnswer={onAnswer} />
       ))}

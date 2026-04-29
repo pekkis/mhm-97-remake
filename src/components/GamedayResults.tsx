@@ -36,7 +36,8 @@ const GamedayResults = () => {
                 return (
                   <Stack key={groupIndex}>
                     <Heading level={3}>
-                      {competition.name}, {group.name} [{currentRound}]
+                      {competition.name}, {group.name}, kierros{" "}
+                      {currentRound + 1} / {group.schedule.length}
                     </Heading>
 
                     <Results
