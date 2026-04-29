@@ -1,4 +1,4 @@
-import Button from "./form/Button";
+import Button from "./ui/Button";
 import { FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { GameMachineContext } from "@/context/game-machine-context";

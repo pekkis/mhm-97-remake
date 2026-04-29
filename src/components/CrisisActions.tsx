@@ -1,4 +1,4 @@
-import Button from "./form/Button";
+import Button from "./ui/Button";
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";

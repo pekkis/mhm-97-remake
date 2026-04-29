@@ -16,7 +16,7 @@ export const dialog = style({
 
   selectors: {
     "&::backdrop": {
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      backgroundColor: vars.color.backdrop,
       backdropFilter: "blur(2px)"
     }
   }

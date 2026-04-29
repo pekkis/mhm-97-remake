@@ -1,8 +1,8 @@
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import ManagerInfo from "./ManagerInfo";
-import ButtonRow from "./form/ButtonRow";
-import Button from "./form/Button";
+import Cluster from "./ui/Cluster";
+import Button from "./ui/Button";
 import arenas from "@/data/arenas";
 import clsx from "clsx";
 import * as styles from "./Arena.css";
@@ -50,7 +50,7 @@ const Arenas = () => {
             .toReversed()}
         </div>
 
-        <ButtonRow>
+        <Cluster gap="md">
           {nextLevel && (
             <Button
               block
@@ -66,7 +66,7 @@ const Arenas = () => {
               <div>{currency(nextLevel.price)}</div>
             </Button>
           )}
-        </ButtonRow>
+        </Cluster>
       </Box>
     </AdvancedHeaderedPage>
   );

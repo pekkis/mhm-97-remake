@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import Slider from "@/components/form/Slider";
 import { amount as a } from "@/services/format";
 import odds from "@/data/championship-betting";
-import Button from "@/components/form/Button";
+import Button from "@/components/ui/Button";
 import type { Team } from "@/state/game";
 import type { Manager } from "@/state/manager";
 import type { Competition } from "@/types/competitions";

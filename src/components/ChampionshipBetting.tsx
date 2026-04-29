@@ -1,6 +1,6 @@
 import ManagerInfo from "./ManagerInfo";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
-import Button from "./form/Button";
+import Button from "./ui/Button";
 import BettingForm from "./championship-betting/BettingForm";
 import { GameMachineContext } from "@/context/game-machine-context";
 import { activeManager } from "@/machines/selectors";

@@ -1,6 +1,6 @@
 import type { FC } from "react";
-import ButtonContainer from "@/components/ui/ButtonContainer";
-import Button from "@/components/form/Button";
+import Stack from "@/components/ui/Stack";
+import Button from "@/components/ui/Button";
 import pranks from "@/game/pranks";
 import type { Team } from "@/state/game";
 import type { Manager } from "@/state/manager";
@@ -34,7 +34,7 @@ const ConfirmPrank: FC<ConfirmPrankProps> = ({
         {teams[prank.victim]?.name}
       </p>
 
-      <ButtonContainer>
+      <Stack>
         <Button
           block
           onClick={() => {
@@ -53,7 +53,7 @@ const ConfirmPrank: FC<ConfirmPrankProps> = ({
         >
           Peruuta
         </Button>
-      </ButtonContainer>
+      </Stack>
     </div>
   );
 };

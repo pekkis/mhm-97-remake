@@ -29,5 +29,4 @@ const Button: FC<ButtonProps> = ({
   );
 };
 
-export { styles as buttonStyles };
 export default Button;

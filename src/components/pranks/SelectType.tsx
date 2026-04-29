@@ -1,6 +1,6 @@
 import type { FC } from "react";
-import Button from "@/components/form/Button";
-import ButtonContainer from "@/components/ui/ButtonContainer";
+import Button from "@/components/ui/Button";
+import Stack from "@/components/ui/Stack";
 import pranks from "@/game/pranks";
 import { currency as c } from "@/services/format";
 import type { Manager } from "@/state/manager";
@@ -22,7 +22,7 @@ const SelectType: FC<SelectTypeProps> = ({
 }) => {
   return (
     <div>
-      <ButtonContainer>
+      <Stack>
         {entries(pranks).map(([key, prank]) => {
           const price = prank.price(competition);
 
@@ -42,7 +42,7 @@ const SelectType: FC<SelectTypeProps> = ({
             </Button>
           );
         })}
-      </ButtonContainer>
+      </Stack>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import ManagerInfo from "./ManagerInfo";
 import Box from "./ui/Box";
 import tournamentList from "@/data/tournaments";
 import Markdown from "react-markdown";
-import Button from "./form/Button";
+import Button from "./ui/Button";
 import {
   GameMachineContext,
   useGameContext

@@ -1,8 +1,9 @@
 import { style } from "@vanilla-extract/css";
+import { vars } from "@/styles/theme.css";
 
 export const tab = style({
   cursor: "pointer",
-  backgroundColor: "rgba(33, 33, 33, 0.3)",
+  backgroundColor: vars.color.surfaceMuted,
   listStylePosition: "inside",
   listStyleType: "none",
   margin: "0 0",
@@ -10,5 +11,5 @@ export const tab = style({
 });
 
 export const selected = style({
-  fontWeight: "bold"
+  fontWeight: vars.fontWeight.bold
 });

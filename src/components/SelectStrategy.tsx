@@ -1,5 +1,5 @@
 import strategies from "@/data/strategies";
-import Button from "./form/Button";
+import Button from "./ui/Button";
 import { activeManager } from "@/machines/selectors";
 import { GameMachineContext } from "@/context/game-machine-context";
 import AdvancedHeaderedPage from "@/components/ui/AdvancedHeaderedPage";

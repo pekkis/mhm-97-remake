@@ -1,6 +1,6 @@
 import type { FC } from "react";
-import Button from "@/components/form/Button";
-import ButtonContainer from "@/components/ui/ButtonContainer";
+import Button from "@/components/ui/Button";
+import Stack from "@/components/ui/Stack";
 import type { Team } from "@/state/game";
 import type { Manager } from "@/state/manager";
 import type { Competition } from "@/types/competitions";
@@ -24,7 +24,7 @@ const SelectVictim: FC<SelectVictimProps> = ({
   return (
     <div>
       <h3>Valitse uhrisi</h3>
-      <ButtonContainer>
+      <Stack>
         <Button secondary block onClick={cancel}>
           Peruuta jäynä
         </Button>
@@ -38,7 +38,7 @@ const SelectVictim: FC<SelectVictimProps> = ({
               </Button>
             );
           })}
-      </ButtonContainer>
+      </Stack>
     </div>
   );
 };

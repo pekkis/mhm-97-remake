@@ -1,17 +1,18 @@
-import { style } from "@vanilla-extract/css";
+import { style, globalStyle } from "@vanilla-extract/css";
+import { vars } from "@/styles/theme.css";
 
 export const toggle = style({
   position: "relative",
   display: "inline-block",
-  width: "50px",
-  height: "24px",
+  inlineSize: "50px",
+  blockSize: "24px",
   verticalAlign: "middle"
 });
 
 export const input = style({
   position: "absolute",
-  width: "1px",
-  height: "1px",
+  inlineSize: "1px",
+  blockSize: "1px",
   padding: 0,
   margin: "-1px",
   overflow: "hidden",
@@ -25,20 +26,20 @@ export const track = style({
   left: 0,
   right: 0,
   bottom: 0,
-  borderRadius: "30px",
-  backgroundColor: "#4d4d4d",
+  borderRadius: vars.radius.pill,
+  backgroundColor: vars.color.border,
   transition: "background-color 0.2s ease",
   cursor: "pointer",
   selectors: {
     [`${input}:checked + &`]: {
-      backgroundColor: "#19ab27"
+      backgroundColor: vars.color.accent
     },
     [`${input}:disabled + &`]: {
       opacity: 0.5,
       cursor: "not-allowed"
     },
     [`${input}:focus-visible + &`]: {
-      boxShadow: "0 0 2px 3px #0099e0"
+      boxShadow: `0 0 2px 3px ${vars.color.accent}`
     }
   },
   "::before": {
@@ -46,19 +47,18 @@ export const track = style({
     position: "absolute",
     top: "1px",
     left: "1px",
-    width: "22px",
-    height: "22px",
+    inlineSize: "22px",
+    blockSize: "22px",
     borderRadius: "50%",
-    backgroundColor: "#fafafa",
-    border: "1px solid #4d4d4d",
+    backgroundColor: vars.color.surfaceRaised,
+    borderWidth: vars.borderWidth.thin,
+    borderStyle: "solid",
+    borderColor: vars.color.border,
     transition: "all 0.25s ease"
   }
 });
 
-// Can't use ::before in selectors directly, so use globalStyle
-import { globalStyle } from "@vanilla-extract/css";
-
 globalStyle(`${input}:checked + ${track}::before`, {
   left: "27px",
-  borderColor: "#19ab27"
+  borderColor: vars.color.accent
 });

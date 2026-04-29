@@ -1,16 +1,17 @@
 import { style, globalStyle } from "@vanilla-extract/css";
+import { vars } from "@/styles/theme.css";
 
 export const container = style({
-  backgroundColor: "rgb(133, 133, 133)",
+  backgroundColor: vars.color.surfaceMuted,
   padding: "0.5em 0",
-  color: "rgb(255, 255, 255)",
+  color: vars.color.text,
   position: "fixed",
   bottom: 0,
   right: 0,
   left: 0,
   display: "flex",
   flexBasis: "100%",
-  zIndex: 1000
+  zIndex: vars.zIndex.sticky
 });
 
 globalStyle(`${container} .secondary`, {

@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
-import Button from "@/components/form/Button";
+import Button from "@/components/ui/Button";
 import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
 import Label from "@/components/form/Label";

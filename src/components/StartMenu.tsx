@@ -1,5 +1,5 @@
-import ButtonRow from "./form/ButtonRow";
-import Button from "./form/Button";
+import Cluster from "@/components/ui/Cluster";
+import Button from "@/components/ui/Button";
 import Box from "./ui/Box";
 import title from "./start-menu/title.png";
 import { AppMachineContext } from "@/context/app-machine-context";
@@ -37,24 +37,22 @@ const StartMenu = () => {
 
       {!starting && (
         <Box p="md">
-          <Box textAlign="center">
-            <ButtonRow>
-              <Button
-                onClick={() => {
-                  app.send({ type: "START_GAME" });
-                }}
-              >
-                Uusi peli
-              </Button>
-              <Button
-                onClick={() => {
-                  app.send({ type: "LOAD_GAME" });
-                }}
-              >
-                Lataa peli
-              </Button>
-            </ButtonRow>
-          </Box>
+          <Cluster justify="center" gap="md">
+            <Button
+              onClick={() => {
+                app.send({ type: "START_GAME" });
+              }}
+            >
+              Uusi peli
+            </Button>
+            <Button
+              onClick={() => {
+                app.send({ type: "LOAD_GAME" });
+              }}
+            >
+              Lataa peli
+            </Button>
+          </Cluster>
           <h3>Alkuperäinen suunnittelu & ohjelmointi</h3>
           <ul>
             <li>Mikko Forsström</li>

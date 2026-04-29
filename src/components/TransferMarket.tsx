@@ -1,7 +1,7 @@
 import { useState } from "react";
 import playerTypes from "@/data/transfer-market";
-import Button from "./form/Button";
-import ButtonContainer from "./ui/ButtonContainer";
+import Button from "./ui/Button";
+import Stack from "./ui/Stack";
 import StickyMenu from "./StickyMenu";
 import AdvancedHeaderedPage from "./ui/AdvancedHeaderedPage";
 import Calendar from "./ui/Calendar";
@@ -43,7 +43,7 @@ const TransferMarket = () => {
         >
           <Tabs selected={tab} onSelect={setTab}>
             <Tab title="Osta pelaajia">
-              <ButtonContainer>
+              <Stack>
                 {playerTypes.map((playerType, index) => {
                   return (
                     <Button
@@ -67,10 +67,10 @@ const TransferMarket = () => {
                     </Button>
                   );
                 })}
-              </ButtonContainer>
+              </Stack>
             </Tab>
             <Tab title="Myy pelaajia">
-              <ButtonContainer>
+              <Stack>
                 {playerTypes.map((playerType, index) => {
                   return (
                     <Button
@@ -94,7 +94,7 @@ const TransferMarket = () => {
                     </Button>
                   );
                 })}
-              </ButtonContainer>
+              </Stack>
             </Tab>
           </Tabs>
         </Calendar>

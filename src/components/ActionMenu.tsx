@@ -4,7 +4,7 @@ import Calendar from "./ui/Calendar";
 import Cluster from "./ui/Cluster";
 import { getEffective } from "@/services/effects";
 import { CRISIS_MORALE_MAX } from "@/data/constants";
-import Button from "./form/Button";
+import Button from "./ui/Button";
 import {
   GameMachineContext,
   useGameContext

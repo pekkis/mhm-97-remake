@@ -1,12 +1,13 @@
 import { style, globalStyle } from "@vanilla-extract/css";
+import { vars } from "@/styles/theme.css";
 import { tab } from "./Tab.css";
 
 export const tabs = style({
-  backgroundColor: "rgba(255, 255, 255)"
+  backgroundColor: vars.color.surface
 });
 
 export const tabsList = style({
-  backgroundColor: "rgba(33, 33, 33, 0.3)",
+  backgroundColor: vars.color.surfaceMuted,
   padding: "1em",
   display: "flex",
   flexBasis: "100%",
