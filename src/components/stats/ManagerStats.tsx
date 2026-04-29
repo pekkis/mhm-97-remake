@@ -33,7 +33,7 @@ const ManagerStats: FC<ManagerStatsProps> = ({
       items={[
         {
           title: "Kausi kaudelta",
-          content: (
+          content: () => (
             <>
               {managersStories
                 .map((story, seasonIndex) => (
@@ -51,7 +51,7 @@ const ManagerStats: FC<ManagerStatsProps> = ({
         },
         {
           title: "Ura numeroina",
-          content: (
+          content: () => (
             <div>
               {(["phl", "division", "ehl"] as const)
                 .map((c) => competitions[c])

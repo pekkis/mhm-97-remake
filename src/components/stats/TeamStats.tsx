@@ -20,7 +20,7 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
       items={[
         {
           title: "Mitalistit",
-          content: (
+          content: () => (
             <Table>
               <thead>
                 <tr>
@@ -49,7 +49,7 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
         },
         {
           title: "Runkosarjan voittaja",
-          content: (
+          content: () => (
             <Table>
               <thead>
                 <tr>
@@ -74,7 +74,7 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
         },
         {
           title: "Nousijat / putoajat",
-          content: (
+          content: () => (
             <Table>
               <thead>
                 <tr>
@@ -101,7 +101,7 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
         },
         {
           title: "EHL",
-          content: (
+          content: () => (
             <Table>
               <thead>
                 <tr>
@@ -126,7 +126,7 @@ const TeamStats: FC<TeamStatsProps> = ({ stats, teams, countries }) => {
         },
         {
           title: "MM-kisat",
-          content: (
+          content: () => (
             <Table>
               <thead>
                 <tr>

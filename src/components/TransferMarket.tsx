@@ -47,7 +47,7 @@ const TransferMarket = () => {
             items={[
               {
                 title: "Osta pelaajia",
-                content: (
+                content: () => (
                   <Stack>
                     {playerTypes.map((playerType, index) => {
                       return (
@@ -77,7 +77,7 @@ const TransferMarket = () => {
               },
               {
                 title: "Myy pelaajia",
-                content: (
+                content: () => (
                   <Stack>
                     {playerTypes.map((playerType, index) => {
                       return (

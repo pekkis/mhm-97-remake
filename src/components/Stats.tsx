@@ -35,13 +35,13 @@ const Stats = () => {
           items={[
             {
               title: "Joukkueet",
-              content: (
+              content: () => (
                 <TeamStats teams={teams} stats={stats} countries={countries} />
               )
             },
             {
               title: "Manageri",
-              content: (
+              content: () => (
                 <ManagerStats
                   manager={manager}
                   competitions={competitions}
