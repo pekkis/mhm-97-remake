@@ -19,7 +19,14 @@ globalStyle(":root", {
 
 globalStyle("body", {
   margin: 0,
-  padding: 0
+  // Respect iOS notch / Dynamic Island / home indicator and the equivalent
+  // cutouts on Android when installed as a PWA. `viewport-fit=cover` in the
+  // viewport meta tag is what unlocks the env() values; without these
+  // paddings content drifts under the notch in landscape.
+  paddingTop: "env(safe-area-inset-top)",
+  paddingRight: "env(safe-area-inset-right)",
+  paddingBottom: "env(safe-area-inset-bottom)",
+  paddingLeft: "env(safe-area-inset-left)"
 });
 
 globalStyle("h1", {
