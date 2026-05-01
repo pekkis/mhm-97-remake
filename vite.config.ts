@@ -79,6 +79,21 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(packageJson.version)
   },
 
+  build: {
+    // Evergreen-only: ship modern syntax, skip transpilation for
+    // anything older. Update these as the floor moves.
+    target: ["chrome135", "edge135", "firefox135", "safari18"],
+    cssTarget: ["chrome135", "edge135", "firefox135", "safari18"],
+    // Use esbuild for CSS minification. Vite/Rolldown defaults to
+    // Lightning CSS, which transpiles `light-dark()` into a
+    // `prefers-color-scheme` media query plus space-toggle custom
+    // properties on `:root`. The transpiled form ignores explicit
+    // `color-scheme` overrides set by JS, silently breaking our
+    // manual theme switch in production.
+    // See: https://github.com/parcel-bundler/lightningcss/issues/873
+    cssMinify: "esbuild"
+  },
+
   resolve: {
     tsconfigPaths: true
   }

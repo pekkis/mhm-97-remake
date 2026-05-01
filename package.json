@@ -1,6 +1,6 @@
 {
   "name": "mhm-97-remake",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A remake of MHM 97",
   "keywords": [
     "MHM 97",
@@ -17,6 +17,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "preview": "vite preview",
     "lint": "oxlint .",
     "format": "oxfmt . --write",
     "format:check": "oxfmt . --check",
@@ -50,6 +51,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.0",
     "@rolldown/plugin-babel": "^0.2.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
