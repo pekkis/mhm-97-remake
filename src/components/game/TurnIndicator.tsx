@@ -7,7 +7,7 @@ type TurnIndicatorProps = {
 const TurnIndicator: FC<TurnIndicatorProps> = ({ turn }) => {
   return (
     <span>
-      {turn.season}, {turn.round} / {turn.phase}
+      {turn.round} / {turn.season + 1998}
     </span>
   );
 };

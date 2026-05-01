@@ -9,6 +9,8 @@ import Stack from "@/components/ui/Stack";
 import Heading from "@/components/ui/Heading";
 import Centerer from "@/components/Centerer";
 
+console.log(import.meta.env);
+
 const StartMenu = () => {
   const starting = AppMachineContext.useSelector((state) =>
     state.matches("starting")
@@ -31,6 +33,9 @@ const StartMenu = () => {
                 <Heading level={2} size="md">
                   maailman paras jääkiekkomanagerisimulaatio
                 </Heading>
+                <Box>
+                  versio: <strong>{__APP_VERSION__}</strong>
+                </Box>
               </Stack>
             </Box>
           </Stack>
