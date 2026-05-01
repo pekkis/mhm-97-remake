@@ -2,6 +2,7 @@ import "@fontsource-variable/ibm-plex-sans/index.css";
 import { createRoot } from "react-dom/client";
 import Root from "./Root";
 import { StrictMode } from "react";
+import { registerServiceWorker } from "./pwa";
 
 const rootElement = document.getElementById("app");
 if (!rootElement) {
@@ -15,3 +16,5 @@ root.render(
     <Root />
   </StrictMode>
 );
+
+registerServiceWorker();
