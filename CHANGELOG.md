@@ -1,5 +1,11 @@
 # mhm-97-remake
 
+## 2.1.1
+
+### Patch Changes
+
+- 2d6eb47: Pad the body with `env(safe-area-inset-*)` so iOS notch / Dynamic Island and Android cutouts no longer cover UI when installed as a PWA.
+
 ## 2.1.0
 
 ### Minor Changes
