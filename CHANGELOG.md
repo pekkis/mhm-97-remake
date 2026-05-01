@@ -1,5 +1,11 @@
 # mhm-97-remake
 
+## 2.1.2
+
+### Patch Changes
+
+- Check for service worker updates whenever the PWA is brought back to the foreground, not only on the hourly timer. Installed PWAs (especially on iOS) sit backgrounded for long stretches, so this makes new builds reach users faster.
+
 ## 2.1.1
 
 ### Patch Changes
