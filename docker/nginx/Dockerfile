@@ -23,4 +23,5 @@ RUN pnpm run build
 
 FROM nginx
 
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=workspace /app/dist /usr/share/nginx/html
