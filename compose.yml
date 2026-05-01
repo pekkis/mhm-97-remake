@@ -1,0 +1,11 @@
+services:
+  nginx:
+    build:
+      dockerfile: docker/nginx/Dockerfile
+    networks:
+      - web
+    ports:
+      - 3450:80
+networks:
+  web:
+    driver: bridge
