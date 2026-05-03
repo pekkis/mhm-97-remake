@@ -5,6 +5,8 @@ import {
   activeManagersInvitations,
   activeManagersTeam
 } from "@/machines/selectors";
+import { getEffective } from "@/services/effects";
+import { CRISIS_MORALE_MAX } from "@/data/constants";
 import Stack from "@/components/ui/Stack";
 import Alert from "@/components/ui/Alert";
 
@@ -23,7 +25,8 @@ const Current = () => {
   const showInvitations = numberOfAcceptedInvititations > 0;
   const showTransferDeadline =
     !!entry?.transferMarket && !!nextTurn && !nextTurn.transferMarket;
-  const showCrisis = !!entry?.crisisMeeting && team.morale <= -3;
+  const showCrisis =
+    !!entry?.crisisMeeting && getEffective(team).morale <= CRISIS_MORALE_MAX;
 
   if (!showInvitations && !showTransferDeadline && !showCrisis) {
     return null;
