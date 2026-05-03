@@ -321,12 +321,33 @@ export const gameMachine = setup({
      */
     executeInvitationsCreate: assign(({ context }) =>
       produce(context, (draft) => {
-        console.log("EXECUTING INVITATIONS CREATE");
+        console.log("EXECUTING INVITATIONS CREATE", context);
 
         const fresh: typeof draft.invitation.invitations = [];
+
+        console.log("FRESH 1", fresh);
+
         for (const managerId of Object.keys(draft.manager.managers)) {
           for (let t = 0; t < tournamentList.length; t++) {
             const { competitionId, maxRanking } = tournamentList[t].eligibility;
+
+            console.log({
+              competitionId,
+              maxRanking
+            });
+
+            const isInvited = isInvitedToTournament(
+              context,
+              competitionId,
+              maxRanking,
+              managerId
+            );
+
+            console.log({
+              isInvited,
+              t
+            });
+
             if (
               isInvitedToTournament(
                 context,
@@ -335,6 +356,7 @@ export const gameMachine = setup({
                 managerId
               )
             ) {
+              console.log("HEPS HUU HAA PUSHING TO FRESH");
               fresh.push({
                 id: crypto.randomUUID(),
                 manager: managerId,
