@@ -1,5 +1,16 @@
 # mhm-97-remake
 
+## 2.1.3
+
+### Patch Changes
+
+- afe984d: Fix the "Kriisipalaveri" alert in the context-sensitive sidebar so it gates on effective morale (`getEffective(team).morale`) against `CRISIS_MORALE_MAX`, matching the menu link and the actual crisis-meeting availability. Previously the alert read raw `team.morale` against a hardcoded `-3`, so it could nag for a meeting whose link wasn't there — or stay silent when one was.
+- afe984d: Unify crisis meeting gating: the `Current` context-sensitive panel now
+  consumes the `canCrisisMeeting` selector instead of re-implementing its
+  own check, and the selector now reads effective team morale (post team
+  effects) so it matches the value the player sees on screen and the
+  disabled state of the "Pidä kriisipalaveri" button.
+
 ## 2.1.2
 
 ### Patch Changes
