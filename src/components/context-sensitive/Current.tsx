@@ -2,18 +2,18 @@ import { Link } from "react-router-dom";
 import calendar from "@/data/calendar";
 import { useGameContext } from "@/context/game-machine-context";
 import {
+  activeManager,
   activeManagersInvitations,
-  activeManagersTeam
+  canCrisisMeeting
 } from "@/machines/selectors";
-import { getEffective } from "@/services/effects";
-import { CRISIS_MORALE_MAX } from "@/data/constants";
 import Stack from "@/components/ui/Stack";
 import Alert from "@/components/ui/Alert";
 
 const Current = () => {
   const invitations = useGameContext(activeManagersInvitations);
-  const team = useGameContext(activeManagersTeam);
+  const manager = useGameContext(activeManager);
   const round = useGameContext((ctx) => ctx.turn.round);
+  const showCrisis = useGameContext(canCrisisMeeting(manager.id));
 
   const entry = calendar[round];
   const nextTurn = calendar[round + 1];
@@ -25,8 +25,6 @@ const Current = () => {
   const showInvitations = numberOfAcceptedInvititations > 0;
   const showTransferDeadline =
     !!entry?.transferMarket && !!nextTurn && !nextTurn.transferMarket;
-  const showCrisis =
-    !!entry?.crisisMeeting && getEffective(team).morale <= CRISIS_MORALE_MAX;
 
   if (!showInvitations && !showTransferDeadline && !showCrisis) {
     return null;

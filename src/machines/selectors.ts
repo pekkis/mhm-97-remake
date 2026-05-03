@@ -28,6 +28,7 @@ import arenas from "@/data/arenas";
 import difficultyLevels from "@/data/difficulty-levels";
 import calendar from "@/data/calendar";
 import { CRISIS_COST, CRISIS_MORALE_MAX } from "@/data/constants";
+import { getEffective } from "@/services/effects";
 import type { SnapshotFrom } from "xstate";
 import type { gameMachine } from "./game";
 import type {
@@ -417,9 +418,11 @@ export const canSellPlayer =
 
 /**
  * True iff `manager` can hold a crisis meeting: calendar window is open,
- * team morale is low enough (≤ -3), and the manager can afford the cost
- * (PHL: full price, division: half). 1-1 with the disabled-button logic
- * in `CrisisActions.tsx`.
+ * effective team morale is low enough (≤ CRISIS_MORALE_MAX), and the
+ * manager can afford the cost (PHL: full price, division: half). Single
+ * source of truth — drives both the `CRISIS_MEETING` machine guard and
+ * the disabled-button / nudge alerts in the UI. Reads effective morale
+ * (post team effects) so it matches what the player sees.
  */
 export const canCrisisMeeting =
   (manager: string): ContextSelector<boolean> =>
@@ -432,7 +435,7 @@ export const canCrisisMeeting =
       return false;
     }
     const team = ctx.teams[m.team];
-    if (team.morale > CRISIS_MORALE_MAX) {
+    if (getEffective(team).morale > CRISIS_MORALE_MAX) {
       return false;
     }
     const cost = ctx.competitions.division.teams.includes(team.id)
