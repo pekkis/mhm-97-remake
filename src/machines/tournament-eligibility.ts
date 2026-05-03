@@ -19,6 +19,7 @@ export function isInvitedToTournament(
   manager: string
 ): boolean {
   const mainCompetition = managersMainCompetition(manager)(ctx);
+
   if (mainCompetition !== competitionId) {
     return false;
   }
@@ -27,5 +28,6 @@ export function isInvitedToTournament(
   const stats = ctx.competitions[mainCompetition].phases[0].groups[0]
     .stats as TeamStat[];
   const ranking = stats.findIndex((stat) => stat.id === teamId);
+
   return ranking <= maxRanking;
 }

@@ -170,8 +170,6 @@ const Game: FC = () => {
     "notifications"
   ) as ActorRefFrom<typeof notificationsMachine>;
 
-  console.log("GAME", gameActor);
-
   return (
     <>
       <ModalMenu />

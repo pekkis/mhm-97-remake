@@ -9,8 +9,6 @@ import Stack from "@/components/ui/Stack";
 import Heading from "@/components/ui/Heading";
 import Centerer from "@/components/Centerer";
 
-console.log(import.meta.env);
-
 const StartMenu = () => {
   const starting = AppMachineContext.useSelector((state) =>
     state.matches("starting")

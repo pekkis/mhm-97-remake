@@ -146,8 +146,6 @@ const ehl: CompetitionDefinition = {
 
       const teams = [...qualifiedVictors, qualifiedSecond].map((e) => e.id);
 
-      console.log("Qualified teams", teams);
-
       return {
         name: "lopputurnaus",
         type: "tournament" as const,

@@ -21,8 +21,6 @@ const Services = () => {
   const basePrices = useGameContext((ctx) => ctx.serviceBasePrices);
   const gameActor = GameMachineContext.useActorRef();
 
-  console.log("MANAGER SERVICES", manager.services);
-
   return (
     <AdvancedHeaderedPage
       stickyMenu={<StickyMenu back />}
