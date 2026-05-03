@@ -25,6 +25,13 @@ const Current = () => {
     !!entry?.transferMarket && !!nextTurn && !nextTurn.transferMarket;
   const showCrisis = !!entry?.crisisMeeting && team.morale <= -3;
 
+  console.log({
+    showInvitations,
+    showTransferDeadline,
+    showCrisis
+  });
+
+
   if (!showInvitations && !showTransferDeadline && !showCrisis) {
     return null;
   }
