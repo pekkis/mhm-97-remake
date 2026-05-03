@@ -321,6 +321,8 @@ export const gameMachine = setup({
      */
     executeInvitationsCreate: assign(({ context }) =>
       produce(context, (draft) => {
+        console.log("EXECUTING INVITATIONS CREATE");
+
         const fresh: typeof draft.invitation.invitations = [];
         for (const managerId of Object.keys(draft.manager.managers)) {
           for (let t = 0; t < tournamentList.length; t++) {
