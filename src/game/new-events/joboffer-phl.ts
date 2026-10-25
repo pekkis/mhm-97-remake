@@ -126,14 +126,12 @@ const jobofferPHL: DeclarativeEvent<JobofferPHLData> = {
     const effects: EventEffect[] = [
       { type: "hireManager", manager, team: offerer },
       { type: "setBalance", manager, amount: 700000 },
-      ...SERVICES_RESET_ON_HIRE.map(
-        (service): EventEffect => ({
-          type: "setService",
-          manager,
-          service,
-          value: false
-        })
-      ),
+      ...SERVICES_RESET_ON_HIRE.map((service): EventEffect => ({
+        type: "setService",
+        manager,
+        service,
+        value: false
+      })),
       { type: "setArenaLevel", manager, level: newArenaLevel ?? 3 },
       { type: "setInsuranceExtra", manager, extra: 0 },
       { type: "setMorale", team: oldTeam, value: 0 },

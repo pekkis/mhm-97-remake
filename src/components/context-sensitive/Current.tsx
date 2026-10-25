@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import calendar from "@/data/calendar";
 import { useGameContext } from "@/context/game-machine-context";
 import {

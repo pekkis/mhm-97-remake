@@ -103,14 +103,12 @@ const jobofferDivision: DeclarativeEvent<JobofferDivisionData> = {
     const effects: EventEffect[] = [
       { type: "hireManager", manager: data.manager, team: data.offerer },
       { type: "setBalance", manager: data.manager, amount: 2000000 },
-      ...SERVICES_RESET_ON_HIRE.map(
-        (s): EventEffect => ({
-          type: "setService",
-          manager: data.manager,
-          service: s,
-          value: false
-        })
-      ),
+      ...SERVICES_RESET_ON_HIRE.map((s): EventEffect => ({
+        type: "setService",
+        manager: data.manager,
+        service: s,
+        value: false
+      })),
       {
         type: "setArenaLevel",
         manager: data.manager,

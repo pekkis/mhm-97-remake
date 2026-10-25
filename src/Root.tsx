@@ -1,5 +1,5 @@
 import App from "./components/App";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 import "./styles/global.css";
 import type { FC } from "react";
 import { AppMachineContext } from "@/context/app-machine-context";

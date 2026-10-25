@@ -15,6 +15,7 @@ export type GameResult = {
 export type Pairing = {
   home: number;
   away: number;
+  attendance?: number;
   result?: GameResult;
 };
 

@@ -1,6 +1,6 @@
 import Button from "./ui/Button";
 import { FaBars } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { GameMachineContext } from "@/context/game-machine-context";
 import { uiStore } from "@/stores/ui";
 import { advanceEnabled as advanceEnabledSelector } from "@/machines/selectors";
