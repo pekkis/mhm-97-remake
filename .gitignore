@@ -4,3 +4,6 @@ node_modules/
 dist/
 package-lock.json
 
+# deploy output (scripts/deploy.sh)
+/releases/
+/current

@@ -3,7 +3,7 @@ import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import { VitePWA } from "vite-plugin-pwa";
-import packageJson from "./package.json";
+import packageJson from "./package.json" with { type: "json" };
 
 export default defineConfig({
   plugins: [

@@ -18,10 +18,10 @@ When the foundation is solid, we pivot to MHM 2000.
 
 ---
 
-## Current Stack (2026-04-27)
+## Current Stack (2026-10-25)
 
-- **Build / runtime:** Vite 8, Node 24 (`.nvmrc` => `v24`), pnpm-only
-- **UI:** React 19, React Router 7, react-icons (FA solid)
+- **Build / runtime:** Vite 8, Node 26, pnpm 12 only. `devEngines` in `package.json` pins both; pnpm downloads that Node for every script, whatever Node the shell has (`.nvmrc` => `v26` for editors and CI)
+- **UI:** React 19, React Router 8 (import from `react-router`; `react-router-dom` is gone), react-icons (FA solid)
 - **State:** XState 5 (`appMachine` + `gameMachine` + spawned children) and `@xstate/store` for leaf stores (`ui`, `country`, `notification`)
 - **Styling:** Vanilla Extract (`@vanilla-extract/css` + `@vanilla-extract/sprinkles`), `clsx` for conditional classes
 - **Forms:** react-hook-form + zod + `@hookform/resolvers`
@@ -29,8 +29,9 @@ When the foundation is solid, we pivot to MHM 2000.
 - **Utilities:** remeda (`entries`, `values`, `keys` over native `Object.*`), type-fest (devDep)
 - **Persistence:** slot-based via [src/services/persistence.ts](src/services/persistence.ts) — `saveSnapshot(slot, snap)` / `loadSnapshot(slot)` / `hasSnapshot(slot)`. Storage key `mhm97:slot:N`. Persists the full XState snapshot via `gameRef.getPersistedSnapshot()`.
 - **Randomness:** `RandomService` in [src/services/random.ts](src/services/random.ts), seedable via `VITE_RANDOM_SEED`
-- **TypeScript:** TS 7 native preview (`tsgo`) — `pnpm typecheck` runs `tsgo --noEmit` (~0.3s). The legacy `typescript` package is **not** installed.
-- **Lint/format:** `oxlint` + `oxfmt` (auto-discovered config files; no `-c` flag)
+- **TypeScript:** TS 7 (the native compiler, `typescript@7`) — `pnpm typecheck` runs `tsc --noEmit` (~0.3s).
+- **Lint/format:** `oxlint` + `oxfmt` (auto-discovered config files; no `-c` flag). `pnpm lint` denies warnings.
+- **Deploy:** a static site served by Caddy on the host. `scripts/deploy.sh` builds in Docker (`docker/build/Dockerfile`: pinned Node, precompressed `.zst`/`.br`/`.gz` copies) into `releases/<timestamp>` and switches the `current` symlink; Caddy serves `current` with `file_server precompressed`.
 - **Tests:** vitest, ~173 tests across 15 files (alongside source as `*.test.ts`)
 
 ### Key files
@@ -272,7 +273,7 @@ When you discover something new and durable (a pattern, a constraint, a non-obvi
 
 ```sh
 pnpm verify      # tests + lint + format (writes fixes) + typecheck — the one-liner
-pnpm typecheck   # tsgo --noEmit, ~0.3s, must be zero errors
+pnpm typecheck   # tsc --noEmit, ~0.3s, must be zero errors
 pnpm test --run  # vitest, must be all green
 pnpm build       # production build must succeed
 pnpm dev         # local sanity check

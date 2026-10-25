@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, useWatch, Controller } from "react-hook-form";
 import Slider from "@/components/ui/form/Slider";
 import { amount as a } from "@/services/format";
 import odds from "@/data/championship-betting";
@@ -36,7 +36,7 @@ const BettingForm: FC<ChampionshipBettingFormProps> = ({
 }) => {
   const teamsAndOdds = odds(competition, teams);
 
-  const { register, handleSubmit, control, watch } =
+  const { register, handleSubmit, control } =
     useForm<ChampionshipBettingFormValues>({
       defaultValues: {
         team: "",
@@ -44,7 +44,8 @@ const BettingForm: FC<ChampionshipBettingFormProps> = ({
       }
     });
 
-  const values = watch();
+  // useWatch, not watch(): it re-renders through a hook, which the React Compiler can memoize.
+  const values = useWatch({ control, compute: (formValues) => formValues });
 
   const onSubmit = (data: ChampionshipBettingFormValues) => {
     const teamId = parseInt(data.team, 10);

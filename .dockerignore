@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+dist
+docs
+.env
+.env.*
+!.env.example
+.tsbuildinfo
+.DS_Store
+docker/nginx.conf
+releases
+current

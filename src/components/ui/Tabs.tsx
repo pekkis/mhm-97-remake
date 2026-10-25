@@ -1,4 +1,4 @@
-import { Activity, useId, useRef, type FC, type ReactNode } from "react";
+import { Activity, useId, useState, type FC, type ReactNode } from "react";
 import * as styles from "./Tabs.css";
 
 export type TabItem = {
@@ -28,12 +28,16 @@ const Tabs: FC<TabsProps> = ({ items, selected, onSelect, className }) => {
   const baseId = useId();
   const safeSelected = Math.min(Math.max(selected, 0), items.length - 1);
 
-  // Tracks which tabs have ever been visited. A ref (not state) is
-  // enough: visiting a tab already triggers a re-render through
-  // `selected` flipping, and we never want to read this during render
-  // for any other tab than the current one.
-  const visited = useRef<Set<number>>(new Set([safeSelected]));
-  visited.current.add(safeSelected);
+  // Tabs that have ever been visited. State, updated during render when
+  // a new tab is selected (React's "storing information from previous
+  // renders" pattern): React re-renders right away, before the children,
+  // and reading it during render is safe, unlike a ref.
+  const [visited, setVisited] = useState<ReadonlySet<number>>(
+    () => new Set([safeSelected])
+  );
+  if (!visited.has(safeSelected)) {
+    setVisited(new Set(visited).add(safeSelected));
+  }
 
   return (
     <div className={className}>
@@ -60,7 +64,7 @@ const Tabs: FC<TabsProps> = ({ items, selected, onSelect, className }) => {
         </div>
 
         {items.map((item, index) => {
-          if (!visited.current.has(index)) {
+          if (!visited.has(index)) {
             return null;
           }
           const isActive = index === safeSelected;
