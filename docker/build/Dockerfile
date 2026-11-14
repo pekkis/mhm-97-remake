@@ -1,6 +1,6 @@
 # Builds the static site; Caddy on the host serves the result (scripts/deploy.sh).
 # Pinned by version and digest: upgrades happen when we decide (Dependabot proposes them).
-FROM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797
+FROM node:26.13.1-alpine3.24@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5
 RUN apk add --no-cache brotli zstd
 # The version in package.json's packageManager.
 RUN npm -g i pnpm@12.15.0
